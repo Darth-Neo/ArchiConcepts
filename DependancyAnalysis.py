@@ -80,7 +80,10 @@ if __name__ == "__main__":
     i = Task("i", "a")
     j = Task("j", "b")
     k = Task("k")
-    nodes = (a, b, c, d, e, f, g, h, i, j)
+
+    # nodes is the superset of Task
+
+    nodes = (b, c, d, e, f, g, h, i, j, a)
 
     # Show it on screen
     print "A working dependency graph example:"
@@ -89,7 +92,8 @@ if __name__ == "__main__":
 
     # Show the batches on screen
     print "Batches:"
-    for bundle in get_task_batches(nodes):
+    batches = get_task_batches(nodes)
+    for bundle in batches:
         print ", ".join(node.name for node in bundle)
     print
 
