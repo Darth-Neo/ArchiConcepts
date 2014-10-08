@@ -32,9 +32,9 @@ FunctionColumns = ["Function Name","Function Created Date","Function Modified Da
 RequirementColumns = ["General System Requirements", "RollUp Segment", "Category"]
 
 keyColumns = { "Artifact" : (0,2), "BusinessFunction" : (4, 6), "Function" : (3, 6), "Stakeholder" : (6, 3),
-               "Requirement" : (-1,-1), "Category" : (-1, -1)}
+               "Requirement" : (-1,-1), "Category" : (-1, -1), "ApplicationService" : (0,1)}
 nameColumns = { "Artifact" : (1,3), "BusinessFunction" : (0, 6), "Function" : (0, 5), "Stakeholder" : (5, 0),
-                "Requirement" : (1,0), "Category" : (0,1)}
+                "Requirement" : (1,0), "Category" : (0,1), "ApplicationService" : (0,1)}
 
 dictNode = dict()
 dictRelation = dict()
@@ -59,9 +59,11 @@ def insertNode(tag, folder, tree, attrib):
         dictName[value] = idd
         attrib["id"] = idd
 
-        xp = "folder[@name='" + folder + "']"
+        xp = "//folder[@name='" + folder + "']"
         elm = etree.Element(tag, attrib, nsmap=NS_MAP)
-        tree.xpath(xp)[0].insert(0, elm)
+
+        txp = tree.xpath(xp)
+        txp[0].insert(0, elm)
         logger.info("inNew!   : %s" % idd)
 
     return idd
@@ -82,7 +84,7 @@ def insertRel(tag, folder, tree, attrib):
         dictName[value] = idd
         attrib["id"] = idd
 
-        xp = "folder[@name='" + folder + "']"
+        xp = "//folder[@name='" + folder + "']"
         elm = etree.Element(tag, attrib, nsmap=NS_MAP)
         tree.xpath(xp)[0].insert(0, elm)
         logger.info("inNew!   : %s" % idd)
@@ -107,7 +109,7 @@ def getNameID(value):
 def insertMNode(p, row, se, tag="element", eType="archimate:Artifact"):
     #<element xsi:type="archimate:Node" id="612a9b73" name="Linux Server"/>
 
-    logger.debug("%s::%s" % (row[0], row[1]))
+    logger.info("%s::%s" % (row[0], row[1]))
 
     # Generate 8 digit Hex number
     id = getID()
@@ -140,6 +142,8 @@ def insertMNode(p, row, se, tag="element", eType="archimate:Artifact"):
     else:
         dictNode[value] = id
         dictName[attrib["name"]] = id
+
+    logger.info("attrib %s" % "".join(x for x in attrib))
 
     elm = etree.Element(tag, attrib, nsmap=NS_MAP)
     se[0].insert(0, elm)
@@ -331,6 +335,157 @@ def insertNRelations(tree, fileMetaEntity):
 
             colnum += 1
 
+def logNode(n):
+
+    attributes = n.attrib
+
+    if attributes.get(ARCHI_TYPE) == "archimate:BusinessFunction":
+        if attributes.get("id") != None:
+            dictName[n.get("name")] = attributes["id"]
+
+            logger.debug("logNode : %s:%s:%s:%s" % (n.tag, n.get("name"), n.get("id"), attributes.get(ARCHI_TYPE)))
+
+    for y in n:
+        logNode(y)
+
+def logAll(tree):
+    for x in tree.getroot():
+        logNode(x)
+
+def outputXML(tree, filename="import_artifacts.archimate"):
+    output = StringIO.StringIO()
+    tree.write(output, pretty_print=True)
+
+    logger.debug("%s" % (output.getvalue()))
+
+    logger.info("Saved to : %s" % filename)
+
+    f = open(filename,'w')
+    f.write(output.getvalue())
+    f.close()
+
+    output.close()
+
+def insertTwoColumns(tree, folder, subfolder, fileMetaEntity, eType):
+
+    #<element xsi:type="archimate:Node" id="612a9b73" name="Linux Server"/>
+
+    file = open(fileMetaEntity, "rU")
+    reader = csv.reader(file)
+
+    xp = "folder[@name='" + folder + "']"
+    tag = "element"
+
+    # <folder name="Process" id="e23b1e50">
+
+    attrib = dict()
+    attrib["id"] = getID()
+    attrib["name"] = subfolder
+    insertNode("folder", folder, tree, attrib)
+
+    folder = subfolder
+
+    rownum = 0
+
+    for row in reader:
+        if rownum == 0:
+            rownum += 1
+            continue
+
+        logger.info("rownum : %d" % rownum)
+        logger.info("row    : %s" % row)
+
+        CM1 = row[0].decode(encoding='UTF-8',errors='ignore').lstrip()
+        CM2 = row[1].decode(encoding='UTF-8',errors='ignore').lstrip()
+
+        C1 = CM1
+        attrib = dict()
+        attrib["name"] = CM1
+        attrib[ARCHI_TYPE] = eType
+        insertNode(tag, folder, tree, attrib)
+        CM1_ID = attrib["id"]
+
+        C2 = CM2
+        attrib = dict()
+        attrib["name"] = CM2
+        attrib[ARCHI_TYPE] = eType
+        insertNode(tag, folder, tree, attrib)
+        CM2_ID = attrib["id"]
+
+        attrib = dict()
+        attrib["source"] = CM1_ID
+        attrib["target"] = CM2_ID
+        attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
+        insertRel(tag, "Relations", tree, attrib)
+
+        C1 = C1.replace(":",".")
+        C1 = C1.replace("|",".")
+        C1 = C1.replace(" ",".")
+        C1 = C1.replace("_",".")
+        C1 = C1.replace(" ",".")
+
+        listC1 = list()
+        for x in C1.split("."):
+            attrib = dict()
+            attrib["name"] = x
+            attrib[ARCHI_TYPE] = eType
+            insertNode(tag, folder, tree, attrib)
+            listC1.append(attrib["id"])
+
+        C2 = C2.replace(":",".")
+        C2 = C2.replace("|",".")
+        C2 = C2.replace(" ",".")
+        C2 = C2.replace("_",".")
+        C2 = C2.replace(" ",".")
+
+        listC2 = list()
+        for x in C2.split("."):
+            attrib = dict()
+            attrib["name"] = x
+            attrib[ARCHI_TYPE] = eType
+            insertNode(tag, folder, tree, attrib)
+            listC2.append(attrib["id"])
+
+        if len(listC1) > 1:
+            pl = listC1[0]
+            for y in listC1[1:]:
+                attrib = dict()
+                attrib["source"] = pl
+                attrib["target"] = y
+                attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
+                insertRel(tag, "Relations", tree, attrib)
+                pl = y
+
+        if len(listC2) > 1:
+            pl = listC2[0]
+            for y in listC2[1:]:
+                attrib = dict()
+                attrib["source"] = pl
+                attrib["target"] = y
+                attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
+                insertRel(tag, "Relations", tree, attrib)
+                pl = y
+
+        attrib = dict()
+        attrib["source"] = listC1[0]
+        attrib["target"] = listC2[0]
+        attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
+        insertRel(tag, "Relations", tree, attrib)
+
+        attrib = dict()
+        attrib["source"] = CM1_ID
+        attrib["target"] = listC1[0]
+        attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
+        insertRel(tag, "Relations", tree, attrib)
+
+        attrib = dict()
+        attrib["source"] = CM2_ID
+        attrib["target"] = listC2[0]
+        attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
+        insertRel(tag, "Relations", tree, attrib)
+
+
+
 def insertScenarios(tree, fileMetaEntity):
 
     #<element xsi:type="archimate:Node" id="612a9b73" name="Linux Server"/>
@@ -475,47 +630,24 @@ def insertScenarios(tree, fileMetaEntity):
 
         rownum += 1
 
-def logNode(n):
-
-    attributes = n.attrib
-
-    if attributes.get(ARCHI_TYPE) == "archimate:BusinessFunction":
-        if attributes.get("id") != None:
-            dictName[n.get("name")] = attributes["id"]
-
-            logger.debug("logNode : %s:%s:%s:%s" % (n.tag, n.get("name"), n.get("id"), attributes.get(ARCHI_TYPE)))
-
-    for y in n:
-        logNode(y)
-
-def logAll(tree):
-    for x in tree.getroot():
-        logNode(x)
-
-def outputXML(tree, filename="import_artifacts.archimate"):
-    output = StringIO.StringIO()
-    tree.write(output, pretty_print=True)
-
-    logger.debug("%s" % (output.getvalue()))
-
-    logger.info("Saved to : %s" % filename)
-
-    f = open(filename,'w')
-    f.write(output.getvalue())
-    f.close()
-
-    output.close()
 
 if __name__ == "__main__":
     # Archimate
-    fileArchimate = "/Users/morrj140/PycharmProjects/ArchiConcepts/CodeGen_v5.archimate"
+    fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v15.archimate"
     etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimate)
 
     logAll(tree)
 
-    fileMetaEntity = "/Users/morrj140/PycharmProjects/ArchiConcepts/Workbook4.csv"
-    insertScenarios(tree, fileMetaEntity)
+    # EAI
+    fileMetaEntity = "/Users/morrj140/Documents/SolutionEngineering/CodeGen/EAI Analysis/EAI.csv"
+    logger.info("Using : %s" % fileArchimate)
+    insertTwoColumns(tree, "Application", "EAI Services", fileMetaEntity, eType="archimate:ApplicationService")
+
+    # Jawa
+    fileMetaEntity = "/Users/morrj140/Documents/SolutionEngineering/CodeGen/EAI Analysis/Jawa.csv"
+    logger.info("Using : %s" % fileArchimate)
+    insertTwoColumns(tree, "Application", "Jawa Services", fileMetaEntity, eType="archimate:ApplicationService")
 
     # Segment/Category
     #fileMetaEntity = "/Users/morrj140/Development/GitRepository/DirCrawler/CodeGen-SC.csv"
