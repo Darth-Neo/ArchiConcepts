@@ -1,38 +1,33 @@
-__author__ = 'morrj140'
-# @url: http://pythonhaven.wordpress.com/2009/12/09/generating_graphs_with_pydot
+#!/usr/bin/env python
 
-import pydot # import pydot or you're not going to get anywhere my friend :D
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from __future__ import print_function
+from __future__ import division
 
-# first you create a new graph, you do that with pydot.Dot()
-graph = pydot.Dot(graph_type='graph')
+import pygraphviz as pgv
 
-# the idea here is not to cover how to represent the hierarchical data
-# but rather how to graph it, so I'm not going to work on some fancy
-# recursive function to traverse a multidimensional array...
-# I'm going to hardcode stuff... sorry if that offends you
+# strict (no parallel edges)
+# digraph
+# with attribute rankdir set to 'LR'
+A=pgv.AGraph(directed=True,strict=True,rankdir='LR')
 
-# let's add the relationship between the king and vassals
-for i in range(3):
-    # we can get right into action by "drawing" edges between the nodes in our graph
-    # we do not need to CREATE nodes, but if you want to give them some custom style
-    # then I would recomend you to do so... let's cover that later
-    # the pydot.Edge() constructor receives two parameters, a source node and a destination
-    # node, they are just strings like you can see
-    edge = pydot.Edge("kingord%d" % i)
-    # and we obviosuly need to add the edge to our graph
-    graph.add_edge(edge)
+# add node 1 with color red
+A.add_node(1,color='red') 
+A.add_node(5,color='blue')
 
-# now let us add some vassals
-vassal_num = 0
-for i in range(3):
-    # we create new edges, now between our previous lords and the new vassals
-    # let us create two vassals for each lord
-    for j in range(2):
-        edge = pydot.Edge("lord%d" % vassal_num, "vassal%d" % vassal_num)
-        graph.add_edge(edge)
-        vassal_num += 1
+# add some edges
+A.add_edge(1,2,color='green')
+A.add_edge(2,3)
+A.add_edge(1,3)
+A.add_edge(3,4)
+A.add_edge(3,5)
+A.add_edge(3,6)
+A.add_edge(4,6)
 
-# ok, we are set, let's save our graph into a file
-graph.write_png('example1_graph.bmp')
+# adjust a graph parameter
+A.graph_attr['epsilon']='0.001'
+print(A.string()) # print dot file to standard output
+A.layout('dot') # layout with dot
+A.draw('example.png') # write to file
 
-# and we are done!

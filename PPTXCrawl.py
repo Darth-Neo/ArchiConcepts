@@ -3,11 +3,10 @@ __author__ = 'morrj140'
 import logging
 from nl_lib import Logger
 from nl_lib.Concepts import Concepts
-from nl_lib.ConceptGraph import PatternGraph, NetworkXGraph, Neo4JGraph
+from nl_lib.ConceptGraph import PatternGraph, NetworkXGraph, Neo4JGraph, GraphVizGraph
 from nl_lib.Constants import *
 
 logger = Logger.setupLogging(__name__)
-logger.setLevel(logging.INFO)
 
 import math
 
@@ -24,7 +23,17 @@ gdb = "http://localhost:7474/db/data/"
 def addGraphNodes(graph, concepts, n=0):
     n += 1
     for c in concepts.getConcepts().values():
+
+        logger.debug("%s[%d]" % (c.name, len(c.name)))
+
+        if len(c.name.strip(" ")) == 0:
+            return
+
+        if not (c.typeName in ("Source", "Target", "Slide")):
+            return
+
         logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
+
         graph.addConcept(c)
         if len(c.getConcepts()) != 0:
             addGraphNodes(graph, c, n)
@@ -33,6 +42,10 @@ def addGraphEdges(graph, concepts, n=0):
     n += 1
     i = 1
     for c in concepts.getConcepts().values():
+
+        if (c.name in ("l", "h", "t", "w")):
+            return
+
         logger.debug("%d : %d Edge c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
         if i == 1:
             p = c
@@ -50,7 +63,8 @@ def graphConcepts(concepts, graph=None):
         #logger.info("Clear the Graph @" + gdb)
         #graph.clearGraphDB()
 
-        graph = NetworkXGraph()
+        graph = GraphVizGraph()
+        #graph = NetworkXGraph()
         #graph = PatternGraph()
 
     logger.info("Adding nodes the graph ...")
@@ -58,14 +72,21 @@ def graphConcepts(concepts, graph=None):
     logger.info("Adding edges the graph ...")
     addGraphEdges(graph, concepts)
 
+    if isinstance(graph, GraphVizGraph):
+        filename="example.png"
+        graph.exportGraph(filename=filename)
+        logger.info("Saved Graph - %s" % filename)
+
     if isinstance(graph, Neo4JGraph):
         graph.setNodeLabels()
 
     if isinstance(graph, NetworkXGraph):
         graph.drawGraph("concepts.png")
+
         filename = "concepts.net"
-        logger.info("Saving Graph - %s" % filename)
+        logger.info("Saving Pajek - %s" % filename)
         graph.saveGraphPajek(filename)
+
         graph.saveGraph("concepts.gml")
         logger.info("Saving Graph - %s" % "concepts.gml")
 
@@ -448,7 +469,6 @@ def crawlPPTX(c, path_to_presentation):
         q = c.addConceptKeyType(titleSlide, "Slide")
         checkConnect(q, dictEdges, dictNodes, dictNodeXY)
 
-
 if __name__ == "__main__":
     #graph = NetworkXGraph()
 
@@ -463,5 +483,9 @@ if __name__ == "__main__":
     c.logConcepts()
 
     Concepts.saveConcepts(c, "pptx.p")
+
+    logger.setLevel(logging.DEBUG)
+
+    graphConcepts(c)
 
 
