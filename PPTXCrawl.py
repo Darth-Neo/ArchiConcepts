@@ -9,6 +9,8 @@ from nl_lib.Constants import *
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
+import math
+
 from pptx import Presentation
 from lxml import etree
 
@@ -82,6 +84,20 @@ def findID(nid, dictNodes):
 
     return None
 
+def findXY(nid, d):
+
+    ld = list()
+
+    try:
+        ld = d[nid]
+
+        logger.debug("ld : %s" % ld)
+
+    except:
+        pass
+
+    return ld
+
 def logList(l, n=0):
 
     n += 1
@@ -94,6 +110,9 @@ def logList(l, n=0):
         if isinstance(x, list):
             logger.info("%slist: %s" % (s, x))
             logList(x, n)
+        elif isinstance(x, dict):
+            logger.info("%sdict: %s" % (s, x))
+            logList(x, n)
         elif isinstance(x, tuple):
             logger.info("%stuple: %s" % (s, x))
             logList(x, n)
@@ -105,7 +124,7 @@ def logList(l, n=0):
             elif isinstance(x, int):
                 logger.info("%sint: %d" % (s, x))
 
-def checkConnect(c, dictEdges, dictNodes):
+def checkConnect(c, dictEdges, dictNodes, dictNodeXY):
 
     for el in dictEdges.keys():
             tel =  dictEdges[el]
@@ -115,34 +134,176 @@ def checkConnect(c, dictEdges, dictNodes):
             for y in tel:
                 logger.debug("  y: %s[%s]" % (y, type(y)))
 
-                if len(y) == 3:
-                    source = findID(y[1], dictNodes)
-                    target = findID(y[2], dictNodes)
+                if True:
+                    if len(y) == 3:
+                        edge   = findID(y[0], dictNodes)
+                        source = findID(y[2], dictNodes)
+                        target = findID(y[1], dictNodes)
 
-                    if source != None and target != None:
-                        logger.debug("%s : %s" % (source, target))
+                        dimSource = findXY(y[1], dictNodeXY)
+                        dimTarget = findXY(y[2], dictNodeXY)
 
-                        if len(source) == 0 or len(target) == 0:
-                            continue
+                        if source != None and target != None:
+                            logger.debug("%s : %s" % (source, target))
 
-                        d = c.addConceptKeyType(source, "Source")
-                        d.addConceptKeyType(target, "Target")
+                            if len(source) == 0 or len(target) == 0:
+                                continue
 
+                            d = c.addConceptKeyType(source, "Source")
+                            for ld in dimSource.keys():
+                                logger.debug("%s %s:%2.3f" % (source, ld, dimSource[ld]))
+                                d.addConceptKeyType(ld, str(dimSource[ld]))
+
+                            f = d.addConceptKeyType(target, "Target")
+                            for ld in dimTarget.keys():
+                                logger.debug("%s %s:%2.3f" % (target, ld, dimSource[ld]))
+                                f.addConceptKeyType(ld, str(dimTarget[ld]))
+
+                            f.addConceptKeyType(edge, "Edge")
+
+
+                #except:
+                    #logger.warn("  y: %s[%s]" % (y, type(y)))
+
+def shapeText(shape):
+    name = ""
+    if shape.has_text_frame:
+        text_frame = shape.text_frame
+
+        for paragraph in shape.text_frame.paragraphs:
+            for run in paragraph.runs:
+                logger.debug("%s" % run.text)
+                name = name + run.text + " "
+
+    return name
+
+def shapeDim(shape, dictNodeXY):
+    t = shape.top / EMU
+    l = shape.left / EMU
+    h = shape.height / EMU
+    w = shape.width / EMU
+
+    nid = shape.id #- 1
+
+    dictDim = dict()
+    dictDim["t"] = t
+    dictDim["l"] = l
+    dictDim["h"] = h
+    dictDim["w"] = w
+    dictNodeXY[nid] = dictDim
+
+    logger.debug("shape.top     : %3.2f" % (t))
+    logger.debug("shape.left    : %3.2f" % (l))
+    logger.debug("shape.height  : %3.2f" % (h))
+    logger.debug("shape.width   : %3.2f" % (w))
+    logger.debug("shape.shape_type    : %s" % shape.shape_type)
+
+    return nid, t, l, h , w
+
+def addDictNodes(nid, name, dictNodes):
+    if len(name) > 0 and dictNodes.has_key(name):
+        nl = dictNodes[name]
+        nl.append(nid)
+        logger.debug("Duplicate Keys %s...%s" % (name, dictNodes[name]))
+    else:
+        nl = list()
+        nl.append(nid)
+        dictNodes[name] = nl
+
+
+def addDictEdges(nid, xl, dictEdges):
+    nxl = list()
+    for x in xl:
+        nxl.append(int(x))
+        logger.debug ("%d:%s" % (nid,x))
+
+    #
+    # Only add connections between two nodes
+    #
+    if len(nxl) == 3:
+        if dictEdges.has_key(nid):
+            nl = dictEdges[nid]
+            nl.append(nxl)
+            logger.debug("Duplicate Edges ...%s" % (dictEdges[nid]))
+        else:
+            el = list()
+            el.append(nxl)
+            dictEdges[nid] = el
+
+def getPoint(d):
+
+    t = d["t"]
+    l = d["l"]
+    h = d["h"]
+    w = d["w"]
+
+    py = t + ( h / 2.0)
+    px = l + ( h / 2.0)
+
+    return px, py
+
+def lineMagnitude (x1, y1, x2, y2):
+    lineMagnitude = math.sqrt(math.pow((x2 - x1), 2)+ math.pow((y2 - y1), 2))
+    return lineMagnitude
+
+#Calc minimum distance from a point and a line segment (i.e. consecutive vertices in a polyline).
+def DistancePointLine (px, py, x1, y1, x2, y2):
+    #http://local.wasp.uwa.edu.au/~pbourke/geometry/pointline/source.vba
+    LineMag = lineMagnitude(x1, y1, x2, y2)
+
+    u1 = (((px - x1) * (x2 - x1)) + ((py - y1) * (y2 - y1)))
+    u = u1 / (LineMag * LineMag)
+
+    if (u < 0.00001) or (u > 1):
+        #// closest point does not fall within the line segment, take the shorter distance
+        #// to an endpoint
+        ix = lineMagnitude(px, py, x1, y1)
+        iy = lineMagnitude(px, py, x2, y2)
+        if ix > iy:
+            DistancePointLine = iy
+        else:
+            DistancePointLine = ix
+    else:
+        # Intersecting point is on the line, use the formula
+        ix = x1 + u * (x2 - x1)
+        iy = y1 + u * (y2 - y1)
+        DistancePointLine = lineMagnitude(px, py, ix, iy)
+
+    return DistancePointLine
 
 def crawlPPTX(c, path_to_presentation):
     dictNodes = dict()
     dictEdges = dict()
 
+    dictNodeXY = dict()
+    dictTextXY = dict()
+
     prs = Presentation(path_to_presentation)
+
+    sNum = 0
 
     for slide in prs.slides:
         logger.debug ("--new slide--")
-        logger.debug("\n%s" % slide.partname)
-        logger.debug("slide : %s" % slide)
+        logger.debug("%s" % slide.partname)
+        logger.debug("slideName : %s" % slide.name)
+
+        sNum += 1
+
+        #
+        # Get Title of Slide
+        #
+        titleSlide = ""
 
         for idx, ph in enumerate(slide.shapes.placeholders):
-            logger.debug ("**    %s:%s    **" % (idx,ph))
+            logger.debug ("**    %s:%s    **" % (idx, ph.text))
+            if idx == 0:
+                titleSlide = ph.text
 
+        logger.info("Title : %s" % titleSlide)
+
+        #
+        # Iterate ihrough slides
+        #
         n = 0
         for shape in slide.shapes:
             logger.debug ("...%s..." % type(shape))
@@ -152,57 +313,23 @@ def crawlPPTX(c, path_to_presentation):
             logger.debug("shape.element.xml : %s" % shape.element.xml)
             logger.debug("shape.name : %s[%d]" % (shape.name,  shape.id - 1))
 
-            if shape.name[:5] in ("Title"):
-                if shape.has_text_frame:
-                    text_frame = shape.text_frame
-
-                    for paragraph in shape.text_frame.paragraphs:
-                        for run in paragraph.runs:
-                            logger.debug("%s" % run.text)
-
             sn = shape.name
 
-            # skip "Text "
+            # Get Shape Info
             if shape.name[:5] in ("Recta", "Elbow", "Round", "Strai"):
 
-                t = shape.top / EMU
-                l = shape.left / EMU
-                h = shape.height / EMU
-                w = shape.width / EMU
-
-                logger.debug("shape.top     : %3.2f" % (t))
-                logger.debug("shape.left    : %3.2f" % (l))
-                logger.debug("shape.height  : %3.2f" % (h))
-                logger.debug("shape.width   : %3.2f" % (w))
-                logger.debug("shape.shape_type    : %s" % shape.shape_type)
+                nid, t, l, h, w = shapeDim(shape, dictNodeXY)
 
                 tl = (l, t)
                 tr = (l + w, t)
                 bl = (l, t + h)
                 br = (l + w, t + h)
 
-                name = ""
-
-                if shape.has_text_frame:
-                    text_frame = shape.text_frame
-
-                    for paragraph in shape.text_frame.paragraphs:
-                        for run in paragraph.runs:
-                            logger.debug("%s" % run.text)
-                            name = name + run.text + " "
-
-                nid = shape.id - 1
+                name = shapeText(shape)
 
                 logger.debug("name : %s[%d] - %s" % (name, nid, shape.name))
 
-                if len(name) > 0 and dictNodes.has_key(name):
-                    nl = dictNodes[name]
-                    nl.append(nid)
-                    logger.debug("Duplicate Keys %s...%s" % (name, dictNodes[name]))
-                else:
-                    nl = list()
-                    nl.append(nid)
-                    dictNodes[name] = nl
+                addDictNodes(nid, name, dictNodes)
 
                 #
                 # Add in Connections
@@ -212,33 +339,114 @@ def crawlPPTX(c, path_to_presentation):
 
                     xmlShape = shape.element.xml
 
-                    #logger.info("Check for connections...: %s" % xmlShape)
-
                     tree = etree.fromstring(xmlShape)
 
                     xl = tree.xpath("//@id")
 
+                    addDictEdges(nid, xl, dictEdges)
+
+            #
+            # Get Text boxes and associate with Connector
+            #
+            elif shape.name[:8] in ("Text Box"):
+
+                nid, t, l, h, w = shapeDim(shape, dictTextXY)
+
+                name = shapeText(shape)
+
+                if name != None:
                     nxl = list()
-                    for x in xl:
-                        nxl.append(int(x))
-                        logger.debug ("%d:%s" % (nid,x))
+                    nxl.append(nid)
+                    dictNodes[name] = nxl
 
-                    if dictEdges.has_key(nid):
-                        nl = dictEdges[nid]
-                        nl.append(nxl)
-                        logger.debug("Duplicate Edges %s...%s" % (name, dictEdges[nid]))
-                    else:
-                        el = list()
-                        el.append(nxl)
-                        dictEdges[nid] = el
+                    logger.debug("TextBox : %s" % name)
 
-                    #logger.debug ("--new shape [%d]--" % n)
-                    logger.debug("  %s" % (name))
-                    logger.debug("    tl = %3.2f, %3.2f -- tr %3.2f, %3.2f" % (tl[0], tl[1], tr[0], tr[1]))
-                    logger.debug("    bl = %3.2f, %3.2f -- br %3.2f, %3.2f" % (bl[0], bl[1], br[0], br[1]))
+            else:
+                logger.debug("Skipped : %s" % shape.name)
 
-        # at this point you need to make connections
-        checkConnect(c, dictEdges, dictNodes)
+        #
+        # Now match the Connector with text
+        #
+
+        listEdges = dictEdges.values()
+
+        tbFound = 0
+        tbTotal = len(dictTextXY)
+        logger.info("Search for %s Text Box Connector's" % len(dictTextXY))
+
+        for txt in dictTextXY.keys():
+            searchText = findID(txt, dictNodes)
+
+            if searchText is None:
+                logger.info("Search Text None: Skip")
+                tbFound += 1
+                continue
+
+            logger.info("Search Text : %s" % (searchText))
+
+            # get text point - middle of node
+            px, py = getPoint(dictTextXY[txt])
+
+            cDist = 100.0
+            cNode = None
+            csn = None
+            ctn = None
+
+            # for each node in dictEdges
+            ni = 0
+            for edge in listEdges:
+
+                try:
+                    # get source
+                    source = edge[0][1]
+                    sName = findID(source, dictNodes)
+                    sl = dictNodeXY[source]
+                    spx, spy = getPoint(sl)
+
+                    # get target
+                    target = edge[0][2]
+                    tName = findID(target, dictNodes)
+                    tl = dictNodeXY[target]
+                    tpx, tpy = getPoint(tl)
+
+                    # determine distance between points
+                    d = DistancePointLine (px, py, spx, spy, tpx, tpy)
+
+                    if d < cDist:
+                        cDist = d
+                        cNode = edge[0][0]
+                        csn = sName
+                        tsn = tName
+
+                except:
+                    pass
+
+            if cNode != None:
+                tbFound += 1
+                logger.debug("Closest Connector : %s" % cNode)
+                logger.info("    found(%d:%d] - %s:%s [%2.3f]" % (tbFound, tbTotal, csn, tsn, cDist))
+                cl = list()
+
+                del dictNodes[searchText]
+
+                cl.append(cNode)
+                dictNodes[searchText] = cl
+
+                newListEdges = list()
+                for x in listEdges:
+                    if x[0][0] != cNode:
+                        newListEdges.append(x)
+                listEdges = newListEdges
+
+        logger.info("Found [%3.1f] Text Box Connectors" % ((tbFound / float(tbTotal)) * 100.0))
+
+        dictTextXY = dict()
+
+        #
+        # Make connections
+        #
+        q = c.addConceptKeyType(titleSlide, "Slide")
+        checkConnect(q, dictEdges, dictNodes, dictNodeXY)
 
 
 if __name__ == "__main__":
@@ -246,7 +454,7 @@ if __name__ == "__main__":
 
     #path_to_presentation = "/Users/morrj140/PycharmProjects/ArchiConcepts/example2.pptx"
     #path_to_presentation = "/Users/morrj140/PycharmProjects/ArchiConcepts/ARP-TBX - High Level Solution_Draft_v9.pptx"
-    path_to_presentation = "/Users/morrj140/PycharmProjects/ArchiConcepts/ARP-TBX - High Level Solution_Draft_v10a.pptx"
+    path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/ARP-TBX - High Level Solution_Draft_v10a.pptx"
 
     c = Concepts("Application", "Relations")
 

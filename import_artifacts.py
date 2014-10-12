@@ -633,21 +633,26 @@ def insertScenarios(tree, fileMetaEntity):
 
 if __name__ == "__main__":
     # Archimate
-    fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v15.archimate"
+    fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v20.archimate"
     etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimate)
 
     logAll(tree)
 
-    # EAI
-    fileMetaEntity = "/Users/morrj140/Documents/SolutionEngineering/CodeGen/EAI Analysis/EAI.csv"
+    # MQ
+    fileMetaEntity = "/Users/morrj140/Documents/SolutionEngineering/CodeGen/EAI Analysis/MQ Messages.csv"
     logger.info("Using : %s" % fileArchimate)
-    insertTwoColumns(tree, "Application", "EAI Services", fileMetaEntity, eType="archimate:ApplicationService")
+    insertTwoColumns(tree, "Application", "MQ Messages", fileMetaEntity, eType="archimate:ApplicationService")
+
+    # EAI
+    #fileMetaEntity = "/Users/morrj140/Documents/SolutionEngineering/CodeGen/EAI Analysis/EAI.csv"
+    #logger.info("Using : %s" % fileArchimate)
+    #insertTwoColumns(tree, "Application", "EAI Services", fileMetaEntity, eType="archimate:ApplicationService")
 
     # Jawa
-    fileMetaEntity = "/Users/morrj140/Documents/SolutionEngineering/CodeGen/EAI Analysis/Jawa.csv"
-    logger.info("Using : %s" % fileArchimate)
-    insertTwoColumns(tree, "Application", "Jawa Services", fileMetaEntity, eType="archimate:ApplicationService")
+    #fileMetaEntity = "/Users/morrj140/Documents/SolutionEngineering/CodeGen/EAI Analysis/Jawa.csv"
+    #logger.info("Using : %s" % fileArchimate)
+    #insertTwoColumns(tree, "Application", "Jawa Services", fileMetaEntity, eType="archimate:ApplicationService")
 
     # Segment/Category
     #fileMetaEntity = "/Users/morrj140/Development/GitRepository/DirCrawler/CodeGen-SC.csv"
