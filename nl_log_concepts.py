@@ -10,7 +10,7 @@ from nl_lib.Concepts import Concepts
 logger = Logger.setupLogging(__name__)
    
 if __name__ == "__main__":
-    #conceptFile = "documents.p"
+    conceptFile = "documents.p"
     #conceptFile = "words.p"
     #conceptFile = "chunks.p"
     #conceptFile = "topicChunks.p"
@@ -21,7 +21,8 @@ if __name__ == "__main__":
     #conceptFile = "ngramscore.p"
     #conceptFile = "ngramsubject.p"
     #conceptFile = "archi.p"
-    conceptFile = "pptx.p"
+    #
+    # conceptFile = "pptx.p"
 
     #dir = "/Users/morrj140/Development/GitRepository/DirCrawler/CodeGen/Research_20141709_104529"
     #dir = os.getcwd()#
