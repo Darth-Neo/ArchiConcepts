@@ -500,7 +500,7 @@ if __name__ == "__main__":
 
     #graphConcepts(c)
 
-    c.logConcepts()
+    #c.logConcepts()
 
     Concepts.saveConcepts(c, "pptx.p")
 

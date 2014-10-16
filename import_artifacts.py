@@ -114,7 +114,7 @@ def logNode(n):
         if attributes.get("id") != None:
             dictName[n.get("name")] = attributes["id"]
 
-            logger.info("logNode : %s:%s:%s:%s" % (n.tag, n.get("name"), n.get("id"), attributes.get(ARCHI_TYPE)))
+            logger.debug("logNode : %s:%s:%s:%s" % (n.tag, n.get("name"), n.get("id"), attributes.get(ARCHI_TYPE)))
 
     for y in n:
         logNode(y)

@@ -266,6 +266,10 @@ def createConnections(concepts):
         except:
             continue
 
+        if x[1].typeName == "Edge" or x[2].typeName == "Edge":
+            logger.warn("Trying to connect edges %s:%s" % (x[1].name, x[2].name))
+            continue
+
         key = "%s%s%s" % (source, target, edgeName)
         if dictRel.has_key(key):
             continue
@@ -273,6 +277,18 @@ def createConnections(concepts):
             dictRel[key] = edgeName
 
         logger.info("%s : %s->%s->%s" % (slideName, sourceName, edgeName, targetName))
+
+        # find the diagram object
+        slideXML = findElement(tree, slideName)
+
+        sxl = slideXML[0].getchildren()
+
+        for sx in sxl:
+            if sx.get("name") == sourceName:
+                sourceID = sx.get("id")
+            if sx.get("name") == targetName:
+                targetID = sx.get("id")
+
 
         # Create Used By Relationship
         ta = dict()
@@ -292,20 +308,18 @@ def createConnections(concepts):
 
         # Create Connection at the Source
         ta = dict()
-        ta["source"] = source
-        ta["target"] = target
+        ta["source"] = sourceID
+        ta["target"] = targetID
         ta["id"] = ia.getID()
         ta["relationship"] = ar
         ta[ARCHI_TYPE] = "archimate:Connection"
 
-        xp = "//child[@archimateElement='" + source + "']"
-
-        xp = "//child[@archimateElement='" + source + "']"
+        xp = "//child[@id='" + sourceID + "']"
         elm = etree.Element("sourceConnection", ta, nsmap=NS_MAP)
         tree.xpath(xp)[0].insert(0, elm)
 
         # Update the Target
-        xp = "//child[@archimateElement='" + target + "']"
+        xp = "//child[@id='" + targetID + "']"
         elm = tree.xpath(xp)[0].set("targetConnections", ta["id"])
 
 if __name__ == "__main__":
