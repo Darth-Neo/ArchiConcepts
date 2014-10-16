@@ -87,8 +87,8 @@ def createDiagramModels(concepts, tree):
 
     # <element xsi:type="archimate:ArchimateDiagramModel" id="176899e1" name="Default View">
     for x in concepts.getConcepts().values():
-
-        if x.typeName == "Slide" and len(x.name) > 1:
+        logger.info("%s[%s]-%d" % (x.name, x.typeName, len(x.name)))
+        if x.typeName == "Slide":
             logger.info("Slide %s[%s]-%d" % (x.name, x.typeName, len(x.name)))
 
             # Create "archimate:ArchimateDiagramModel"
@@ -106,6 +106,19 @@ def createDiagramModels(concepts, tree):
 
     createConnections(concepts)
 
+dictPoints = dict()
+dictDO = dict()
+
+def showConcepts(concepts):
+    n = 0
+    for x in concepts.getConcepts().values():
+        n += 1
+        logger.info("x %s[%s]" % (x.name, x.typeName))
+        for y in x.getConcepts().values():
+            logger.info("  y %s[%s]" % (y.name, y.typeName))
+            for z in y.getConcepts().values():
+                if not (z.name in ("h", "l", "t", "w")):
+                    logger.info("    z  %s[%s]" % (z.name, z.typeName))
 
 def createDiagramObjects(concepts, dmID, tree):
     # Creare connection inside the start
@@ -115,7 +128,11 @@ def createDiagramObjects(concepts, dmID, tree):
     # </child>
 
     listST = list()
+
     for x in concepts.getConcepts().values():
+
+        if not (x.typeName in ("Target", "Source" )):
+            continue
 
         # Create the archimate:ApplicationComponent
         attribAC = dict()
@@ -126,6 +143,19 @@ def createDiagramObjects(concepts, dmID, tree):
         logger.debug("acID %s" % (acID))
 
         logger.info("Source %s[%s]-%d -- %s" % (x.name, x.typeName, len(x.name), acID))
+
+        xp = "//element[@id='" + dmID + "']"
+        dm = tree.xpath(xp)[0]
+
+        dml = dm.getchildren()
+
+        for xdml in dml:
+            xdml_name = xdml.get("name")
+            if xdml_name == x.name:
+                logger.debug("Duplicate!")
+                continue
+
+        logger.info("dml[%d]" % (len(dml)))
 
         # Create "archimate:DiagramObject"
         attribDO = dict()
@@ -151,12 +181,24 @@ def createDiagramObjects(concepts, dmID, tree):
         cx = int(l * 100)
         cy = int(t * 100)
 
+        key = "%s%s" % (cx,cy)
+        if dictPoints.has_key(key):
+            cx = 100 + cx
+            cy = 100 + cy
+        else:
+            dictPoints[key] = key
+
         attrib = dict()
         attrib["x"] = str(cx)
         attrib["y"] = str(cy)
         elm = etree.Element("bounds", attrib, nsmap=NS_MAP)
         xp = "//child[@id='" + doID + "']"
         tree.xpath(xp)[0].insert(0, elm)
+
+        try:
+            createDiagramObjects(x, dmID, tree)
+        except:
+            pass
 
 def outputXML(tree):
     output = StringIO.StringIO()
@@ -208,28 +250,30 @@ def createConnections(concepts):
     if True:
         for x in listST:
             try:
-                source = findElement(tree, x[1].name)[0].get("id")
-                target = findElement(tree, x[2].name)[0].get("id")
+                sourceName = x[1].name
+                source = findElement(tree, sourceName)[0].get("id")
+                targetName = x[2].name
+                target = findElement(tree, targetName)[0].get("id")
+                slideName = x[0].name
+                edgeName   = x[3].name
             except:
                 continue
 
-            edge   = x[3].name
-
-            key = "%s%s%s" % (source,target,edge)
+            key = "%s%s%s" % (source, target, edgeName)
             if dictRel.has_key(key):
                 pass
             else:
-                dictRel[key] = edge
+                dictRel[key] = edgeName
 
-            logger.info("Source-Target : %s-%s" % (source, target))
+            logger.info("%s->%s->%s" % (sourceName, edgeName, targetName))
 
             # Create Access Relationship
             ta = dict()
-            ta["name"] = edge
+            ta["name"] = edgeName
             ta["source"] = source
             ta["target"] = target
             ta["id"] = ia.getID()
-            ta[ARCHI_TYPE] = "archimate:AccessRelationship"
+            ta[ARCHI_TYPE] = "archimate:AssociationRelationship"
             elm = etree.Element("element", ta, nsmap=NS_MAP)
             xp = "//folder[@name='Relations']"
             tree.xpath(xp)[0].insert(0, elm)

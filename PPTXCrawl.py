@@ -19,6 +19,14 @@ EMU = 914400.0
 gdb = "http://localhost:7474/db/data/"
 #gdb = "http://10.92.82.60:7574/db/data/"
 
+def cleanString(s):
+    r = ""
+
+    for x in s.lstrip(" "):
+        if x.isalnum() or x == " ":
+            r = r + x
+    return r
+
 
 def addGraphNodes(graph, concepts, n=0):
     n += 1
@@ -145,46 +153,42 @@ def logList(l, n=0):
             elif isinstance(x, int):
                 logger.info("%sint: %d" % (s, x))
 
-def checkConnect(c, dictEdges, dictNodes, dictNodeXY):
+def checkConnect(q, dictEdges, dictNodes, dictNodeXY):
 
     for el in dictEdges.keys():
-            tel =  dictEdges[el]
+        tel =  dictEdges[el]
 
-            logger.debug("Edges %s[%s]" % (el, tel))
+        logger.debug("Edges %s[%s]" % (el, tel))
 
-            for y in tel:
-                logger.debug("  y: %s[%s]" % (y, type(y)))
+        for y in tel:
+            logger.debug("  y: %s[%s]" % (y, type(y)))
 
-                if True:
-                    if len(y) == 3:
-                        edge   = findID(y[0], dictNodes)
-                        source = findID(y[2], dictNodes)
-                        target = findID(y[1], dictNodes)
+            if True:
+                if len(y) == 3:
+                    edge   = findID(y[0], dictNodes)
+                    source = findID(y[1], dictNodes)
+                    target = findID(y[2], dictNodes)
 
-                        dimSource = findXY(y[1], dictNodeXY)
-                        dimTarget = findXY(y[2], dictNodeXY)
+                    dimSource = findXY(y[1], dictNodeXY)
+                    dimTarget = findXY(y[2], dictNodeXY)
 
-                        if source != None and target != None:
-                            logger.debug("%s : %s" % (source, target))
+                    if source != None and target != None:
+                        logger.debug("%s : %s" % (source, target))
 
-                            if len(source) == 0 or len(target) == 0:
-                                continue
+                        if len(source) == 0 or len(target) == 0:
+                            continue
 
-                            d = c.addConceptKeyType(source, "Source")
-                            for ld in dimSource.keys():
-                                logger.debug("%s %s:%2.3f" % (source, ld, dimSource[ld]))
-                                d.addConceptKeyType(ld, str(dimSource[ld]))
+                        d = q.addConceptKeyType(source, "Source")
+                        for ld in dimSource.keys():
+                            logger.debug("%s %s:%2.3f" % (source, ld, dimSource[ld]))
+                            d.addConceptKeyType(ld, str(dimSource[ld]))
 
-                            f = d.addConceptKeyType(target, "Target")
-                            for ld in dimTarget.keys():
-                                logger.debug("%s %s:%2.3f" % (target, ld, dimSource[ld]))
-                                f.addConceptKeyType(ld, str(dimTarget[ld]))
+                        f = d.addConceptKeyType(target, "Target")
+                        for ld in dimTarget.keys():
+                            logger.debug("%s %s:%2.3f" % (target, ld, dimSource[ld]))
+                            f.addConceptKeyType(ld, str(dimTarget[ld]))
 
-                            f.addConceptKeyType(edge, "Edge")
-
-
-                #except:
-                    #logger.warn("  y: %s[%s]" % (y, type(y)))
+                        f.addConceptKeyType(edge, "Edge")
 
 def shapeText(shape):
     name = ""
@@ -251,6 +255,17 @@ def addDictEdges(nid, xl, dictEdges):
             el.append(nxl)
             dictEdges[nid] = el
 
+def showConcepts(concepts):
+    n = 0
+    for x in concepts.getConcepts().values():
+        n += 1
+        logger.info("x %s[%s]" % (x.name, x.typeName))
+        for y in x.getConcepts().values():
+            logger.info("  y %s[%s]" % (y.name, y.typeName))
+            for z in y.getConcepts().values():
+                if not (z.name in ("h", "l", "t", "w")):
+                    logger.info("    z  %s[%s]" % (z.name, z.typeName))
+
 def getPoint(d):
 
     t = d["t"]
@@ -292,18 +307,19 @@ def DistancePointLine (px, py, x1, y1, x2, y2):
 
     return DistancePointLine
 
-def crawlPPTX(c, path_to_presentation):
-    dictNodes = dict()
-    dictEdges = dict()
-
-    dictNodeXY = dict()
-    dictTextXY = dict()
+def crawlPPTX(concepts, path_to_presentation):
 
     prs = Presentation(path_to_presentation)
 
     sNum = 0
 
     for slide in prs.slides:
+        dictNodes = dict()
+        dictEdges = dict()
+
+        dictNodeXY = dict()
+        dictTextXY = dict()
+
         logger.debug ("--new slide--")
         logger.debug("%s" % slide.partname)
         logger.debug("slideName : %s" % slide.name)
@@ -320,7 +336,13 @@ def crawlPPTX(c, path_to_presentation):
             if idx == 0:
                 titleSlide = ph.text
 
-        logger.info("Title : %s" % titleSlide)
+        u = cleanString(titleSlide)
+
+        logger.info("%d.%s" % (sNum, u))
+        tss = "%d.%s" % (sNum, u)
+        q = concepts.addConceptKeyType(tss, "Slide")
+
+        #showConcepts(concepts)
 
         #
         # Iterate ihrough slides
@@ -348,9 +370,10 @@ def crawlPPTX(c, path_to_presentation):
 
                 name = shapeText(shape)
 
-                logger.debug("name : %s[%d] - %s" % (name, nid, shape.name))
+                if len(name) > 1:
+                    logger.info("name : %s[%d] - %s" % (name, nid, shape.name))
 
-                addDictNodes(nid, name, dictNodes)
+                    addDictNodes(nid, name, dictNodes)
 
                 #
                 # Add in Connections
@@ -383,7 +406,7 @@ def crawlPPTX(c, path_to_presentation):
                     logger.debug("TextBox : %s" % name)
 
             else:
-                logger.info("Skipped : %s" % shape.name)
+                logger.debug("Skipped : %s" % shape.name)
 
         #
         # Now match the Connector with text
@@ -393,7 +416,7 @@ def crawlPPTX(c, path_to_presentation):
 
         tbFound = 0
         tbTotal = len(dictTextXY)
-        logger.debug("Search for %s Text Box Connector's" % len(dictTextXY))
+        logger.info("Search for %s Text Box Connector's" % len(dictTextXY))
 
         for txt in dictTextXY.keys():
             searchText = findID(txt, dictNodes)
@@ -467,7 +490,7 @@ def crawlPPTX(c, path_to_presentation):
         #
         # Make connections
         #
-        q = c.addConceptKeyType(titleSlide, "Slide")
+
         checkConnect(q, dictEdges, dictNodes, dictNodeXY)
 
 if __name__ == "__main__":
@@ -482,12 +505,10 @@ if __name__ == "__main__":
 
     crawlPPTX(c, path_to_presentation)
 
+    #graphConcepts(c)
+
     c.logConcepts()
 
     Concepts.saveConcepts(c, "pptx.p")
-
-    logger.setLevel(logging.DEBUG)
-
-    graphConcepts(c)
 
 
