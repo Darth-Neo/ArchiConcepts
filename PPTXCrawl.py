@@ -13,20 +13,13 @@ import math
 from pptx import Presentation
 from lxml import etree
 
+import import_artifacts as ia
+
 # Constants
 EMU = 914400.0
 
 gdb = "http://localhost:7474/db/data/"
 #gdb = "http://10.92.82.60:7574/db/data/"
-
-def cleanString(s):
-    r = ""
-
-    for x in s.lstrip(" "):
-        if x.isalnum() or x == " ":
-            r = r + x
-    return r
-
 
 def addGraphNodes(graph, concepts, n=0):
     n += 1
@@ -188,7 +181,7 @@ def checkConnect(q, dictEdges, dictNodes, dictNodeXY):
                             logger.debug("%s %s:%2.3f" % (target, ld, dimSource[ld]))
                             f.addConceptKeyType(ld, str(dimTarget[ld]))
 
-                        f.addConceptKeyType(edge, "Edge")
+                        f.addConceptKeyType(ia.cleanString(edge), "Edge")
 
 def shapeText(shape):
     name = ""
@@ -336,7 +329,7 @@ def crawlPPTX(concepts, path_to_presentation):
             if idx == 0:
                 titleSlide = ph.text
 
-        u = cleanString(titleSlide)
+        u = ia.cleanString(titleSlide)
 
         logger.info("%d.%s" % (sNum, u))
         tss = "%d.%s" % (sNum, u)
@@ -499,7 +492,7 @@ if __name__ == "__main__":
     #path_to_presentation = "/Users/morrj140/PycharmProjects/ArchiConcepts/example2.pptx"
     #path_to_presentation = "/Users/morrj140/PycharmProjects/ArchiConcepts/ARP-TBX - High Level Solution_Draft_v9.pptx"
     #path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/ARP-TBX - High Level Solution_Draft_v10a.pptx"
-    path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Accovia_Replacement_Messages-1.pptx"
+    path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Accovia_Replacement_Messages.pptx"
 
     c = Concepts("Application", "Relations")
 

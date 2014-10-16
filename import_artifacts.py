@@ -21,9 +21,18 @@ ARCHIMATE_NS   =  NS_MAP["archimate"]
 
 ARCHI_TYPE = "{%s}type" % NS_MAP["xsi"]
 
-dictNode = dict()
 dictRelation = dict()
 dictName = dict()
+
+def cleanString(s):
+    r = ""
+    if s == None:
+        return r
+
+    for x in s.lstrip(" "):
+        if x.isalnum() or x == " ":
+            r = r + x
+    return r
 
 def getID():
     r = str(hex(random.randint(0, 16777215)))[-6:] + str(hex(random.randint(0, 16777215))[-2:])
@@ -36,7 +45,10 @@ def insertNode(tag, folder, tree, attrib):
 
     logger.debug("attrib: %s" % (attrib))
 
-    value = attrib["name"].lower()
+    value = attrib["name"].rstrip(" ").lstrip(" ")
+
+    if value != attrib["name"]:
+        logger.warn("diff value .%s:%s." % (value, attrib["name"]))
 
     if dictName.has_key(value):
         idd = dictName[value]
@@ -98,11 +110,11 @@ def logNode(n):
 
     attributes = n.attrib
 
-    if attributes.get(ARCHI_TYPE) == "archimate:BusinessFunction":
+    if attributes.get(ARCHI_TYPE) == "archimate:ApplicationComponent":
         if attributes.get("id") != None:
             dictName[n.get("name")] = attributes["id"]
 
-            logger.debug("logNode : %s:%s:%s:%s" % (n.tag, n.get("name"), n.get("id"), attributes.get(ARCHI_TYPE)))
+            logger.info("logNode : %s:%s:%s:%s" % (n.tag, n.get("name"), n.get("id"), attributes.get(ARCHI_TYPE)))
 
     for y in n:
         logNode(y)

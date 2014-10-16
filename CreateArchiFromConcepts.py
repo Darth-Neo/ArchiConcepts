@@ -12,7 +12,6 @@ from nl_lib.Concepts import Concepts
 from lxml import etree
 
 import import_artifacts as ia
-EMU = 914400.0
 
 namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
 
@@ -21,6 +20,9 @@ ARCHIMATE_NS   =  "http://www.archimatetool.com/archimate"
 NS_MAP = {"xsi": XML_NS, "archimate" : ARCHIMATE_NS}
 
 ARCHI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
+
+dictPoints = dict()
+dictDO = dict()
 
 #<?xml version="1.0" encoding="UTF-8"?>
 #<archimate:model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:archimate="http://www.archimatetool.com/archimate" name="Example" id="b2a177dc" version="2.6.0">
@@ -87,7 +89,7 @@ def createDiagramModels(concepts, tree):
 
     # <element xsi:type="archimate:ArchimateDiagramModel" id="176899e1" name="Default View">
     for x in concepts.getConcepts().values():
-        logger.info("%s[%s]-%d" % (x.name, x.typeName, len(x.name)))
+        logger.debug("%s[%s]-%d" % (x.name, x.typeName, len(x.name)))
         if x.typeName == "Slide":
             logger.info("Slide %s[%s]-%d" % (x.name, x.typeName, len(x.name)))
 
@@ -106,8 +108,7 @@ def createDiagramModels(concepts, tree):
 
     createConnections(concepts)
 
-dictPoints = dict()
-dictDO = dict()
+
 
 def showConcepts(concepts):
     n = 0
@@ -119,6 +120,23 @@ def showConcepts(concepts):
             for z in y.getConcepts().values():
                 if not (z.name in ("h", "l", "t", "w")):
                     logger.info("    z  %s[%s]" % (z.name, z.typeName))
+
+def checkDuplicate(dmID, x):
+    xp = "//element[@id='" + dmID + "']"
+    dm = tree.xpath(xp)[0]
+
+    dml = dm.getchildren()
+
+    Duplicate = False
+    for xdml in dml:
+        xdml_name = xdml.get("name")
+        if xdml_name == x.name:
+            logger.info("%s Duplicate!" % x.name)
+            Duplicate = True
+
+    logger.debug("dml[%d]" % (len(dml)))
+
+    return Duplicate
 
 def createDiagramObjects(concepts, dmID, tree):
     # Creare connection inside the start
@@ -144,22 +162,8 @@ def createDiagramObjects(concepts, dmID, tree):
 
         logger.info("Source %s[%s]-%d -- %s" % (x.name, x.typeName, len(x.name), acID))
 
-        xp = "//element[@id='" + dmID + "']"
-        dm = tree.xpath(xp)[0]
-
-        dml = dm.getchildren()
-
-        Duplicate = False
-        for xdml in dml:
-            xdml_name = xdml.get("name")
-            if xdml_name == x.name:
-                logger.info("%s Duplicate!" % x.name)
-                Duplicate = True
-
-        if Duplicate == True:
+        if checkDuplicate(dmID, x) == True:
             continue
-
-        logger.info("dml[%d]" % (len(dml)))
 
         # Create "archimate:DiagramObject"
         attribDO = dict()
@@ -214,7 +218,6 @@ def findDiagramModel(tree, id):
     stp = tree.xpath(xp)
     return stp
 
-
 def findDiagramObject(tree, id):
     xp = "//child[@id='%s']" % id
     stp = tree.xpath(xp)
@@ -228,7 +231,7 @@ def findElement(tree, name):
 def createConnections(concepts):
 
     listST = list()
-    logger.info("Children")
+    logger.info("----Children----")
 
     # find children
     for tc in concepts.getConcepts().values():
@@ -237,71 +240,73 @@ def createConnections(concepts):
 
             for tcc in tc.getConcepts().values():
                 if tcc.typeName == "Source":
-                    logger.info("  Source %s[%s]-%d" % (tcc.name, tcc.typeName, len(tcc.name)))
+                    logger.debug("  Source %s[%s]-%d" % (tcc.name, tcc.typeName, len(tcc.name)))
 
                     for tce in tcc.getConcepts().values():
                         if len(tce.name) > 1 and tce.typeName == "Target":
-                            logger.info("   Target %s[%s]-%d" % (tce.name, tce.typeName, len(tce.name)))
+                            logger.debug("   Target %s[%s]-%d" % (tce.name, tce.typeName, len(tce.name)))
 
                             for tcee in tce.getConcepts().values():
                                 if tcee.typeName == "Edge":
-                                    logger.info("    Edge %s[%s]-%d" % (tcee.name, tcee.typeName, len(tcee.name)))
+                                    tcee.name = ia.cleanString(tcee.name)
+                                    logger.debug("    Edge %s[%s]-%d" % (tcee.name, tcee.typeName, len(tcee.name)))
                                     ll = (tc, tcc, tce, tcee)
                                     listST.append(ll)
 
     dictRel = dict()
 
-    if True:
-        for x in listST:
-            try:
-                sourceName = x[1].name
-                source = findElement(tree, sourceName)[0].get("id")
-                targetName = x[2].name
-                target = findElement(tree, targetName)[0].get("id")
-                slideName = x[0].name
-                edgeName   = x[3].name
-            except:
-                continue
+    for x in listST:
+        try:
+            sourceName = x[1].name
+            source = findElement(tree, sourceName)[0].get("id")
+            targetName = x[2].name
+            target = findElement(tree, targetName)[0].get("id")
+            slideName = x[0].name
+            edgeName   = x[3].name
+        except:
+            continue
 
-            key = "%s%s%s" % (source, target, edgeName)
-            if dictRel.has_key(key):
-                continue
-            else:
-                dictRel[key] = edgeName
+        key = "%s%s%s" % (source, target, edgeName)
+        if dictRel.has_key(key):
+            continue
+        else:
+            dictRel[key] = edgeName
 
-            logger.info("%s->%s->%s" % (sourceName, edgeName, targetName))
+        logger.info("%s : %s->%s->%s" % (slideName, sourceName, edgeName, targetName))
 
-            # Create Access Relationship
-            ta = dict()
-            ta["name"] = edgeName
-            ta["source"] = source
-            ta["target"] = target
-            ta["id"] = ia.getID()
-            ta[ARCHI_TYPE] = "archimate:UsedByRelationship"
-            elm = etree.Element("element", ta, nsmap=NS_MAP)
-            xp = "//folder[@name='Relations']"
-            tree.xpath(xp)[0].insert(0, elm)
-            ar = ta["id"]
+        # Create Used By Relationship
+        ta = dict()
+        ta["name"] = edgeName
+        ta["source"] = source
+        ta["target"] = target
+        ta["id"] = ia.getID()
+        ta[ARCHI_TYPE] = "archimate:UsedByRelationship"
+        elm = etree.Element("element", ta, nsmap=NS_MAP)
+        xp = "//folder[@name='Relations']"
+        tree.xpath(xp)[0].insert(0, elm)
+        ar = ta["id"]
 
-            # Create Connection at the Source
-            #ta = dict()
-            #ta["source"] = source
-            #ta["target"] = target
-            #ta["id"] = ia.getID()
-            #ta["relationship"] = ar
-            #ta[ARCHI_TYPE] = "archimate:Connection"
-            #elm = etree.Element("sourceConnection", ta, nsmap=NS_MAP)
-            #xp = "//child[@id='" + source + "']"
-            #tree.xpath(xp)[0].insert(0, elm)
+        logger.info("ar     : %s" % ar)
+        logger.info("source : %s" % source)
+        logger.info("target : %s" % target)
 
-            # Update the Target
-            #xp = "///child[@id='" + target + "']"
-            #elm = tree.xpath(xp)[0].set("targetConnections", ta["id"])
+        # Create Connection at the Source
+        ta = dict()
+        ta["source"] = source
+        ta["target"] = target
+        ta["id"] = ia.getID()
+        ta["relationship"] = ar
+        ta[ARCHI_TYPE] = "archimate:Connection"
 
+        xp = "//child[@archimateElement='" + source + "']"
 
+        xp = "//child[@archimateElement='" + source + "']"
+        elm = etree.Element("sourceConnection", ta, nsmap=NS_MAP)
+        tree.xpath(xp)[0].insert(0, elm)
 
-def createNodes():
-    pass
+        # Update the Target
+        xp = "//child[@archimateElement='" + target + "']"
+        elm = tree.xpath(xp)[0].set("targetConnections", ta["id"])
 
 if __name__ == "__main__":
     filePPConcepts = "pptx.p"
