@@ -149,11 +149,15 @@ def createDiagramObjects(concepts, dmID, tree):
 
         dml = dm.getchildren()
 
+        Duplicate = False
         for xdml in dml:
             xdml_name = xdml.get("name")
             if xdml_name == x.name:
-                logger.debug("Duplicate!")
-                continue
+                logger.info("%s Duplicate!" % x.name)
+                Duplicate = True
+
+        if Duplicate == True:
+            continue
 
         logger.info("dml[%d]" % (len(dml)))
 
@@ -261,7 +265,7 @@ def createConnections(concepts):
 
             key = "%s%s%s" % (source, target, edgeName)
             if dictRel.has_key(key):
-                pass
+                continue
             else:
                 dictRel[key] = edgeName
 
