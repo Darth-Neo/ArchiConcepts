@@ -183,7 +183,7 @@ def createDiagramObjects(concepts, dmID, tree):
         h = float(coordinates["h"].typeName)
 
         cx = int(l * 100)
-        cy = int(t * 100)
+        cy = int(t * 100) - 150
 
         key = "%s%s" % (cx,cy)
         if dictPoints.has_key(key):
@@ -277,7 +277,7 @@ def createConnections(concepts):
             ta["source"] = source
             ta["target"] = target
             ta["id"] = ia.getID()
-            ta[ARCHI_TYPE] = "archimate:AssociationRelationship"
+            ta[ARCHI_TYPE] = "archimate:UsedByRelationship"
             elm = etree.Element("element", ta, nsmap=NS_MAP)
             xp = "//folder[@name='Relations']"
             tree.xpath(xp)[0].insert(0, elm)
@@ -305,7 +305,7 @@ def createNodes():
 
 if __name__ == "__main__":
     filePPConcepts = "pptx.p"
-    fileArchimateIn = "baseline.archimate"
+    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v23.archimate"
     fileArchimateOut = 'import_pp.archimate'
 
     etree.QName(ARCHIMATE_NS, 'model')
