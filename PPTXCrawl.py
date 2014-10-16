@@ -369,7 +369,7 @@ def crawlPPTX(c, path_to_presentation):
             #
             # Get Text boxes and associate with Connector
             #
-            elif shape.name[:8] in ("Text Box"):
+            elif shape.name[:8] in ("Text Box", "TextBox "):
 
                 nid, t, l, h, w = shapeDim(shape, dictTextXY)
 
@@ -383,7 +383,7 @@ def crawlPPTX(c, path_to_presentation):
                     logger.debug("TextBox : %s" % name)
 
             else:
-                logger.debug("Skipped : %s" % shape.name)
+                logger.info("Skipped : %s" % shape.name)
 
         #
         # Now match the Connector with text
@@ -393,7 +393,7 @@ def crawlPPTX(c, path_to_presentation):
 
         tbFound = 0
         tbTotal = len(dictTextXY)
-        logger.info("Search for %s Text Box Connector's" % len(dictTextXY))
+        logger.debug("Search for %s Text Box Connector's" % len(dictTextXY))
 
         for txt in dictTextXY.keys():
             searchText = findID(txt, dictNodes)
@@ -459,7 +459,8 @@ def crawlPPTX(c, path_to_presentation):
                         newListEdges.append(x)
                 listEdges = newListEdges
 
-        logger.info("Found [%3.1f] Text Box Connectors" % ((tbFound / float(tbTotal)) * 100.0))
+        if tbTotal != 0:
+                logger.info("Found [%3.1f] Text Box Connectors" % ((tbFound / float(tbTotal)) * 100.0))
 
         dictTextXY = dict()
 
@@ -474,7 +475,8 @@ if __name__ == "__main__":
 
     #path_to_presentation = "/Users/morrj140/PycharmProjects/ArchiConcepts/example2.pptx"
     #path_to_presentation = "/Users/morrj140/PycharmProjects/ArchiConcepts/ARP-TBX - High Level Solution_Draft_v9.pptx"
-    path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/ARP-TBX - High Level Solution_Draft_v10a.pptx"
+    #path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/ARP-TBX - High Level Solution_Draft_v10a.pptx"
+    path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Accovia_Replacement_Messages-1.pptx"
 
     c = Concepts("Application", "Relations")
 
