@@ -54,5 +54,4 @@ shape = shapes.add_shape(
     MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height
 )
 
-
 prs.save('test3.pptx')
