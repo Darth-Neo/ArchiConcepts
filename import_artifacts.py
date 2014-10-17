@@ -32,13 +32,50 @@ def cleanString(s):
     for x in s.lstrip(" "):
         if x.isalnum() or x == " ":
             r = r + x
-    return r
+    return r.lstrip(" ").rstrip(" ")
+
+def checkDuplicate(dmID, x, tree):
+    xp = "//element[@id='" + dmID + "']"
+    dm = tree.xpath(xp)[0]
+
+    dml = dm.getchildren()
+
+    Duplicate = False
+    for xdml in dml:
+        xdml_name = xdml.get("name")
+        if xdml_name == x.name:
+            logger.debug("%s Duplicate!" % x.name)
+            Duplicate = True
+
+    logger.debug("dml[%d]" % (len(dml)))
+
+    return Duplicate
+
+def outputXML(tree):
+    output = StringIO.StringIO()
+    tree.write(output, pretty_print=True)
+    logger.info("%s" % (output.getvalue()))
+
+def findDiagramModel(tree, id):
+    xp = "//element[@id='" + id + "']"
+    stp = tree.xpath(xp)
+    return stp
+
+def findDiagramObject(tree, id):
+    xp = "//child[@id='%s']" % id
+    stp = tree.xpath(xp)
+    return stp
+
+def findElement(tree, name):
+    xp = "//element[@name='%s']" % name
+    stp = tree.xpath(xp)
+    return stp
 
 def getID():
     r = str(hex(random.randint(0, 16777215)))[-6:] + str(hex(random.randint(0, 16777215))[-2:])
 
     if r[0] == "x":
-        r = str(hex(random.randint(0, 16777215)))[-6:] + str(hex(random.randint(0, 16777215))[-2:])
+        return getID()
     return r
 
 def insertNode(tag, folder, tree, attrib):
@@ -48,7 +85,7 @@ def insertNode(tag, folder, tree, attrib):
     value = attrib["name"].rstrip(" ").lstrip(" ")
 
     if value != attrib["name"]:
-        logger.warn("diff value .%s:%s." % (value, attrib["name"]))
+        logger.debug("diff value .%s:%s." % (value, attrib["name"]))
 
     if dictName.has_key(value):
         idd = dictName[value]
@@ -96,32 +133,32 @@ def getNameID(value):
     logger.info("    Search for : %s" % value)
     if dictName.has_key(value):
         idd = dictName[value]
-        logger.info("    Found! : %s" % idd)
+        logger.debug("    Found! : %s" % idd)
     else:
         idd =  getID()
         dictName[value] = idd
-        logger.info(    "New I  : %s" % idd)
+        logger.debug(    "New I  : %s" % idd)
 
     logger.debug("%s" % dictName)
 
     return idd
 
-def logNode(n):
+def logNode(n, type):
 
     attributes = n.attrib
 
-    if attributes.get(ARCHI_TYPE) == "archimate:ApplicationComponent":
+    if attributes.get(ARCHI_TYPE) == type:
         if attributes.get("id") != None:
             dictName[n.get("name")] = attributes["id"]
 
             logger.debug("logNode : %s:%s:%s:%s" % (n.tag, n.get("name"), n.get("id"), attributes.get(ARCHI_TYPE)))
 
     for y in n:
-        logNode(y)
+        logNode(y, type)
 
-def logAll(tree):
+def logAll(tree, type="archimate:ApplicationComponent"):
     for x in tree.getroot():
-        logNode(x)
+        logNode(x, type)
 
 def outputXML(tree, filename="import_artifacts.archimate"):
     output = StringIO.StringIO()
