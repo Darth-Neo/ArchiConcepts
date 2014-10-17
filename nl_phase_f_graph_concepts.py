@@ -11,6 +11,8 @@ from nl_lib.Constants import *
 
 logger = Logger.setupLogging(__name__)
 
+import time
+
 logger.setLevel(logging.INFO)
 
 gdb = "http://localhost:7474/db/data/"
@@ -22,6 +24,8 @@ def addGraphNodes(graph, concepts, n=0):
     n += 1
     for c in concepts.getConcepts().values():
         logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
+        if c.name == "Restriction":
+            continue
         graph.addConcept(c)
         if len(c.getConcepts()) > THRESHOLD:
             addGraphNodes(graph, c, n)
@@ -35,7 +39,7 @@ def addGraphEdges(graph, concepts, n=0):
             p = c
             i += 1
         else:
-            graph.addEdge(c, p)
+            graph.addEdge(p, c)
         if len(c.getConcepts()) != 0:
             addGraphEdges(graph, c, n)
 
@@ -75,7 +79,8 @@ if __name__ == "__main__":
     #conceptFile = "documents.p"
     #conceptFile = "NVPChunks.p"
     #conceptFile = "chunks.p"
-    conceptFile = "topicsDict.p"
+    #conceptFile = "req.p"
+    #conceptFile = "topicsDict.p"
     #conceptFile = "TopicChunks.p"
     conceptFile = "ngrams.p"
     #conceptFile = "ngramscore.p"
@@ -102,8 +107,10 @@ if __name__ == "__main__":
         c.addConcept(Concepts.loadConcepts(conceptDir + os.sep + conceptFile))
 
     # c.logConcepts()
+
+    filename = "Requirements_" + time.strftime("%Y%d%m_%H%M%S") + ".png"
     
-    graphConcepts(c, filename="Requirements.png")
+    graphConcepts(c, filename=filename)
 
     
 

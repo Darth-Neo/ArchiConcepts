@@ -30,7 +30,7 @@ def addGraphNodes(graph, concepts, n=0):
         if len(c.name.strip(" ")) == 0:
             return
 
-        if not (c.typeName in ("Source", "Target", "Slide")):
+        if not (c.typeName in ("Source", "Target")):
             return
 
         logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
