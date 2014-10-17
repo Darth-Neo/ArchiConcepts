@@ -6,7 +6,7 @@ import os
 import logging
 from nl_lib import Logger
 from nl_lib.Concepts import Concepts
-from nl_lib.ConceptGraph import PatternGraph, NetworkXGraph, Neo4JGraph
+from nl_lib.ConceptGraph import PatternGraph, NetworkXGraph, Neo4JGraph, GraphVizGraph
 from nl_lib.Constants import *
 
 logger = Logger.setupLogging(__name__)
@@ -16,12 +16,14 @@ logger.setLevel(logging.INFO)
 gdb = "http://localhost:7474/db/data/"
 #gdb = "http://10.92.82.60:7574/db/data/"
 
+THRESHOLD = 4
+
 def addGraphNodes(graph, concepts, n=0):
     n += 1
     for c in concepts.getConcepts().values():
         logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
         graph.addConcept(c)
-        if len(c.getConcepts()) != 0:
+        if len(c.getConcepts()) > THRESHOLD:
             addGraphNodes(graph, c, n)
 
 def addGraphEdges(graph, concepts, n=0):
@@ -33,25 +35,27 @@ def addGraphEdges(graph, concepts, n=0):
             p = c
             i += 1
         else:
-            graph.addEdge(p, c)
+            graph.addEdge(c, p)
         if len(c.getConcepts()) != 0:
             addGraphEdges(graph, c, n)
 
-def graphConcepts(concepts, graph=None):
+def graphConcepts(concepts, filename="example.png"):
 
     #graph = Neo4JGraph(gdb)
 
     #logger.info("Clear the Graph @" + gdb)
     #graph.clearGraphDB()
 
-    graph = NetworkXGraph()
-    #graph = PatternGraph()
+    graph = GraphVizGraph()
 
     logger.info("Adding nodes the graph ...")
     addGraphNodes(graph, concepts)
     logger.info("Adding edges the graph ...")
     addGraphEdges(graph, concepts)
 
+    if isinstance(graph, GraphVizGraph):
+        graph.exportGraph(filename=filename)
+        logger.info("Saved Graph - %s" % filename)
     if isinstance(graph, Neo4JGraph):
         graph.setNodeLabels()
 
@@ -69,15 +73,15 @@ def graphConcepts(concepts, graph=None):
    
 if __name__ == "__main__":
     #conceptFile = "documents.p"
-    conceptFile = "NVPChunks.p"
+    #conceptFile = "NVPChunks.p"
     #conceptFile = "chunks.p"
-    #conceptFile = "topicsDict.p"
+    conceptFile = "topicsDict.p"
     #conceptFile = "TopicChunks.p"
-    #conceptFile = "ngrams.p"
+    conceptFile = "ngrams.p"
     #conceptFile = "ngramscore.p"
-    #conceptFile = "ngramsubject.p"
+    conceptFile = "ngramsubject.p"
     #conceptFile = "archi.p"
-    conceptFile = "pptx.p"
+    #conceptFile = "pptx.p"
 
     listHomeDir = list()
     listHomeDir.append(os.getcwd())
@@ -99,7 +103,7 @@ if __name__ == "__main__":
 
     # c.logConcepts()
     
-    graphConcepts(c)
+    graphConcepts(c, filename="Requirements.png")
 
     
 
