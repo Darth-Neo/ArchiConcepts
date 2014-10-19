@@ -1,9 +1,8 @@
 __author__ = 'morrj140'
 
 from pptx import Presentation
-from pptx.enum.shapes import MSO_SHAPE
+from pptx.enum.shapes import MSO_SHAPE, MSO
 from pptx.util import Inches
-
 SLD_LAYOUT_TITLE_AND_CONTENT = 1
 TITLE_ONLY_SLIDE_LAYOUT = 5
 
@@ -45,6 +44,15 @@ slide_layout = prs.slide_layouts[TITLE_ONLY_SLIDE_LAYOUT]
 slide = prs.slides.add_slide(slide_layout)
 shapes = slide.shapes
 
+left   = Inches(6.0)
+top    = Inches(4.0)
+width  = Inches(1.0)
+height = Inches(1.0)
+
+shape = shapes.add_shape(
+    MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height
+)
+
 left   = Inches(2.0)
 top    = Inches(2.0)
 width  = Inches(1.0)
@@ -54,4 +62,10 @@ shape = shapes.add_shape(
     MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height
 )
 
+left = Inches(2.0)
+top = Inches(3.0)
+width = Inches(4)
+height = Inches(2)
+
+line = shapes.add_shape(MSO_SHAPE.LINE_INVERSE, left, top, width, height)
 prs.save('test3.pptx')

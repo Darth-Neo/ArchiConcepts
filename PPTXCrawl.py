@@ -201,7 +201,7 @@ def shapeDim(shape, dictNodeXY):
     h = shape.height / EMU
     w = shape.width / EMU
 
-    nid = shape.id #- 1
+    nid = shape.id
 
     dictDim = dict()
     dictDim["t"] = t
@@ -210,11 +210,11 @@ def shapeDim(shape, dictNodeXY):
     dictDim["w"] = w
     dictNodeXY[nid] = dictDim
 
-    logger.debug("shape.top     : %3.2f" % (t))
-    logger.debug("shape.left    : %3.2f" % (l))
-    logger.debug("shape.height  : %3.2f" % (h))
-    logger.debug("shape.width   : %3.2f" % (w))
-    logger.debug("shape.shape_type    : %s" % shape.shape_type)
+    logger.info("shape.top     : %3.2f" % (t))
+    logger.info("shape.left    : %3.2f" % (l))
+    logger.info("shape.height  : %3.2f" % (h))
+    logger.info("shape.width   : %3.2f" % (w))
+    logger.info("shape.shape_type    : %s" % shape.shape_type)
 
     return nid, t, l, h , w
 
@@ -346,8 +346,8 @@ def crawlPPTX(concepts, path_to_presentation):
 
             n += 1
 
-            logger.debug("shape.element.xml : %s" % shape.element.xml)
-            logger.debug("shape.name : %s[%d]" % (shape.name,  shape.id - 1))
+            logger.info("shape.element.xml : %s" % shape.element.xml)
+            logger.info("shape.name : %s[%d]" % (shape.name,  shape.id - 1))
 
             sn = shape.name
 
@@ -376,9 +376,13 @@ def crawlPPTX(concepts, path_to_presentation):
 
                     xmlShape = shape.element.xml
 
+                    logger.info("xmlShape : %s" % xmlShape)
+
                     tree = etree.fromstring(xmlShape)
 
                     xl = tree.xpath("//@id")
+
+                    logger.info("xl : %s" % xl)
 
                     addDictEdges(nid, xl, dictEdges)
 
@@ -491,8 +495,9 @@ if __name__ == "__main__":
 
     #path_to_presentation = "/Users/morrj140/PycharmProjects/ArchiConcepts/example2.pptx"
     #path_to_presentation = "/Users/morrj140/PycharmProjects/ArchiConcepts/ARP-TBX - High Level Solution_Draft_v9.pptx"
-    path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/ARP-TBX - High Level Solution_Draft_v10a.pptx"
+    #path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/ARP-TBX - High Level Solution_Draft_v10a.pptx"
     #path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Accovia_Replacement_Messages.pptx"
+    path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/test3.pptx"
 
     c = Concepts("Application", "Relations")
 
