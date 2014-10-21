@@ -292,6 +292,59 @@ def insertTwoColumns(tree, folder, subfolder, fileMetaEntity, eType):
         attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
         insertRel(tag, "Relations", tree, attrib)
 
+def insertNColumns(tree, folder, subfolder, fileMetaEntity, eType):
+
+    #<element xsi:type="archimate:Node" id="612a9b73" name="Linux Server"/>
+
+    file = open(fileMetaEntity, "rU")
+    reader = csv.reader(file)
+
+    xp = "folder[@name='" + folder + "']"
+    tag = "element"
+
+    # <folder name="Process" id="e23b1e50">
+
+    attrib = dict()
+    attrib["id"] = getID()
+    attrib["name"] = subfolder
+    insertNode("folder", folder, tree, attrib)
+
+    folder = subfolder
+
+    rownum = 0
+
+    for row in reader:
+        if rownum == 0:
+            rownum += 1
+            continue
+
+        logger.info("rownum : %d" % rownum)
+        logger.info("row    : %s" % row)
+
+        p = None
+        for col in row:
+
+            logger.info("    colnum : %d" % rownum)
+            logger.info("    col    : %s" % row)
+
+            CM = col.decode(encoding='UTF-8',errors='ignore').lstrip()
+
+            attrib = dict()
+            attrib["name"] = CM
+            attrib[ARCHI_TYPE] = eType
+            insertNode(tag, folder, tree, attrib)
+            CM_ID = attrib["id"]
+
+            if p != None:
+                attrib = dict()
+                attrib["source"] = CM_ID
+                attrib["target"] = p
+                attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
+                insertRel(tag, "Relations", tree, attrib)
+
+                p = CM_ID
+            else:
+                p = CM_ID
 
 
 def insertScenarios(tree, fileMetaEntity):
@@ -441,16 +494,21 @@ def insertScenarios(tree, fileMetaEntity):
 
 if __name__ == "__main__":
     # Archimate
-    fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v20.archimate"
+    fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v25.archimate"
     etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimate)
 
     logAll(tree)
 
     # MQ
-    fileMetaEntity = "/Users/morrj140/Documents/SolutionEngineering/CodeGen/EAI Analysis/MQ Messages.csv"
+    #fileMetaEntity = "/Users/morrj140/Documents/SolutionEngineering/CodeGen/EAI Analysis/MQ Messages.csv"
+    #logger.info("Using : %s" % fileArchimate)
+    #insertTwoColumns(tree, "Application", "MQ Messages", fileMetaEntity, eType="archimate:ApplicationService")
+
+    fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Party-Product-GuestComm_Func.csv"
     logger.info("Using : %s" % fileArchimate)
-    insertTwoColumns(tree, "Application", "MQ Messages", fileMetaEntity, eType="archimate:ApplicationService")
+    insertNColumns(tree, "Application", "Party-Product-GuestComm", fileMetaEntity, eType="archimate:ApplicationService")
+
 
     # EAI
     #fileMetaEntity = "/Users/morrj140/Documents/SolutionEngineering/CodeGen/EAI Analysis/EAI.csv"

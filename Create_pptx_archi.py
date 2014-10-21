@@ -35,7 +35,6 @@ namespacesPPTX = {"p" : P_NS, "a" : A_NS, "r" : R_NS}
 
 ARCHI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
 
-PPTXFilename = 'test3.pptx'
 DIAGRAM_MODEL = "archimate:ArchimateDiagramModel"
 SCALE = 0.90
 EMU = 914400.0
@@ -55,11 +54,11 @@ def addXMLConnector(tree, shape):
     nid = shape.id
     shape.name = "Straight Arrow Connector 43"
 
-    logger.info("shape.top     : %3.2f" % (t))
-    logger.info("shape.left    : %3.2f" % (l))
-    logger.info("shape.height  : %3.2f" % (h))
-    logger.info("shape.width   : %3.2f" % (w))
-    logger.info("shape.shape_type    : %s" % shape.shape_type)
+    logger.debug("shape.top     : %3.2f" % (t))
+    logger.debug("shape.left    : %3.2f" % (l))
+    logger.debug("shape.height  : %3.2f" % (h))
+    logger.debug("shape.width   : %3.2f" % (w))
+    logger.debug("shape.shape_type    : %s" % shape.shape_type)
     xmlConnector = " \
          <p:cxnSp xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" " \
             "xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" " \
@@ -100,7 +99,7 @@ def getNode(n, listModels, type):
         if attributes.get("id") != None:
             listModels.append((n, attributes))
 
-            logger.info("%s : %s:%s:%s:%s" % (DIAGRAM_MODEL, n.tag, n.get("name"), n.get("id"), attributes.get(ARCHI_TYPE)))
+            logger.debug("%s : %s:%s:%s:%s" % (DIAGRAM_MODEL, n.tag, n.get("name"), n.get("id"), attributes.get(ARCHI_TYPE)))
 
     for y in n:
         getNode(y, listModels, type)
@@ -172,7 +171,7 @@ def fixSlides(PPTXFilename, listSlides):
     for sp in tree.xpath(xp):
         if int(sp) > max_sp:
             max_sp = int(sp)
-        logger.info("sp : %s" % (sp))
+        logger.debug("sp : %s" % (sp))
 
     n = 1
     for connector in listConnectors:
@@ -186,8 +185,8 @@ def fixSlides(PPTXFilename, listSlides):
         start_width  = connector[0][9]
         start_height = connector[0][10]
 
-        logger.info("StartID : %s[%s]" % (start, connector[0][2]))
-        logger.info("    l:%d,t:%d,w:%d,h:%d)" %(start_left, start_top, start_width, start_height))
+        logger.debug("StartID : %s[%s]" % (start, connector[0][2]))
+        logger.debug("    l:%d,t:%d,w:%d,h:%d)" %(start_left, start_top, start_width, start_height))
 
         end = connector[1][6]
         end_left   = connector[1][7]
@@ -195,8 +194,8 @@ def fixSlides(PPTXFilename, listSlides):
         end_width  = connector[1][9]
         end_height = connector[1][10]
 
-        logger.info("EndID : %s[%s]" % (end, connector[1][2]))
-        logger.info("    l:%d,t:%d,w:%d,h:%d)" %(end_left, end_top, end_width, end_height))
+        logger.debug("EndID : %s[%s]" % (end, connector[1][2]))
+        logger.debug("    l:%d,t:%d,w:%d,h:%d)" %(end_left, end_top, end_width, end_height))
 
         sxml_id = int(start)
         start_idx = int(start) + 1
@@ -281,13 +280,13 @@ def fixSlides(PPTXFilename, listSlides):
     zip_file.close
 
 if __name__ == "__main__":
-    filePPTX = "Archimate.pptx"
+    PPTXFilename = 'test3.pptx'
     fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v23.archimate"
 
     etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimateIn)
 
-    ia.logAll(tree, "archimate:ApplicationComponent")
+    #ia.logAll(tree, "archimate:ApplicationComponent")
 
     #
     # Title Slide
@@ -311,7 +310,7 @@ if __name__ == "__main__":
     #
     # Iterate through all Archimate Diagrams
     #
-
+    logger.info("====Add Archimate Diagrams====")
     max_sp = 0
 
     for x in listModels:
@@ -333,7 +332,7 @@ if __name__ == "__main__":
 
         for y in xc:
             child = str(y.get("archimateElement"))
-            logger.info("  %s[%s]: entity:%s" % (y.get(ARCHI_TYPE), y.get("id"), child))
+            logger.debug("  %s[%s]: entity:%s" % (y.get(ARCHI_TYPE), y.get("id"), child))
 
             n = findNode(tree, child)
 
@@ -341,14 +340,14 @@ if __name__ == "__main__":
                 continue
 
             shapeName = str(n.get("name"))
-            logger.info("  DO = %s" % (shapeName))
+            logger.debug("  DO = %s" % (shapeName))
 
             z = y.getchildren()
             for w in z:
                 logger.debug("    %s[%s]" % (w.get(ARCHI_TYPE), w.get("id")))
 
                 if w.get(ARCHI_TYPE) == "archimate:Connection":
-                    logger.info("      source=%s, target=%s, relationship=%s" % (w.get("source"), w.get("target"), w.get("relationship")))
+                    logger.debug("      source=%s, target=%s, relationship=%s" % (w.get("source"), w.get("target"), w.get("relationship")))
 
                     ls = list()
                     ls.append("Connector")
@@ -357,7 +356,7 @@ if __name__ == "__main__":
 
                     relation = w.get("relationship")
                     rn = findNode(tree, relation)
-                    logger.info("      relation : %s[%s]" % (rn.get("name"), rn.get(ARCHI_TYPE)))
+                    logger.debug("      relation : %s[%s]" % (rn.get("name"), rn.get(ARCHI_TYPE)))
                     if rn.get("name") != None:
                         ls.append(str(rn.get("name")))
 
@@ -370,7 +369,7 @@ if __name__ == "__main__":
                     logger.debug("  TO = %s" % st.get("name"))
 
                 elif w.get("x") != None:
-                    logger.info("    x=%s, y=%s" % (w.get("x"), w.get("y")))
+                    logger.debug("    x=%s, y=%s" % (w.get("x"), w.get("y")))
                     ls = list()
                     ls.append(str(y.get(ARCHI_TYPE)))
                     ls.append(str(n.get(ARCHI_TYPE)))
@@ -384,7 +383,7 @@ if __name__ == "__main__":
         # Now iterate the the diagram objects and add shapes to Slide
         # plus grab the shape_id!
         #
-        logger.info("====Add Slides====")
+        logger.debug("====Add Slide====")
         for model in listDO:
             if model[0] == "Slide Title":
                 #
@@ -396,10 +395,10 @@ if __name__ == "__main__":
 
                 shapes.title.text = "%s" % (model[1])
 
-                logger.info("model : %s" % model[1])
+                logger.debug("model : %s" % model[1])
 
             elif model[0] == "archimate:DiagramObject":
-                logger.info("%s" % model)
+                logger.debug("%s" % model)
                 name = model[2]
                 x, y = project(model[4], model[5])
 
@@ -409,12 +408,12 @@ if __name__ == "__main__":
                 left   = Inches(x)
                 top    = Inches(y)
 
-                width  = Inches(1.0)
-                height = Inches(0.75)
+                width  = Inches(1.0 * SCALE)
+                height = Inches(0.75 * SCALE)
 
-                logger.info("DiagramObject : %s(%s,%s)" % (model[2], model[4], model[5]))
-                logger.info("    l:%d,t:%d,w:%d,h:%d)" %(left, top, width, height))
-                logger.info("    Point (%d:%d)" % (left, top))
+                logger.debug("DiagramObject : %s(%s,%s)" % (model[2], model[4], model[5]))
+                logger.debug("    l:%d,t:%d,w:%d,h:%d)" %(left, top, width, height))
+                logger.debug("    Point (%d:%d)" % (left, top))
 
                 shape = shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
 
@@ -425,7 +424,7 @@ if __name__ == "__main__":
                 model.append(width)
                 model.append(height)
 
-                logger.info("shape.id : %s" % shape.id)
+                logger.debug("shape.id : %s" % shape.id)
 
                 text_frame = shape.text_frame
                 text_frame.clear()
@@ -435,7 +434,7 @@ if __name__ == "__main__":
 
                 font = run.font
                 font.name = "Calibri"
-                font.size = Pt(10)
+                font.size = Pt(10 * SCALE)
                 font.color.rgb = RGBColor(50, 50, 50) # grey
 
                 # set shape fill
@@ -444,27 +443,28 @@ if __name__ == "__main__":
                 fill.fore_color.rgb = RGBColor(204, 224, 255)
 
             elif model[0] == "Connector":
-                logger.info("  model[0] %s, model[1] %s" % (model[1], model[2]))
+                logger.debug("  model[0] %s, model[1] %s" % (model[1], model[2]))
 
                 source = findDiagramObject(listDO, model[1])
                 target = findDiagramObject(listDO, model[2])
 
-                logger.info("  source %s" % (source))
-                logger.info("  target %s" % (target))
+                logger.debug("  source %s" % (source))
+                logger.debug("  target %s" % (target))
 
                 ll = list()
                 ll.append(source)
                 ll.append(target)
                 listConnectors.append(ll)
 
-        # save file
-        logger.info("Saved %s" % PPTXFilename)
-        prs.save(PPTXFilename)
+    # save file
+    logger.info("Saved %s" % PPTXFilename)
+    prs.save(PPTXFilename)
 
-        #
-        # Add Connectors
-        #
-        # fixSlides(PPTXFilename, listConnectors)
+    #
+    # Add Connectors
+    #
+    # logger.debug("====Add Connectors====")
+    # fixSlides(PPTXFilename, listConnectors)
 
 
 

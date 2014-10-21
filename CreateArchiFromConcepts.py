@@ -297,7 +297,7 @@ def createConnections(concepts):
 
 if __name__ == "__main__":
     filePPConcepts = "pptx.p"
-    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v23.archimate"
+    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v26.archimate"
     fileArchimateOut = 'import_pp.archimate'
 
     etree.QName(ARCHIMATE_NS, 'model')

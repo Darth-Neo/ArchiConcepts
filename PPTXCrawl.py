@@ -13,6 +13,8 @@ import math
 from pptx import Presentation
 from lxml import etree
 
+from traceback import format_exc
+
 import import_artifacts as ia
 
 # Constants
@@ -96,13 +98,16 @@ def graphConcepts(concepts, graph=None):
         graph.exportGraph()
 
 def findID(nid, dictNodes):
+    try:
+        for x in dictNodes.keys():
+            logger.debug("    dictNodes[%s] : %s" % (dictNodes[x], x))
 
-    for x in dictNodes.keys():
-        logger.debug("    dictNodes[%s] : %s" % (dictNodes[x], x))
-
-        if nid in dictNodes[x]:
-            logger.debug("Found %s in %s" % (x, dictNodes[x]))
-            return x
+            if nid in dictNodes[x]:
+                logger.debug("Found %s in %s" % (x, dictNodes[x]))
+                return x
+    except:
+        em = format_exc().split('\n')[-2]
+        logger.warn("findID : Warning: %s" % (em))
 
     return None
 
@@ -210,11 +215,11 @@ def shapeDim(shape, dictNodeXY):
     dictDim["w"] = w
     dictNodeXY[nid] = dictDim
 
-    logger.info("shape.top     : %3.2f" % (t))
-    logger.info("shape.left    : %3.2f" % (l))
-    logger.info("shape.height  : %3.2f" % (h))
-    logger.info("shape.width   : %3.2f" % (w))
-    logger.info("shape.shape_type    : %s" % shape.shape_type)
+    logger.debug("shape.top     : %3.2f" % (t))
+    logger.debug("shape.left    : %3.2f" % (l))
+    logger.debug("shape.height  : %3.2f" % (h))
+    logger.debug("shape.width   : %3.2f" % (w))
+    logger.debug("shape.shape_type    : %s" % shape.shape_type)
 
     return nid, t, l, h , w
 
@@ -277,28 +282,31 @@ def lineMagnitude (x1, y1, x2, y2):
 
 #Calc minimum distance from a point and a line segment (i.e. consecutive vertices in a polyline).
 def DistancePointLine (px, py, x1, y1, x2, y2):
-    #http://local.wasp.uwa.edu.au/~pbourke/geometry/pointline/source.vba
-    LineMag = lineMagnitude(x1, y1, x2, y2)
+    try:
+        #http://local.wasp.uwa.edu.au/~pbourke/geometry/pointline/source.vba
+        LineMag = lineMagnitude(x1, y1, x2, y2)
 
-    u1 = (((px - x1) * (x2 - x1)) + ((py - y1) * (y2 - y1)))
-    u = u1 / (LineMag * LineMag)
+        u1 = (((px - x1) * (x2 - x1)) + ((py - y1) * (y2 - y1)))
+        u = u1 / (LineMag * LineMag)
 
-    if (u < 0.00001) or (u > 1):
-        #// closest point does not fall within the line segment, take the shorter distance
-        #// to an endpoint
-        ix = lineMagnitude(px, py, x1, y1)
-        iy = lineMagnitude(px, py, x2, y2)
-        if ix > iy:
-            DistancePointLine = iy
+        if (u < 0.00001) or (u > 1):
+            #// closest point does not fall within the line segment, take the shorter distance
+            #// to an endpoint
+            ix = lineMagnitude(px, py, x1, y1)
+            iy = lineMagnitude(px, py, x2, y2)
+            if ix > iy:
+                DistancePointLine = iy
+            else:
+                DistancePointLine = ix
         else:
-            DistancePointLine = ix
-    else:
-        # Intersecting point is on the line, use the formula
-        ix = x1 + u * (x2 - x1)
-        iy = y1 + u * (y2 - y1)
-        DistancePointLine = lineMagnitude(px, py, ix, iy)
+            # Intersecting point is on the line, use the formula
+            ix = x1 + u * (x2 - x1)
+            iy = y1 + u * (y2 - y1)
+            DistancePointLine = lineMagnitude(px, py, ix, iy)
 
-    return DistancePointLine
+        return DistancePointLine
+    except:
+        return 0
 
 def crawlPPTX(concepts, path_to_presentation):
 
@@ -346,7 +354,7 @@ def crawlPPTX(concepts, path_to_presentation):
 
             n += 1
 
-            logger.info("shape.element.xml : %s" % shape.element.xml)
+            logger.debug("shape.element.xml : %s" % shape.element.xml)
             logger.info("shape.name : %s[%d]" % (shape.name,  shape.id - 1))
 
             sn = shape.name
@@ -376,13 +384,13 @@ def crawlPPTX(concepts, path_to_presentation):
 
                     xmlShape = shape.element.xml
 
-                    logger.info("xmlShape : %s" % xmlShape)
+                    logger.debug("xmlShape : %s" % xmlShape)
 
                     tree = etree.fromstring(xmlShape)
 
                     xl = tree.xpath("//@id")
 
-                    logger.info("xl : %s" % xl)
+                    logger.debug("xl : %s" % xl)
 
                     addDictEdges(nid, xl, dictEdges)
 
@@ -428,7 +436,7 @@ def crawlPPTX(concepts, path_to_presentation):
             # get text point - middle of node
             px, py = getPoint(dictTextXY[txt])
 
-            cDist = 100.0
+            cDist = 1000.0
             cNode = None
             csn = None
             ctn = None
@@ -437,17 +445,24 @@ def crawlPPTX(concepts, path_to_presentation):
             ni = 0
             for edge in listEdges:
 
-                try:
-                    # get source
-                    source = edge[0][1]
-                    sName = findID(source, dictNodes)
+                if edge[0][0] == edge[0][1] and edge[0][2] == edge[0][1]:
+                    continue
+
+                logger.debug("edge: %s" % edge)
+                # get source
+                source = edge[0][1]
+                sName = findID(source, dictNodes)
+                if sName != None:
                     sl = dictNodeXY[source]
                     spx, spy = getPoint(sl)
 
-                    # get target
-                    target = edge[0][2]
-                    tName = findID(target, dictNodes)
+                # get target
+                target = edge[0][2]
+                tName = findID(target, dictNodes)
+
+                if sName != None and tName != None:
                     tl = dictNodeXY[target]
+
                     tpx, tpy = getPoint(tl)
 
                     # determine distance between points
@@ -459,12 +474,13 @@ def crawlPPTX(concepts, path_to_presentation):
                         csn = sName
                         tsn = tName
 
-                except:
-                    pass
+                else:
+                    em = format_exc().split('\n')[-2]
+                    logger.warn("edge Warning: %s" % (em))
 
             if cNode != None:
                 tbFound += 1
-                logger.debug("Closest Connector : %s" % cNode)
+                logger.info("Closest Connector : %s" % cNode)
                 logger.info("    found(%d:%d] - %s:%s [%2.3f]" % (tbFound, tbTotal, csn, tsn, cDist))
                 cl = list()
 
@@ -478,6 +494,9 @@ def crawlPPTX(concepts, path_to_presentation):
                     if x[0][0] != cNode:
                         newListEdges.append(x)
                 listEdges = newListEdges
+
+        # Make it up!
+        #for x in dictNodes.values():
 
         if tbTotal != 0:
                 logger.info("Found [%3.1f] Text Box Connectors" % ((tbFound / float(tbTotal)) * 100.0))
@@ -497,7 +516,7 @@ if __name__ == "__main__":
     #path_to_presentation = "/Users/morrj140/PycharmProjects/ArchiConcepts/ARP-TBX - High Level Solution_Draft_v9.pptx"
     #path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/ARP-TBX - High Level Solution_Draft_v10a.pptx"
     #path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Accovia_Replacement_Messages.pptx"
-    path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/simple.pptx"
+    path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/ARP-TBX - Next Level Solution -v1.pptx"
 
     c = Concepts("Application", "Relations")
 
