@@ -24,7 +24,7 @@ def addGraphNodes(graph, concepts, n=0):
     n += 1
     for c in concepts.getConcepts().values():
         logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
-        if c.name == "Restriction":
+        if c.typeName == "CommonTopic":
             continue
         graph.addConcept(c)
         if len(c.getConcepts()) > THRESHOLD:
@@ -34,6 +34,8 @@ def addGraphEdges(graph, concepts, n=0):
     n += 1
     i = 1
     for c in concepts.getConcepts().values():
+        if c.typeName == "CommonTopic":
+            continue
         logger.debug("%d : %d Edge c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
         if i == 1:
             p = c
@@ -51,6 +53,9 @@ def graphConcepts(concepts, filename="example.png"):
     #graph.clearGraphDB()
 
     graph = GraphVizGraph()
+    graph.g.node_attr['shape']='circle'
+    graph.g.edge_attr['color']='green'
+    graph.g.graph_attr['label']=filename
 
     logger.info("Adding nodes the graph ...")
     addGraphNodes(graph, concepts)
@@ -82,11 +87,12 @@ if __name__ == "__main__":
     #conceptFile = "req.p"
     #conceptFile = "topicsDict.p"
     #conceptFile = "TopicChunks.p"
-    conceptFile = "ngrams.p"
+    #conceptFile = "ngrams.p"
     #conceptFile = "ngramscore.p"
-    conceptFile = "ngramsubject.p"
+    #conceptFile = "ngramsubject.p"
     #conceptFile = "archi.p"
     #conceptFile = "pptx.p"
+    conceptFile = "documentsSimilarity.p"
 
     listHomeDir = list()
     listHomeDir.append(os.getcwd())

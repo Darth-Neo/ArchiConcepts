@@ -3,6 +3,7 @@ __author__ = 'morrj140'
 import sys
 import os
 import StringIO
+import time
 from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
 
@@ -25,7 +26,7 @@ import import_artifacts as ia
 
 num_topics = 100
 num_words  = 100
-similarity = 0.70
+similarity = 0.90
 
 namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
 
@@ -278,16 +279,14 @@ class DocumentsSimilarity(object):
 
 
 if __name__ == "__main__":
-    filePPConcepts = "pptx.p"
     fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v28.archimate"
-    fileArchimateOut = 'traverse.archimate'
+    fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
     fileConcepts = "req.p"
 
     etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimateIn)
 
     ia.logAll(tree, type="archimate:Requirement")
-    #ia.logAll(tree, type="archimate:BusinessFunction")
 
     if False:
         logger.info("Find nGrams")
