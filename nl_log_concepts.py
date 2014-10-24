@@ -19,10 +19,10 @@ if __name__ == "__main__":
     #conceptFile = "NVPChunks.p"
     #conceptFile = "ngrams.p"
     #conceptFile = "ngramscore.p"
-    conceptFile = "ngramsubject.p"
+    #conceptFile = "ngramsubject.p"
     #conceptFile = "archi.p"
     #
-    #conceptFile = "pptx.p"
+    conceptFile = "pptx.p"
 
     #dir = "/Users/morrj140/Development/GitRepository/DirCrawler/CodeGen/Research_20141709_104529"
     #dir = os.getcwd()#
@@ -33,20 +33,9 @@ if __name__ == "__main__":
     logger.info("Loading :" + filePath)
     concepts = Concepts.loadConcepts(filePath)
 
-    #concepts.logConcepts()
+    concepts.logConcepts()
 
-    n = 0
-    for x in concepts.getConcepts().values():
-        n += 1
-        logger.info("x %s[%s]" % (x.name, x.typeName))
-        for y in x.getConcepts().values():
-            logger.info("  y %s[%s]" % (y.name, y.typeName))
-            for z in y.getConcepts().values():
-                if not (z.name in ("h", "l", "t", "w")):
-                    logger.info("    z  %s[%s]" % (z.name, z.typeName))
 
-    #concepts.printConcepts()
-    
         
 
 

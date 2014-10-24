@@ -42,14 +42,15 @@ def checkDuplicate(dmID, x, tree):
 
     Duplicate = False
     for xdml in dml:
+        logger.info("%s" % (xdml.get("name")))
         xdml_name = xdml.get("name")
         if xdml_name == x.name:
-            logger.debug("%s Duplicate!" % x.name)
-            Duplicate = True
+            logger.debug("%s Duplicate!" % xdml.get("id"))
+            return xdml.get("id")
 
     logger.debug("dml[%d]" % (len(dml)))
 
-    return Duplicate
+    return None
 
 def outputXML(tree):
     output = StringIO.StringIO()
@@ -66,8 +67,13 @@ def findDiagramObject(tree, id):
     stp = tree.xpath(xp)
     return stp
 
+def findDiagramObject(tree, id):
+    xp = "//child[@id='%s']" % id
+    stp = tree.xpath(xp)
+    return stp
+
 def findElement(tree, name):
-    xp = "//element[@name='%s']" % name
+    xp = "//element[@name='%s']" % name.rstrip(" ").lstrip(" ")
     stp = tree.xpath(xp)
     return stp
 
@@ -494,7 +500,7 @@ def insertScenarios(tree, fileMetaEntity):
 
 if __name__ == "__main__":
     # Archimate
-    fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v25.archimate"
+    fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v26.archimate"
     etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimate)
 
@@ -505,9 +511,10 @@ if __name__ == "__main__":
     #logger.info("Using : %s" % fileArchimate)
     #insertTwoColumns(tree, "Application", "MQ Messages", fileMetaEntity, eType="archimate:ApplicationService")
 
-    fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Party-Product-GuestComm_Func.csv"
+    #fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Party-Product-GuestComm_Func.csv"
+    fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/AR Functional Interface Mapping - Order, Payment & Accounting.csv"
     logger.info("Using : %s" % fileArchimate)
-    insertNColumns(tree, "Application", "Party-Product-GuestComm", fileMetaEntity, eType="archimate:ApplicationService")
+    insertNColumns(tree, "Application", "Order-Payment-Accounting", fileMetaEntity, eType="archimate:ApplicationService")
 
 
     # EAI

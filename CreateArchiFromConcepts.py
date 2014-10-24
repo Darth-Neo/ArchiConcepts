@@ -117,11 +117,12 @@ def createDiagramModels(concepts, tree):
             txp[0].insert(0, elm)
             DM_ID = attrib["id"]
 
-            createDiagramObjects(x, DM_ID, tree)
+            createArchimateComponents(x, DM_ID, tree)
 
     createConnections(concepts)
 
-def createDiagramObjects(concepts, dmID, tree):
+def createArchimateComponents(concepts, dmID, tree):
+
     # Creare connection inside the start
     # <child xsi:type="archimate:DiagramObject" id="74386658" textAlignment="2" archimateElement="5789571a">
     #        <bounds x="200" y="96"/>
@@ -130,67 +131,110 @@ def createDiagramObjects(concepts, dmID, tree):
 
     listST = list()
 
+    dictACDone = dict()
+
     for x in concepts.getConcepts().values():
-
-        if not (x.typeName in ("Target", "Source" )):
+        if not (x.typeName in ("Node")):
             continue
 
-        # Create the archimate:ApplicationComponent
-        attribAC = dict()
-        attribAC["name"] = x.name
-        attribAC[ARCHI_TYPE] = "archimate:ApplicationComponent"
-        ia.insertNode("element", "PowerPointApps", tree, attribAC)
-        acID = attribAC["id"]
-        logger.debug("acID %s" % (acID))
-
-        logger.debug("Source %s[%s]-%d -- %s" % (x.name, x.typeName, len(x.name), acID))
-
-        if ia.checkDuplicate(dmID, x, tree) == True:
-            continue
-
-        # Create "archimate:DiagramObject"
-        attribDO = dict()
-        attribDO["name"] = x.name
-        attribDO["id"] = str(ia.getID())
-        attribDO["textAlignment"] = "2"
-        attribDO["archimateElement"] = acID
-        attribDO[ARCHI_TYPE] = "archimate:DiagramObject"
-        elm = etree.Element("child", attribDO, nsmap=NS_MAP)
-        doID = attribDO["id"]
-        xp = "//element[@id='" + dmID + "']"
-        tree.xpath(xp)[0].insert(0, elm)
-        logger.debug("doID %s" % (doID))
+        logger.info("Concept : %s[%s]" % (x.name, x.typeName))
 
         # Create Coordinates
         coordinates = x.getConcepts()
 
-        l = float(coordinates["l"].typeName)
-        t = float(coordinates["t"].typeName)
-        w = float(coordinates["w"].typeName)
-        h = float(coordinates["h"].typeName)
+        if len(coordinates) == 0:
+            logger.info("Coordinates == 0")
+            continue
 
-        cx = int(l * 100)
-        cy = int(t * 100) - 150
-
-        key = "%s%s" % (cx,cy)
-        if dictPoints.has_key(key):
-            cx = 100 + cx
-            cy = 100 + cy
+        if not(x.name in dictACDone):
+            # Create the archimate:ApplicationComponent
+            attribAC = dict()
+            attribAC["name"] = x.name
+            attribAC[ARCHI_TYPE] = "archimate:ApplicationComponent"
+            ia.insertNode("element", "PowerPointApps", tree, attribAC)
+            acID = attribAC["id"]
+            logger.info("  Create acID %s" % (acID))
+            dictACDone[x.name] = acID
         else:
-            dictPoints[key] = key
+            acID = dictACDone[x.name]
 
-        attrib = dict()
-        attrib["x"] = str(cx)
-        attrib["y"] = str(cy)
-        elm = etree.Element("bounds", attrib, nsmap=NS_MAP)
-        xp = "//child[@id='" + doID + "']"
-        tree.xpath(xp)[0].insert(0, elm)
+        logger.info("  %s[%s]-%d -- %s" % (x.name, x.typeName, len(x.name), acID))
 
-        try:
-            createDiagramObjects(x, dmID, tree)
-        except:
-            pass
+    logger.info("Create Diagram Objects")
+    createDiagramObjects(concepts, dmID, tree, dictACDone)
 
+
+def createDiagramObjects(concepts, dmID, tree, dictACDone, dictDODone = None):
+    # Creare connection inside the start
+    # <child xsi:type="archimate:DiagramObject" id="74386658" textAlignment="2" archimateElement="5789571a">
+    #        <bounds x="200" y="96"/>
+    #        <sourceConnection xsi:type="archimate:Connection" id="95144175" source="74386658" target="5256ff1f" relationship="2f2f9f96"/>
+    # </child>
+
+    listST = list()
+
+    if dictDODone == None:
+        dictDODone = dict()
+
+    for x in concepts.getConcepts().values():
+        if x.name in ("t", "l", "w", "h") or x.typeName == "Edge":
+            continue
+
+        logger.info("Concept : %s[%s]" % (x.name, x.typeName))
+
+        # Create Coordinates
+        coordinates = x.getConcepts()
+
+        if len(coordinates) == 0:
+            logger.info("Coordinates == 0")
+            continue
+
+        acID = dictACDone[x.name]
+
+        logger.info("  %s[%s]-%d -- %s" % (x.name, x.typeName, len(x.name), acID))
+
+        # Create "archimate:DiagramObject"
+        if not(x.name in dictDODone):
+            attribDO = dict()
+            attribDO["name"] = x.name
+            attribDO["id"] = str(ia.getID())
+            attribDO["textAlignment"] = "2"
+            attribDO["archimateElement"] = acID
+            attribDO[ARCHI_TYPE] = "archimate:DiagramObject"
+
+            elm = etree.Element("child", attribDO, nsmap=NS_MAP)
+            doID = attribDO["id"]
+
+            xp = "//element[@id='" + dmID + "']"
+            tree.xpath(xp)[0].insert(0, elm)
+
+            logger.debug("doID %s" % (doID))
+
+            l = float(coordinates["l"].typeName)
+            t = float(coordinates["t"].typeName)
+            w = float(coordinates["w"].typeName)
+            h = float(coordinates["h"].typeName)
+
+            cx = int(l * 100)
+            cy = int(t * 100) - 150
+
+            key = "%s%s" % (cx,cy)
+            if dictPoints.has_key(key):
+                cx = 100 + cx
+                cy = 100 + cy
+            else:
+                dictPoints[key] = key
+
+            attrib = dict()
+            attrib["x"] = str(cx)
+            attrib["y"] = str(cy)
+            elm = etree.Element("bounds", attrib, nsmap=NS_MAP)
+            xp = "//child[@id='" + doID + "']"
+            tree.xpath(xp)[0].insert(0, elm)
+
+            dictDODone[x.name] = doID
+
+        createDiagramObjects(x, dmID, tree, dictACDone, dictDODone)
 
 def createConnections(concepts):
 
@@ -203,32 +247,45 @@ def createConnections(concepts):
             logger.debug(" Slide %s[%s]-%d" % (tc.name, tc.typeName, len(tc.name)))
 
             for tcc in tc.getConcepts().values():
-                if tcc.typeName == "Source":
-                    logger.debug("  Source %s[%s]-%d" % (tcc.name, tcc.typeName, len(tcc.name)))
+                logger.debug("  Source %s[%s]-%d" % (tcc.name, tcc.typeName, len(tcc.name)))
 
-                    for tce in tcc.getConcepts().values():
-                        if len(tce.name) > 1 and tce.typeName == "Target":
+                for tce in tcc.getConcepts().values():
+                    logger.debug("   Target %s[%s]-%d" % (tce.name, tce.typeName, len(tce.name)))
+
+                    for tcee in tce.getConcepts().values():
+                        tcee.name = ia.cleanString(tcee.name)
+                        if tcee.typeName in ("Edge"):
+                            logger.debug("  Source %s[%s]-%d" % (tcc.name, tcc.typeName, len(tcc.name)))
                             logger.debug("   Target %s[%s]-%d" % (tce.name, tce.typeName, len(tce.name)))
-
-                            for tcee in tce.getConcepts().values():
-                                if tcee.typeName == "Edge":
-                                    tcee.name = ia.cleanString(tcee.name)
-                                    logger.info("  Source %s[%s]-%d" % (tcc.name, tcc.typeName, len(tcc.name)))
-                                    logger.info("   Target %s[%s]-%d" % (tce.name, tce.typeName, len(tce.name)))
-                                    logger.info("    Edge %s[%s]-%d" % (tcee.name, tcee.typeName, len(tcee.name)))
-                                    ll = (tc, tcc, tce, tcee)
-                                    listST.append(ll)
+                            logger.debug("    Edge %s[%s]-%d" % (tcee.name, tcee.typeName, len(tcee.name)))
+                            ll = (tc, tcc, tce, tcee)
+                            listST.append(ll)
 
     dictRel = dict()
 
     for x in listST:
+
         try:
-            sourceName = x[1].name
-            source = ia.findElement(tree, sourceName)[0].get("id")
-            targetName = x[2].name
-            target = ia.findElement(tree, targetName)[0].get("id")
-            slideName = x[0].name
-            edgeName   = x[3].name
+            sourceName = x[1].name.rstrip(" ")
+            targetName = x[2].name.rstrip(" ")
+            slideName = x[0].name.rstrip(" ")
+            edgeName   = x[3].name.rstrip(" ")
+
+            logger.info("%s:%s>%s->%s" % (slideName, sourceName, edgeName, targetName, ))
+
+            src = ia.findElement(tree, sourceName)
+            if src != None:
+                source = src[0].get("id")
+            else:
+                logger.warn("***No Source***")
+                source = " "
+
+            tgt = ia.findElement(tree, targetName)
+            if tgt != None:
+                target = tgt[0].get("id")
+            else:
+                logger.warn("***No Target***")
+                target = " "
         except:
             continue
 
@@ -242,8 +299,6 @@ def createConnections(concepts):
         else:
             dictRel[key] = slideName
 
-        logger.info("%s : %s->%s->%s" % (slideName, sourceName, edgeName, targetName))
-
         # find the diagram objects
         slideXML = ia.findElement(tree, slideName)
 
@@ -254,11 +309,11 @@ def createConnections(concepts):
 
         for sx in sxl:
             if sx.get("name") == sourceName:
-                logger.info("sourceName %s[%s]:%s" % (sx.get("name"), sx.get("id"), sx.get("archimateElement")))
+                logger.debug("  sourceName %s[%s]:%s" % (sx.get("name"), sx.get("id"), sx.get("archimateElement")))
                 sourceID = sx.get("id")
             if sx.get("name") == targetName:
                 targetID = sx.get("id")
-                logger.info("targetName %s[%s]:%s" % (sx.get("name"), sx.get("id"), sx.get("archimateElement")))
+                logger.debug("  targetName %s[%s]:%s" % (sx.get("name"), sx.get("id"), sx.get("archimateElement")))
 
         if sourceID == None or targetID == None:
             continue
@@ -275,9 +330,9 @@ def createConnections(concepts):
         tree.xpath(xp)[0].insert(0, elm)
         ar = ta["id"]
 
-        logger.info("ar       : %s" % ar)
-        logger.info("sourceID : %s" % sourceID)
-        logger.info("targetID : %s" % targetID)
+        logger.debug("ar       : %s" % ar)
+        logger.debug("sourceID : %s" % sourceID)
+        logger.debug("targetID : %s" % targetID)
 
         # Create Connection at the Source
         ta = dict()
@@ -297,7 +352,8 @@ def createConnections(concepts):
 
 if __name__ == "__main__":
     filePPConcepts = "pptx.p"
-    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v26.archimate"
+    #fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v26.archimate"
+    fileArchimateIn = "/Users/morrj140/Development/GitRepository/ArchiConcepts/baseline.archimate"
     fileArchimateOut = 'import_pp.archimate'
 
     etree.QName(ARCHIMATE_NS, 'model')

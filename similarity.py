@@ -275,8 +275,8 @@ class DocumentsSimilarity(object):
 
 if __name__ == "__main__":
     filePPConcepts = "pptx.p"
-    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v23.archimate"
-    fileArchimateOut = 'import_pp.archimate'
+    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v28.archimate"
+    fileArchimateOut = 'traverse.archimate'
     fileConcepts = "req.p"
 
     etree.QName(ARCHIMATE_NS, 'model')
