@@ -28,16 +28,17 @@ def getNode(el, dictAttrib):
 
     attributes = el.attrib
 
-    nl = dict()
-    for atr in attributes:
-        nl[atr] = attributes[atr]
-        logger.debug("%s = %s" % (atr, attributes[atr]))
+    if attributes[ARCHI_TYPE] == "archimate:UsedByRealtionship":
+        nl = dict()
+        for atr in attributes:
+            nl[atr] = attributes[atr]
+            logger.debug("%s = %s" % (atr, attributes[atr]))
 
-    if nl.has_key("id"):
-        dictAttrib[nl["id"]] = nl
+        if nl.has_key("id"):
+            dictAttrib[nl["id"]] = nl
 
-    for elm in el:
-        getNode(elm, dictAttrib)
+        for elm in el:
+            getNode(elm, dictAttrib)
 
 def getEdges(tree, folder, dictAttrib):
     se = tree.xpath("folder[@name='%s']" % (folder))

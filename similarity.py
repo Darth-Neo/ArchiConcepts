@@ -25,7 +25,7 @@ import import_artifacts as ia
 
 num_topics = 100
 num_words  = 100
-similarity = 0.80
+similarity = 0.70
 
 namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
 
@@ -168,7 +168,7 @@ class Collocations(object):
         Concepts.saveConcepts(self.conceptsNGramSubject, self.ngramSubjectFile)
 
 class DocumentsSimilarity(object):
-    concepts = None
+    conceptsDoc = None
     conceptsSimilarity = None
     tm = None
     documentsList = None
@@ -183,25 +183,26 @@ class DocumentsSimilarity(object):
     def createTopics(self, conceptsFile):
 
         logger.info("Load Concepts from " + conceptsFile)
-        self.concepts = Concepts.loadConcepts(conceptsFile)
+        self.conceptsDoc = Concepts.loadConcepts(conceptsFile)
         logger.info("Loaded Concepts")
 
         self.tm = TopicsModel()
 
-        logger.info("Load Documents from Concepts")
-        self.documentsList, self.wordcount = self.tm.loadConceptsWords(self.concepts)
+        logger.info("--Load Documents from Concepts")
+        self.documentsList, self.wordcount = self.tm.loadConceptsWords(self.conceptsDoc)
 
-        logger.info("Read " + str(len(self.documentsList)) + " Documents, with " + str(self.wordcount) + " words.")
+        logger.info("--Read " + str(len(self.documentsList)) + " Documents, with " + str(self.wordcount) + " words.")
 
-        logger.info("Compute Topics")
+        logger.info("--Compute Topics--")
         self.topics = self.tm.computeTopics(self.documentsList, nt=num_topics, nw=num_words)
 
-        logger.info("Log Topics")
-        self.tm.logTopics(self.topics)
+        if False:
+            logger.info("--Log Topics--")
+            self.tm.logTopics(self.topics)
 
         self.listTopics = [x[0].encode('ascii', errors="ignore").strip() for x in self.topics]
 
-        logger.info("Saving Topics")
+        logger.info("--Saving Topics")
 
         self.topicConcepts = self.tm.saveTopics(self.topics)
 
@@ -217,11 +218,11 @@ class DocumentsSimilarity(object):
         for document in self.documentsList:
             indexNum = self.documentsList.index(document)
 
-            df = self.concepts.getConcepts().keys()
+            self.df = self.conceptsDoc.getConcepts().keys()
 
-            logger.debug("Document %s" % (df[indexNum]))
+            logger.info("++conceptsDoc %s" % (self.df[indexNum]))
 
-            logger.debug("  documentsList[" + str(indexNum) + "]=" + str(document))
+            logger.info("  documentsList[" + str(indexNum) + "]=" + "".join(x + " " for x in document))
 
             # Show common topics
             d = [x.encode('ascii', errors="ignore").strip().replace("'", "") for x in document]
@@ -231,9 +232,9 @@ class DocumentsSimilarity(object):
             s2 = set(d)
             common =  s1 & s2
             lc = [x for x in common]
-            logger.debug("  Common Topics : %s" % (lc))
+            logger.info("  Common Topics : %s" % (lc))
 
-            self.doComputation(document, similarityThreshold)
+            self.doComputation(indexNum, similarityThreshold)
 
         Concepts.saveConcepts(self.conceptsSimilarity, conceptsSimilarityFile)
 
@@ -242,30 +243,33 @@ class DocumentsSimilarity(object):
         return self.conceptsSimilarity
 
     def doComputation(self, j, similarityThreshold):
-
-        pl = self.tm.computeSimilar(self.documentsList.index(j), self.documentsList, similarityThreshold)
+        logger.info("--doComputation--")
+        pl = self.tm.computeSimilar(j, self.documentsList, similarityThreshold)
 
         if len(pl) != 0:
-            logger.debug("   similarity above threshold")
+            logger.info("   similarity above threshold - %2.3f" % (100.0 * float(pl[0][0])))
             logger.debug("   pl:" + str(pl))
 
             for l in pl:
                 if l[1] != l[2]:
                     logger.debug("  l:" + str(l))
-                    ps = self.conceptsSimilarity.addConceptKeyType(l[1], "Similar")
+                    l1 = "".join(x + " " for x in l[1])
+                    ps = self.conceptsSimilarity.addConceptKeyType(l1, "Similar")
                     ps.count = TopicsModel.convertMetric(l[0])
                     #rt1 = ps.addConceptKeyType(str(l[3]), "SimilarTopics")
                     #rt1 = len(l[3])
-                    pt = ps.addConceptKeyType(l[2], "Concept")
+                    l2 = "".join(x + " " for x in l[2])
+                    pt = ps.addConceptKeyType(l2, "Concept")
                     #rt2 = pt.addConceptKeyType(str(l[4]), "ProjectTopics")
                     #rt2.count = len(l[4])
                     common = set(l[1]) & set(l[2])
                     lc = [x for x in common]
 
-                    logger.debug("  l[1] : %s" % (l[1]))
-                    logger.debug("  l[2] : %s" % (l[2]))
+                    logger.debug("  l[1] : %s" % (l1))
+                    logger.info("  l[2] : %s" % (l2))
                     logger.debug("  Common : %s" % (lc))
                     for x in common:
+                        logger.debug("x : %s" % x)
                         pc = pt.addConceptKeyType(x, "CommonTopic")
                         pc.count = len(lc)
 
@@ -285,39 +289,48 @@ if __name__ == "__main__":
     ia.logAll(tree, type="archimate:Requirement")
     #ia.logAll(tree, type="archimate:BusinessFunction")
 
-    logger.info("Find nGrams")
-    fc = Collocations(fileConcepts)
-    fc.find_collocations()
+    if False:
+        logger.info("Find nGrams")
+        fc = Collocations(fileConcepts)
+        fc.find_collocations()
 
     logger.info("Find Topics")
     concepts = Concepts("Requirement", "Requirement")
+    n = 0
     for sentence in ia.dictName:
+        n += 1
         logger.debug("%s" % sentence)
 
-        d = concepts.addConceptKeyType(sentence, "Requirement")
+        c = concepts.addConceptKeyType("Document" + str(n), "Document")
+        d = c.addConceptKeyType(sentence, "Sentence" + str(n))
+        #d = c.addConceptKeyType(sentence, "Sentence")
 
-        cleanSentence = ' '.join([word for word in sentence.split() if word not in stop])
-        for word, pos in nltk.pos_tag(nltk.wordpunct_tokenize(cleanSentence)):
-            if len(word) > 1 and pos[0] == "N":
-                e = d.addConceptKeyType(word, "Word")
-                f = e.addConceptKeyType(pos, "POS")
+        if False:
+            cleanSentence = ' '.join([word for word in sentence.split() if word not in stop])
+            for word, pos in nltk.pos_tag(nltk.wordpunct_tokenize(cleanSentence)):
+                if len(word) > 1 and pos[0] == "N":
+                    e = d.addConceptKeyType(word, "Word")
+                    f = e.addConceptKeyType(pos, "POS")
 
     Concepts.saveConcepts(concepts, fileConcepts)
 
     logger.info("Find Similarities")
     npbt = DocumentsSimilarity()
     npbt.createTopics(fileConcepts)
-    #nc = npbt.findSimilarties("documentsSimilarity.p")
 
-    logger.debug("Topics")
-    listTopics = list()
-    ncg = npbt.topicConcepts.getConcepts().values()
-    for x in ncg:
-        logger.debug("%s[%d]" % (x.name, x.count))
-        lt = (x.name, x.count)
-        listTopics.append(lt)
+    nc = npbt.findSimilarties("documentsSimilarity.p")
 
-    logger.info("Topics Sorted")
-    for x in sorted(listTopics, key=lambda c: abs(c[1]), reverse=False):
-        logger.info("Topic : %s[%d]" % (x[0], x[1]))
+    if False:
+        logger.debug("Topics")
+        listTopics = list()
+        ncg = npbt.topicConcepts.getConcepts().values()
+        for x in ncg:
+            logger.debug("%s[%d]" % (x.name, x.count))
+            lt = (x.name, x.count)
+            listTopics.append(lt)
+
+    if False:
+        logger.info("Topics Sorted")
+        for x in sorted(listTopics, key=lambda c: abs(c[1]), reverse=False):
+            logger.info("Topic : %s[%d]" % (x[0], x[1]))
 

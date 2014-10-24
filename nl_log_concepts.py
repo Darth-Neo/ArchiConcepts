@@ -15,14 +15,14 @@ if __name__ == "__main__":
     #conceptFile = "chunks.p"
     #conceptFile = "topicChunks.p"
     #conceptFile = "topicsDict.p"
-    #conceptFile = "documentsSimilarity.p"
+    conceptFile = "documentsSimilarity.p"
     #conceptFile = "NVPChunks.p"
     #conceptFile = "ngrams.p"
     #conceptFile = "ngramscore.p"
     #conceptFile = "ngramsubject.p"
     #conceptFile = "archi.p"
     #
-    conceptFile = "pptx.p"
+    #conceptFile = "pptx.p"
 
     #dir = "/Users/morrj140/Development/GitRepository/DirCrawler/CodeGen/Research_20141709_104529"
     #dir = os.getcwd()#

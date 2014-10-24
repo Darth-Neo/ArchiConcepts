@@ -69,14 +69,15 @@ def topological_sort(edges):
         def traverse(vs, seen):
             for s in vs:
                 if s in seen:
-                    raise GraphError('contains cycle: ', seen)
+                    logger.debug("%s" % GraphError('contains cycle: ', seen))
+                    break
 
                 seen.append(s) # xx use ordered set..
 
                 traverse(st[s].keys(), seen)
 
         traverse(st.keys(), list())
-        assert False, 'should not reach..'
+        logger.debug("Should not reach")
 
     return L
 
@@ -114,9 +115,7 @@ def getFolders(tree):
     return l
 
 if __name__ == "__main__":
-    fileArchiModel = 'archi.archimate'
-    #fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Presentations/Solution Engineering.xml"
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/DNX Phase 2/DNX Phase 2 0.8.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v28.archimate"
 
 
     p, fname = os.path.split(fileArchimate)
@@ -132,9 +131,8 @@ if __name__ == "__main__":
 
     # Get all Nodes
     for x in listFolders:
-        logger.debug("%s" % (x))
         if x != "Views" and x != "Relations":
-            logger.debug("Checking : %s" % (x))
+            logger.info("Checking : %s" % (x))
             getEdges(tree, x, dictNodes)
 
     # Get all Edges
@@ -151,36 +149,51 @@ if __name__ == "__main__":
             target = dictEdges[x]["target"]
 
             logger.debug("  Rel    : %s" % (dictEdges[x][ARCHI_TYPE]))
-            logger.debug("  Source : %s" % (dictNodes[source]["name"]))
-            logger.debug("  Target : %s" % (dictNodes[target]["name"]))
 
-            if dictEdges[x][ARCHI_TYPE] in ("archimate:FlowRelationship"): #,
-                #"archimate:AssociationRelationship", "archimate:UsedByRelationship"):
-                l = list()
 
-                if dictNodes[source]["id"] == "Junction":
-                    break
+            if dictEdges[x][ARCHI_TYPE] in ("archimate:UsedByRelationship"):
+                try:
+                    logger.debug("  Source : %s" % (dictNodes[source]["name"]))
+                except:
+                    logger.warn("Source[%s] %s not Found" % (source, dictEdges[x][ARCHI_TYPE]))
 
-                if dictNodes[target]["id"] == "Junction":
-                    break
+                try:
+                    logger.debug("  Target : %s" % (dictNodes[target]["name"]))
+                except:
+                    logger.warn("Target %s[%s] not Found" % (target, dictEdges[x][ARCHI_TYPE]))
 
-                l.append(target)
-                l.append(source)
-                listTSort.append(l)
-                count = count + 1
+                if dictNodes[source][ARCHI_TYPE] == "archimate:BusinessProcess":
+                    l = list()
+
+                    if dictNodes[source]["id"] == "Junction":
+                        break
+
+                    if dictNodes[target]["id"] == "Junction":
+                        break
+
+                    l.append(target)
+                    l.append(source)
+                    listTSort.append(l)
+                    count = count + 1
 
     logger.info("TSort : %d" % (count))
     logger.debug("Edges = %s" % listTSort)
 
     index = 0
     for x in listTSort:
-        logger.info("%d %s[%s] --> %s[%s]" % (index, dictNodes[x[0]]["name"], dictNodes[x[0]]["id"], dictNodes[x[1]]["name"], dictNodes[x[1]]["id"]))
+        logger.info("%d %s[%s] -%s-> %s[%s]" % (index, dictNodes[x[0]]["name"], dictNodes[x[0]][ARCHI_TYPE], "UsedBy", dictNodes[x[1]]["name"], dictNodes[x[1]][ARCHI_TYPE]))
         index = index + 1
 
     logger.info("topological_sort")
     sort = topological_sort(listTSort)
 
+    listBP = [dictNodes[x]["name"] for x in sort if dictNodes[x][ARCHI_TYPE] == "archimate:BusinessProcess"]
+    listBP.reverse()
+
     logger.info("Sort")
-    for x in sort:
-        if dictNodes[x][ARCHI_TYPE] == "archimate:BusinessProcess":
-            logger.info("%s:%s" % (x, dictNodes[x]["name"]))
+    n = 0
+    for x in listBP:
+        if x.find("Account") == -1 and x.find("Publish") == -1 and x.find("Contract") == -1 and x.find("Supplier") == -1\
+                and x.find("Trade") == -1 and x.find("Wholesale") == -1 and x.find("Audit") == -1:
+            logger.info("%d : %s" % (n, x))
+            n += 1
