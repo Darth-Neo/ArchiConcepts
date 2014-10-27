@@ -252,16 +252,20 @@ if __name__ == "__main__":
         logger.info("  %d : %s" % (n, x))
         n += 1
 
-        searchType = ("archimate:ApplicationService", "archimate:ApplicationComponent", "archimate:ApplicationInterface")
+        searchType = ("archimate:ApplicationService", "archimate:ApplicationComponent", "archimate:ApplicationInterface", "archimate:Requirement")
         listNodes = getEdgesForNode(x, searchType, dictNodes, dictEdges)
         for x in listNodes:
             logger.info("    %s" % x)
 
 
-    if False:
+    if True:
         logger.info("Skipped")
         s1 = set([x for x in listBP])
         s2 = set([dictNodes[x[0]]["name"] for x in listTSort])
         missing = s1 - s2
+        searchType = ("archimate:Requirement")
         for x in missing:
             logger.info("  %s" % x)
+            listNodes = getEdgesForNode(x, searchType, dictNodes, dictEdges)
+            for y in listNodes:
+                logger.info("    %s" % y)

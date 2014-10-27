@@ -189,7 +189,7 @@ class DocumentsSimilarity(object):
 
         self.tm = TopicsModel()
 
-        logger.info("--Load Documents from Concepts")
+        logger.debug("--Load Documents from Concepts")
         self.documentsList, self.wordcount = self.tm.loadConceptsWords(self.conceptsDoc)
 
         logger.info("--Read " + str(len(self.documentsList)) + " Documents, with " + str(self.wordcount) + " words.")
@@ -221,9 +221,9 @@ class DocumentsSimilarity(object):
 
             self.df = self.conceptsDoc.getConcepts().keys()
 
-            logger.info("++conceptsDoc %s" % (self.df[indexNum]))
+            logger.debug("++conceptsDoc %s" % (self.df[indexNum]))
 
-            logger.info("  documentsList[" + str(indexNum) + "]=" + "".join(x + " " for x in document))
+            logger.debug("  documentsList[" + str(indexNum) + "]=" + "".join(x + " " for x in document))
 
             # Show common topics
             d = [x.encode('ascii', errors="ignore").strip().replace("'", "") for x in document]
@@ -233,7 +233,7 @@ class DocumentsSimilarity(object):
             s2 = set(d)
             common =  s1 & s2
             lc = [x for x in common]
-            logger.info("  Common Topics : %s" % (lc))
+            logger.debug("  Common Topics : %s" % (lc))
 
             self.doComputation(indexNum, similarityThreshold)
 
@@ -243,12 +243,12 @@ class DocumentsSimilarity(object):
 
         return self.conceptsSimilarity
 
-    def doComputation(self, j, similarityThreshold):
-        logger.info("--doComputation--")
+    def doComputation(self, j, similarityThreshold, tfAddWords=False):
+        logger.debug("--doComputation--")
         pl = self.tm.computeSimilar(j, self.documentsList, similarityThreshold)
 
         if len(pl) != 0:
-            logger.info("   similarity above threshold - %2.3f" % (100.0 * float(pl[0][0])))
+            logger.debug("   similarity above threshold - %2.3f" % (100.0 * float(pl[0][0])))
             logger.debug("   pl:" + str(pl))
 
             for l in pl:
@@ -267,12 +267,14 @@ class DocumentsSimilarity(object):
                     lc = [x for x in common]
 
                     logger.debug("  l[1] : %s" % (l1))
-                    logger.info("  l[2] : %s" % (l2))
+                    logger.debug("  l[2] : %s" % (l2))
                     logger.debug("  Common : %s" % (lc))
-                    for x in common:
-                        logger.debug("x : %s" % x)
-                        pc = pt.addConceptKeyType(x, "CommonTopic")
-                        pc.count = len(lc)
+
+                    if tfAddWords == True:
+                        for x in common:
+                            logger.debug("x : %s" % x)
+                            pc = pt.addConceptKeyType(x, "CommonTopic")
+                            pc.count = len(lc)
 
         else:
             logger.debug("   similarity below threshold")
@@ -304,7 +306,7 @@ if __name__ == "__main__":
         d = c.addConceptKeyType(sentence, "Sentence" + str(n))
         #d = c.addConceptKeyType(sentence, "Sentence")
 
-        if False:
+        if True:
             cleanSentence = ' '.join([word for word in sentence.split() if word not in stop])
             for word, pos in nltk.pos_tag(nltk.wordpunct_tokenize(cleanSentence)):
                 if len(word) > 1 and pos[0] == "N":
@@ -333,3 +335,4 @@ if __name__ == "__main__":
         for x in sorted(listTopics, key=lambda c: abs(c[1]), reverse=False):
             logger.info("Topic : %s[%d]" % (x[0], x[1]))
 
+    nc.logConcepts()
