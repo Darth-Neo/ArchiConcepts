@@ -22,6 +22,7 @@ NS_MAP = {"xsi": XML_NS, "archimate" : ARCHIMATE_NS}
 
 ARCHI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
 
+import nl_phase_f_graph_concepts as GC
 dictCount = dict()
 
 class GraphError(Exception):
@@ -44,10 +45,15 @@ def topological_sort(edges):
     st,ts={},{}
 
     def prune(s,t):
+        logger.debug("prune source : %s" % dictNodes[s]["name"])
+        logger.debug("prune target : %s" % dictNodes[t]["name"])
         del st[s][t]
         del ts[t][s]
 
     def add(s,t):
+        logger.debug("add source : %s" % dictNodes[s]["name"])
+        logger.debug("  add target : %s" % dictNodes[t]["name"])
+
         try:
             st.setdefault(s,{})[t]=1
         except Exception, e:
@@ -62,22 +68,27 @@ def topological_sort(edges):
 
     while S:
         s=S.pop()
+        logger.debug("source : %s" % dictNodes[s]["name"])
         L.append(s)
         for t in st.get(s,{}).keys():
             prune(s,t)
             if not ts[t]:       # new frontier
+                logger.debug("  t : %s" % dictNodes[t]["name"])
                 S.add(t)
 
     if filter(None, st.values()): # we have a cycle. report the cycle.
         def traverse(vs, seen):
             for s in vs:
                 if s in seen:
-                    logger.debug("%s" % GraphError('contains cycle: ', seen))
+                    logger.warn("%s:%s" % (dictNodes[s]["name"], GraphError('contains cycle: ', [dictNodes[x]["name"] for x in seen])))
                     break
 
                 seen.append(s) # xx use ordered set..
+                try:
+                    traverse(st[s].keys(), seen)
+                except:
+                    return
 
-                traverse(st[s].keys(), seen)
 
         traverse(st.keys(), list())
         logger.debug("Should not reach")
@@ -109,12 +120,13 @@ def getEdgesForNode(nodeName, searchType, dictNodes, dictEdges, n=0):
                 if dictNodes[targetNE][ARCHI_TYPE] in searchType:
                     spaces = " " * n
                     nodeName = getNodeName(targetNE)
-                    nn = "%s%s" % (spaces, nodeName)
-                    listNodes.append(nn)
+                    if nodeName != "NA":
+                        nn = "%s%s" % (spaces, nodeName)
+                        listNodes.append(nn)
 
-                    ln = getEdgesForNode(nodeName, searchType, dictNodes, dictEdges, n)
-                    for y in ln:
-                        listNodes.append(y)
+                        ln = getEdgesForNode(nodeName, searchType, dictNodes, dictEdges, n)
+                        for y in ln:
+                            listNodes.append(y)
 
     return listNodes
 
@@ -125,7 +137,7 @@ def countNodeType(type):
         dictCount[type] = 1
 
 def getNodeName(node):
-    name = "NA"
+    name = " "
 
     try:
         logger.debug("  Node : %s" % (dictNodes[node]["name"]))
@@ -174,8 +186,18 @@ def getFolders(tree):
 
     return l
 
+def logTypeCounts():
+    logger.info("Type Counts")
+    listCounts = dictCount.items()
+    for x in sorted(listCounts, key=lambda c: abs(c[1]), reverse=False):
+        if x[1] > 1:
+            logger.info("  %d - %s" % (x[1], x[0]))
+
+    logger.info(" ")
+
 if __name__ == "__main__":
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v28.archimate"
+    #fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v28.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v29.archimate"
     p, fname = os.path.split(fileArchimate)
 
     logger.info("Using : %s" % fileArchimate)
@@ -195,6 +217,8 @@ if __name__ == "__main__":
 
     # Get all Edges
     getEdges(tree, "Relations", dictEdges)
+
+    concepts = Concepts("Node", "Nodes")
 
     logger.info("Found %d Nodes" % len(dictNodes))
     logger.info("Found %d Edges" % len(dictEdges))
@@ -216,11 +240,15 @@ if __name__ == "__main__":
                 countNodeType(dictNodes[target][ARCHI_TYPE])
                 countNodeType(dictEdges[x][ARCHI_TYPE])
 
-                getNodeName(source)
-                getNodeName(target)
+                if (dictNodes[source][ARCHI_TYPE] == "archimate:BusinessProcess") and \
+                        dictNodes[target][ARCHI_TYPE] == "archimate:BusinessProcess":
 
-                if dictNodes[source][ARCHI_TYPE] == "archimate:BusinessProcess":
+                    logger.debug(" %s:%s" % (getNodeName(source), getNodeName(target)))
+
                     l = list()
+
+                    c = concepts.addConceptKeyType(getNodeName(source), "Source")
+                    c.addConceptKeyType(getNodeName(target), "Target")
 
                     l.append(target)
                     l.append(source)
@@ -230,11 +258,10 @@ if __name__ == "__main__":
     logger.info("Topic Sort Candidates : %d" % (count))
     logger.debug("Edges = %s" % listTSort)
 
-    logger.info("Type Counts")
-    listCounts = dictCount.items()
-    for x in sorted(listCounts, key=lambda c: abs(c[1]), reverse=False):
-        if x[1] > 1:
-            logger.info("  %d - %s" % (x[1], x[0]))
+
+    GC.graphConcepts(concepts, filename="UsedByAnalysis.png")
+
+    logTypeCounts()
 
     if False:
         index = 0
@@ -242,23 +269,25 @@ if __name__ == "__main__":
             logger.debug("%d %s[%s] -%s-> %s[%s]" % (index, dictNodes[x[0]]["name"], dictNodes[x[0]][ARCHI_TYPE], "UsedBy", dictNodes[x[1]]["name"], dictNodes[x[1]][ARCHI_TYPE]))
             index = index + 1
 
-    sort = topological_sort(listTSort)
-    listBP = [dictNodes[x]["name"] for x in sort if dictNodes[x][ARCHI_TYPE] == "archimate:BusinessProcess"]
-    listBP.reverse()
+    if False:
+        sort = topological_sort(listTSort)
+        listBP = [dictNodes[x]["name"] for x in sort if dictNodes[x][ARCHI_TYPE] == "archimate:BusinessProcess"]
+        listBP.reverse()
 
-    n = 0
-    logger.info("Sort")
-    for x in listBP:
-        logger.info("  %d : %s" % (n, x))
-        n += 1
+        n = 0
+        logger.info("Sort")
+        for x in listBP:
+            logger.info("  %d : %s" % (n, x))
+            n += 1
 
-        searchType = ("archimate:ApplicationService", "archimate:ApplicationComponent", "archimate:ApplicationInterface", "archimate:Requirement")
-        listNodes = getEdgesForNode(x, searchType, dictNodes, dictEdges)
-        for x in listNodes:
-            logger.info("    %s" % x)
+            if False:
+                searchType = ("archimate:ApplicationService", "archimate:ApplicationComponent", "archimate:ApplicationInterface", "archimate:Requirement")
+                listNodes = getEdgesForNode(x, searchType, dictNodes, dictEdges)
+                for x in listNodes:
+                    logger.info("    %s" % x)
 
 
-    if True:
+    if False:
         logger.info("Skipped")
         s1 = set([x for x in listBP])
         s2 = set([dictNodes[x[0]]["name"] for x in listTSort])

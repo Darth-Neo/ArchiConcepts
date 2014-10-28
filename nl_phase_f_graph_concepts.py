@@ -38,7 +38,7 @@ def addGraphEdges(graph, concepts, n=0):
             continue
         logger.debug("%d : %d Edge c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
         if i == 1:
-            p = c
+            p = concepts
             i += 1
         else:
             graph.addEdge(p, c)
