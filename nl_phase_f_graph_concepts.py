@@ -15,9 +15,6 @@ import time
 
 logger.setLevel(logging.INFO)
 
-gdb = "http://localhost:7474/db/data/"
-#gdb = "http://10.92.82.60:7574/db/data/"
-
 THRESHOLD = 4
 
 def addGraphNodes(graph, concepts, n=0):
@@ -41,30 +38,41 @@ def addGraphEdges(graph, concepts, n=0):
             p = concepts
             i += 1
         else:
-            graph.addEdge(p, c)
+            try:
+                graph.addEdge(p, c)
+            except:
+                pass
+
         if len(c.getConcepts()) != 0:
             addGraphEdges(graph, c, n)
 
 def graphConcepts(concepts, filename="example.png"):
 
-    #graph = Neo4JGraph(gdb)
+    gdb = "http://localhost:7474/db/data/"
+    #gdb = "http://10.92.82.60:7574/db/data/"
 
-    #logger.info("Clear the Graph @" + gdb)
-    #graph.clearGraphDB()
+    graph = Neo4JGraph(gdb)
 
-    graph = GraphVizGraph()
-    graph.g.node_attr['shape']='circle'
-    graph.g.edge_attr['color']='green'
-    graph.g.graph_attr['label']=filename
+    logger.info("Clear the Graph @" + gdb)
+    graph.clearGraphDB()
+
+    #graph = PatternGraph()
+    #graph = NetworkXGraph()
+    #graph = GraphVizGraph()
+    #graph.g.node_attr['shape']='circle'
+    #graph.g.edge_attr['color']='green'
+    #graph.g.graph_attr['label']=filename
 
     logger.info("Adding nodes the graph ...")
     addGraphNodes(graph, concepts)
+
     logger.info("Adding edges the graph ...")
     addGraphEdges(graph, concepts)
 
     if isinstance(graph, GraphVizGraph):
         graph.exportGraph(filename=filename)
         logger.info("Saved Graph - %s" % filename)
+
     if isinstance(graph, Neo4JGraph):
         graph.setNodeLabels()
 

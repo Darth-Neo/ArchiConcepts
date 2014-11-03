@@ -15,12 +15,13 @@ if __name__ == "__main__":
     #conceptFile = "chunks.p"
     #conceptFile = "topicChunks.p"
     #conceptFile = "topicsDict.p"
-    conceptFile = "documentsSimilarity.p"
+    #conceptFile = "documentsSimilarity.p"
     #conceptFile = "NVPChunks.p"
     #conceptFile = "ngrams.p"
     #conceptFile = "ngramscore.p"
     #conceptFile = "ngramsubject.p"
     #conceptFile = "archi.p"
+    conceptFile = "traversal.p"
     #
     #conceptFile = "pptx.p"
 

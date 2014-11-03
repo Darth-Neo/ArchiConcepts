@@ -14,6 +14,18 @@ from nl_lib.Concepts import Concepts
 
 from lxml import etree
 
+import nltk
+from nltk import tokenize, tag, chunk
+from nltk.corpus import webtext
+from nltk.collocations import BigramCollocationFinder, TrigramCollocationFinder
+from nltk.metrics import BigramAssocMeasures, TrigramAssocMeasures
+from nltk.corpus import stopwords
+from nltk.corpus import wordnet as wn
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+
+import import_artifacts as ia
+
+
 namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
 
 XML_NS         =  "http://www.w3.org/2001/XMLSchema-instance"
@@ -73,7 +85,7 @@ def topological_sort(edges):
         for t in st.get(s,{}).keys():
             prune(s,t)
             if not ts[t]:       # new frontier
-                logger.debug("  t : %s" % dictNodes[t]["name"])
+                logger.debug("    t : %s" % dictNodes[t]["name"])
                 S.add(t)
 
     if filter(None, st.values()): # we have a cycle. report the cycle.
@@ -84,11 +96,7 @@ def topological_sort(edges):
                     break
 
                 seen.append(s) # xx use ordered set..
-                try:
-                    traverse(st[s].keys(), seen)
-                except:
-                    return
-
+                traverse(st[s].keys(), seen)
 
         traverse(st.keys(), list())
         logger.debug("Should not reach")
@@ -195,14 +203,38 @@ def logTypeCounts():
 
     logger.info(" ")
 
+def findConcept(concept, name, n=0):
+    n += 1
+    c = None
+
+    if n == 3:
+        return c
+
+    for x in concepts.getConcepts().values():
+        if x.name == name:
+            return x
+        else:
+           c = findConcept(x, name, n)
+    return c
+
+def getWords(s, concepts):
+    lemmatizer = WordNetLemmatizer()
+
+    for word, pos in nltk.pos_tag(nltk.wordpunct_tokenize(s)):
+        if len(word) > 1 and pos[0] == "N":
+            lemmaWord = lemmatizer.lemmatize(word.lower())
+            e = concepts.addConceptKeyType(lemmaWord, "Word")
+            f = e.addConceptKeyType(pos, "POS")
+
 if __name__ == "__main__":
-    #fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v28.archimate"
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v29.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v30.archimate"
     p, fname = os.path.split(fileArchimate)
 
     logger.info("Using : %s" % fileArchimate)
 
     tree = etree.parse(fileArchimate)
+
+    concepts = Concepts("Node", "Nodes")
 
     dictNodes = dict()
     dictEdges = dict()
@@ -217,8 +249,6 @@ if __name__ == "__main__":
 
     # Get all Edges
     getEdges(tree, "Relations", dictEdges)
-
-    concepts = Concepts("Node", "Nodes")
 
     logger.info("Found %d Nodes" % len(dictNodes))
     logger.info("Found %d Edges" % len(dictEdges))
@@ -243,34 +273,55 @@ if __name__ == "__main__":
                 if (dictNodes[source][ARCHI_TYPE] == "archimate:BusinessProcess") and \
                         dictNodes[target][ARCHI_TYPE] == "archimate:BusinessProcess":
 
-                    logger.debug(" %s:%s" % (getNodeName(source), getNodeName(target)))
+                    sourceName = getNodeName(source)
+                    targetName = getNodeName(target)
+
+                    logger.debug(" %s:%s" % (sourceName, targetName))
 
                     l = list()
 
-                    c = concepts.addConceptKeyType(getNodeName(source), "Source")
-                    c.addConceptKeyType(getNodeName(target), "Target")
+                    sc = findConcept(concepts, sourceName)
+                    if sc == None:
+                        logger.debug("New Target - %s" % sourceName)
+                        sc = concepts.addConceptKeyType(getNodeName(source), "Source")
+                        getWords(sourceName, sc)
+                    else:
+                        logger.debug("Prior Target %s" % sourceName)
+
+                    tc = findConcept(concepts, targetName)
+                    if tc == None:
+                        logger.debug("New Target %s" % targetName)
+                        tc = sc.addConceptKeyType(getNodeName(target), "Target")
+                        getWords(sourceName, tc)
+                    else:
+                        logger.debug("Prior Target %s" % targetName)
+                        sc.addConcept(tc)
 
                     l.append(target)
                     l.append(source)
                     listTSort.append(l)
                     count = count + 1
 
-    logger.info("Topic Sort Candidates : %d" % (count))
     logger.debug("Edges = %s" % listTSort)
 
-
-    GC.graphConcepts(concepts, filename="UsedByAnalysis.png")
-
-    logTypeCounts()
+    Concepts.saveConcepts(concepts, "traversal.p")
 
     if False:
+        GC.graphConcepts(concepts, filename="UsedByAnalysis.png")
+
+    if True:
+        logTypeCounts()
+
+    if True:
         index = 0
         for x in listTSort:
             logger.debug("%d %s[%s] -%s-> %s[%s]" % (index, dictNodes[x[0]]["name"], dictNodes[x[0]][ARCHI_TYPE], "UsedBy", dictNodes[x[1]]["name"], dictNodes[x[1]][ARCHI_TYPE]))
             index = index + 1
 
-    if False:
+    if True:
+        logger.info("Topic Sort Candidates : %d" % (len(listTSort)))
         sort = topological_sort(listTSort)
+        logger.info("Topic Sort Count      : %d" % len(sort))
         listBP = [dictNodes[x]["name"] for x in sort if dictNodes[x][ARCHI_TYPE] == "archimate:BusinessProcess"]
         listBP.reverse()
 
@@ -284,10 +335,9 @@ if __name__ == "__main__":
                 searchType = ("archimate:ApplicationService", "archimate:ApplicationComponent", "archimate:ApplicationInterface", "archimate:Requirement")
                 listNodes = getEdgesForNode(x, searchType, dictNodes, dictEdges)
                 for x in listNodes:
-                    logger.info("    %s" % x)
+                    logger.info("    %s" % x.rstrip())
 
-
-    if False:
+    if True:
         logger.info("Skipped")
         s1 = set([x for x in listBP])
         s2 = set([dictNodes[x[0]]["name"] for x in listTSort])
