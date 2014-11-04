@@ -25,7 +25,6 @@ from nltk.stem import PorterStemmer, WordNetLemmatizer
 
 import import_artifacts as ia
 
-
 namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
 
 XML_NS         =  "http://www.w3.org/2001/XMLSchema-instance"
@@ -36,6 +35,81 @@ ARCHI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
 
 import nl_phase_f_graph_concepts as GC
 dictCount = dict()
+
+# The graph nodes
+class Task(object):
+    def __init__(self, name, depends):
+        self.__name    = name
+        self.__depends = set(depends)
+
+    @property
+    def name(self):
+        return self.__name
+
+    @property
+    def depends(self):
+        return self.__depends
+
+# "Batches" are sets of tasks that can be run together
+def get_task_batches(nodes):
+
+    # Build a map of node names to node instances
+    name_to_instance = dict( (n.name, n) for n in nodes )
+
+    for x in name_to_instance.keys():
+        logger.debug("name_to_instance[%s]=%s : %s" % (x, name_to_instance[x].name, name_to_instance[x].depends))
+
+    # Build a map of node names to dependency names
+    name_to_deps = dict( (n.name, set(n.depends)) for n in nodes )
+
+    for x in name_to_deps.keys():
+        logger.debug("name_to_deps[%s]=%s" % (x, name_to_deps[x]))
+
+    # This is where we'll store the batches
+    batches = []
+
+    n = 0
+    # While there are dependencies to solve...
+    while name_to_deps:
+        logger.debug("length %d" % len(name_to_deps))
+
+        # Get all nodes with no dependencies
+        ready = {name for name, deps in name_to_deps.iteritems() if not deps}
+
+        n += 1
+        logger.info("iteration : %d" % n)
+        for x in ready:
+            logger.info("  %s" % (x))
+
+        # If there aren't any, we have a loop in the graph
+        if not ready:
+            msg  = "Circular dependencies found!\n"
+            msg += format_dependencies(name_to_deps)
+            raise ValueError(msg)
+
+        # Remove them from the dependency graph
+        for name in ready:
+            del name_to_deps[name]
+        for deps in name_to_deps.itervalues():
+            deps.difference_update(ready)
+
+        # Add the batch to the list
+        batches.append( {name_to_instance[name] for name in ready} )
+
+    # Return the list of batches
+    return batches
+
+# Format a dependency graph for printing
+def format_dependencies(name_to_deps):
+    msg = []
+    for name, deps in name_to_deps.iteritems():
+        for parent in deps:
+            msg.append("%s -> %s" % (name, parent))
+    return "\n".join(msg)
+
+# Create and format a dependency graph for printing
+def format_nodes(nodes):
+    return format_dependencies(dict( (n.name, n.depends) for n in nodes ))
 
 class GraphError(Exception):
     pass
@@ -312,7 +386,7 @@ if __name__ == "__main__":
     if True:
         logTypeCounts()
 
-    if True:
+    if False:
         index = 0
         for x in listTSort:
             logger.debug("%d %s[%s] -%s-> %s[%s]" % (index, dictNodes[x[0]]["name"], dictNodes[x[0]][ARCHI_TYPE], "UsedBy", dictNodes[x[1]]["name"], dictNodes[x[1]][ARCHI_TYPE]))
@@ -331,20 +405,61 @@ if __name__ == "__main__":
             logger.info("  %d : %s" % (n, x))
             n += 1
 
-            if False:
+            if True:
                 searchType = ("archimate:ApplicationService", "archimate:ApplicationComponent", "archimate:ApplicationInterface", "archimate:Requirement")
                 listNodes = getEdgesForNode(x, searchType, dictNodes, dictEdges)
                 for x in listNodes:
-                    logger.info("    %s" % x.rstrip())
+                    logger.debug("    %s" % x.rstrip())
 
-    if True:
+    if False:
         logger.info("Skipped")
         s1 = set([x for x in listBP])
         s2 = set([dictNodes[x[0]]["name"] for x in listTSort])
         missing = s1 - s2
         searchType = ("archimate:Requirement")
         for x in missing:
-            logger.info("  %s" % x)
+            logger.debug("  %s" % x)
             listNodes = getEdgesForNode(x, searchType, dictNodes, dictEdges)
             for y in listNodes:
                 logger.info("    %s" % y)
+
+
+    nodes = list()
+    index = 0
+    dictTasks = dict()
+    for x in listTSort:
+        sname = dictNodes[x[0]]["name"]
+        tname = dictNodes[x[1]]["name"]
+        index += 1
+        logger.info("%d %s -%s-> %s" % (index, sname, "UsedBy", tname))
+
+        if dictTasks.has_key(sname):
+            ln = dictTasks[sname]
+            ln.append(tname)
+        else:
+            ln = list()
+            ln.append(tname)
+            dictTasks[sname] = ln
+
+    for x in dictTasks.keys():
+        logger.info("dictTasks[%s]=%s" % (x, dictTasks[x]))
+        a = Task(x, dictTasks[x])
+        nodes.append(a)
+
+    #a = da.Task("Start", list())
+    #nodes.append(a)
+
+    for x in listBP:
+        if not dictTasks.has_key(x):
+            logger.info("Add %s" % x)
+            a = Task(x, list())
+            nodes.append(a)
+
+    format_nodes(nodes)
+
+    n = 0
+    logger.info("Batches:")
+    batches = get_task_batches(nodes)
+    for bundle in batches:
+        n += 1
+        logger.info("%d : %s" % (n, ", ".join(node.name.lstrip() for node in bundle)))

@@ -52,16 +52,12 @@ def graphConcepts(concepts, filename="example.png"):
     #gdb = "http://10.92.82.60:7574/db/data/"
 
     graph = Neo4JGraph(gdb)
-
     logger.info("Clear the Graph @" + gdb)
     graph.clearGraphDB()
 
     #graph = PatternGraph()
     #graph = NetworkXGraph()
     #graph = GraphVizGraph()
-    #graph.g.node_attr['shape']='circle'
-    #graph.g.edge_attr['color']='green'
-    #graph.g.graph_attr['label']=filename
 
     logger.info("Adding nodes the graph ...")
     addGraphNodes(graph, concepts)
@@ -77,12 +73,13 @@ def graphConcepts(concepts, filename="example.png"):
         graph.setNodeLabels()
 
     if isinstance(graph, NetworkXGraph):
-        graph.drawGraph("concepts.png")
-        filename = "concepts.net"
-        logger.info("Saving Graph - %s" % filename)
+        #graph.drawGraph(filename)
+
+        graph.saveGraph(filename)
+        logger.info("Saved Graph - %s" % filename)
+
         graph.saveGraphPajek("concepts.png")
         graph.saveGraph("concepts.gml")
-        logger.info("Saving Graph - %s" % "concepts.gml")
         
     if isinstance(graph, PatternGraph):
         logger.info("Exporting Graph")
@@ -98,9 +95,9 @@ if __name__ == "__main__":
     #conceptFile = "ngrams.p"
     #conceptFile = "ngramscore.p"
     #conceptFile = "ngramsubject.p"
-    #conceptFile = "archi.p"
+    conceptFile = "archi.p"
     #conceptFile = "pptx.p"
-    conceptFile = "documentsSimilarity.p"
+    #conceptFile = "documentsSimilarity.p"
 
     listHomeDir = list()
     listHomeDir.append(os.getcwd())
