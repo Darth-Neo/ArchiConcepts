@@ -19,7 +19,6 @@ namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'ht
 XML_NS         =  "http://www.w3.org/2001/XMLSchema-instance"
 ARCHIMATE_NS   =  "http://www.archimatetool.com/archimate"
 NS_MAP = {"xsi": XML_NS, "archimate" : ARCHIMATE_NS}
-
 ARCHI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
 
 
@@ -28,17 +27,17 @@ def getNode(el, dictAttrib):
 
     attributes = el.attrib
 
-    if attributes[ARCHI_TYPE] == "archimate:UsedByRealtionship":
-        nl = dict()
-        for atr in attributes:
-            nl[atr] = attributes[atr]
-            logger.debug("%s = %s" % (atr, attributes[atr]))
+    #if attributes[ARCHI_TYPE] == "archimate:UsedByRealtionship":
+    nl = dict()
+    for atr in attributes:
+        nl[atr] = attributes[atr]
+        logger.debug("%s = %s" % (atr, attributes[atr]))
 
-        if nl.has_key("id"):
-            dictAttrib[nl["id"]] = nl
+    if nl.has_key("id"):
+        dictAttrib[nl["id"]] = nl
 
-        for elm in el:
-            getNode(elm, dictAttrib)
+    for elm in el:
+        getNode(elm, dictAttrib)
 
 def getEdges(tree, folder, dictAttrib):
     se = tree.xpath("folder[@name='%s']" % (folder))
@@ -58,12 +57,13 @@ def getFolders(tree):
     return l
 
 if __name__ == "__main__":
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v28.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v31.archimate"
     fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
 
     p, fname = os.path.split(fileArchimate)
-    logger.info("Using : %s" % fileArchimate)
+    logger.info("Using : %s" % fname)
 
+    etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimate)
 
     dictNodes = dict()
@@ -82,6 +82,10 @@ if __name__ == "__main__":
 
     f = open(fileOut,'w')
 
+    outText = "\"%s\",\"%s\",\"%s\",\"%s\"\n" % ("Source Name", "Source type", "Target Name", "Target Type")
+
+    f.write(outText)
+
     count = 0
     for x in dictEdges.keys():
         logger.debug("[%s]=%s" % (dictEdges[x]["id"], x))
@@ -96,12 +100,15 @@ if __name__ == "__main__":
             #if dictEdges[x][ARCHI_TYPE] in ("archimate:UsedByRelationship","archimate:AssociationRelationship"):
             if dictEdges[x][ARCHI_TYPE] in ("archimate:AssociationRelationship"):
                 try:
-                    if sourceType in ("archimate:ApplicationService", "archimate:BusinessProcess"):
+                    if sourceType in ("archimate:ApplicationService", "archimate:BusinessProcess",
+                                      "archimate:ApplicationService", "archimate:ApplicationComponent",
+                                      "archimate:ApplicationInterface", "archimate:Requirement"):
                         #logger.info("  Rel    : %s" % (dictEdges[x][ARCHI_TYPE]))
                         logger.info("  Source : %s[%s]" % (dictNodes[source]["name"], dictNodes[source][ARCHI_TYPE]))
                         logger.info("    Target : %s[%s]" % (dictNodes[target]["name"], dictNodes[target][ARCHI_TYPE]))
 
-                        outText = "\"%s\",\"%s\",\"%s\",\"%s\"\n" % (dictNodes[source]["name"], dictNodes[source][ARCHI_TYPE], dictNodes[target]["name"], dictNodes[target][ARCHI_TYPE])
+                        outText = "\"%s\",\"%s\",\"%s\",\"%s\"\n" % (dictNodes[source]["name"], dictNodes[source][ARCHI_TYPE],
+                                                                     dictNodes[target]["name"], dictNodes[target][ARCHI_TYPE])
                         f.write(outText)
                 except:
                     pass

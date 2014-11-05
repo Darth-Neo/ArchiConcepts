@@ -22,7 +22,7 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-import import_artifacts as ia
+import ImportArtifacts as ia
 
 num_topics = 100
 num_words  = 100

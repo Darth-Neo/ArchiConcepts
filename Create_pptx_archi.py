@@ -17,7 +17,7 @@ from pptx.enum.dml import MSO_THEME_COLOR
 from pptx.util import Pt
 from pptx.oxml.shapes import connector
 from pptx.parts.slide import _SlideShapeTree
-import import_artifacts as ia
+import ImportArtifacts as ia
 
 SLD_LAYOUT_TITLE_AND_CONTENT = 1
 TITLE_ONLY_SLIDE_LAYOUT = 5

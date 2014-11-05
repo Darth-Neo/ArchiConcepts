@@ -15,14 +15,13 @@ import time
 
 logger.setLevel(logging.INFO)
 
-THRESHOLD = 4
+THRESHOLD = 1
 
 def addGraphNodes(graph, concepts, n=0):
     n += 1
     for c in concepts.getConcepts().values():
         logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
-        if c.typeName == "CommonTopic":
-            continue
+
         graph.addConcept(c)
         if len(c.getConcepts()) > THRESHOLD:
             addGraphNodes(graph, c, n)
@@ -31,15 +30,18 @@ def addGraphEdges(graph, concepts, n=0):
     n += 1
     i = 1
     for c in concepts.getConcepts().values():
-        if c.typeName == "CommonTopic":
-            continue
-        logger.debug("%d : %d Edge c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
+
+        logger.info("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
+
         if i == 1:
             p = concepts
+            graph.addConcept(p)
+            graph.addConcept(c)
+            graph.addEdge(concepts, c)
             i += 1
         else:
             try:
-                graph.addEdge(p, c)
+                graph.addEdge(concepts, c)
             except:
                 pass
 
@@ -95,9 +97,10 @@ if __name__ == "__main__":
     #conceptFile = "ngrams.p"
     #conceptFile = "ngramscore.p"
     #conceptFile = "ngramsubject.p"
-    conceptFile = "archi.p"
+    #conceptFile = "archi.p"
     #conceptFile = "pptx.p"
     #conceptFile = "documentsSimilarity.p"
+    conceptFile = "batches.p"
 
     listHomeDir = list()
     listHomeDir.append(os.getcwd())
@@ -119,7 +122,7 @@ if __name__ == "__main__":
 
     # c.logConcepts()
 
-    filename = "Requirements_" + time.strftime("%Y%d%m_%H%M%S") + ".png"
+    filename = "Batches_" + time.strftime("%Y%d%m_%H%M%S") + ".png"
     
     graphConcepts(c, filename=filename)
 

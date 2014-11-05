@@ -17,7 +17,7 @@ from nl_lib.Concepts import Concepts
 from lxml import etree
 import nltk
 
-import import_artifacts as ia
+import ImportArtifacts as ia
 import DependancyAnalysisFromArchi as dafa
 
 namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
@@ -31,7 +31,7 @@ ARCHI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
 logger.setLevel(logging.INFO)
 
 if __name__ == "__main__":
-    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v28.archimate"
+    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v31.archimate"
     fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
     fileConcepts = "req.p"
 
@@ -79,7 +79,7 @@ if __name__ == "__main__":
                 searchType = ("archimate:BusinessObject")
                 listNodes = dafa.getEdgesForNode(dictNodes[source]["name"], searchType, dictNodes, dictEdges)
                 for x in listNodes:
-                    logger.info("    %s" % (x))
+                    logger.debug("    %s" % (x))
 
         except:
             pass

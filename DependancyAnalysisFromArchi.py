@@ -23,7 +23,7 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-import import_artifacts as ia
+import ImportArtifacts as ia
 
 namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
 
@@ -33,7 +33,7 @@ NS_MAP = {"xsi": XML_NS, "archimate" : ARCHIMATE_NS}
 
 ARCHI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
 
-import nl_phase_f_graph_concepts as GC
+import GraphConcepts as GC
 dictCount = dict()
 
 # The graph nodes
@@ -301,7 +301,7 @@ def getWords(s, concepts):
             f = e.addConceptKeyType(pos, "POS")
 
 if __name__ == "__main__":
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v30.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v31.archimate"
     p, fname = os.path.split(fileArchimate)
 
     logger.info("Using : %s" % fileArchimate)
@@ -406,13 +406,14 @@ if __name__ == "__main__":
             n += 1
 
             if True:
-                searchType = ("archimate:ApplicationService", "archimate:ApplicationComponent", "archimate:ApplicationInterface", "archimate:Requirement")
+                searchType = ("archimate:ApplicationService", "archimate:ApplicationComponent",
+                              "archimate:ApplicationInterface", "archimate:Requirement", "archimateWorkPackage")
                 listNodes = getEdgesForNode(x, searchType, dictNodes, dictEdges)
                 for x in listNodes:
-                    logger.debug("    %s" % x.rstrip())
+                    logger.info("    %s" % x.rstrip())
 
     if False:
-        logger.info("Skipped")
+        logger.debug("Skipped")
         s1 = set([x for x in listBP])
         s2 = set([dictNodes[x[0]]["name"] for x in listTSort])
         missing = s1 - s2
@@ -421,7 +422,7 @@ if __name__ == "__main__":
             logger.debug("  %s" % x)
             listNodes = getEdgesForNode(x, searchType, dictNodes, dictEdges)
             for y in listNodes:
-                logger.info("    %s" % y)
+                logger.debug("    %s" % y)
 
 
     nodes = list()
@@ -431,7 +432,7 @@ if __name__ == "__main__":
         sname = dictNodes[x[0]]["name"]
         tname = dictNodes[x[1]]["name"]
         index += 1
-        logger.info("%d %s -%s-> %s" % (index, sname, "UsedBy", tname))
+        logger.debug("%d %s -%s-> %s" % (index, sname, "UsedBy", tname))
 
         if dictTasks.has_key(sname):
             ln = dictTasks[sname]
@@ -442,12 +443,9 @@ if __name__ == "__main__":
             dictTasks[sname] = ln
 
     for x in dictTasks.keys():
-        logger.info("dictTasks[%s]=%s" % (x, dictTasks[x]))
+        logger.debug("dictTasks[%s]=%s" % (x, dictTasks[x]))
         a = Task(x, dictTasks[x])
         nodes.append(a)
-
-    #a = da.Task("Start", list())
-    #nodes.append(a)
 
     for x in listBP:
         if not dictTasks.has_key(x):
@@ -457,9 +455,18 @@ if __name__ == "__main__":
 
     format_nodes(nodes)
 
+    conceptBatches = Concepts("Batch", "Batches")
+
     n = 0
     logger.info("Batches:")
     batches = get_task_batches(nodes)
     for bundle in batches:
         n += 1
+        name = "Batch %d" % n
+        c = conceptBatches.addConceptKeyType(name, "Batch")
+        for node in bundle:
+            c.addConceptKeyType(node.name, "Node")
+
         logger.info("%d : %s" % (n, ", ".join(node.name.lstrip() for node in bundle)))
+
+    Concepts.saveConcepts(conceptBatches, "batches.p")

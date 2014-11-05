@@ -15,7 +15,7 @@ from lxml import etree
 
 from traceback import format_exc
 
-import import_artifacts as ia
+import ImportArtifacts as ia
 
 # Constants
 EMU = 914400.0

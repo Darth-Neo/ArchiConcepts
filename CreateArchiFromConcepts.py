@@ -11,7 +11,7 @@ from nl_lib.Concepts import Concepts
 
 from lxml import etree
 
-import import_artifacts as ia
+import ImportArtifacts as ia
 
 namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
 
@@ -352,9 +352,9 @@ def createConnections(concepts):
 
 if __name__ == "__main__":
     filePPConcepts = "pptx.p"
-    #fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v26.archimate"
-    fileArchimateIn = "/Users/morrj140/Development/GitRepository/ArchiConcepts/baseline.archimate"
-    fileArchimateOut = 'import_pp.archimate'
+    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v31.archimate"
+    #fileArchimateIn = "/Users/morrj140/Development/GitRepository/ArchiConcepts/baseline.archimate"
+    #fileArchimateOut = 'import_pp.archimate'
 
     etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimateIn)

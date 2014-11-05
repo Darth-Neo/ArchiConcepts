@@ -153,11 +153,10 @@ def logNode(n, type):
 
     attributes = n.attrib
 
-    if attributes.get(ARCHI_TYPE) == type:
-        if attributes.get("id") != None:
-            dictName[n.get("name")] = attributes["id"]
+    if attributes.get("id") != None:
+        dictName[n.get("name")] = attributes["id"]
 
-            logger.debug("logNode : %s:%s:%s:%s" % (n.tag, n.get("name"), n.get("id"), attributes.get(ARCHI_TYPE)))
+        logger.debug("logNode : %s:%s:%s:%s" % (n.tag, n.get("name"), n.get("id"), attributes.get(ARCHI_TYPE)))
 
     for y in n:
         logNode(y, type)
@@ -166,7 +165,7 @@ def logAll(tree, type="archimate:ApplicationComponent"):
     for x in tree.getroot():
         logNode(x, type)
 
-def outputXML(tree, filename="import_artifacts.archimate"):
+def outputXML(tree, filename="import_artifacts.archimate"):#
     output = StringIO.StringIO()
     tree.write(output, pretty_print=True)
 
@@ -343,8 +342,8 @@ def insertNColumns(tree, folder, subfolder, fileMetaEntity, eType):
 
             if p != None:
                 attrib = dict()
-                attrib["source"] = CM_ID
-                attrib["target"] = p
+                attrib["source"] = p
+                attrib["target"] = CM_ID
                 attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
                 insertRel(tag, "Relations", tree, attrib)
 
@@ -497,14 +496,45 @@ def insertScenarios(tree, fileMetaEntity):
 
         rownum += 1
 
+def insertConcepts(tree, concepts, n=0):
+
+    for x in concepts.getConcepts().values():
+        logger.info("x : %s" % x.name)
+        for y in x.getConcepts().values():
+            logger.info("  y : %s" % y.name)
+            attrib = dict()
+            attrib["name"] = x.name
+            attrib[ARCHI_TYPE] = "archimate:WorkPackage"
+            insertNode("element", "Implementation & Migration", tree, attrib)
+            wp1 = attrib["id"]
+
+            attrib = dict()
+            attrib["name"] = y.name
+            attrib[ARCHI_TYPE] = "archimate:BusinessProcess"
+            insertNode("element", "Process", tree, attrib)
+            wp2 = attrib["id"]
+
+            attrib = dict()
+            attrib["source"] = wp1
+            attrib["target"] = wp2
+            attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
+            insertRel("element", "Relations", tree, attrib)
+
 
 if __name__ == "__main__":
     # Archimate
-    fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v26.archimate"
+    fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v33.archimate"
     etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimate)
 
     logAll(tree)
+
+    fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Gaps20141104.csv"
+    logger.info("Using : %s" % fileArchimate)
+    insertNColumns(tree, "Implementation & Migration", "Gaps20141104", fileMetaEntity, eType="archimate:Gap")
+
+    #concepts = Concepts.loadConcepts("batches.p")
+    #insertConcepts(tree, concepts)
 
     # MQ
     #fileMetaEntity = "/Users/morrj140/Documents/SolutionEngineering/CodeGen/EAI Analysis/MQ Messages.csv"
@@ -512,9 +542,9 @@ if __name__ == "__main__":
     #insertTwoColumns(tree, "Application", "MQ Messages", fileMetaEntity, eType="archimate:ApplicationService")
 
     #fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Party-Product-GuestComm_Func.csv"
-    fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/AR Functional Interface Mapping - Order, Payment & Accounting.csv"
-    logger.info("Using : %s" % fileArchimate)
-    insertNColumns(tree, "Application", "Order-Payment-Accounting", fileMetaEntity, eType="archimate:ApplicationService")
+    #fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/AR Functional Interface Mapping - Order, Payment & Accounting.csv"
+    #logger.info("Using : %s" % fileArchimate)
+    #insertNColumns(tree, "Application", "Order-Payment-Accounting", fileMetaEntity, eType="archimate:ApplicationService")
 
 
     # EAI
