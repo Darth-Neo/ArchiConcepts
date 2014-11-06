@@ -111,72 +111,6 @@ def format_dependencies(name_to_deps):
 def format_nodes(nodes):
     return format_dependencies(dict( (n.name, n.depends) for n in nodes ))
 
-class GraphError(Exception):
-    pass
-
-def topological_sort(edges):
-    """topologically sort vertices in edges.
-
-    edges: list of pairs of vertices. Edges must form a DAG.
-           If the graph has a cycle, then GraphError is raised.
-
-    returns: topologically sorted list of vertices.
-
-    see http://en.wikipedia.org/wiki/Topological_sorting
-    """
-    # resulting list
-    L=[]
-
-    # maintain forward and backward edge maps in parallel.
-    st,ts={},{}
-
-    def prune(s,t):
-        logger.debug("prune source : %s" % dictNodes[s]["name"])
-        logger.debug("prune target : %s" % dictNodes[t]["name"])
-        del st[s][t]
-        del ts[t][s]
-
-    def add(s,t):
-        logger.debug("add source : %s" % dictNodes[s]["name"])
-        logger.debug("  add target : %s" % dictNodes[t]["name"])
-
-        try:
-            st.setdefault(s,{})[t]=1
-        except Exception, e:
-            raise RuntimeError(e, (s,t))
-        ts.setdefault(t,{})[s]=1
-
-    for s,t in edges:
-        add(s,t)
-
-    # frontier
-    S=set(st.keys()).difference(ts.keys())
-
-    while S:
-        s=S.pop()
-        logger.debug("source : %s" % dictNodes[s]["name"])
-        L.append(s)
-        for t in st.get(s,{}).keys():
-            prune(s,t)
-            if not ts[t]:       # new frontier
-                logger.debug("    t : %s" % dictNodes[t]["name"])
-                S.add(t)
-
-    if filter(None, st.values()): # we have a cycle. report the cycle.
-        def traverse(vs, seen):
-            for s in vs:
-                if s in seen:
-                    logger.warn("%s:%s" % (dictNodes[s]["name"], GraphError('contains cycle: ', [dictNodes[x]["name"] for x in seen])))
-                    break
-
-                seen.append(s) # xx use ordered set..
-                traverse(st[s].keys(), seen)
-
-        traverse(st.keys(), list())
-        logger.debug("Should not reach")
-
-    return L
-
 def getEdgesForNode(nodeName, searchType, dictNodes, dictEdges, n=0):
     listNodes = list()
 
@@ -291,6 +225,12 @@ def findConcept(concept, name, n=0):
            c = findConcept(x, name, n)
     return c
 
+def addToNodeDict(name, d):
+    if d.has_key(name):
+        d[name] += 1
+    else:
+        d[name] = 1
+
 def getWords(s, concepts):
     lemmatizer = WordNetLemmatizer()
 
@@ -312,6 +252,7 @@ if __name__ == "__main__":
 
     dictNodes = dict()
     dictEdges = dict()
+    dictBP = dict()
 
     listFolders = getFolders(tree)
 
@@ -383,47 +324,17 @@ if __name__ == "__main__":
     if False:
         GC.graphConcepts(concepts, filename="UsedByAnalysis.png")
 
-    if True:
-        logTypeCounts()
+    logTypeCounts()
 
-    if False:
-        index = 0
-        for x in listTSort:
-            logger.debug("%d %s[%s] -%s-> %s[%s]" % (index, dictNodes[x[0]]["name"], dictNodes[x[0]][ARCHI_TYPE], "UsedBy", dictNodes[x[1]]["name"], dictNodes[x[1]][ARCHI_TYPE]))
-            index = index + 1
+    index = 0
+    for x in listTSort:
+        logger.info("%d %s[%s] -%s-> %s[%s]" % (index, dictNodes[x[0]]["name"], dictNodes[x[0]][ARCHI_TYPE], "UsedBy", dictNodes[x[1]]["name"], dictNodes[x[1]][ARCHI_TYPE]))
+        index = index + 1
 
-    if True:
-        logger.info("Topic Sort Candidates : %d" % (len(listTSort)))
-        sort = topological_sort(listTSort)
-        logger.info("Topic Sort Count      : %d" % len(sort))
-        listBP = [dictNodes[x]["name"] for x in sort if dictNodes[x][ARCHI_TYPE] == "archimate:BusinessProcess"]
-        listBP.reverse()
+        addToNodeDict(dictNodes[x[0]]["name"], dictBP)
+        addToNodeDict(dictNodes[x[1]]["name"], dictBP)
 
-        n = 0
-        logger.info("Sort")
-        for x in listBP:
-            logger.info("  %d : %s" % (n, x))
-            n += 1
-
-            if True:
-                searchType = ("archimate:ApplicationService", "archimate:ApplicationComponent",
-                              "archimate:ApplicationInterface", "archimate:Requirement", "archimateWorkPackage")
-                listNodes = getEdgesForNode(x, searchType, dictNodes, dictEdges)
-                for x in listNodes:
-                    logger.info("    %s" % x.rstrip())
-
-    if False:
-        logger.debug("Skipped")
-        s1 = set([x for x in listBP])
-        s2 = set([dictNodes[x[0]]["name"] for x in listTSort])
-        missing = s1 - s2
-        searchType = ("archimate:Requirement")
-        for x in missing:
-            logger.debug("  %s" % x)
-            listNodes = getEdgesForNode(x, searchType, dictNodes, dictEdges)
-            for y in listNodes:
-                logger.debug("    %s" % y)
-
+    logger.info("Topic Sort Candidates : %d" % (len(listTSort)))
 
     nodes = list()
     index = 0
@@ -447,9 +358,10 @@ if __name__ == "__main__":
         a = Task(x, dictTasks[x])
         nodes.append(a)
 
-    for x in listBP:
+    for x in dictBP.keys():
+        #for x in listBP:
         if not dictTasks.has_key(x):
-            logger.info("Add %s" % x)
+            logger.info("Add %s" % (x))
             a = Task(x, list())
             nodes.append(a)
 

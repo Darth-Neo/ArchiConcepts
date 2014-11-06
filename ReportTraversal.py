@@ -57,7 +57,7 @@ def getFolders(tree):
     return l
 
 if __name__ == "__main__":
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v31.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v34.archimate"
     fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
 
     p, fname = os.path.split(fileArchimate)

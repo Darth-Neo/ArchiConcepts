@@ -297,7 +297,7 @@ def insertTwoColumns(tree, folder, subfolder, fileMetaEntity, eType):
         attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
         insertRel(tag, "Relations", tree, attrib)
 
-def insertNColumns(tree, folder, subfolder, fileMetaEntity, eType):
+def insertNColumns(tree, folder, subfolder, fileMetaEntity):
 
     #<element xsi:type="archimate:Node" id="612a9b73" name="Linux Server"/>
 
@@ -318,25 +318,29 @@ def insertNColumns(tree, folder, subfolder, fileMetaEntity, eType):
 
     rownum = 0
 
+    listColumnHeaders = list()
+
     for row in reader:
         if rownum == 0:
             rownum += 1
+            for col in row:
+                colType = "archimate:%s" % col
+                listColumnHeaders.append(colType)
             continue
 
         logger.info("rownum : %d" % rownum)
         logger.info("row    : %s" % row)
 
         p = None
+        colnum = 0
         for col in row:
-
-            logger.info("    colnum : %d" % rownum)
-            logger.info("    col    : %s" % row)
+            logger.info("    %d   [%s] %s" % (colnum, listColumnHeaders[colnum], col))
 
             CM = col.decode(encoding='UTF-8',errors='ignore').lstrip()
 
             attrib = dict()
             attrib["name"] = CM
-            attrib[ARCHI_TYPE] = eType
+            attrib[ARCHI_TYPE] = listColumnHeaders[colnum]
             insertNode(tag, folder, tree, attrib)
             CM_ID = attrib["id"]
 
@@ -351,6 +355,7 @@ def insertNColumns(tree, folder, subfolder, fileMetaEntity, eType):
             else:
                 p = CM_ID
 
+            colnum += 1
 
 def insertScenarios(tree, fileMetaEntity):
 
@@ -529,9 +534,14 @@ if __name__ == "__main__":
 
     logAll(tree)
 
-    fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Gaps20141104.csv"
+    fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Who_What_How_20141024.csv"
     logger.info("Using : %s" % fileArchimate)
-    insertNColumns(tree, "Implementation & Migration", "Gaps20141104", fileMetaEntity, eType="archimate:Gap")
+    insertNColumns(tree, "Motivation", "Who_What_How_20141024", fileMetaEntity)
+
+
+    #fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Gaps20141104.csv"
+    #logger.info("Using : %s" % fileArchimate)
+    #insertNColumns(tree, "Implementation & Migration", "Gaps20141104", fileMetaEntity, eType="archimate:Gap")
 
     #concepts = Concepts.loadConcepts("batches.p")
     #insertConcepts(tree, concepts)

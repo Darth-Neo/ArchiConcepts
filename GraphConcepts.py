@@ -97,10 +97,10 @@ if __name__ == "__main__":
     #conceptFile = "ngrams.p"
     #conceptFile = "ngramscore.p"
     #conceptFile = "ngramsubject.p"
-    #conceptFile = "archi.p"
+    conceptFile = "archi.p"
     #conceptFile = "pptx.p"
     #conceptFile = "documentsSimilarity.p"
-    conceptFile = "batches.p"
+    #conceptFile = "batches.p"
 
     listHomeDir = list()
     listHomeDir.append(os.getcwd())

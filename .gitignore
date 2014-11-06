@@ -19,5 +19,8 @@ Runs/*
 Examples/*
 *.gml
 *.csv
-
-
+*.pptx
+html/*
+*.xlsx
+log*
+*.dot
