@@ -152,11 +152,17 @@ def getNameID(value):
 def logNode(n, type):
 
     attributes = n.attrib
+    if type != None:
+        if isinstance(type, tuple) or isinstance(type, list):
+            if attributes.get(ARCHI_TYPE) in type:
+                if attributes.get("id") != None:
+                    dictName[n.get("name")] = attributes["id"]
+        else:
+            if attributes.get(ARCHI_TYPE) == type:
+                if attributes.get("id") != None:
+                    dictName[n.get("name")] = attributes["id"]
 
-    if attributes.get("id") != None:
-        dictName[n.get("name")] = attributes["id"]
-
-        logger.debug("logNode : %s:%s:%s:%s" % (n.tag, n.get("name"), n.get("id"), attributes.get(ARCHI_TYPE)))
+    logger.debug("logNode : %s:%s:%s:%s" % (n.tag, n.get("name"), n.get("id"), attributes.get(ARCHI_TYPE)))
 
     for y in n:
         logNode(y, type)
