@@ -22,8 +22,8 @@ if __name__ == "__main__":
     #conceptFile = "ngramsubject.p"
     #conceptFile = "archi.p"
     #conceptFile = "traversal.p"
-    conceptFile = "batches.p"
-
+    #conceptFile = "batches.p"
+    conceptFile = "export.p"
     #
     #conceptFile = "pptx.p"
 

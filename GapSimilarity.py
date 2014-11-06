@@ -26,9 +26,9 @@ from nltk.stem import PorterStemmer, WordNetLemmatizer
 
 import ImportArtifacts as ia
 
-num_topics = 100
-num_words  = 100
-similarity = 0.60
+num_topics = 10
+num_words  = 10
+similarity = 0.80
 
 namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
 
@@ -285,7 +285,7 @@ class DocumentsSimilarity(object):
 if __name__ == "__main__":
     fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v34.archimate"
     fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
-    fileConcepts = "req.p"
+    fileConcepts = "gaps.p"
 
     etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimateIn)
@@ -340,6 +340,4 @@ if __name__ == "__main__":
         logger.info("Topics Sorted")
         for x in sorted(listTopics, key=lambda c: abs(c[1]), reverse=False):
             logger.info("Topic : %s[%d]" % (x[0], x[1]))
-
-    #nc.logConcepts()
 
