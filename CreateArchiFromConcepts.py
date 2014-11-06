@@ -11,7 +11,7 @@ from nl_lib.Concepts import Concepts
 
 from lxml import etree
 
-import ImportArtifacts as ia
+import ImportArchi as ia
 
 namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
 

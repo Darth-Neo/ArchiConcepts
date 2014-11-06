@@ -24,7 +24,7 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-import ImportArtifacts as ia
+import ImportArchi as ia
 
 namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
 
@@ -214,13 +214,11 @@ if __name__ == "__main__":
             logger.debug(" %s--%s--%s" % (sourceName, dictEdges[x][ARCHI_TYPE][10:], targetName))
 
             l = list()
-            sourceTypeName = "%s:%s" % (sourceName, dictNodes[source][ARCHI_TYPE][10:])
-            sc = concepts.addConceptKeyType(sourceTypeName, "Source")
-            getWords(sourceName, sc)
+            sc = concepts.addConceptKeyType(sourceName, dictNodes[source][ARCHI_TYPE][10:])
+            #getWords(sourceName, sc)
 
-            targetTypeName = "%s:%s" % (targetName, dictNodes[target][ARCHI_TYPE][10:])
-            tc = sc.addConceptKeyType(targetTypeName, "Target")
-            getWords(sourceName, tc)
+            tc = sc.addConceptKeyType(targetName, dictNodes[target][ARCHI_TYPE][10:])
+            #getWords(sourceName, tc)
 
     Concepts.saveConcepts(concepts, "export.p")
 
@@ -229,4 +227,4 @@ if __name__ == "__main__":
 
     logTypeCounts()
 
-    concepts.logConcepts()
+    #concepts.logConcepts()

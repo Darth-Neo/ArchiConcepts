@@ -37,11 +37,17 @@ def addGraphEdges(graph, concepts, n=0):
             p = concepts
             graph.addConcept(p)
             graph.addConcept(c)
-            graph.addEdge(concepts, c)
+            if isinstance(graph, Neo4JGraph):
+                graph.addEdge(concepts, c, c.typeName)
+            else:
+                graph.addEdge(concepts, c)
             i += 1
         else:
             try:
-                graph.addEdge(concepts, c)
+                if isinstance(graph, Neo4JGraph):
+                    graph.addEdge(concepts, c, c.typeName)
+                else:
+                    graph.addEdge(concepts, c)
             except:
                 pass
 
@@ -53,12 +59,13 @@ def graphConcepts(concepts, filename="example.png"):
     gdb = "http://localhost:7474/db/data/"
     #gdb = "http://10.92.82.60:7574/db/data/"
 
-    graph = Neo4JGraph(gdb)
-    logger.info("Clear the Graph @" + gdb)
-    graph.clearGraphDB()
+    if False:
+        graph = Neo4JGraph(gdb)
+        logger.info("Clear the Graph @" + gdb)
+        graph.clearGraphDB()
 
     #graph = PatternGraph()
-    #graph = NetworkXGraph()
+    graph = NetworkXGraph()
     #graph = GraphVizGraph()
 
     logger.info("Adding nodes the graph ...")
@@ -97,10 +104,11 @@ if __name__ == "__main__":
     #conceptFile = "ngrams.p"
     #conceptFile = "ngramscore.p"
     #conceptFile = "ngramsubject.p"
-    conceptFile = "archi.p"
+    #conceptFile = "archi.p"
     #conceptFile = "pptx.p"
     #conceptFile = "documentsSimilarity.p"
     #conceptFile = "batches.p"
+    conceptFile = "export.p"
 
     listHomeDir = list()
     listHomeDir.append(os.getcwd())
