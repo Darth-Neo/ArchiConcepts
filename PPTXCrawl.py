@@ -311,7 +311,7 @@ def crawlPPTX(concepts, path_to_presentation):
         titleSlide = ""
 
         for idx, ph in enumerate(slide.shapes.placeholders):
-            logger.debug ("**    %s:%s    **" % (idx, ph.text))
+            #logger.debug ("**    %s:%s    **" % (idx, ph.text))
             if idx == 0:
                 titleSlide = ph.text
 
@@ -497,13 +497,15 @@ def crawlPPTX(concepts, path_to_presentation):
 if __name__ == "__main__":
     #graph = NetworkXGraph()
 
+    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v34.archimate"
+
     #path_to_presentation = "/Users/morrj140/PycharmProjects/ArchiConcepts/example2.pptx"
     #path_to_presentation = "/Users/morrj140/PycharmProjects/ArchiConcepts/ARP-TBX - High Level Solution_Draft_v9.pptx"
     #path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/ARP-TBX - High Level Solution_Draft_v10a.pptx"
     #path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Accovia_Replacement_Messages.pptx"
     #path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/ARP-TBX - Next Level Solution -v1.pptx"
 
-    path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/simple2.pptx"
+    path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Business Structure_110414.pptx"
 
     c = Concepts("Application", "Relations")
 

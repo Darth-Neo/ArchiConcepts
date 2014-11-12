@@ -324,6 +324,8 @@ def insertNColumns(tree, folder, subfolder, fileMetaEntity):
 
     rownum = 0
 
+    previous = dict()
+
     listColumnHeaders = list()
 
     for row in reader:
@@ -339,10 +341,18 @@ def insertNColumns(tree, folder, subfolder, fileMetaEntity):
 
         p = None
         colnum = 0
-        for col in row:
-            logger.info("    %d   [%s] %s" % (colnum, listColumnHeaders[colnum], col))
 
-            CM = col.decode(encoding='UTF-8',errors='ignore').lstrip()
+        for col in row:
+            logger.debug("    %d   [%s] %s" % (colnum, listColumnHeaders[colnum], col))
+
+            CM = col.decode(encoding='ASCII',errors='ignore').lstrip()
+
+            logger.info("CM : %s" % CM)
+
+            if CM == "":
+                CM = previous[colnum]
+            else:
+                previous[colnum] = CM
 
             attrib = dict()
             attrib["name"] = CM
@@ -352,8 +362,8 @@ def insertNColumns(tree, folder, subfolder, fileMetaEntity):
 
             if p != None:
                 attrib = dict()
-                attrib["source"] = p
-                attrib["target"] = CM_ID
+                attrib["source"] = CM_ID
+                attrib["target"] = p
                 attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
                 insertRel(tag, "Relations", tree, attrib)
 
@@ -362,6 +372,8 @@ def insertNColumns(tree, folder, subfolder, fileMetaEntity):
                 p = CM_ID
 
             colnum += 1
+
+        #previous = row
 
 def insertScenarios(tree, fileMetaEntity):
 
@@ -534,16 +546,20 @@ def insertConcepts(tree, concepts, n=0):
 
 if __name__ == "__main__":
     # Archimate
-    fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v33.archimate"
+    fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC V2.archimate"
     etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimate)
 
     logAll(tree)
 
-    fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Who_What_How_20141024.csv"
+    fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/DVC Business Requirements.csv"
     logger.info("Using : %s" % fileArchimate)
-    insertNColumns(tree, "Motivation", "Who_What_How_20141024", fileMetaEntity)
+    insertNColumns(tree, "Motivation", "Business Requirements", fileMetaEntity)
 
+
+    #fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Who_What_How_20141024.csv"
+    #logger.info("Using : %s" % fileArchimate)
+    #insertNColumns(tree, "Motivation", "Who_What_How_20141024", fileMetaEntity)
 
     #fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Gaps20141104.csv"
     #logger.info("Using : %s" % fileArchimate)

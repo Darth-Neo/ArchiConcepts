@@ -23,7 +23,9 @@ if __name__ == "__main__":
     #conceptFile = "archi.p"
     #conceptFile = "traversal.p"
     #conceptFile = "batches.p"
-    conceptFile = "export.p"
+    #conceptFile = "export.p"
+    conceptFile = "req.p"
+
     #
     #conceptFile = "pptx.p"
 

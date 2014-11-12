@@ -65,8 +65,8 @@ def graphConcepts(concepts, filename="example.png"):
         graph.clearGraphDB()
 
     #graph = PatternGraph()
-    graph = NetworkXGraph()
-    #graph = GraphVizGraph()
+    #graph = NetworkXGraph()
+    graph = GraphVizGraph()
 
     logger.info("Adding nodes the graph ...")
     addGraphNodes(graph, concepts)
@@ -86,8 +86,6 @@ def graphConcepts(concepts, filename="example.png"):
 
         graph.saveGraph(filename)
         logger.info("Saved Graph - %s" % filename)
-
-        graph.saveGraphPajek("concepts.png")
         graph.saveGraph("concepts.gml")
         
     if isinstance(graph, PatternGraph):
@@ -95,42 +93,40 @@ def graphConcepts(concepts, filename="example.png"):
         graph.exportGraph()
    
 if __name__ == "__main__":
-    #conceptFile = "documents.p"
-    #conceptFile = "NVPChunks.p"
-    #conceptFile = "chunks.p"
-    #conceptFile = "req.p"
-    #conceptFile = "topicsDict.p"
-    #conceptFile = "TopicChunks.p"
-    #conceptFile = "ngrams.p"
-    #conceptFile = "ngramscore.p"
-    #conceptFile = "ngramsubject.p"
-    #conceptFile = "archi.p"
-    #conceptFile = "pptx.p"
-    #conceptFile = "documentsSimilarity.p"
-    #conceptFile = "batches.p"
-    conceptFile = "export.p"
+    cfl = list()
+    #cfl.append("documents.p")
+    #cfl.append("NVPChunks.p")
+    #cfl.append("chunks.p")
+    #cfl.append("req.p")
+    cfl.append("topicsDict.p")
+    #cfl.append("TopicChunks.p")
+    #cfl.append("ngrams.p")
+    #cfl.append("ngramscore.p")
+    cfl.append("ngramsubject.p")
+    #cfl.append("archi.p")
+    #cfl.append("pptx.p")
+    #cfl.append("documentsSimilarity.p")
+    #cfl.append("batches.p")
+    #cfl.append("export.p")
+    #cfl.append("req.p")
 
-    listHomeDir = list()
-    listHomeDir.append(os.getcwd())
-    #listHomeDir.append("C:\Users\morrj140\Dev\GitRepository\DirCrawler\SmartMedia_20140206_120122")
-    #listHomeDir.append("C:\\Users\\morrj140\\Dev\\GitRepository\\DirCrawler\\Estimates_20141205_124422")
-    #homeDir = "C:\\Users\\morrj140\\Dev\\GitRepository\\DirCrawler\\Requirements_20143004_160216"
-    #homeDir = "C:\\Users\\morrj140\\Dev\\GitRepository\\DirCrawler\\ExternalInterfaces_20141205_095115"
-    #listHomeDir.append("C:\\Users\\morrj140\\Dev\\GitRepository\\DirCrawler\\Services_20143004_101231")
-    #listHomeDir.append("/Users/morrj140/Development/GitRepository/DirCrawler")
-    #listHomeDir.append("/Users/morrj140/Development/GitRepository/DirCrawler/Research_20141709_104529")
+    #homeDir = os.getcwd()
+    homeDir = "/Users/morrj140/Development/GitRepository/DirCrawler/DVC_20141211_100141"
+    #homeDir = "/Users/morrj140/Development/GitRepository/DirCrawler"
+    #homeDir = "/Users/morrj140/Development/GitRepository/DirCrawler/Research_20141709_104529"
+
+    os.chdir(homeDir)
 
     c = Concepts("GraphConcepts", "GRAPH")
     
-    for conceptDir in listHomeDir:
+    for cf in cfl:
         # Change current directory to enable to save pickles
-        p, f = os.path.split(conceptDir)
-        logger.info("Loading :" + conceptDir + os.sep + conceptFile)
-        c.addConcept(Concepts.loadConcepts(conceptDir + os.sep + conceptFile))
+        logger.info("Loading :" + homeDir + os.sep + cf)
+        c.addConcept(Concepts.loadConcepts(homeDir + os.sep + cf))
 
     # c.logConcepts()
 
-    filename = "Batches_" + time.strftime("%Y%d%m_%H%M%S") + ".png"
+    filename = "Concepts_" + time.strftime("%Y%d%m_%H%M%S") + ".png"
     
     graphConcepts(c, filename=filename)
 
