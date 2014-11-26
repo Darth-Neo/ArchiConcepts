@@ -15,17 +15,6 @@ from nl_lib.Concepts import Concepts
 
 from lxml import etree
 
-import nltk
-from nltk import tokenize, tag, chunk
-from nltk.corpus import webtext
-from nltk.collocations import BigramCollocationFinder, TrigramCollocationFinder
-from nltk.metrics import BigramAssocMeasures, TrigramAssocMeasures
-from nltk.corpus import stopwords
-from nltk.corpus import wordnet as wn
-from nltk.stem import PorterStemmer, WordNetLemmatizer
-
-import ImportArchi as ia
-
 namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
 
 XML_NS         =  "http://www.w3.org/2001/XMLSchema-instance"
@@ -33,8 +22,6 @@ ARCHIMATE_NS   =  "http://www.archimatetool.com/archimate"
 NS_MAP = {"xsi": XML_NS, "archimate" : ARCHIMATE_NS}
 
 ARCHI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
-
-import GraphConcepts as GC
 
 def getChildName(tree, id):
 

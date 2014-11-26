@@ -1,9 +1,10 @@
-__author__ = 'morrj140'
-
 #!/usr/bin/python
 #
 # Natural Language Processing of Information
 #
+
+__author__ = 'morrj140'
+
 import os
 from nl_lib import Logger
 from nl_lib.Constants import *

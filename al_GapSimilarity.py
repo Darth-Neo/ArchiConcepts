@@ -24,7 +24,7 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-import ImportArchi as ia
+import al_ArchiLib as al
 
 num_topics = 25
 num_words  = 10
@@ -296,7 +296,7 @@ if __name__ == "__main__":
                 # "archimate:ApplicationComponent",
                 # "archimate:BusinessProcess")
 
-    ia.logAll(tree, type=searchType)
+    al.logAll(tree, type=searchType)
 
     if False:
         logger.info("Find nGrams")
@@ -306,7 +306,7 @@ if __name__ == "__main__":
     logger.info("Find Topics")
     concepts = Concepts("Requirement", "Requirements")
     n = 0
-    for sentence in ia.dictName:
+    for sentence in al.dictName:
         n += 1
         logger.debug("%s" % sentence)
 

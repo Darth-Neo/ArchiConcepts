@@ -1,3 +1,7 @@
+#!/usr/bin/python
+#
+# Calculate Similarity between Requirements and Business Processes
+#
 __author__ = 'morrj140'
 
 import sys
@@ -22,19 +26,11 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-import ImportArchi as ia
+import al_ArchiLib as al
 
 num_topics = 100
 num_words  = 100
 similarity = 0.90
-
-namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
-
-XML_NS         =  "http://www.w3.org/2001/XMLSchema-instance"
-ARCHIMATE_NS   =  "http://www.archimatetool.com/archimate"
-NS_MAP = {"xsi": XML_NS, "archimate" : ARCHIMATE_NS}
-
-ARCHI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
 
 class Collocations(object):
     concepts         = None
@@ -221,9 +217,9 @@ class DocumentsSimilarity(object):
 
             self.df = self.conceptsDoc.getConcepts().keys()
 
-            logger.info("++conceptsDoc %s" % (self.df[indexNum]))
+            logger.debug("++conceptsDoc %s" % (self.df[indexNum]))
 
-            logger.info("  documentsList[" + str(indexNum) + "]=" + "".join(x + " " for x in document))
+            logger.debug("  documentsList[" + str(indexNum) + "]=" + "".join(x + " " for x in document))
 
             # Show common topics
             d = [x.encode('ascii', errors="ignore").strip().replace("'", "") for x in document]
@@ -233,7 +229,7 @@ class DocumentsSimilarity(object):
             s2 = set(d)
             common =  s1 & s2
             lc = [x for x in common]
-            logger.info("  Common Topics : %s" % (lc))
+            logger.debug("  Common Topics : %s" % (lc))
 
             self.doComputation(indexNum, similarityThreshold)
 
@@ -285,12 +281,16 @@ if __name__ == "__main__":
     fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
     fileConcepts = "req.p"
 
-    etree.QName(ARCHIMATE_NS, 'model')
+    etree.QName(al.ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimateIn)
 
-    listType = ("archimate:Requirement", "archimate:BusinessProcess")
+    listType = ("archimate:Requirement")
+    al.logAll(tree, type=listType)
+    dictReq = al.dictName
 
-    ia.logAll(tree, type=listType)
+    listType = ("archimate:BusinessProcess")
+    al.logAll(tree, type=listType)
+    dictBP = al.dictName
 
     if False:
         logger.info("Find nGrams")
@@ -300,7 +300,7 @@ if __name__ == "__main__":
     logger.info("Find Topics")
     concepts = Concepts("Requirement", "Requirement")
     n = 0
-    for sentence in ia.dictName:
+    for sentence in dictReq:
         n += 1
         logger.debug("%s" % sentence)
 
@@ -323,7 +323,7 @@ if __name__ == "__main__":
 
     nc = npbt.findSimilarties("documentsSimilarity.p")
 
-    if True:
+    if False:
         logger.info("Topics")
         listTopics = list()
         ncg = npbt.topicConcepts.getConcepts().values()
@@ -337,4 +337,7 @@ if __name__ == "__main__":
         for x in sorted(listTopics, key=lambda c: abs(c[1]), reverse=False):
             logger.info("Topic : %s[%d]" % (x[0], x[1]))
 
-    nc.logConcepts()
+    #nc.logConcepts()
+
+    for x in nc.getConcepts():
+        logger.info("%s" % (x.name))

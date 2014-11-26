@@ -1,6 +1,7 @@
-__author__ = 'morrj140'
-
-__author__ = 'morrj140'
+#!/usr/bin/python
+#
+# Named Entity Analysis
+#
 __author__ = 'morrj140'
 
 import sys
@@ -17,25 +18,17 @@ from nl_lib.Concepts import Concepts
 from lxml import etree
 import nltk
 
-import ImportArchi as ia
-import DependancyAnalysisFromArchi as dafa
-
-namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
-
-XML_NS         =  "http://www.w3.org/2001/XMLSchema-instance"
-ARCHIMATE_NS   =  "http://www.archimatetool.com/archimate"
-NS_MAP = {"xsi": XML_NS, "archimate" : ARCHIMATE_NS}
-
-ARCHI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
+import al_ArchiLib as al
+import al_DependancyAnalysisFromArchi as dafa
 
 logger.setLevel(logging.INFO)
 
 if __name__ == "__main__":
-    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC V4.archimate"
+    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC V6.archimate"
     fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
     fileConcepts = "req.p"
 
-    etree.QName(ARCHIMATE_NS, 'model')
+    etree.QName(al.ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimateIn)
 
     dictNodes = dict()
@@ -55,7 +48,7 @@ if __name__ == "__main__":
     logger.info("Found %d Nodes" % len(dictNodes))
     logger.info("Found %d Edges" % len(dictEdges))
 
-    ia.logAll(tree, type="archimate:BusinessObject")
+    al.logAll(tree, type="archimate:BusinessObject")
 
     concepts = Concepts("Entities", "BusinessObject")
 
@@ -66,15 +59,15 @@ if __name__ == "__main__":
             source = dictEdges[x]["source"]
             target = dictEdges[x]["target"]
 
-            dafa.countNodeType(dictNodes[source][ARCHI_TYPE])
-            dafa.countNodeType(dictNodes[target][ARCHI_TYPE])
-            dafa.countNodeType(dictEdges[x][ARCHI_TYPE])
+            dafa.countNodeType(dictNodes[source][al.ARCHI_TYPE])
+            dafa.countNodeType(dictNodes[target][al.ARCHI_TYPE])
+            dafa.countNodeType(dictEdges[x][al.ARCHI_TYPE])
 
             rels = ("archimate:AccessRelationship", "archimate:SpecialisationRelationship",
                     "archimate:CompositionRelationship", "archimate:AggregationRelationship")
 
-            if dictEdges[x][ARCHI_TYPE] in rels:
-                logger.info("%s   ->  [ %s ]  ->   %s" % (dictNodes[source]["name"], dictEdges[x][ARCHI_TYPE], dictNodes[target]["name"]))
+            if dictEdges[x][al.ARCHI_TYPE] in rels:
+                logger.info("%s   ->  [ %s ]  ->   %s" % (dictNodes[source]["name"], dictEdges[x][al.ARCHI_TYPE], dictNodes[target]["name"]))
 
                 searchType = ("archimate:BusinessObject")
                 listNodes = dafa.getEdgesForNode(dictNodes[source]["name"], searchType, dictNodes, dictEdges)

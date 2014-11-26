@@ -24,7 +24,7 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-import ImportArchi as ia
+import al_ArchiLib as al
 
 namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
 
@@ -34,7 +34,7 @@ NS_MAP = {"xsi": XML_NS, "archimate" : ARCHIMATE_NS}
 
 ARCHI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
 
-import GraphConcepts as GC
+import al_GraphConcepts as GC
 dictCount = dict()
 
 def getEdgesForNode(nodeName, searchType, dictNodes, dictEdges, n=0):

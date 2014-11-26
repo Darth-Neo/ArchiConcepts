@@ -1,4 +1,7 @@
-__author__ = 'morrj140'
+#!/usr/bin/python
+#
+# Requirement Analysis
+#
 __author__ = 'morrj140'
 
 import sys
@@ -31,15 +34,7 @@ from pattern.vector import Vector, distance, NB
 from pattern.db import csv
 from pattern.en import parse, Sentence, parsetree
 
-import ImportArchi as ia
-
-namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
-
-XML_NS         =  "http://www.w3.org/2001/XMLSchema-instance"
-ARCHIMATE_NS   =  "http://www.archimatetool.com/archimate"
-NS_MAP = {"xsi": XML_NS, "archimate" : ARCHIMATE_NS}
-
-ARCHI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
+import al_ArchiLib as al
 
 logger.setLevel(logging.INFO)
 
@@ -182,14 +177,14 @@ if __name__ == "__main__":
     fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
     fileConcepts = "req.p"
 
-    etree.QName(ARCHIMATE_NS, 'model')
+    etree.QName(al.ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimateIn)
 
-    ia.logAll(tree, type="archimate:Requirement")
+    al.logAll(tree, type="archimate:Requirement")
 
     concepts = Concepts("Requirement", "Requirement")
     n = 0
-    for sentence in ia.dictName:
+    for sentence in al.dictName:
         n += 1
         logger.debug("%s" % sentence)
 

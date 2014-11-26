@@ -1,11 +1,8 @@
-__author__ = 'morrj140'
-
-__author__ = 'morrj140'
-
 #!/usr/bin/python
 #
 # Archimate to Concepts
 #
+__author__ = 'morrj140'
 import sys
 import os
 import StringIO
@@ -25,6 +22,8 @@ from nltk.corpus import wordnet as wn
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
+import al_ArchiLib as al
+
 NS_MAP={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
 XML_NS         =  NS_MAP["xsi"]
 ARCHIMATE_NS   =  NS_MAP["archimate"]
@@ -33,93 +32,6 @@ ARCHI_TYPE = "{%s}type" % NS_MAP["xsi"]
 
 from nltk.corpus import wordnet_ic
 brown_ic = wordnet_ic.ic('ic-brown.dat')
-
-dictNode = dict()
-dictRelation = dict()
-dictName = dict()
-
-def getID():
-    return str(hex(random.randint(0, 16777215)))[-6:] + str(hex(random.randint(0, 16777215))[-2:])
-
-def insertNode(tag, folder, tree, attrib):
-
-    logger.debug("attrib: %s" % (attrib))
-
-    value = attrib["name"].lower()
-
-    if dictName.has_key(value):
-        idd = dictName[value]
-        attrib["id"] = idd
-
-        logger.debug("inFound! : %s" % idd)
-    else:
-        idd =  getID()
-        dictName[value] = idd
-        attrib["id"] = idd
-
-        xp = "//folder[@name='" + folder + "']"
-        elm = etree.Element(tag, attrib, nsmap=NS_MAP)
-
-        txp = tree.xpath(xp)
-        txp[0].insert(0, elm)
-        logger.debug("inNew!   : %s" % idd)
-
-    return idd
-
-def insertRel(tag, folder, tree, attrib):
-
-    logger.debug("attrib: %s" % (attrib))
-
-    value = "%s--%s" % (attrib["source"], attrib["target"])
-
-    if dictName.has_key(value):
-        idd = dictName[value]
-        attrib["id"] = idd
-
-        logger.debug("inFound! : %s" % idd)
-    else:
-        idd =  getID()
-        dictName[value] = idd
-        attrib["id"] = idd
-
-        xp = "//folder[@name='" + folder + "']"
-        elm = etree.Element(tag, attrib, nsmap=NS_MAP)
-        tree.xpath(xp)[0].insert(0, elm)
-        logger.debug("inNew!   : %s" % idd)
-
-    return idd
-
-
-def logNode(n):
-
-    attributes = n.attrib
-
-    if attributes.get(ARCHI_TYPE) == "archimate:ApplicationService":
-        if attributes.get("id") != None:
-            dictName[n.get("name")] = attributes["id"]
-
-            logger.debug("logNode : %s:%s:%s:%s" % (n.tag, n.get("name"), n.get("id"), attributes.get(ARCHI_TYPE)))
-
-    for y in n:
-        logNode(y)
-
-def logAll(tree):
-    for x in tree.getroot():
-        logNode(x)
-
-def outputXML(tree, filename="relations_nlp.archimate"):
-    output = StringIO.StringIO()
-    tree.write(output, pretty_print=True)
-
-    logger.debug("%s" % (output.getvalue()))
-
-    logger.info("Saved to : %s" % filename)
-
-    f = open(filename,'w')
-    f.write(output.getvalue())
-    f.close()
-
-    output.close()
 
 def relateEntities(tree, folder, subfolder, eType, v1, v2):
 
@@ -131,9 +43,9 @@ def relateEntities(tree, folder, subfolder, eType, v1, v2):
     # <folder name="Process" id="e23b1e50">
 
     attrib = dict()
-    attrib["id"] = getID()
+    attrib["id"] = al.getID()
     attrib["name"] = subfolder
-    insertNode("folder", folder, tree, attrib)
+    al.insertNode("folder", folder, tree, attrib)
 
     folder = subfolder
 
@@ -144,53 +56,29 @@ def relateEntities(tree, folder, subfolder, eType, v1, v2):
     attrib = dict()
     attrib["name"] = CM1
     attrib[ARCHI_TYPE] = eType
-    insertNode(tag, folder, tree, attrib)
+    al.insertNode(tag, folder, tree, attrib)
     CM1_ID = attrib["id"]
 
     C2 = CM2
     attrib = dict()
     attrib["name"] = CM2
     attrib[ARCHI_TYPE] = eType
-    insertNode(tag, folder, tree, attrib)
+    al.insertNode(tag, folder, tree, attrib)
     CM2_ID = attrib["id"]
 
     attrib = dict()
     attrib["source"] = CM1_ID
     attrib["target"] = CM2_ID
     attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-    insertRel(tag, "Relations", tree, attrib)
+    al.insertRel(tag, "Relations", tree, attrib)
 
-def cleanCapital(s):
-    r = ""
-
-    if s == None:
-        return None
-
-    v = s.replace(":"," ")
-    v = v.replace("|"," ")
-    v = v.replace(" "," ")
-    v = v.replace("_"," ")
-    v = v.replace("-"," ")
-    v = v.replace("/"," ")
-
-    n = 0
-    for x in v:
-        if x == x.upper() and n != 0:
-            r = r + " " + x
-        else:
-            r =r + x
-
-        n += 1
-
-    logger.debug("cleanCapital : %s" % r)
-    return r
 
 def checkEntity(d, e):
 
     fl  = list()
 
     for x in d.keys():
-        y = cleanCapital(x)
+        y = al.cleanCapital(x)
 
         if e in y:
             logger.debug("dictName[%s] : %s" % (d[x], y))
@@ -232,7 +120,7 @@ def checkSimilarity(d, e, THRESHOLD=0.79):
 
     for x in d.keys():
 
-        y = cleanCapital(x)
+        y = al.cleanCapital(x)
 
         logger.debug("dict[x] : %s" % (y))
 
@@ -275,9 +163,9 @@ if __name__ == "__main__":
     treeArchi = etree.parse(fileArchimate)
 
     testClean = "getTravelAgencyResponse"
-    logger.debug("clean : %s - %s" % (testClean, cleanCapital(testClean)))
+    logger.debug("clean : %s - %s" % (testClean, al.cleanCapital(testClean)))
 
-    logAll(treeArchi)
+    al.logAll(treeArchi)
 
     #relateEntities(treeArchi, "Entities", "archimate:ApplicationService", nFile, method)
 
@@ -290,14 +178,14 @@ if __name__ == "__main__":
 
         nameEntity = x.get("name")
 
-        y = cleanCapital(nameEntity)
+        y = al.cleanCapital(nameEntity)
 
         if len(y.split(" ")) > 1:
             continue
 
         logger.info("----Checking Entity : %s----" % y)
 
-        fl = checkSimilarity(dictName, y, THRESHOLD=0.85)
+        fl = checkSimilarity(al.dictName, y, THRESHOLD=0.85)
 
         #fl = checkEntity(dictName, y)
 
@@ -310,7 +198,7 @@ if __name__ == "__main__":
 
             if len(ntxp) != 0:
                 wv = ntxp[0].get("name")
-                wy = cleanCapital(wv)
+                wy = al.cleanCapital(wv)
                 if wy == None:
                     continue
                 logger.info("%s ==> %s" % (x.get("name"), wy))
@@ -319,6 +207,6 @@ if __name__ == "__main__":
                 attrib["source"] = x.get("id")
                 attrib["target"] = ntxp[0].get("id")
                 attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-                insertRel("element", "Relations", treeArchi, attrib)
+                al.insertRel("element", "Relations", treeArchi, attrib)
 
     # outputXML(treeArchi)

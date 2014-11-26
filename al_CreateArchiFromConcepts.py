@@ -11,7 +11,7 @@ from nl_lib.Concepts import Concepts
 
 from lxml import etree
 
-import ImportArchi as ia
+import al_ArchiLib as al
 
 namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
 
@@ -80,7 +80,7 @@ def createDiagramModels(concepts, tree):
 
     # <folder name="Views" id="d18c15b0" type="diagrams">
     attrib = dict()
-    attrib["id"] = str(ia.getID())
+    attrib["id"] = str(al.getID())
     newFolder = "PowerPointApps"
     attrib["name"] = newFolder
 
@@ -91,7 +91,7 @@ def createDiagramModels(concepts, tree):
     # Make new PowerPoint Folder to import into
     # <folder name="Views" id="d18c15b0" type="diagrams">
     attrib = dict()
-    attrib["id"] = str(ia.getID())
+    attrib["id"] = str(al.getID())
     newFolder = "PowerPoint"
     attrib["name"] = newFolder
 
@@ -109,7 +109,7 @@ def createDiagramModels(concepts, tree):
             # Create "archimate:ArchimateDiagramModel"
             attrib = dict()
             attrib["name"] = x.name
-            attrib["id"] = str(ia.getID())
+            attrib["id"] = str(al.getID())
             attrib[ARCHI_TYPE] = "archimate:ArchimateDiagramModel"
             xp = "//folder[@name='PowerPoint']"
             elm = etree.Element("element", attrib, nsmap=NS_MAP)
@@ -151,7 +151,7 @@ def createArchimateComponents(concepts, dmID, tree):
             attribAC = dict()
             attribAC["name"] = x.name
             attribAC[ARCHI_TYPE] = "archimate:ApplicationComponent"
-            ia.insertNode("element", "PowerPointApps", tree, attribAC)
+            al.insertNode("element", "PowerPointApps", tree, attribAC)
             acID = attribAC["id"]
             logger.info("  Create acID %s" % (acID))
             dictACDone[x.name] = acID
@@ -197,7 +197,7 @@ def createDiagramObjects(concepts, dmID, tree, dictACDone, dictDODone = None):
         if not(x.name in dictDODone):
             attribDO = dict()
             attribDO["name"] = x.name
-            attribDO["id"] = str(ia.getID())
+            attribDO["id"] = str(al.getID())
             attribDO["textAlignment"] = "2"
             attribDO["archimateElement"] = acID
             attribDO[ARCHI_TYPE] = "archimate:DiagramObject"
@@ -253,7 +253,7 @@ def createConnections(concepts):
                     logger.debug("   Target %s[%s]-%d" % (tce.name, tce.typeName, len(tce.name)))
 
                     for tcee in tce.getConcepts().values():
-                        tcee.name = ia.cleanString(tcee.name)
+                        tcee.name = al.cleanString(tcee.name)
                         if tcee.typeName in ("Edge"):
                             logger.debug("  Source %s[%s]-%d" % (tcc.name, tcc.typeName, len(tcc.name)))
                             logger.debug("   Target %s[%s]-%d" % (tce.name, tce.typeName, len(tce.name)))
@@ -273,14 +273,14 @@ def createConnections(concepts):
 
             logger.info("%s:%s>%s->%s" % (slideName, sourceName, edgeName, targetName, ))
 
-            src = ia.findElement(tree, sourceName)
+            src = al.findElement(tree, sourceName)
             if src != None:
                 source = src[0].get("id")
             else:
                 logger.warn("***No Source***")
                 source = " "
 
-            tgt = ia.findElement(tree, targetName)
+            tgt = al.findElement(tree, targetName)
             if tgt != None:
                 target = tgt[0].get("id")
             else:
@@ -300,7 +300,7 @@ def createConnections(concepts):
             dictRel[key] = slideName
 
         # find the diagram objects
-        slideXML = ia.findElement(tree, slideName)
+        slideXML = al.findElement(tree, slideName)
 
         sxl = slideXML[0].getchildren()
 
@@ -320,10 +320,10 @@ def createConnections(concepts):
 
         # Create Used By Relationship
         ta = dict()
-        ta["name"] = ia.cleanString(edgeName)
+        ta["name"] = al.cleanString(edgeName)
         ta["source"] = source
         ta["target"] = target
-        ta["id"] = ia.getID()
+        ta["id"] = al.getID()
         ta[ARCHI_TYPE] = "archimate:UsedByRelationship"
         elm = etree.Element("element", ta, nsmap=NS_MAP)
         xp = "//folder[@name='Relations']"
@@ -338,7 +338,7 @@ def createConnections(concepts):
         ta = dict()
         ta["source"] = sourceID
         ta["target"] = targetID
-        ta["id"] = ia.getID()
+        ta["id"] = al.getID()
         ta["relationship"] = ar
         ta[ARCHI_TYPE] = "archimate:Connection"
 
@@ -359,7 +359,7 @@ if __name__ == "__main__":
     etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimateIn)
 
-    ia.logAll(tree)
+    al.logAll(tree)
 
     aConcepts = Concepts.loadConcepts(filePPConcepts)
 
@@ -367,7 +367,7 @@ if __name__ == "__main__":
 
     createDiagramModels(aConcepts, tree)
 
-    ia.outputXML(tree, filename="pp_models.archimate")
+    al.outputXML(tree, filename="pp_models.archimate")
 
 
 

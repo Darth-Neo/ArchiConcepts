@@ -2,6 +2,8 @@
 #
 # Natural Language Processing of Information
 #
+__author__ = 'morrj140'
+
 import os
 from nl_lib.Constants import *
 from nl_lib import Logger
@@ -29,8 +31,8 @@ if __name__ == "__main__":
     #conceptFile = "words.p"
     #conceptFile = "chunks.p"
     #conceptFile = "topicChunks.p"
-    conceptFile = "topicsDict.p"
-    #conceptFile = "documentsSimilarity.p"
+    #conceptFile = "topicsDict.p"
+    conceptFile = "documentsSimilarity.p"
     #conceptFile = "NVPChunks.p"
     #conceptFile = "ngrams.p"
     #conceptFile = "ngramscore.p"

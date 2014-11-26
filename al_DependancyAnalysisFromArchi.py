@@ -23,17 +23,9 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-import ImportArchi as ia
+import al_ArchiLib as al
 
-namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
-
-XML_NS         =  "http://www.w3.org/2001/XMLSchema-instance"
-ARCHIMATE_NS   =  "http://www.archimatetool.com/archimate"
-NS_MAP = {"xsi": XML_NS, "archimate" : ARCHIMATE_NS}
-
-ARCHI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
-
-import GraphConcepts as GC
+import al_GraphConcepts as GC
 dictCount = dict()
 
 # The graph nodes
@@ -133,7 +125,7 @@ def getEdgesForNode(nodeName, searchType, dictNodes, dictEdges, n=0):
                 sourceNE = dictEdges[x]["source"]
                 targetNE = dictEdges[x]["target"]
 
-                if dictNodes[targetNE][ARCHI_TYPE] in searchType:
+                if dictNodes[targetNE][al.ARCHI_TYPE] in searchType:
                     spaces = " " * n
                     nodeName = getNodeName(targetNE)
                     if nodeName != "NA":
@@ -277,16 +269,16 @@ if __name__ == "__main__":
             source = dictEdges[x]["source"]
             target = dictEdges[x]["target"]
 
-            logger.debug("  Rel    : %s" % (dictEdges[x][ARCHI_TYPE]))
+            logger.debug("  Rel    : %s" % (dictEdges[x][al.ARCHI_TYPE]))
 
-            if dictEdges[x][ARCHI_TYPE] in ("archimate:UsedByRelationship"):
+            if dictEdges[x][al.ARCHI_TYPE] in ("archimate:UsedByRelationship"):
 
-                countNodeType(dictNodes[source][ARCHI_TYPE])
-                countNodeType(dictNodes[target][ARCHI_TYPE])
-                countNodeType(dictEdges[x][ARCHI_TYPE])
+                countNodeType(dictNodes[source][al.ARCHI_TYPE])
+                countNodeType(dictNodes[target][al.ARCHI_TYPE])
+                countNodeType(dictEdges[x][al.ARCHI_TYPE])
 
-                if (dictNodes[source][ARCHI_TYPE] == "archimate:BusinessProcess") and \
-                        dictNodes[target][ARCHI_TYPE] == "archimate:BusinessProcess":
+                if (dictNodes[source][al.ARCHI_TYPE] == "archimate:BusinessProcess") and \
+                        dictNodes[target][al.ARCHI_TYPE] == "archimate:BusinessProcess":
 
                     sourceName = getNodeName(source)
                     targetName = getNodeName(target)
@@ -328,7 +320,7 @@ if __name__ == "__main__":
 
     index = 0
     for x in listTSort:
-        logger.info("%d %s[%s] -%s-> %s[%s]" % (index, dictNodes[x[0]]["name"], dictNodes[x[0]][ARCHI_TYPE], "UsedBy", dictNodes[x[1]]["name"], dictNodes[x[1]][ARCHI_TYPE]))
+        logger.info("%d %s[%s] -%s-> %s[%s]" % (index, dictNodes[x[0]]["name"], dictNodes[x[0]][al.ARCHI_TYPE], "UsedBy", dictNodes[x[1]]["name"], dictNodes[x[1]][al.ARCHI_TYPE]))
         index = index + 1
 
         addToNodeDict(dictNodes[x[0]]["name"], dictBP)
