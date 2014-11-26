@@ -30,7 +30,7 @@ def cleanString(s):
         return r
 
     for x in s.lstrip(" "):
-        if x.isalnum() or x == " ":
+        if x.isalnum() or x in (" ", "-", "."):
             r = r + x
     return r.lstrip(" ").rstrip(" ")
 
@@ -343,9 +343,9 @@ def insertNColumns(tree, folder, subfolder, fileMetaEntity):
         colnum = 0
 
         for col in row:
-            logger.debug("    %d   [%s] %s" % (colnum, listColumnHeaders[colnum], col))
+            logger.info("    %d   [%s] %s" % (colnum, listColumnHeaders[colnum], col))
 
-            CM = col.decode(encoding='ASCII',errors='ignore').lstrip()
+            CM = cleanString(col.decode(encoding='ASCII',errors='ignore').lstrip())
 
             logger.info("CM : %s" % CM)
 
@@ -546,15 +546,15 @@ def insertConcepts(tree, concepts, n=0):
 
 if __name__ == "__main__":
     # Archimate
-    fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC V2.archimate"
+    fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v4.archimate"
     etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimate)
 
     logAll(tree)
 
-    fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/DVC Business Requirements.csv"
+    fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/DVC_20141125_Business Requirements.csv"
     logger.info("Using : %s" % fileArchimate)
-    insertNColumns(tree, "Motivation", "Business Requirements", fileMetaEntity)
+    insertNColumns(tree, "Motivation", "BusinessRequirements", fileMetaEntity)
 
 
     #fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Who_What_How_20141024.csv"

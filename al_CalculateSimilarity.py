@@ -201,7 +201,7 @@ class DocumentsSimilarity(object):
             logger.info("--Log Topics--")
             self.tm.logTopics(self.topics)
 
-        self.listTopics = [x[0].encode('ascii', errors="ignore").strip() for x in self.topics]
+        self.listTopics = [x[0].encode('ascii', errors="ignore").strip("\"") for x in self.topics]
 
         logger.info("--Saving Topics")
 
@@ -221,9 +221,9 @@ class DocumentsSimilarity(object):
 
             self.df = self.conceptsDoc.getConcepts().keys()
 
-            logger.debug("++conceptsDoc %s" % (self.df[indexNum]))
+            logger.info("++conceptsDoc %s" % (self.df[indexNum]))
 
-            logger.debug("  documentsList[" + str(indexNum) + "]=" + "".join(x + " " for x in document))
+            logger.info("  documentsList[" + str(indexNum) + "]=" + "".join(x + " " for x in document))
 
             # Show common topics
             d = [x.encode('ascii', errors="ignore").strip().replace("'", "") for x in document]
@@ -233,7 +233,7 @@ class DocumentsSimilarity(object):
             s2 = set(d)
             common =  s1 & s2
             lc = [x for x in common]
-            logger.debug("  Common Topics : %s" % (lc))
+            logger.info("  Common Topics : %s" % (lc))
 
             self.doComputation(indexNum, similarityThreshold)
 
@@ -281,14 +281,16 @@ class DocumentsSimilarity(object):
 
 
 if __name__ == "__main__":
-    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v28.archimate"
+    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v6.archimate"
     fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
     fileConcepts = "req.p"
 
     etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimateIn)
 
-    ia.logAll(tree, type="archimate:Requirement")
+    listType = ("archimate:Requirement", "archimate:BusinessProcess")
+
+    ia.logAll(tree, type=listType)
 
     if False:
         logger.info("Find nGrams")
@@ -321,16 +323,16 @@ if __name__ == "__main__":
 
     nc = npbt.findSimilarties("documentsSimilarity.p")
 
-    if False:
-        logger.debug("Topics")
+    if True:
+        logger.info("Topics")
         listTopics = list()
         ncg = npbt.topicConcepts.getConcepts().values()
         for x in ncg:
-            logger.debug("%s[%d]" % (x.name, x.count))
+            logger.info("%s[%d]" % (x.name, x.count))
             lt = (x.name, x.count)
             listTopics.append(lt)
 
-    if False:
+    if True:
         logger.info("Topics Sorted")
         for x in sorted(listTopics, key=lambda c: abs(c[1]), reverse=False):
             logger.info("Topic : %s[%d]" % (x[0], x[1]))

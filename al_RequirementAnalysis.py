@@ -177,7 +177,7 @@ class Chunks(object):
         Concepts.saveConcepts(self.chunkConcepts, self.chunkFile)
 
 if __name__ == "__main__":
-    fileArchimateIn = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC V2.archimate"
+    fileArchimateIn = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC V4.archimate"
     #fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v28.archimate"
     fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
     fileConcepts = "req.p"
@@ -199,8 +199,7 @@ if __name__ == "__main__":
         cleanSentence = ' '.join([word for word in sentence.split() if word not in stop])
         for word, pos in nltk.pos_tag(nltk.wordpunct_tokenize(cleanSentence)):
             if len(word) > 1 and pos[0] == "N":
-                e = d.addConceptKeyType(word, "Word")
-                f = e.addConceptKeyType(pos, "POS")
+                e = d.addConceptKeyType(word, pos)
 
     Concepts.saveConcepts(concepts, fileConcepts)
 

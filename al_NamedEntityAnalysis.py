@@ -31,7 +31,7 @@ ARCHI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
 logger.setLevel(logging.INFO)
 
 if __name__ == "__main__":
-    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v31.archimate"
+    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC V4.archimate"
     fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
     fileConcepts = "req.p"
 
