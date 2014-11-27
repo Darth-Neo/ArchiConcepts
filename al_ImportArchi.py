@@ -17,15 +17,15 @@ import al_ArchiLib as al
 
 if __name__ == "__main__":
     # Archimate
-    fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v4.archimate"
+    fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v6.archimate"
     al.etree.QName(al.ARCHIMATE_NS, 'model')
     tree = al.etree.parse(fileArchimate)
 
     al.logAll(tree)
 
-    fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/DVC_20141125_Business Requirements.csv"
+    fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/DVC Business Requirements.csv"
     logger.info("Using : %s" % fileArchimate)
-    al.insertNColumns(tree, "Motivation", "BusinessRequirements", fileMetaEntity)
+    al.insertNColumns(tree, "Motivation", "BusinessRequirements20141126", fileMetaEntity)
 
 
     #fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Who_What_How_20141024.csv"

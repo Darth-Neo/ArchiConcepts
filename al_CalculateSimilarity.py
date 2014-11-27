@@ -277,14 +277,14 @@ class DocumentsSimilarity(object):
 
 
 if __name__ == "__main__":
-    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v6.archimate"
+    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v7.archimate"
     fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
     fileConcepts = "req.p"
 
     etree.QName(al.ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimateIn)
 
-    listType = ("archimate:Requirement")
+    listType = ("archimate:Requirement", "archimate:BusinessProcess")
     al.logAll(tree, type=listType)
     dictReq = al.dictName
 
@@ -323,7 +323,7 @@ if __name__ == "__main__":
 
     nc = npbt.findSimilarties("documentsSimilarity.p")
 
-    if False:
+    if True:
         logger.info("Topics")
         listTopics = list()
         ncg = npbt.topicConcepts.getConcepts().values()
@@ -338,6 +338,3 @@ if __name__ == "__main__":
             logger.info("Topic : %s[%d]" % (x[0], x[1]))
 
     #nc.logConcepts()
-
-    for x in nc.getConcepts():
-        logger.info("%s" % (x.name))

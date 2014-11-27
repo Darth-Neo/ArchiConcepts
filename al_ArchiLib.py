@@ -87,30 +87,32 @@ def getID():
     return r
 
 def insertNode(tag, folder, tree, attrib):
+    try:
+        logger.debug("attrib: %s" % (attrib))
 
-    logger.debug("attrib: %s" % (attrib))
+        value = attrib["name"].rstrip(" ").lstrip(" ")
 
-    value = attrib["name"].rstrip(" ").lstrip(" ")
+        if value != attrib["name"]:
+            logger.debug("diff value .%s:%s." % (value, attrib["name"]))
 
-    if value != attrib["name"]:
-        logger.debug("diff value .%s:%s." % (value, attrib["name"]))
+        if dictName.has_key(value):
+            idd = dictName[value]
+            attrib["id"] = idd
 
-    if dictName.has_key(value):
-        idd = dictName[value]
-        attrib["id"] = idd
+            logger.debug("inFound! : %s" % idd)
+        else:
+            idd =  getID()
+            dictName[value] = idd
+            attrib["id"] = idd
 
-        logger.debug("inFound! : %s" % idd)
-    else:
-        idd =  getID()
-        dictName[value] = idd
-        attrib["id"] = idd
+            xp = "//folder[@name='" + folder + "']"
+            elm = etree.Element(tag, attrib, nsmap=NS_MAP)
 
-        xp = "//folder[@name='" + folder + "']"
-        elm = etree.Element(tag, attrib, nsmap=NS_MAP)
-
-        txp = tree.xpath(xp)
-        txp[0].insert(0, elm)
-        logger.debug("inNew!   : %s" % idd)
+            txp = tree.xpath(xp)
+            txp[0].insert(0, elm)
+            logger.debug("inNew!   : %s" % idd)
+    except:
+        logger.warn("attrib: %s" % (attrib))
 
     return idd
 
@@ -133,7 +135,7 @@ def insertRel(tag, folder, tree, attrib):
         xp = "//folder[@name='" + folder + "']"
         elm = etree.Element(tag, attrib, nsmap=NS_MAP)
         tree.xpath(xp)[0].insert(0, elm)
-        logger.info("inNew!   : %s" % idd)
+        logger.debug("inNew!   : %s" % idd)
 
     return idd
 
@@ -338,23 +340,24 @@ def insertNColumns(tree, folder, subfolder, fileMetaEntity):
                 listColumnHeaders.append(colType)
             continue
 
-        logger.info("rownum : %d" % rownum)
-        logger.info("row    : %s" % row)
+        logger.info("----------------------------------------------------------------------------------------")
+        logger.debug("rownum : %d" % rownum)
+        logger.debug("row    : %s" % row)
 
         p = None
         colnum = 0
 
         for col in row:
-            logger.info("    %d   [%s] %s" % (colnum, listColumnHeaders[colnum], col))
+            logger.debug("    %d   [%s] %s" % (colnum, listColumnHeaders[colnum], col))
 
             CM = cleanString(col.decode(encoding='ASCII',errors='ignore').lstrip())
 
-            logger.info("CM : %s" % CM)
-
-            if CM == "":
+            if CM == "" or CM == None:
+                logger.info("Using %d[%s]" % (colnum, previous[colnum]))
                 CM = previous[colnum]
             else:
                 previous[colnum] = CM
+                logger.info("CM  %d[%s]" % (colnum, CM))
 
             attrib = dict()
             attrib["name"] = CM
@@ -374,8 +377,6 @@ def insertNColumns(tree, folder, subfolder, fileMetaEntity):
                 p = CM_ID
 
             colnum += 1
-
-        #previous = row
 
 def insertScenarios(tree, fileMetaEntity):
 

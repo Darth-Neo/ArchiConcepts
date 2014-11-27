@@ -111,7 +111,7 @@ if __name__ == "__main__":
     #cfl.append("req.p")
 
     #homeDir = os.getcwd()
-    homeDir = "/Users/morrj140/Development/GitRepository/DirCrawler/DVC_20141211_100141"
+    homeDir = "/Users/morrj140/Development/GitRepository/ArchiConcepts"
     #homeDir = "/Users/morrj140/Development/GitRepository/DirCrawler"
     #homeDir = "/Users/morrj140/Development/GitRepository/DirCrawler/Research_20141709_104529"
 
