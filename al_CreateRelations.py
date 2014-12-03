@@ -24,12 +24,6 @@ from nltk.stem import WordNetLemmatizer
 
 import al_ArchiLib as al
 
-NS_MAP={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
-XML_NS         =  NS_MAP["xsi"]
-ARCHIMATE_NS   =  NS_MAP["archimate"]
-
-ARCHI_TYPE = "{%s}type" % NS_MAP["xsi"]
-
 from nltk.corpus import wordnet_ic
 brown_ic = wordnet_ic.ic('ic-brown.dat')
 
@@ -55,21 +49,21 @@ def relateEntities(tree, folder, subfolder, eType, v1, v2):
     C1 = CM1
     attrib = dict()
     attrib["name"] = CM1
-    attrib[ARCHI_TYPE] = eType
+    attrib[al.ARCHI_TYPE] = eType
     al.insertNode(tag, folder, tree, attrib)
     CM1_ID = attrib["id"]
 
     C2 = CM2
     attrib = dict()
     attrib["name"] = CM2
-    attrib[ARCHI_TYPE] = eType
+    attrib[al.ARCHI_TYPE] = eType
     al.insertNode(tag, folder, tree, attrib)
     CM2_ID = attrib["id"]
 
     attrib = dict()
     attrib["source"] = CM1_ID
     attrib["target"] = CM2_ID
-    attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
+    attrib[al.ARCHI_TYPE] = "archimate:AssociationRelationship"
     al.insertRel(tag, "Relations", tree, attrib)
 
 
@@ -158,18 +152,16 @@ if __name__ == "__main__":
     lemmatizer = WordNetLemmatizer()
 
     # Archimate
-    fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v18.archimate"
-    etree.QName(ARCHIMATE_NS, 'model')
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v9.archimate"
+    etree.QName(al.ARCHIMATE_NS, 'model')
+
     treeArchi = etree.parse(fileArchimate)
 
-    testClean = "getTravelAgencyResponse"
-    logger.debug("clean : %s - %s" % (testClean, al.cleanCapital(testClean)))
+    listType = ("archimate:ApplicationService")
+    al.logAll(treeArchi, type=listType)
+    dictReq = al.dictName
 
-    al.logAll(treeArchi)
-
-    #relateEntities(treeArchi, "Entities", "archimate:ApplicationService", nFile, method)
-
-    xp = "//folder[@name='" + "Entity" + "']"
+    xp = "//folder[@name='" + "Data" + "']"
     txp = treeArchi.xpath(xp)
 
     logger.debug("len : %d" % len(txp))
@@ -178,27 +170,18 @@ if __name__ == "__main__":
 
         nameEntity = x.get("name")
 
-        y = al.cleanCapital(nameEntity)
+        logger.info("----Checking Entity : %s----" % nameEntity)
 
-        if len(y.split(" ")) > 1:
-            continue
-
-        logger.info("----Checking Entity : %s----" % y)
-
-        fl = checkSimilarity(al.dictName, y, THRESHOLD=0.85)
-
-        #fl = checkEntity(dictName, y)
-
-        # May need to change to dict for uniqueness
-        for z in fl:
+        for z in dictReq.keys():
             logger.debug("%s -- %s" % (x.get("name"), z))
 
-            nxp = "//element[@id='" + z + "']"
+            nxp = "//element[@id='" + dictReq[z] + "']"
             ntxp = treeArchi.xpath(nxp)
 
-            if len(ntxp) != 0:
+            if (len(ntxp) != 0) and (nameEntity in z):
                 wv = ntxp[0].get("name")
                 wy = al.cleanCapital(wv)
+
                 if wy == None:
                     continue
                 logger.info("%s ==> %s" % (x.get("name"), wy))
@@ -206,7 +189,7 @@ if __name__ == "__main__":
                 attrib = dict()
                 attrib["source"] = x.get("id")
                 attrib["target"] = ntxp[0].get("id")
-                attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
+                attrib[al.ARCHI_TYPE] = "archimate:AssociationRelationship"
                 al.insertRel("element", "Relations", treeArchi, attrib)
 
-    # outputXML(treeArchi)
+    al.outputXML(treeArchi)

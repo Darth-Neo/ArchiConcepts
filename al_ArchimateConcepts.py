@@ -13,102 +13,7 @@ from nl_lib.Concepts import Concepts
 
 from lxml import etree
 
-namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
-
-XML_NS         =  "http://www.w3.org/2001/XMLSchema-instance"
-ARCHIMATE_NS   =  "http://www.archimatetool.com/archimate"
-NS_MAP = {"xsi": XML_NS, "archimate" : ARCHIMATE_NS}
-
-ARCHI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
-
-def print_xml(el, i=3, n=0):
-    if i==0:
-        return
-
-    spaces = " " * n
-    n = n + 1
-
-    #print("%se.%d.%s - %s" % (spaces, i, el.tag, el.text))
-    print("%se.%d.%s" % (spaces, i, el.tag))
-
-    spaces = " " * n
-    n = n + 1
-
-    #nm = el.nsmap
-    #for n in nm:
-    #    print("--%s = %s" % (n, nm[n]))
-
-    attributes = el.attrib
-    for atr in attributes:
-        print("%sa.%d.%s = %s" % (spaces, i, atr, attributes[atr]))
-
-    i = i - 1
-    for elm in el:
-        print_xml(elm, i, n)
-
-def print_folders(tree):
-    r = tree.xpath('folder')
-
-    for x in r:
-        print("%s" % (x.get("name")))
-
-def print_folder(tree, folder):
-
-    se = tree.xpath("folder[@name='%s']" % (folder))
-
-    for x in se:
-        print_xml(x, i=6)
-
-def print_elements(tree):
-    r = tree.getroot()
-
-    r = tree.xpath('folder/element')
-
-    for x in r:
-        print x.get("name")
-
-def print_id(tree, id):
-    a = "id"
-    p = "//child[@%s=\"%s\"]" % (a, id)
-    r = tree.xpath("//@id=\"%s\"" % id, namespaces=namespaces)
-
-    try:
-        print_xml(r[0], i=1)
-    except:
-        print("Fail - %s" % p)
-
-def print_types(tree, a):
-
-    dictTypes = dict()
-
-    r = tree.xpath("//@%s" % a, namespaces=namespaces)
-
-    for x in r:
-        if dictTypes.has_key(x):
-            dictTypes[x] += 1
-        else:
-            dictTypes[x] = 1
-
-    for x in dictTypes:
-        logger.info("Parent - %s:ID - %s" % (x.getparent().get("name"),x.getparent().get("id")))
-
-        p = "//element[@%s=\"%s\"]" % (a, x)
-        r = tree.xpath(p, namespaces=namespaces)
-
-        if len(r) > 0:
-            print_xml(r[0], i=1)
-
-def log_node(n):
-    logger.info("%s:%s:%s" % (n.tag, n.get("name"), n.get("id")))
-
-    for y in n:
-        log_node(y)
-
-def log_all(tree):
-    #r = tree.xpath('/')
-
-    for x in tree.getroot():
-        log_node(x)
+import al_ArchiLib as al
 
 def folderConcepts(tree, concepts):
     r = tree.xpath('folder')
@@ -167,8 +72,8 @@ def createConcepts(concept, el, i=10, n=1):
 def createArchimate(fileArchiModel, fileArchiP):
     archi = Concepts.loadConcepts(fileArchiP)
 
-    rootName = etree.QName(ARCHIMATE_NS, 'model')
-    root = etree.Element(rootName, version="2.6.0", name=fileArchiP ,id="02cec69f", nsmap=NS_MAP)
+    rootName = etree.QName(al.ARCHIMATE_NS, 'model')
+    root = etree.Element(rootName, version="2.6.0", name=fileArchiP ,id="02cec69f", nsmap=al.NS_MAP)
     xmlSheet = etree.ElementTree(root)
 
     createArchimateElements(xmlSheet, archi, root)
@@ -213,8 +118,8 @@ if __name__ == "__main__":
     fileArchiModel = 'archi.archimate'
 
     #fileArchimate = "/Users/morrj140/Development/GitRepository/DirCrawler/DNX Phase 2 0.9.archimate"
-
-    fileArchimate = "/Users/morrj140/PycharmProjects/ArchiConcepts/CodeGen_v10.archimate"
+    #fileArchimate = "/Users/morrj140/PycharmProjects/ArchiConcepts/CodeGen_v10.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v10.archimate"
 
     p, fname = os.path.split(fileArchimate)
 

@@ -25,6 +25,16 @@ ARCHI_TYPE = "{%s}type" % NS_MAP["xsi"]
 
 dictRelation = dict()
 dictName = dict()
+dictEdges = dict()
+dictNodes = dict()
+dictCount = dict()
+
+def getID():
+    r = str(hex(random.randint(0, 16777215)))[-6:] + str(hex(random.randint(0, 16777215))[-2:])
+
+    if r[0] == "x":
+        return getID()
+    return r
 
 def cleanString(s):
     r = ""
@@ -59,6 +69,28 @@ def outputXML(tree):
     tree.write(output, pretty_print=True)
     logger.info("%s" % (output.getvalue()))
 
+def findDiagramModelByName(tree, name):
+    r = None
+
+    xp = "//element[@name='" + name + "']"
+    stp = tree.xpath(xp)
+
+    if stp[0].get(ARCHI_TYPE) == "archimate:ArchimateDiagramModel":
+        r = stp[0]
+
+    return r
+
+def findRelationsByID(tree, id):
+    xp = "//element[@source='%s' or @target='%s']" % (id, id)
+    logger.debug("%s" % xp)
+    stp = tree.xpath(xp)
+    return stp
+
+def findRelationsByTargetID(tree, id):
+    xp = "//element[@target='%s']" % id
+    stp = tree.xpath(xp)
+    return stp
+
 def findDiagramModel(tree, id):
     xp = "//element[@id='" + id + "']"
     stp = tree.xpath(xp)
@@ -79,12 +111,231 @@ def findElement(tree, name):
     stp = tree.xpath(xp)
     return stp
 
-def getID():
-    r = str(hex(random.randint(0, 16777215)))[-6:] + str(hex(random.randint(0, 16777215))[-2:])
+def findElementByID(tree, id):
+    xp = "//element[@id='%s']" % id
+    stp = tree.xpath(xp)
+    return stp
 
-    if r[0] == "x":
-        return getID()
-    return r
+def print_xml(el, i=3, n=0):
+    if i==0:
+        return
+
+    spaces = " " * n
+    n = n + 1
+
+    #print("%se.%d.%s - %s" % (spaces, i, el.tag, el.text))
+    print("%se.%d.%s" % (spaces, i, el.tag))
+
+    spaces = " " * n
+    n = n + 1
+
+    #nm = el.nsmap
+    #for n in nm:
+    #    print("--%s = %s" % (n, nm[n]))
+
+    attributes = el.attrib
+    for atr in attributes:
+        print("%sa.%d.%s = %s" % (spaces, i, atr, attributes[atr]))
+
+    i = i - 1
+    for elm in el:
+        print_xml(elm, i, n)
+
+def print_folders(tree):
+    r = tree.xpath('folder')
+
+    for x in r:
+        print("%s" % (x.get("name")))
+
+def print_folder(tree, folder):
+
+    se = tree.xpath("folder[@name='%s']" % (folder))
+
+    for x in se:
+        print_xml(x, i=6)
+
+def print_elements(tree):
+    r = tree.getroot()
+
+    r = tree.xpath('folder/element')
+
+    for x in r:
+        print x.get("name")
+
+def print_id(tree, id):
+    a = "id"
+    p = "//child[@%s=\"%s\"]" % (a, id)
+    r = tree.xpath("//@id=\"%s\"" % id, namespaces=NS_MAP)
+
+    try:
+        print_xml(r[0], i=1)
+    except:
+        print("Fail - %s" % p)
+
+def print_types(tree, a):
+
+    dictTypes = dict()
+
+    r = tree.xpath("//@%s" % a, namespaces=NS_MAP)
+
+    for x in r:
+        if dictTypes.has_key(x):
+            dictTypes[x] += 1
+        else:
+            dictTypes[x] = 1
+
+    for x in dictTypes:
+        logger.info("Parent - %s:ID - %s" % (x.getparent().get("name"),x.getparent().get("id")))
+
+        p = "//element[@%s=\"%s\"]" % (a, x)
+        r = tree.xpath(p, namespaces=NS_MAP)
+
+        if len(r) > 0:
+            print_xml(r[0], i=1)
+
+def log_node(n):
+    logger.info("%s:%s:%s" % (n.tag, n.get("name"), n.get("id")))
+
+    for y in n:
+        log_node(y)
+
+def log_all(tree):
+    #r = tree.xpath('/')
+
+    for x in tree.getroot():
+        log_node(x)
+
+def addToNodeDict(name, d):
+    if d.has_key(name):
+        d[name] += 1
+    else:
+        d[name] = 1
+
+def getEdgesForNode(nodeName, searchType, dictNodes, dictEdges, n=5):
+    listNodes = list()
+
+    if n == 0:
+        return listNodes
+    else:
+        n -= 1
+
+    for x in dictNodes.keys():
+        try:
+            if dictNodes[x]["name"] == nodeName:
+                source = x
+                break
+        except:
+            source = None
+
+    for x in dictEdges.keys():
+        if dictEdges[x].has_key("source"):
+            if dictEdges[x]["source"] == source:
+                sourceNE = dictEdges[x]["source"]
+                targetNE = dictEdges[x]["target"]
+
+                if dictNodes[targetNE][ARCHI_TYPE] in searchType:
+                    spaces = " " * n
+                    nodeName = getNodeName(targetNE)
+                    if nodeName != "NA":
+                        nn = "%s%s" % (spaces, nodeName)
+                        listNodes.append(nn)
+
+                        ln = getEdgesForNode(nodeName, searchType, dictNodes, dictEdges, n)
+                        for y in ln:
+                            listNodes.append(y)
+
+    return listNodes
+
+def countNodeType(type):
+    if dictCount.has_key(type):
+        dictCount[type] += 1
+    else:
+        dictCount[type] = 1
+
+def getNodeName(node):
+    name = " "
+
+    try:
+        logger.debug("  Node : %s" % (dictNodes[node]["name"]))
+        name = dictNodes[node]["name"]
+    except:
+        logger.debug("Node not Found")
+
+    return name
+
+def getNode(el, dictAttrib):
+    logger.debug("%s" % (el.tag))
+
+    attributes = el.attrib
+
+    # Not every node will have a type
+    try:
+        countNodeType(attributes["type"])
+    except:
+        pass
+
+    nl = dict()
+    for atr in attributes:
+        nl[atr] = attributes[atr]
+        logger.debug("%s = %s" % (atr, attributes[atr]))
+
+    if nl.has_key("id"):
+        dictAttrib[nl["id"]] = nl
+
+    for elm in el:
+        getNode(elm, dictAttrib)
+
+def getEdges(tree, folder, dictAttrib):
+    se = tree.xpath("folder[@name='%s']" % (folder))
+
+    for x in se:
+        getNode(x, dictAttrib)
+
+def getFolders(tree):
+    r = tree.xpath('folder')
+
+    l = list()
+
+    for x in r:
+        l.append(x.get("name"))
+        logger.debug("%s" % (x.get("name")))
+
+    return l
+
+def getChildName(tree, id):
+
+    xp = "//child[@id='%s']" % str(id)
+
+    logger.debug("xp : %s" % xp)
+
+    se = tree.xpath(xp)
+
+    if len(se) > 0:
+        ae = se[0].get("archimateElement")
+        return getElementName(tree, ae)
+
+def getElementName(tree, id):
+
+    xp = "//element[@id='%s']" % str(id)
+
+    logger.debug("xp : %s" % xp)
+
+    se = tree.xpath(xp)
+
+    if len(se) > 0:
+        return se[0], se[0].get("name")
+    else:
+        return None, None
+
+def logTypeCounts():
+    logger.info("Type Counts")
+    listCounts = dictCount.items()
+    for x in sorted(listCounts, key=lambda c: abs(c[1]), reverse=False):
+        if x[1] > 1:
+            logger.info("  %d - %s" % (x[1], x[0]))
+
+    logger.info(" ")
+
 
 def insertNode(tag, folder, tree, attrib):
     try:

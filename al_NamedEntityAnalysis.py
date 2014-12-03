@@ -24,7 +24,7 @@ import al_DependancyAnalysisFromArchi as dafa
 logger.setLevel(logging.INFO)
 
 if __name__ == "__main__":
-    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC V6.archimate"
+    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC V10.archimate"
     fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
     fileConcepts = "req.p"
 

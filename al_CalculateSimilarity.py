@@ -28,8 +28,8 @@ from nltk.stem import PorterStemmer, WordNetLemmatizer
 
 import al_ArchiLib as al
 
-num_topics = 100
-num_words  = 100
+num_topics = 50
+num_words  = 10
 similarity = 0.90
 
 class Collocations(object):
@@ -322,6 +322,7 @@ if __name__ == "__main__":
     npbt.createTopics(fileConcepts)
 
     nc = npbt.findSimilarties("documentsSimilarity.p")
+    nc.logConcepts()
 
     if True:
         logger.info("Topics")
@@ -332,9 +333,9 @@ if __name__ == "__main__":
             lt = (x.name, x.count)
             listTopics.append(lt)
 
-    if True:
-        logger.info("Topics Sorted")
-        for x in sorted(listTopics, key=lambda c: abs(c[1]), reverse=False):
-            logger.info("Topic : %s[%d]" % (x[0], x[1]))
+        if True:
+            logger.info("Topics Sorted")
+            for x in sorted(listTopics, key=lambda c: abs(c[1]), reverse=False):
+                logger.info("Topic : %s[%d]" % (x[0], x[1]))
 
-    #nc.logConcepts()
+
