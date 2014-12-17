@@ -16,14 +16,14 @@ from nl_lib.Concepts import Concepts
 from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
 
-import al_ArchiLib as al
+from al_ArchiLib import *
 
 if __name__ == "__main__":
 
     # Archimate
     fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v16.archimate"
-    al.etree.QName(al.ARCHIMATE_NS, 'model')
-    treeArchi = al.etree.parse(fileArchimate)
+    etree.QName(ARCHIMATE_NS, 'model')
+    treeArchi = etree.parse(fileArchimate)
 
     dirWSDL = "/Users/morrj140/Documents/SolutionEngineering/Jawa/Jawa_v2_rc37"
 
@@ -35,7 +35,7 @@ if __name__ == "__main__":
             if nameFile[-4:].lower() == "wsdl":
                 nFile = name[:-5]
                 logger.info("nFile : %s" % nFile)
-                tree = al.etree.parse(nameFile)
+                tree = etree.parse(nameFile)
 
                 xp = "//@schemaLocation"
                 txp = tree.xpath(xp)
@@ -44,6 +44,6 @@ if __name__ == "__main__":
                     method = x[4:-4]
                     logger.info("x : %s" % method)
 
-                    al.insertTwoValues(treeArchi, "Application", "New Jawa", "archimate:ApplicationService", nFile, method)
+                    insertTwoColumns(treeArchi, "Application", "New Jawa", "archimate:ApplicationService", nFile, method)
 
-    al.outputXML(treeArchi)
+    outputXML(treeArchi)

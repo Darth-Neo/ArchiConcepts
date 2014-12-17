@@ -37,13 +37,14 @@ if __name__ == "__main__":
     #conceptFile = "ngrams.p"
     #conceptFile = "ngramscore.p"
     #conceptFile = "ngramsubject.p"
-    conceptFile = "archi.p"
+    #conceptFile = "archi.p"
     #conceptFile = "traversal.p"
     #conceptFile = "batches.p"
     #conceptFile = "export.p"
     #conceptFile = "req.p"
     #conceptFile = "Systems.p"
     #conceptFile = "Contract Management.p"
+    conceptFile = "report.p"
 
     #
     #conceptFile = "pptx.p"
@@ -57,8 +58,8 @@ if __name__ == "__main__":
     logger.info("Loading :" + filePath)
     concepts = Concepts.loadConcepts(filePath)
 
-    #concepts.logConcepts()
-    concepts.printConcepts()
+    concepts.logConcepts()
+    #concepts.printConcepts()
     #recurseConcepts(concepts, 3)
 
         

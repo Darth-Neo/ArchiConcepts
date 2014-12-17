@@ -22,7 +22,7 @@ from nltk.corpus import wordnet as wn
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
-import al_ArchiLib as al
+from al_ArchiLib import *
 
 from nltk.corpus import wordnet_ic
 brown_ic = wordnet_ic.ic('ic-brown.dat')
@@ -37,9 +37,9 @@ def relateEntities(tree, folder, subfolder, eType, v1, v2):
     # <folder name="Process" id="e23b1e50">
 
     attrib = dict()
-    attrib["id"] = al.getID()
+    attrib["id"] = getID()
     attrib["name"] = subfolder
-    al.insertNode("folder", folder, tree, attrib)
+    insertNode("folder", folder, tree, attrib)
 
     folder = subfolder
 
@@ -49,22 +49,22 @@ def relateEntities(tree, folder, subfolder, eType, v1, v2):
     C1 = CM1
     attrib = dict()
     attrib["name"] = CM1
-    attrib[al.ARCHI_TYPE] = eType
-    al.insertNode(tag, folder, tree, attrib)
+    attrib[ARCHI_TYPE] = eType
+    insertNode(tag, folder, tree, attrib)
     CM1_ID = attrib["id"]
 
     C2 = CM2
     attrib = dict()
     attrib["name"] = CM2
-    attrib[al.ARCHI_TYPE] = eType
-    al.insertNode(tag, folder, tree, attrib)
+    attrib[ARCHI_TYPE] = eType
+    insertNode(tag, folder, tree, attrib)
     CM2_ID = attrib["id"]
 
     attrib = dict()
     attrib["source"] = CM1_ID
     attrib["target"] = CM2_ID
-    attrib[al.ARCHI_TYPE] = "archimate:AssociationRelationship"
-    al.insertRel(tag, "Relations", tree, attrib)
+    attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
+    insertRel(tag, "Relations", tree, attrib)
 
 
 def checkEntity(d, e):
@@ -72,7 +72,7 @@ def checkEntity(d, e):
     fl  = list()
 
     for x in d.keys():
-        y = al.cleanCapital(x)
+        y = cleanCapital(x)
 
         if e in y:
             logger.debug("dictName[%s] : %s" % (d[x], y))
@@ -85,6 +85,7 @@ def maxSimilarity(a, b):
     maxSim = 0
     mA = None
     mB = None
+    y = 0
 
     #
     # Only Compare same part of speech
@@ -114,7 +115,7 @@ def checkSimilarity(d, e, THRESHOLD=0.79):
 
     for x in d.keys():
 
-        y = al.cleanCapital(x)
+        y = cleanCapital(x)
 
         logger.debug("dict[x] : %s" % (y))
 
@@ -153,13 +154,13 @@ if __name__ == "__main__":
 
     # Archimate
     fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v9.archimate"
-    etree.QName(al.ARCHIMATE_NS, 'model')
+    etree.QName(ARCHIMATE_NS, 'model')
 
     treeArchi = etree.parse(fileArchimate)
 
     listType = ("archimate:ApplicationService")
-    al.logAll(treeArchi, type=listType)
-    dictReq = al.dictName
+    logAll(treeArchi, type=listType)
+    dictReq = dictName
 
     xp = "//folder[@name='" + "Data" + "']"
     txp = treeArchi.xpath(xp)
@@ -180,7 +181,7 @@ if __name__ == "__main__":
 
             if (len(ntxp) != 0) and (nameEntity in z):
                 wv = ntxp[0].get("name")
-                wy = al.cleanCapital(wv)
+                wy = cleanCapital(wv)
 
                 if wy == None:
                     continue
@@ -189,7 +190,7 @@ if __name__ == "__main__":
                 attrib = dict()
                 attrib["source"] = x.get("id")
                 attrib["target"] = ntxp[0].get("id")
-                attrib[al.ARCHI_TYPE] = "archimate:AssociationRelationship"
-                al.insertRel("element", "Relations", treeArchi, attrib)
+                attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
+                insertRel("element", "Relations", treeArchi, attrib)
 
-    al.outputXML(treeArchi)
+    outputXML(treeArchi)

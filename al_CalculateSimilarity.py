@@ -26,7 +26,7 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-import al_ArchiLib as al
+from al_ArchiLib import *
 
 num_topics = 50
 num_words  = 10
@@ -281,16 +281,16 @@ if __name__ == "__main__":
     fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
     fileConcepts = "req.p"
 
-    etree.QName(al.ARCHIMATE_NS, 'model')
+    etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimateIn)
 
     listType = ("archimate:Requirement", "archimate:BusinessProcess")
-    al.logAll(tree, type=listType)
-    dictReq = al.dictName
+    logAll(tree, type=listType)
+    dictReq = dictName
 
     listType = ("archimate:BusinessProcess")
-    al.logAll(tree, type=listType)
-    dictBP = al.dictName
+    logAll(tree, type=listType)
+    dictBP = dictName
 
     if False:
         logger.info("Find nGrams")

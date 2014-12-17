@@ -5,16 +5,12 @@ import StringIO
 import csv
 import random
 
-NS_MAP={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
-XML_NS         =  NS_MAP["xsi"]
-ARCHIMATE_NS   =  NS_MAP["archimate"]
-
-ARCHI_TYPE = "{%s}type" % NS_MAP["xsi"]
-
 from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
 
 from xml.etree import ElementTree as et
+
+from al_ArchiLib import *
 
 class XMLCombiner(object):
     def __init__(self, filenames):

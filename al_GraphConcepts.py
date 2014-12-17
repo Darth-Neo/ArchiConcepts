@@ -109,6 +109,7 @@ if __name__ == "__main__":
     #cfl.append("batches.p")
     #cfl.append("export.p")
     #cfl.append("req.p")
+    #cfl.append("report.p")
 
     #homeDir = os.getcwd()
     homeDir = "/Users/morrj140/Development/GitRepository/ArchiConcepts"

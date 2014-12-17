@@ -13,7 +13,8 @@ logger = Logger.setupLogging(__name__)
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
 
-import al_ArchiLib as al
+
+from al_ArchiLib import *
 
 from lxml import etree
 
@@ -27,7 +28,7 @@ def getModel(ModelToExport, concepts, f, tree):
         xid = x.get("id")
         xi = x.items()
 
-        xc, xname = al.getElementName(tree, x.get("archimateElement"))
+        xc, xname = getElementName(tree, x.get("archimateElement"))
 
         se = tree.xpath("//child[@id='%s']" % (xid))
         nc  = se[0].getchildren()
@@ -44,12 +45,12 @@ def getModel(ModelToExport, concepts, f, tree):
 
             if y.tag == "sourceConnection":
                 sid = y.get("source")
-                s, sname = al.getChildName(tree, sid)
+                s, sname = getChildName(tree, sid)
                 tid = y.get("target")
-                t, tname = al.getChildName(tree, tid)
+                t, tname = getChildName(tree, tid)
 
                 relid = y.get("relationship")
-                rel, relname = al.getElementName(tree, relid)
+                rel, relname = getElementName(tree, relid)
 
                 if relname == None:
                     relname = "Target"
@@ -57,9 +58,9 @@ def getModel(ModelToExport, concepts, f, tree):
                 c.addConceptKeyType(tname, relname)
 
                 logger.debug("    %s" % yi)
-                logger.info("%s,%s,%s,%s,%s,%s\n" % (ModelToExport, sname, s.get(al.ARCHI_TYPE), relname, tname, t.get(al.ARCHI_TYPE)))
+                logger.info("%s,%s,%s,%s,%s,%s\n" % (ModelToExport, sname, s.get(ARCHI_TYPE), relname, tname, t.get(ARCHI_TYPE)))
 
-                f.write("%s,%s,%s,%s,%s,%s\n" % (ModelToExport, sname, s.get(al.ARCHI_TYPE), relname, tname, t.get(al.ARCHI_TYPE)))
+                f.write("%s,%s,%s,%s,%s,%s\n" % (ModelToExport, sname, s.get(ARCHI_TYPE), relname, tname, t.get(ARCHI_TYPE)))
 
     return concepts
 
@@ -69,7 +70,7 @@ if __name__ == "__main__":
 
     p, fname = os.path.split(fileArchimate)
     logger.info("Using : %s" % fileArchimate)
-    etree.QName(al.ARCHIMATE_NS, 'model')
+    etree.QName(ARCHIMATE_NS, 'model')
 
     tree = etree.parse(fileArchimate)
 

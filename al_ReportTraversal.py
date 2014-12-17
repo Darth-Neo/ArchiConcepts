@@ -14,7 +14,7 @@ from nl_lib.Concepts import Concepts
 
 from lxml import etree
 
-import al_ArchiLib as al
+from al_ArchiLib import *
 
 if __name__ == "__main__":
     fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v10.archimate"
@@ -23,28 +23,37 @@ if __name__ == "__main__":
     p, fname = os.path.split(fileArchimate)
     logger.info("Using : %s" % fname)
 
-    etree.QName(al.ARCHIMATE_NS, 'model')
+    etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimate)
 
     dictNodes = dict()
     dictEdges = dict()
 
-    listFolders = al.getFolders(tree)
+    listFolders = getFolders(tree)
 
     # Get all Nodes
     for x in listFolders:
         if x != "Views" and x != "Relations":
             logger.info("  Checking : %s" % (x))
-            al.getEdges(tree, x, dictNodes)
+            getEdges(tree, x, dictNodes)
 
     # Get all Relations
-    al.getEdges(tree, "Relations", dictEdges)
+    getEdges(tree, "Relations", dictEdges)
 
     f = open(fileOut,'w')
 
     outText = "\"%s\",\"%s\",\"%s\",\"%s\"\n" % ("Source Name", "Source type", "Target Name", "Target Type")
 
     f.write(outText)
+
+    listEntities = list()
+    listEntities.append("archimate:BusinessEvent")
+    listEntities.append("archimate:BusinessObject")
+    listEntities.append("archimate:BusinessProcess")
+    listEntities.append("archimate:ApplicationService")
+    listEntities.append("archimate:ApplicationComponent")
+    listEntities.append("archimate:DataObject")
+    listEntities.append("archimate:Requirement")
 
     count = 0
     for x in dictEdges.keys():
@@ -54,21 +63,19 @@ if __name__ == "__main__":
             source = dictEdges[x]["source"]
             target = dictEdges[x]["target"]
 
-            sourceType = dictNodes[source][al.ARCHI_TYPE]
-            targetType = dictNodes[target][al.ARCHI_TYPE]
+            sourceType = dictNodes[source][ARCHI_TYPE]
+            targetType = dictNodes[target][ARCHI_TYPE]
 
             #if dictEdges[x][ARCHI_TYPE] in ("archimate:UsedByRelationship","archimate:AssociationRelationship"):
             #if dictEdges[x][ARCHI_TYPE] in ("archimate:AssociationRelationship"):
             try:
-                if sourceType in ("archimate:BusinessEvent", "archimate:BusinessObject", "archimate:BusinessProcess",
-                                  "archimate:ApplicationService", "archimate:ApplicationComponent",
-                                  "archimate:ApplicationData", "archimate:Requirement"):
+                if sourceType in listEntities:
 
-                    logger.debug("  Source : %s[%s]" % (dictNodes[source]["name"], dictNodes[source][al.ARCHI_TYPE]))
-                    logger.debug("    Target : %s[%s]" % (dictNodes[target]["name"], dictNodes[target][al.ARCHI_TYPE]))
+                    logger.debug("  Source : %s[%s]" % (dictNodes[source]["name"], dictNodes[source][ARCHI_TYPE]))
+                    logger.debug("    Target : %s[%s]" % (dictNodes[target]["name"], dictNodes[target][ARCHI_TYPE]))
 
-                    outText = "\"%s\",\"%s\",\"%s\",\"%s\"\n" % (dictNodes[source]["name"], dictNodes[source][al.ARCHI_TYPE],
-                                                                 dictNodes[target]["name"], dictNodes[target][al.ARCHI_TYPE])
+                    outText = "\"%s\",\"%s\",\"%s\",\"%s\"\n" % (dictNodes[source]["name"], dictNodes[source][ARCHI_TYPE],
+                                                                 dictNodes[target]["name"], dictNodes[target][ARCHI_TYPE])
                     f.write(outText)
             except:
                 logger.warn("ops")

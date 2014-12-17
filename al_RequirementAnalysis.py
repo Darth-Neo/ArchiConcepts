@@ -34,7 +34,7 @@ from pattern.vector import Vector, distance, NB
 from pattern.db import csv
 from pattern.en import parse, Sentence, parsetree
 
-import al_ArchiLib as al
+from al_ArchiLib import *
 
 logger.setLevel(logging.INFO)
 
@@ -177,14 +177,14 @@ if __name__ == "__main__":
     fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
     fileConcepts = "req.p"
 
-    etree.QName(al.ARCHIMATE_NS, 'model')
+    etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimateIn)
 
-    al.logAll(tree, type="archimate:Requirement")
+    logAll(tree, type="archimate:Requirement")
 
     concepts = Concepts("Requirement", "Requirement")
     n = 0
-    for sentence in al.dictName:
+    for sentence in dictName:
         n += 1
         logger.debug("%s" % sentence)
 

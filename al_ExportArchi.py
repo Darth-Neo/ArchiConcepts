@@ -24,7 +24,7 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-import al_ArchiLib as al
+from al_ArchiLib import *
 
 import al_GraphConcepts as GC
 
@@ -65,45 +65,45 @@ if __name__ == "__main__":
 
     concepts = Concepts("Node", "Nodes")
 
-    listFolders = al.getFolders(tree)
+    listFolders = getFolders(tree)
 
     # Get all Nodes
     for x in listFolders:
         if x != "Views" and x != "Relations":
             logger.info("Checking Folder : %s" % (x))
-            al.getEdges(tree, x, al.dictNodes)
+            getEdges(tree, x, dictNodes)
 
     # Get all Edges
-    al.getEdges(tree, "Relations", al.dictEdges)
+    getEdges(tree, "Relations", dictEdges)
 
-    logger.info("Found %d Nodes" % len(al.dictNodes))
-    logger.info("Found %d Edges" % len(al.dictEdges))
+    logger.info("Found %d Nodes" % len(dictNodes))
+    logger.info("Found %d Edges" % len(dictEdges))
 
     count = 0
     listTSort = list()
-    for x in al.dictEdges.keys():
-        logger.debug("[%s]=%s" % (al.dictEdges[x]["id"], x))
+    for x in dictEdges.keys():
+        logger.debug("[%s]=%s" % (dictEdges[x]["id"], x))
 
-        if al.dictEdges[x].has_key("source"):
-            source = al.dictEdges[x]["source"]
-            target = al.dictEdges[x]["target"]
+        if dictEdges[x].has_key("source"):
+            source = dictEdges[x]["source"]
+            target = dictEdges[x]["target"]
 
-            logger.debug("  Rel    : %s" % (al.dictEdges[x][al.ARCHI_TYPE]))
+            logger.debug("  Rel    : %s" % (dictEdges[x][ARCHI_TYPE]))
 
-            al.countNodeType(al.dictNodes[source][al.ARCHI_TYPE])
-            al.countNodeType(al.dictNodes[target][al.ARCHI_TYPE])
-            al.countNodeType(al.dictEdges[x][al.ARCHI_TYPE])
+            countNodeType(dictNodes[source][ARCHI_TYPE])
+            countNodeType(dictNodes[target][ARCHI_TYPE])
+            countNodeType(dictEdges[x][ARCHI_TYPE])
 
-            sourceName = al.getNodeName(source)
-            targetName = al.getNodeName(target)
+            sourceName = getNodeName(source)
+            targetName = getNodeName(target)
 
-            logger.debug(" %s--%s--%s" % (sourceName, al.dictEdges[x][al.ARCHI_TYPE][10:], targetName))
+            logger.debug(" %s--%s--%s" % (sourceName, dictEdges[x][ARCHI_TYPE][10:], targetName))
 
             l = list()
-            sc = concepts.addConceptKeyType(sourceName, al.dictNodes[source][al.ARCHI_TYPE][10:])
+            sc = concepts.addConceptKeyType(sourceName, dictNodes[source][ARCHI_TYPE][10:])
             #getWords(sourceName, sc)
 
-            tc = sc.addConceptKeyType(targetName, al.dictNodes[target][al.ARCHI_TYPE][10:])
+            tc = sc.addConceptKeyType(targetName, dictNodes[target][ARCHI_TYPE][10:])
             #getWords(sourceName, tc)
 
     Concepts.saveConcepts(concepts, "export.p")
@@ -111,6 +111,6 @@ if __name__ == "__main__":
     if False:
         GC.graphConcepts(concepts, filename="Export.png")
 
-    al.logTypeCounts()
+    logTypeCounts()
 
     #concepts.logConcepts()

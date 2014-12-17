@@ -22,18 +22,13 @@ import al_ImportArchi as ia
 SLD_LAYOUT_TITLE_AND_CONTENT = 1
 TITLE_ONLY_SLIDE_LAYOUT = 5
 
-XML_NS         =  "http://www.w3.org/2001/XMLSchema-instance"
-ARCHIMATE_NS   =  "http://www.archimatetool.com/archimate"
+from al_ArchiLib import *
 
 A_NS           =  "http://schemas.openxmlformats.org/drawingml/2006/main"
 P_NS           =  "http://schemas.openxmlformats.org/presentationml/2006/main"
 R_NS           =  "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 
-namespaces = {"xsi": XML_NS, "archimate" : ARCHIMATE_NS}
-
 namespacesPPTX = {"p" : P_NS, "a" : A_NS, "r" : R_NS}
-
-ARCHI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
 
 DIAGRAM_MODEL = "archimate:ArchimateDiagramModel"
 SCALE = 0.90
@@ -327,7 +322,7 @@ if __name__ == "__main__":
         listDO.append(ls)
 
         p = "//element[@id=\"%s\"]" % (x[0].get("id"))
-        r = tree.xpath(p, namespaces=namespaces)
+        r = tree.xpath(p, namespaces=NS_MAP)
         xc = r[0].getchildren()
 
         for y in xc:

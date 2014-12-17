@@ -80,8 +80,11 @@ def findDiagramModelByName(tree, name):
 
     return r
 
-def findRelationsByID(tree, id):
-    xp = "//element[@source='%s' or @target='%s']" % (id, id)
+def findRelationsByID(tree, id, Target=False):
+    if Target == False:
+        xp = "//element[@source='%s']" % (id)
+    else:
+        xp = "//element[@source='%s' or @target='%s']" % (id, id)
     logger.debug("%s" % xp)
     stp = tree.xpath(xp)
     return stp
@@ -821,3 +824,102 @@ def cleanCapital(s):
 
     logger.debug("cleanCapital : %s" % r)
     return r
+
+
+def folderConcepts(tree, concepts):
+    r = tree.xpath('folder')
+
+    for x in r:
+
+        folder = str(x.get("name")).strip()
+
+        logger.debug("folder : %s" % (folder))
+
+        se = tree.xpath("folder[@name='%s']" % (folder))
+
+        for element in se:
+            createConcepts(concepts, element)
+
+    #concepts.logConcepts()
+
+def conceptAttributes(c, el, n):
+    n = n + 1
+    spaces = " " * n
+
+    attrib = el.attrib
+
+    d = c.addConceptKeyType("Attributes", "Attribute")
+
+    attributes = el.attrib
+    for atr in attributes.keys():
+        logger.info("%sAttributes[%s]=%s" % (spaces, atr, attributes[atr] ))
+        d.addConceptKeyType(atr, attributes[atr])
+
+    if el.tag == 'Documentation':
+        d.addConceptKeyType(el.text, "Text")
+
+def createConcepts(concept, el, i=10, n=1):
+    if i == 0:
+        return
+
+    spaces = " " * n
+    i = i - 1
+
+    id = el.get("id")
+    tag = el.tag
+
+    if id != None:
+        c = concept.addConceptKeyType(id, tag)
+    else:
+        c = concept.addConceptKeyType(tag, tag)
+
+    logger.info("%s%s[%s]" % (spaces, c.name, c.typeName))
+
+    conceptAttributes(c, el, n+1)
+
+    for elm in el:
+        createConcepts(c, elm, i, n+1)
+
+def createArchimate(fileArchiModel, fileArchiP):
+    archi = Concepts.loadConcepts(fileArchiP)
+
+    rootName = etree.QName(al.ARCHIMATE_NS, 'model')
+    root = etree.Element(rootName, version="2.6.0", name=fileArchiP ,id="02cec69f", nsmap=al.NS_MAP)
+    xmlSheet = etree.ElementTree(root)
+
+    createArchimateElements(xmlSheet, archi, root)
+
+    output = StringIO.StringIO()
+    xmlSheet.write(output, pretty_print=True)
+
+    logger.info("%s" % (output.getvalue()))
+
+    f = open(fileArchiModel,'w')
+    f.write(output.getvalue())
+    f.close()
+
+    output.close()
+
+def createArchimateElements(xmlSheet, archi, root, n=1):
+
+    spaces = " " * n
+
+    cd = archi.getConcepts().values()
+
+    for x in cd:
+        logger.debug("%s%s:%s" % (spaces, x.typeName, x.name))
+
+        if x.typeName != "Attribute":
+
+            tag = x.typeName
+            id = x.name
+            attrib = x.getConcepts()["Attributes"]
+
+            ad = dict()
+            for y in attrib.getConcepts().values():
+                for z in attrib.getConcepts().values():
+                    ad[z.name]  = z.typeName
+
+            element = etree.SubElement(root, tag, ad)
+
+            createArchimateElements(xmlSheet, x, element)

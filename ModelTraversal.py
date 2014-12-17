@@ -7,136 +7,164 @@ import os
 import StringIO
 import time
 import logging
+import logging
+import pickle
 
 from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
-import logging
-
-logger.setLevel(logging.INFO)
-
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
-
 from lxml import etree
 
-import al_ArchiLib as al
+from al_ArchiLib import *
 
-def cvsConcepts(c, f):
+logger = Logger.setupLogging(__name__)
+logger.setLevel(logging.INFO)
 
-    pc = c.getConcepts()
-
-    for p in pc.values():
-        if p.typeName in ("ID", "archimate:BusinessObject"):
-            continue
-        elif p.typeName in ("archimate:BusinessEvent"):
-            n = 1
-        elif p.typeName in ("archimate:BusinessProcess"):
-            n = 2
-        else:
-            n = 3
-
-        commas = "," * n
-
-        text = "%s%s" % (commas, p.name)
-        logger.info("%s" % text)
-
-        f.write(text + "\n")
-
-        cvsConcepts(p, f)
-
-def recurseBusinesNodea(tree, childID, c, n = 0):
+def cvsLists(lc, dictArchimate, f, n=0):
     n += 1
+
+    logger.info("%s[%s]" % (lc, type(lc)))
+
+    for p in lc:
+        if n== 20:
+            logger.warn("recursion too long")
+            return
+
+        elif len(p) == 2 and isinstance(p[0], str) and isinstance(p[1], str):
+            n = getColumn(p[1], dictArchimate)
+            commas = "," * n
+            text = "%s%s" % (commas, p[0])
+            logger.info("%s" % text)
+            f.write(text + "\n")
+
+        elif isinstance(p, list):
+            cvsLists(p, f, n)
+
+        elif isinstance(p, str):
+            commas = "," * n
+            text = "%s%s" % (commas, p)
+            logger.info("%s" % text)
+            f.write(text + "\n")
+
+def getColumn(s, dictArchimate):
+    if dictArchimate.has_key(s):
+        n = dictArchimate[s]
+    else:
+        n = 0
+    return n
+
+def listNode(tree, ID, n):
+
+    node = findElementByID(tree, ID)[0]
 
     spaces = " " * n
 
-    sr = al.findRelationsByID(tree, childID)
+    logger.debug("%sS%d:%s[%s]" % (spaces, n, node.get("name"), node.get(ARCHI_TYPE)))
 
-    logger.debug("len %d" % (len(sr)))
+    cl = list()
+    cl.append(node.get("name"))
+    cl.append(node.get(ARCHI_TYPE))
+    return cl
 
-    d = None
+def recurseNodes(tree, childID, clc, depth = 4):
+
+    if depth == 0:
+        return
+    else:
+        depth -= 1
+
+    spaces = " " * depth
+
+    sr = findRelationsByID(tree, childID)
+
+    logger.debug("%slen sr : %d" % (spaces, len(sr)))
 
     for x in sr:
-        logger.debug("%s%s" % (spaces, x.get(al.ARCHI_TYPE)[10:]))
+        logger.debug("%s%s" % (spaces, x.get(ARCHI_TYPE)[10:]))
 
         # find everything I point to
         if x.get("source") == childID:
-            id = targetID = x.get("target")
-            zs = al.findElementByID(tree, id)[0]
-
-            if zs.get(al.ARCHI_TYPE) in ("archimate:BusinessEvent"):
-                logger.debug("%sSource %d:%s[%s]" % (spaces, n, zs.get("name"), zs.get(al.ARCHI_TYPE)))
-                d = c.addConceptKeyType(zs.get("name"), zs.get(al.ARCHI_TYPE))
-                #d.addConceptKeyType(zs.get("id"), "ID")
-
-                recurseBusinesNodea(tree, zs.get("id"), d, n)
-
-            if zs.get(al.ARCHI_TYPE) in ("archimate:BusinessProcess"):
-                logger.debug("%sSource %d:%s[%s]" % (spaces, n, zs.get("name"), zs.get(al.ARCHI_TYPE)))
-                d = c.addConceptKeyType(zs.get("name"), zs.get(al.ARCHI_TYPE))
-                #d.addConceptKeyType(zs.get("id"), "ID")
-
-                recurseBusinesNodea(tree, zs.get("id"), d, n)
+            targetID = x.get("target")
+            cl = listNode(tree, targetID, depth)
+            clc.append(cl)
+            cl = recurseNodes(tree, targetID, clc, depth)
 
         # find everything pointing to me
-        elif x.get("target") == childID:
-            id = sourceID = x.get("source")
-            zt = al.findElementByID(tree, id)[0]
+        elif False: #x.get("target") == childID:
+            sourceID = x.get("source")
+            cl = listNode(tree, sourceID, depth)
+            clc.append(cl)
 
-            if zt.get(al.ARCHI_TYPE) in ("archimate:BusinessObject"):
-                logger.debug("%s%s" % (spaces, zt.get(al.ARCHI_TYPE)[10:]))
-                e = c.addConceptKeyType(zt.get("name"), zt.get(al.ARCHI_TYPE))
-                #d.addConceptKeyType(zt.get("id"), "ID")
+    logger.debug("%s---end[%d]---" % (spaces, depth))
 
-            elif zt.get(al.ARCHI_TYPE) in ("archimate:ApplicationComponet", "archimate:ApplicationData"):
-                logger.debug("%s%s" % (spaces, zt.get(al.ARCHI_TYPE)[10:]))
-                e = c.addConceptKeyType(zt.get("name"), zt.get(al.ARCHI_TYPE))
-                #d.addConceptKeyType(zt.get("id"), "ID")
+    return clc
 
-            elif zt.get(al.ARCHI_TYPE) in ("archimate:ApplicationService"):
-                logger.debug("%s%s" % (spaces, zt.get(al.ARCHI_TYPE)[10:]))
-                e = c.addConceptKeyType(zt.get("name"), zt.get(al.ARCHI_TYPE))
-                #d.addConceptKeyType(zt.get("id"), "ID")
-
-    logger.debug("%s%d---end---" % (spaces, n))
+def savePickleList(l, cfile):
+    logger.debug("Save %s" % (cfile))
+    cf = open(cfile, "wb")
+    pickle.dump(listConcepts, cf)
+    cf.close()
 
 if __name__ == "__main__":
     fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v10.archimate"
-    fileOut="estimate_" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
-
     p, fname = os.path.split(fileArchimate)
     logger.info("Using : %s" % fname)
 
-    etree.QName(al.ARCHIMATE_NS, 'model')
+    etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimate)
 
-    nameModel = "All Scenarios"
+    dictArchimate = {"archimate:BusinessObject" : 1,
+                     "archimate:BusinessEvent" : 2,
+                     "archimate:BusinessProcess" : 3,
+                     "archimate:ApplicationService" : 4,
+                     "archimate:DataObject" : 5,
+                     "archimate:Requirement" : 6,
+                     "archimate:ApplicationComponent" : 7,
+                     "archimate:ApplicationFunction" : 8,
+                     "archimate:BusinessActor" : 9,
+                     "archimate:BusinessInterface" : 10}
 
-    concepts = Concepts(nameModel, "Model")
+    #nameModel = "All Scenarios"
+    #nameModel = "Business Concepts"
+    #nameModel = "Service Context - ToBe"
+    nameModel = "Business Requirement Topics"
 
-    model = al.findDiagramModelByName(tree, nameModel)
+    fileOut=nameModel + "_" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
+
+    model = findDiagramModelByName(tree, nameModel)
+
+    listConcepts = list()
 
     children = model.getchildren()
 
     for x in children:
-
         childID = x.get("archimateElement")
-        z = al.findElementByID(tree, childID)[0]
+        z = findElementByID(tree, childID)[0]
 
-        c = concepts.addConceptKeyType(z.get("name"), z.get(al.ARCHI_TYPE))
-        c.addConceptKeyType(z.get("id"), "ID")
+        logger.info("%s[%s]" % (z.get("name"), z.get(ARCHI_TYPE)))
 
-        logger.info("%s[%s]" % (z.get("name"), z.get(al.ARCHI_TYPE)))
+        cl = list()
+        cl.append(z.get("name"))
+        cl.append(z.get(ARCHI_TYPE))
+        listConcepts.append(cl)
 
-        recurseBusinesNodea(tree, childID, c)
+        recurseNodes(tree, childID, listConcepts)
 
-    #concepts.logConcepts()
+    listTitle = dictArchimate.items()
+    lt = sorted(listTitle, key=lambda x : x[1])
 
     f = open(fileOut,'w')
-    cvsConcepts(concepts, f)
-    f.close()
 
+    for x in lt:
+        f.write("%s," % x[0])
+    f.write("\n")
+
+    cfile = "ModelTraversal.p"
+    savePickleList(listConcepts, cfile)
+
+    cvsLists(listConcepts, dictArchimate, f)
+
+    f.close()
     logger.info("Saved CSV to %s" % fileOut)
 
-    Concepts.saveConcepts(concepts, "report.p")
-    logger.info("Saved Concepts to %s" % "report.p")
 

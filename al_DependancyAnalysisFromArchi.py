@@ -23,7 +23,8 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-import al_ArchiLib as al
+from al_ArchiLib import *
+
 import al_GraphConcepts as GC
 
 # The graph nodes
@@ -139,16 +140,16 @@ if __name__ == "__main__":
     dictEdges = dict()
     dictBP = dict()
 
-    listFolders = al.getFolders(tree)
+    listFolders = getFolders(tree)
 
     # Get all Nodes
     for x in listFolders:
         if x != "Views" and x != "Relations":
             logger.info("Checking Folder : %s" % (x))
-            al.getEdges(tree, x, dictNodes)
+            getEdges(tree, x, dictNodes)
 
     # Get all Edges
-    al.getEdges(tree, "Relations", dictEdges)
+    getEdges(tree, "Relations", dictEdges)
 
     logger.info("Found %d Nodes" % len(dictNodes))
     logger.info("Found %d Edges" % len(dictEdges))
@@ -162,19 +163,19 @@ if __name__ == "__main__":
             source = dictEdges[x]["source"]
             target = dictEdges[x]["target"]
 
-            logger.debug("  Rel    : %s" % (dictEdges[x][al.ARCHI_TYPE]))
+            logger.debug("  Rel    : %s" % (dictEdges[x][ARCHI_TYPE]))
 
-            if dictEdges[x][al.ARCHI_TYPE] in ("archimate:UsedByRelationship"):
+            if dictEdges[x][ARCHI_TYPE] in ("archimate:UsedByRelationship"):
 
-                al.countNodeType(dictNodes[source][al.ARCHI_TYPE])
-                al.countNodeType(dictNodes[target][al.ARCHI_TYPE])
-                al.countNodeType(dictEdges[x][al.ARCHI_TYPE])
+                countNodeType(dictNodes[source][ARCHI_TYPE])
+                countNodeType(dictNodes[target][ARCHI_TYPE])
+                countNodeType(dictEdges[x][ARCHI_TYPE])
 
-                if (dictNodes[source][al.ARCHI_TYPE] == "archimate:BusinessProcess") and \
-                        dictNodes[target][al.ARCHI_TYPE] == "archimate:BusinessProcess":
+                if (dictNodes[source][ARCHI_TYPE] == "archimate:BusinessProcess") and \
+                        dictNodes[target][ARCHI_TYPE] == "archimate:BusinessProcess":
 
-                    sourceName = al.getNodeName(source)
-                    targetName = al.getNodeName(target)
+                    sourceName = getNodeName(source)
+                    targetName = getNodeName(target)
 
                     logger.debug(" %s:%s" % (sourceName, targetName))
 
@@ -183,7 +184,7 @@ if __name__ == "__main__":
                     sc = findConcept(concepts, sourceName)
                     if sc == None:
                         logger.debug("New Target - %s" % sourceName)
-                        sc = concepts.addConceptKeyType(al.getNodeName(source), "Source")
+                        sc = concepts.addConceptKeyType(getNodeName(source), "Source")
                         getWords(sourceName, sc)
                     else:
                         logger.debug("Prior Target %s" % sourceName)
@@ -191,7 +192,7 @@ if __name__ == "__main__":
                     tc = findConcept(concepts, targetName)
                     if tc == None:
                         logger.debug("New Target %s" % targetName)
-                        tc = sc.addConceptKeyType(al.getNodeName(target), "Target")
+                        tc = sc.addConceptKeyType(getNodeName(target), "Target")
                         getWords(sourceName, tc)
                     else:
                         logger.debug("Prior Target %s" % targetName)
@@ -204,20 +205,20 @@ if __name__ == "__main__":
 
     logger.debug("Edges = %s" % listTSort)
 
-    Concepts.saveConcepts(concepts, "traversal.p")
+    Concepts.saveConcepts(concepts, "traversp")
 
     if False:
         GC.graphConcepts(concepts, filename="UsedByAnalysis.png")
 
-    al.logTypeCounts()
+    logTypeCounts()
 
     index = 0
     for x in listTSort:
-        logger.info("%d %s[%s] -%s-> %s[%s]" % (index, dictNodes[x[0]]["name"], dictNodes[x[0]][al.ARCHI_TYPE], "UsedBy", dictNodes[x[1]]["name"], dictNodes[x[1]][al.ARCHI_TYPE]))
+        logger.info("%d %s[%s] -%s-> %s[%s]" % (index, dictNodes[x[0]]["name"], dictNodes[x[0]][ARCHI_TYPE], "UsedBy", dictNodes[x[1]]["name"], dictNodes[x[1]][ARCHI_TYPE]))
         index = index + 1
 
-        al.addToNodeDict(dictNodes[x[0]]["name"], dictBP)
-        al.addToNodeDict(dictNodes[x[1]]["name"], dictBP)
+        addToNodeDict(dictNodes[x[0]]["name"], dictBP)
+        addToNodeDict(dictNodes[x[1]]["name"], dictBP)
 
     logger.info("Topic Sort Candidates : %d" % (len(listTSort)))
 
