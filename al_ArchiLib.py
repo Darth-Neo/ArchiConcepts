@@ -883,8 +883,8 @@ def createConcepts(concept, el, i=10, n=1):
 def createArchimate(fileArchiModel, fileArchiP):
     archi = Concepts.loadConcepts(fileArchiP)
 
-    rootName = etree.QName(al.ARCHIMATE_NS, 'model')
-    root = etree.Element(rootName, version="2.6.0", name=fileArchiP ,id="02cec69f", nsmap=al.NS_MAP)
+    rootName = etree.QName(ARCHIMATE_NS, 'model')
+    root = etree.Element(rootName, version="2.6.0", name=fileArchiP ,id="02cec69f", nsmap=NS_MAP)
     xmlSheet = etree.ElementTree(root)
 
     createArchimateElements(xmlSheet, archi, root)

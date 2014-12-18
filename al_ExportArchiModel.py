@@ -65,7 +65,7 @@ def getModel(ModelToExport, concepts, f, tree):
     return concepts
 
 if __name__ == "__main__":
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v10.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v15.archimate"
     fileExport = "export.csv"
 
     p, fname = os.path.split(fileArchimate)
@@ -86,7 +86,9 @@ if __name__ == "__main__":
     #listMTE.append("5. Contract Presentation")
     #listMTE.append("6. Contract Closing")
 
-    listMTE.append("All Scenarios")
+    #listMTE.append("All Scenarios")
+    #listMTE.append("Business Concepts")
+    listMTE.append("System of Record")
 
     concepts = Concepts("Export", "Model")
 
@@ -96,3 +98,4 @@ if __name__ == "__main__":
     Concepts.saveConcepts(concepts, "Estimation.p")
 
     f.close()
+    logger.info("Save Model : %s" % fileExport)

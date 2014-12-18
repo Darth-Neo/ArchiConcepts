@@ -17,7 +17,7 @@ from lxml import etree
 from al_ArchiLib import *
 
 if __name__ == "__main__":
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v10.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v15.archimate"
     fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
 
     p, fname = os.path.split(fileArchimate)
