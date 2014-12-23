@@ -56,61 +56,48 @@ def getWords(s, concepts):
             f = e.addConceptKeyType(pos, "POS")
 
 if __name__ == "__main__":
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v31.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
+    fileConcepts = "export.p"
+    fileIMG = "export.png"
     p, fname = os.path.split(fileArchimate)
 
     logger.info("Using : %s" % fileArchimate)
 
-    tree = etree.parse(fileArchimate)
+    al = ArchiLib(fileArchimate)
+
+    al.logTypeCounts()
 
     concepts = Concepts("Node", "Nodes")
 
-    listFolders = getFolders(tree)
-
-    # Get all Nodes
-    for x in listFolders:
-        if x != "Views" and x != "Relations":
-            logger.info("Checking Folder : %s" % (x))
-            getEdges(tree, x, dictNodes)
-
-    # Get all Edges
-    getEdges(tree, "Relations", dictEdges)
-
-    logger.info("Found %d Nodes" % len(dictNodes))
-    logger.info("Found %d Edges" % len(dictEdges))
+    logger.info("Found %d Nodes" % len(al.dictNodes))
+    logger.info("Found %d Edges" % len(al.dictEdges))
 
     count = 0
     listTSort = list()
-    for x in dictEdges.keys():
-        logger.debug("[%s]=%s" % (dictEdges[x]["id"], x))
+    for x in al.dictEdges.keys():
+        logger.debug("[%s]=%s" % (al.dictEdges[x]["id"], x))
 
-        if dictEdges[x].has_key("source"):
-            source = dictEdges[x]["source"]
-            target = dictEdges[x]["target"]
+        if al.dictEdges[x].has_key("source"):
+            source = al.dictEdges[x]["source"]
+            target = al.dictEdges[x]["target"]
 
-            logger.debug("  Rel    : %s" % (dictEdges[x][ARCHI_TYPE]))
+            logger.debug("  Rel    : %s" % (al.dictEdges[x][ARCHI_TYPE]))
 
-            countNodeType(dictNodes[source][ARCHI_TYPE])
-            countNodeType(dictNodes[target][ARCHI_TYPE])
-            countNodeType(dictEdges[x][ARCHI_TYPE])
+            sourceName = al.getNodeName(source)
+            targetName = al.getNodeName(target)
 
-            sourceName = getNodeName(source)
-            targetName = getNodeName(target)
-
-            logger.debug(" %s--%s--%s" % (sourceName, dictEdges[x][ARCHI_TYPE][10:], targetName))
+            logger.debug(" %s--%s--%s" % (sourceName, al.dictEdges[x][ARCHI_TYPE][10:], targetName))
 
             l = list()
-            sc = concepts.addConceptKeyType(sourceName, dictNodes[source][ARCHI_TYPE][10:])
+            sc = concepts.addConceptKeyType(sourceName, al.dictNodes[source][ARCHI_TYPE][10:])
             #getWords(sourceName, sc)
 
-            tc = sc.addConceptKeyType(targetName, dictNodes[target][ARCHI_TYPE][10:])
+            tc = sc.addConceptKeyType(targetName, al.dictNodes[target][ARCHI_TYPE][10:])
             #getWords(sourceName, tc)
 
-    Concepts.saveConcepts(concepts, "export.p")
+    Concepts.saveConcepts(concepts, fileConcepts)
 
     if False:
-        GC.graphConcepts(concepts, filename="Export.png")
-
-    logTypeCounts()
+        GC.graphConcepts(concepts, filename=fileIMG)
 
     #concepts.logConcepts()

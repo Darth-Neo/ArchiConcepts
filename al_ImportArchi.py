@@ -16,49 +16,52 @@ logger = Logger.setupLogging(__name__)
 from al_ArchiLib import *
 
 if __name__ == "__main__":
-    # Archimate
-    fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v6.archimate"
-    etree.QName(ARCHIMATE_NS, 'model')
-    tree = etree.parse(fileArchimate)
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
+    fileMetaEntity = "import.csv"
 
-    logAll(tree)
+    p, fname = os.path.split(fileArchimate)
+    logger.info("Using : %s" % fileArchimate)
+
+    al = ArchiLib(fileArchimate)
+
+    al.logTypeCounts()
 
     fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/DVC Business Requirements.csv"
     logger.info("Using : %s" % fileArchimate)
-    insertNColumns(tree, "Motivation", "BusinessRequirements20141126", fileMetaEntity)
+    al.insertNColumns("Motivation", "BusinessRequirements20141126", fileMetaEntity)
 
 
     #fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Who_What_How_20141024.csv"
     #logger.info("Using : %s" % fileArchimate)
-    #insertNColumns(tree, "Motivation", "Who_What_How_20141024", fileMetaEntity)
+    #al.insertNColumns(tree, "Motivation", "Who_What_How_20141024", fileMetaEntity)
 
     #fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Gaps20141104.csv"
     #logger.info("Using : %s" % fileArchimate)
-    #insertNColumns(tree, "Implementation & Migration", "Gaps20141104", fileMetaEntity, eType="archimate:Gap")
+    #al.insertNColumns(tree, "Implementation & Migration", "Gaps20141104", fileMetaEntity, eType="archimate:Gap")
 
     #concepts = Concepts.loadConcepts("batches.p")
-    #insertConcepts(tree, concepts)
+    #al.insertConcepts(tree, concepts)
 
     # MQ
     #fileMetaEntity = "/Users/morrj140/Documents/SolutionEngineering/CodeGen/EAI Analysis/MQ Messages.csv"
     #logger.info("Using : %s" % fileArchimate)
-    #insertTwoColumns(tree, "Application", "MQ Messages", fileMetaEntity, eType="archimate:ApplicationService")
+    #al.insertTwoColumns(tree, "Application", "MQ Messages", fileMetaEntity, eType="archimate:ApplicationService")
 
     #fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Party-Product-GuestComm_Func.csv"
     #fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/AR Functional Interface Mapping - Order, Payment & Accounting.csv"
     #logger.info("Using : %s" % fileArchimate)
-    #insertNColumns(tree, "Application", "Order-Payment-Accounting", fileMetaEntity, eType="archimate:ApplicationService")
+    #al.insertNColumns(tree, "Application", "Order-Payment-Accounting", fileMetaEntity, eType="archimate:ApplicationService")
 
 
     # EAI
     #fileMetaEntity = "/Users/morrj140/Documents/SolutionEngineering/CodeGen/EAI Analysis/EAI.csv"
     #logger.info("Using : %s" % fileArchimate)
-    #insertTwoColumns(tree, "Application", "EAI Services", fileMetaEntity, eType="archimate:ApplicationService")
+    #al.insertTwoColumns(tree, "Application", "EAI Services", fileMetaEntity, eType="archimate:ApplicationService")
 
     # Jawa
     #fileMetaEntity = "/Users/morrj140/Documents/SolutionEngineering/CodeGen/EAI Analysis/Jawa.csv"
     #logger.info("Using : %s" % fileArchimate)
-    #insertTwoColumns(tree, "Application", "Jawa Services", fileMetaEntity, eType="archimate:ApplicationService")
+    #al.insertTwoColumns(tree, "Application", "Jawa Services", fileMetaEntity, eType="archimate:ApplicationService")
 
     # Segment/Category
     #fileMetaEntity = "/Users/morrj140/Development/GitRepository/DirCrawler/CodeGen-SC.csv"
@@ -66,8 +69,8 @@ if __name__ == "__main__":
     #types = ("archimate:BusinessFunction", "archimate:BusinessFunction")
     #logger.info("Using : %s" % fileArchimate)
     #type = "archimate:BusinessFunction"
-    #insertNNodes(tree, folders, types, fileMetaEntity)
-    #insertNRelations(tree, fileMetaEntity)
+    #al.insertNNodes(tree, folders, types, fileMetaEntity)
+    #al.insertNRelations(tree, fileMetaEntity)
 
     # Requirements
     # Segment/Category
@@ -77,14 +80,14 @@ if __name__ == "__main__":
 
     #logger.info("Using : %s" % fileArchimate)
 
-    #insertNNodes(tree, folders, types, fileMetaEntity)
-    #insertNRelations(tree, fileMetaEntity)
+    #al.insertNNodes(tree, folders, types, fileMetaEntity)
+    #al.insertNRelations(tree, fileMetaEntity)
 
     # Artifacts
     #fileMetaEntity = "/Volumes/user/Artifacts.csv"
     #logger.info("Using : %s" % fileArchimate)
-    #insertIntoFolder(tree, "Technology", fileMetaEntity, eType="archimate:Artifact")
-    #insertIntoFolder(tree, "Relations", fileMetaEntity,  eType="archimate:Artifact")
+    #al.insertIntoFolder(tree, "Technology", fileMetaEntity, eType="archimate:Artifact")
+    #al.insertIntoFolder(tree, "Relations", fileMetaEntity,  eType="archimate:Artifact")
 
     # Capability
     #fileMetaEntity = "/Users/morrj140/Development/GitRepository/DirCrawler/Mega/Capability.csv"
@@ -100,7 +103,7 @@ if __name__ == "__main__":
     # Stakeholders
     #fileMetaEntity = "/Users/morrj140/Development/GitRepository/DirCrawler/Mega/Function.csv"
     #logger.info("Using : %s" % fileArchimate)
-    #insertIntoFolder(tree, "Motivation", fileMetaEntity, eType="archimate:Stakeholder")
-    #insertIntoFolder(tree, "Relations", fileMetaEntity, eType="archimate:BusinessFunction")
+    #al.insertIntoFolder(tree, "Motivation", fileMetaEntity, eType="archimate:Stakeholder")
+    #al.insertIntoFolder(tree, "Relations", fileMetaEntity, eType="archimate:BusinessFunction")
 
-    outputXML(tree)
+    al.outputXML()

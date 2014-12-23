@@ -18,18 +18,18 @@ from al_ArchiLib import *
 if __name__ == "__main__":
     fileArchiP = "archi.p"
     fileArchiModel = 'archi.archimate'
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v4.archimate"
-    #fileArchimate = "/Users/morrj140/Development/GitRepository/DirCrawler/CodeGen_v5.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
+
+    al = ArchiLib(fileArchimate)
+
+    al.logTypeCounts()
 
     p, fname = os.path.split(fileArchimate)
-
     logger.info("Using : %s" % fileArchimate)
 
     concepts = Concepts(fname, "Archimate")
 
-    tree = etree.parse(fileArchimate)
-
-    folderConcepts(tree, concepts)
+    al.folderConcepts(concepts)
 
     #concepts.logConcepts()
 
@@ -38,5 +38,5 @@ if __name__ == "__main__":
     #
     # Generate Archimate from Concepts
     #
-    output = createArchimate(fileArchiModel, fileArchiP)
+    output = al.createArchimate(fileArchiModel, fileArchiP)
 

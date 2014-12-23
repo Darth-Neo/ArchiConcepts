@@ -172,19 +172,18 @@ class Chunks(object):
         Concepts.saveConcepts(self.chunkConcepts, self.chunkFile)
 
 if __name__ == "__main__":
-    fileArchimateIn = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC V4.archimate"
-    #fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v28.archimate"
-    fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
+    #fileExport="report" + time.strftime("%Y%d%m_%H%M%S") +".csv"
+    fileExport="report.csv"
     fileConcepts = "req.p"
 
-    etree.QName(ARCHIMATE_NS, 'model')
-    tree = etree.parse(fileArchimateIn)
+    al = ArchiLib(fileArchimate, fileExport)
 
-    logAll(tree, type="archimate:Requirement")
+    al.logTypeCounts()
 
     concepts = Concepts("Requirement", "Requirement")
     n = 0
-    for sentence in dictName:
+    for sentence in al.dictName:
         n += 1
         logger.debug("%s" % sentence)
 

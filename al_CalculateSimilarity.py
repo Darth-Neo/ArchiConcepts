@@ -277,22 +277,26 @@ class DocumentsSimilarity(object):
 
 
 if __name__ == "__main__":
-    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v7.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
     fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
     fileConcepts = "req.p"
 
-    etree.QName(ARCHIMATE_NS, 'model')
-    tree = etree.parse(fileArchimateIn)
+    logger.info("Using : %s" % fileArchimate)
+
+    al = ArchiLib()
+
+    al.logTypeCounts()
 
     listType = ("archimate:Requirement", "archimate:BusinessProcess")
-    logAll(tree, type=listType)
-    dictReq = dictName
+    dictReq = al.getTypeNodes(listType)
 
-    listType = ("archimate:BusinessProcess")
-    logAll(tree, type=listType)
-    dictBP = dictName
+    listType = ("archimate:BusinessProcess", "archimate:BusinessProcess")
+    dictBP = al.getTypeNodes(listType)
 
-    if False:
+    logger.info("dictReq : %d entries" % len(dictReq))
+    logger.info("dictBP  : %d entries" % len(dictBP))
+
+    if True:
         logger.info("Find nGrams")
         fc = Collocations(fileConcepts)
         fc.find_collocations()

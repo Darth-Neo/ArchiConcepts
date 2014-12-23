@@ -18,71 +18,43 @@ from al_ArchiLib import *
 
 if __name__ == "__main__":
     fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v15.archimate"
-    fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
+    fileExport="report" + time.strftime("%Y%d%m_%H%M%S") +".csv"
 
-    p, fname = os.path.split(fileArchimate)
-    logger.info("Using : %s" % fname)
+    al = ArchiLib(fileArchimate, fileExport)
 
-    etree.QName(ARCHIMATE_NS, 'model')
-    tree = etree.parse(fileArchimate)
+    al.logTypeCounts()
 
-    dictNodes = dict()
-    dictEdges = dict()
-
-    listFolders = getFolders(tree)
-
-    # Get all Nodes
-    for x in listFolders:
-        if x != "Views" and x != "Relations":
-            logger.info("  Checking : %s" % (x))
-            getEdges(tree, x, dictNodes)
-
-    # Get all Relations
-    getEdges(tree, "Relations", dictEdges)
-
-    f = open(fileOut,'w')
+    f = open(fileExport,'w')
 
     outText = "\"%s\",\"%s\",\"%s\",\"%s\"\n" % ("Source Name", "Source type", "Target Name", "Target Type")
 
     f.write(outText)
 
-    listEntities = list()
-    listEntities.append("archimate:BusinessEvent")
-    listEntities.append("archimate:BusinessObject")
-    listEntities.append("archimate:BusinessProcess")
-    listEntities.append("archimate:ApplicationService")
-    listEntities.append("archimate:ApplicationComponent")
-    listEntities.append("archimate:DataObject")
-    listEntities.append("archimate:Requirement")
-
     count = 0
-    for x in dictEdges.keys():
-        logger.debug("[%s]=%s" % (dictEdges[x]["id"], x))
+    for x in al.dictEdges.keys():
+        logger.debug("[%s]=%s" % (al.dictEdges[x]["id"], x))
 
-        if dictEdges[x].has_key("source"):
-            source = dictEdges[x]["source"]
-            target = dictEdges[x]["target"]
+        if al.dictEdges[x].has_key("source"):
+            source = al.dictEdges[x]["source"]
+            target = al.dictEdges[x]["target"]
 
-            sourceType = dictNodes[source][ARCHI_TYPE]
-            targetType = dictNodes[target][ARCHI_TYPE]
+            sourceType = al.dictNodes[source][ARCHI_TYPE]
+            targetType = al.dictNodes[target][ARCHI_TYPE]
 
-            #if dictEdges[x][ARCHI_TYPE] in ("archimate:UsedByRelationship","archimate:AssociationRelationship"):
-            #if dictEdges[x][ARCHI_TYPE] in ("archimate:AssociationRelationship"):
-            try:
-                if sourceType in listEntities:
+            if True:
+                if sourceType in al.entities:
 
-                    logger.debug("  Source : %s[%s]" % (dictNodes[source]["name"], dictNodes[source][ARCHI_TYPE]))
-                    logger.debug("    Target : %s[%s]" % (dictNodes[target]["name"], dictNodes[target][ARCHI_TYPE]))
+                    logger.info("  Source : %s[%s]" % (al.dictNodes[source]["name"], al.dictNodes[source][ARCHI_TYPE]))
+                    logger.info("    Target : %s[%s]" % (al.dictNodes[target]["name"], al.dictNodes[target][ARCHI_TYPE]))
 
-                    outText = "\"%s\",\"%s\",\"%s\",\"%s\"\n" % (dictNodes[source]["name"], dictNodes[source][ARCHI_TYPE],
-                                                                 dictNodes[target]["name"], dictNodes[target][ARCHI_TYPE])
+                    outText = "\"%s\",\"%s\",\"%s\",\"%s\"\n" % (al.dictNodes[source]["name"], al.dictNodes[source][ARCHI_TYPE],
+                                                                 al.dictNodes[target]["name"], al.dictNodes[target][ARCHI_TYPE])
                     f.write(outText)
-            except:
+            else: #except:
                 logger.warn("ops")
 
         count += 1
 
-
-    logger.info("Report Saved : %s" % fileOut)
+    logger.info("Report Saved : %s" % fileExport)
 
     f.close()

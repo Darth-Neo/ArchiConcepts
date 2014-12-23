@@ -20,65 +20,47 @@ import nltk
 
 from al_ArchiLib import *
 
-import al_DependancyAnalysisFromArchi as dafa
-
 logger.setLevel(logging.INFO)
 
 if __name__ == "__main__":
-    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC V10.archimate"
-    fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
+    #fileExport="report" + time.strftime("%Y%d%m_%H%M%S") +".csv"
+    fileExport="report.csv"
     fileConcepts = "req.p"
 
-    etree.QName(ARCHIMATE_NS, 'model')
-    tree = etree.parse(fileArchimateIn)
+    al = ArchiLib(fileArchimate, fileExport)
 
-    dictNodes = dict()
-    dictEdges = dict()
+    al.logTypeCounts()
 
-    listFolders = dafa.getFolders(tree)
+    rels = ("archimate:AccessRelationship", "archimate:SpecialisationRelationship",
+                    "archimate:CompositionRelationship", "archimate:AggregationRelationship")
 
-    # Get all Nodes
-    for x in listFolders:
-        if x != "Views" and x != "Relations":
-            logger.info("Checking Folder : %s" % (x))
-            dafa.getEdges(tree, x, dictNodes)
-
-    # Get all Edges
-    dafa.getEdges(tree, "Relations", dictEdges)
-
-    logger.info("Found %d Nodes" % len(dictNodes))
-    logger.info("Found %d Edges" % len(dictEdges))
-
-    logAll(tree, type="archimate:BusinessObject")
+    listType = ("archimate:BusinessObject", "archimate:BusinessObject")
+    dictEntities = al.getTypeNodes(listType)
 
     concepts = Concepts("Entities", "BusinessObject")
 
-    for x in dictEdges.keys():
-        logger.debug("[%s]=%s" % (dictEdges[x]["id"], x))
+    for x in al.dictEdges.keys():
+        logger.info("[%s]=%s" % (x, al.dictEdges[x]))
 
-        try:
-            source = dictEdges[x]["source"]
-            target = dictEdges[x]["target"]
+        if True:
+            source = al.dictEdges[x]["source"]
+            target = al.dictEdges[x]["target"]
 
-            dafa.countNodeType(dictNodes[source][ARCHI_TYPE])
-            dafa.countNodeType(dictNodes[target][ARCHI_TYPE])
-            dafa.countNodeType(dictEdges[x][ARCHI_TYPE])
+            logger.info("  Source : %s" % source)
+            logger.info("  Target : %s" % target)
 
-            rels = ("archimate:AccessRelationship", "archimate:SpecialisationRelationship",
-                    "archimate:CompositionRelationship", "archimate:AggregationRelationship")
+            if al.dictEdges[x][ARCHI_TYPE] in al.relations:
+                logger.info("%s   ->  [ %s ]  ->   %s" % (al.dictNodes[source]["name"],
+                                                          al.dictEdges[x][ARCHI_TYPE],
+                                                          al.dictNodes[target]["name"]))
 
-            if dictEdges[x][ARCHI_TYPE] in rels:
-                logger.info("%s   ->  [ %s ]  ->   %s" % (dictNodes[source]["name"], dictEdges[x][ARCHI_TYPE], dictNodes[target]["name"]))
-
-                searchType = ("archimate:BusinessObject")
-                listNodes = dafa.getEdgesForNode(dictNodes[source]["name"], searchType, dictNodes, dictEdges)
+                listNodes = al.getEdgesForNode(source, rels)
                 for x in listNodes:
                     logger.debug("    %s" % (x))
 
-        except:
+        else:
             pass
-            #logger.warn("Source or Target Name lookup error %s" % dictEdges[x])
-
 
     if False:
-        dafa.logTypeCounts()
+        al.logTypeCounts()

@@ -153,17 +153,16 @@ if __name__ == "__main__":
     lemmatizer = WordNetLemmatizer()
 
     # Archimate
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v9.archimate"
-    etree.QName(ARCHIMATE_NS, 'model')
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
+    fileExport="report" + time.strftime("%Y%d%m_%H%M%S") +".csv"
 
-    treeArchi = etree.parse(fileArchimate)
+    al = ArchiLib(fileArchimate, fileExport)
 
-    listType = ("archimate:ApplicationService")
-    logAll(treeArchi, type=listType)
-    dictReq = dictName
+    al.logTypeCounts()
+    dictReq = al.dictName
 
     xp = "//folder[@name='" + "Data" + "']"
-    txp = treeArchi.xpath(xp)
+    txp = al.tree.xpath(xp)
 
     logger.debug("len : %d" % len(txp))
 
@@ -177,11 +176,11 @@ if __name__ == "__main__":
             logger.debug("%s -- %s" % (x.get("name"), z))
 
             nxp = "//element[@id='" + dictReq[z] + "']"
-            ntxp = treeArchi.xpath(nxp)
+            ntxp = al.tree.xpath(nxp)
 
             if (len(ntxp) != 0) and (nameEntity in z):
                 wv = ntxp[0].get("name")
-                wy = cleanCapital(wv)
+                wy = al._cleanCapital(wv)
 
                 if wy == None:
                     continue
@@ -191,6 +190,6 @@ if __name__ == "__main__":
                 attrib["source"] = x.get("id")
                 attrib["target"] = ntxp[0].get("id")
                 attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-                insertRel("element", "Relations", treeArchi, attrib)
+                al.insertRel("element", "Relations", al.tree, attrib)
 
-    outputXML(treeArchi)
+    al.outputXMLtoFile()

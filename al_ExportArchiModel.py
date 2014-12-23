@@ -15,20 +15,13 @@ from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
 
 from al_ArchiLib import *
-from lxml import etree
 
 if __name__ == "__main__":
+
     fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
     fileExport="export" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
 
-    p, fname = os.path.split(fileArchimate)
-    logger.info("Using : %s" % fileArchimate)
-    etree.QName(ARCHIMATE_NS, 'model')
-
-    tree = etree.parse(fileArchimate)
-
-    f = open(fileExport,'w')
-    f.write("Model, Source, Type, Relationship, Target, Type\n")
+    al = ArchiLib(fileArchimate, fileExport)
 
     listMTE = list()
     #listMTE.append("5. Contract Management")
@@ -46,9 +39,8 @@ if __name__ == "__main__":
     concepts = Concepts("Export", "Model")
 
     for ModelToExport in listMTE:
-        getModel(ModelToExport, concepts, f, tree)
+        al.recurseModel(ModelToExport, concepts)
 
     Concepts.saveConcepts(concepts, "Estimation.p")
 
-    f.close()
-    logger.info("Save Model : %s" % fileExport)
+    al.outputCSVtoFile(concepts)

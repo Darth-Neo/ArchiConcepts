@@ -152,7 +152,8 @@ class Collocations(object):
         Concepts.saveConcepts(self.conceptsNGramSubject, self.ngramSubjectFile)
 
 if __name__ == "__main__":
+    fileConcepts = "chunks.p"
     #fc = Collocations("documents.p")
-    fc = Collocations("chunks.p")
+    fc = Collocations(fileConcepts)
     fc.find_collocations()
 

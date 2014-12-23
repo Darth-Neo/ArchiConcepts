@@ -16,32 +16,27 @@ from lxml import etree
 from al_ArchiLib import *
 
 if __name__ == "__main__":
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
     fileArchiP = "archi.p"
     fileArchiModel = 'archi.archimate'
 
-    #fileArchimate = "/Users/morrj140/Development/GitRepository/DirCrawler/DNX Phase 2 0.9.archimate"
-    #fileArchimate = "/Users/morrj140/PycharmProjects/ArchiConcepts/CodeGen_v10.archimate"
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v10.archimate"
-
-    p, fname = os.path.split(fileArchimate)
-
     logger.info("Using : %s" % fileArchimate)
 
-    concepts = Concepts(fname, "Archimate")
+    concepts = Concepts(fileArchiP, "Archimate")
 
-    tree = etree.parse(fileArchimate)
+    al = ArchiLib(fileArchimate)
 
-    #print_folder(tree, "Relations")
-    #print_types(tree, "type")
+    al.logTypeCounts()
 
     #
     # Create Concepts from Arhimate
     #
-    folderConcepts(tree, concepts)
-    Concepts.saveConcepts(concepts, "archi.p")
+    al.folderConcepts(concepts)
+    Concepts.saveConcepts(concepts, fileArchiP)
+    logger.info("Saved concepts to : %s" % fileArchiP)
 
     #
     # Generate Archimate from Concepts
     #
-    #output = createArchimate(fileArchiModel, fileArchiP)
+    #al.createArchimate(fileArchiModel, fileArchiP)
 

@@ -20,18 +20,17 @@ from al_ArchiLib import *
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
-def cvsLists(lc, dictArchimate, f, n=0):
+def cvsLists(lcf, f, n=0):
     n += 1
 
-    logger.info("%s[%s]" % (lc, type(lc)))
+    logger.info("%s[%s]" % (lcf, type(lcf)))
 
-    for p in lc:
+    for p in lcf:
         if n== 20:
             logger.warn("recursion too long")
             return
 
         elif len(p) == 2 and isinstance(p[0], str) and isinstance(p[1], str):
-            n = getColumn(p[1], dictArchimate)
             commas = "," * n
             text = "%s%s" % (commas, p[0])
             logger.info("%s" % text)
@@ -46,16 +45,9 @@ def cvsLists(lc, dictArchimate, f, n=0):
             logger.info("%s" % text)
             f.write(text + "\n")
 
-def getColumn(s, dictArchimate):
-    if dictArchimate.has_key(s):
-        n = dictArchimate[s]
-    else:
-        n = 0
-    return n
+def listNode(al, ID, n):
 
-def listNode(tree, ID, n):
-
-    node = findElementByID(tree, ID)[0]
+    node = al.findElementByID(ID)[0]
 
     spaces = " " * n
 
@@ -66,7 +58,7 @@ def listNode(tree, ID, n):
     cl.append(node.get(ARCHI_TYPE))
     return cl
 
-def recurseNodes(tree, childID, clc, depth = 4):
+def recurseNodes(al, childID, clc, depth = 4):
 
     if depth == 0:
         return
@@ -75,7 +67,7 @@ def recurseNodes(tree, childID, clc, depth = 4):
 
     spaces = " " * depth
 
-    sr = findRelationsByID(tree, childID)
+    sr = al.findRelationsByID(childID)
 
     logger.debug("%slen sr : %d" % (spaces, len(sr)))
 
@@ -85,14 +77,14 @@ def recurseNodes(tree, childID, clc, depth = 4):
         # find everything I point to
         if x.get("source") == childID:
             targetID = x.get("target")
-            cl = listNode(tree, targetID, depth)
+            cl = listNode(al, targetID, depth)
             clc.append(cl)
-            cl = recurseNodes(tree, targetID, clc, depth)
+            cl = recurseNodes(al, targetID, clc, depth)
 
         # find everything pointing to me
         elif False: #x.get("target") == childID:
             sourceID = x.get("source")
-            cl = listNode(tree, sourceID, depth)
+            cl = listNode(al, sourceID, depth)
             clc.append(cl)
 
     logger.debug("%s---end[%d]---" % (spaces, depth))
@@ -107,22 +99,12 @@ def savePickleList(l, cfile):
 
 if __name__ == "__main__":
     fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
-    p, fname = os.path.split(fileArchimate)
-    logger.info("Using : %s" % fname)
+    #fileExport="report" + time.strftime("%Y%d%m_%H%M%S") +".csv"
+    fileExport="report.csv"
 
-    etree.QName(ARCHIMATE_NS, 'model')
-    tree = etree.parse(fileArchimate)
+    al = ArchiLib(fileArchimate, fileExport)
 
-    dictArchimate = {"archimate:BusinessObject" : 1,
-                     "archimate:BusinessEvent" : 2,
-                     "archimate:BusinessProcess" : 3,
-                     "archimate:ApplicationService" : 4,
-                     "archimate:DataObject" : 5,
-                     "archimate:Requirement" : 6,
-                     "archimate:ApplicationComponent" : 7,
-                     "archimate:ApplicationFunction" : 8,
-                     "archimate:BusinessActor" : 9,
-                     "archimate:BusinessInterface" : 10}
+    al.logTypeCounts()
 
     #nameModel = "All Scenarios"
     #nameModel = "Business Concepts"
@@ -132,7 +114,7 @@ if __name__ == "__main__":
 
     fileOut=nameModel + "_" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
 
-    model = findDiagramModelByName(tree, nameModel)
+    model = al.findDiagramModelByName(nameModel)
 
     listConcepts = list()
 
@@ -140,7 +122,7 @@ if __name__ == "__main__":
 
     for x in children:
         childID = x.get("archimateElement")
-        z = findElementByID(tree, childID)[0]
+        z = al.findElementByID(childID)[0]
 
         logger.info("%s[%s]" % (z.get("name"), z.get(ARCHI_TYPE)))
 
@@ -149,23 +131,20 @@ if __name__ == "__main__":
         cl.append(z.get(ARCHI_TYPE))
         listConcepts.append(cl)
 
-        recurseNodes(tree, childID, listConcepts)
-
-    listTitle = dictArchimate.items()
-    lt = sorted(listTitle, key=lambda x : x[1])
+        recurseNodes(al, childID, listConcepts)
 
     f = open(fileOut,'w')
 
-    for x in lt:
+    for x in listConcepts:
         f.write("%s," % x[0])
     f.write("\n")
 
     cfile = "ModelTraversal.p"
     savePickleList(listConcepts, cfile)
 
-    cvsLists(listConcepts, dictArchimate, f)
+    cvsLists(listConcepts, f)
 
     f.close()
-    logger.info("Saved CSV to %s" % fileOut)
+    logger.info("Saved CSV to %s" % fileExport)
 
 
