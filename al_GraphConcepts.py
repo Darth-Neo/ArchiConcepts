@@ -59,14 +59,14 @@ def graphConcepts(concepts, filename="example.png"):
     gdb = "http://localhost:7474/db/data/"
     #gdb = "http://10.92.82.60:7574/db/data/"
 
-    if True:
+    if False:
         graph = Neo4JGraph(gdb)
         logger.info("Clear the Graph @" + gdb)
         graph.clearGraphDB()
 
     #graph = PatternGraph()
     #graph = NetworkXGraph()
-    #graph = GraphVizGraph()
+    graph = GraphVizGraph()
 
     logger.info("Adding nodes the graph ...")
     addGraphNodes(graph, concepts)
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     #cfl.append("ngrams.p")
     #cfl.append("ngramscore.p")
     #cfl.append("ngramsubject.p")
-    cfl.append("archi.p")
+    cfl.append("Estimation20142212_154605.p")
     #cfl.append("pptx.p")
     #cfl.append("documentsSimilarity.p")
     #cfl.append("batches.p")

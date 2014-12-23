@@ -106,7 +106,7 @@ def savePickleList(l, cfile):
     cf.close()
 
 if __name__ == "__main__":
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v15.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
     p, fname = os.path.split(fileArchimate)
     logger.info("Using : %s" % fname)
 

@@ -46,6 +46,50 @@ def cleanString(s):
             r = r + x
     return r.lstrip(" ").rstrip(" ")
 
+def cleanCapital(s):
+    r = ""
+
+    if s == None:
+        return None
+
+    v = s.replace(":"," ")
+    v = v.replace("|"," ")
+    v = v.replace(" "," ")
+    v = v.replace("_"," ")
+    v = v.replace("-"," ")
+    v = v.replace("/"," ")
+
+    n = 0
+    for x in v:
+        if x == x.upper() and n != 0:
+            r = r + " " + x
+        else:
+            r =r + x
+
+        n += 1
+
+    logger.debug("cleanCapital : %s" % r)
+    return r
+
+def outputXMLtoFile(tree, filename="import_artifacts.archimate"):#
+    output = StringIO.StringIO()
+    tree.write(output, pretty_print=True)
+
+    logger.debug("%s" % (output.getvalue()))
+
+    logger.info("Saved to : %s" % filename)
+
+    f = open(filename,'w')
+    f.write(output.getvalue())
+    f.close()
+
+    output.close()
+
+def outputXMLtoLog(tree):
+    output = StringIO.StringIO()
+    tree.write(output, pretty_print=True)
+    logger.info("%s" % (output.getvalue()))
+
 def checkDuplicate(dmID, x, tree):
     xp = "//element[@id='" + dmID + "']"
     dm = tree.xpath(xp)[0]
@@ -64,10 +108,11 @@ def checkDuplicate(dmID, x, tree):
 
     return None
 
-def outputXML(tree):
-    output = StringIO.StringIO()
-    tree.write(output, pretty_print=True)
-    logger.info("%s" % (output.getvalue()))
+def addToNodeDict(name, d):
+    if d.has_key(name):
+        d[name] += 1
+    else:
+        d[name] = 1
 
 def findDiagramModelByName(tree, name):
     r = None
@@ -196,23 +241,127 @@ def print_types(tree, a):
         if len(r) > 0:
             print_xml(r[0], i=1)
 
-def log_node(n):
-    logger.info("%s:%s:%s" % (n.tag, n.get("name"), n.get("id")))
+def recurseElement(e, concepts, tree, n=0):
 
-    for y in n:
-        log_node(y)
+    n += 1
 
-def log_all(tree):
-    #r = tree.xpath('/')
+    try:
+        attributes = e.attrib
+    except:
+        logger.warn("Ops...")
+        return concepts
 
-    for x in tree.getroot():
-        log_node(x)
+    logger.debug("recurseElement %s: %s:%s:%s:%s" % (n, e.tag, e.get("name"), e.get("id"), attributes.get(ARCHI_TYPE)))
 
-def addToNodeDict(name, d):
-    if d.has_key(name):
-        d[name] += 1
-    else:
-        d[name] = 1
+    if attributes.get("id") != None:
+        id = attributes["id"]
+        name = e.get("name")
+        type = e.get(ARCHI_TYPE)[10:]
+
+        d = concepts.addConceptKeyType(name, type)
+
+        next = findRelationsByID(tree, id)
+
+        for x in next:
+            nid = x.get("target")
+            en = findElementByID(tree, id)
+            recurseElement(en, d, tree, n)
+
+    return concepts
+
+
+def getChildren(tree, concepts, x, n=0):
+    n += 1
+
+    xid = x.get("id")
+    xi = x.items()
+    xc, xname = getElementName(tree, x.get("archimateElement"))
+
+    ce = tree.xpath("//child[@id='%s']" % (xid))
+    nc  = ce[0].getchildren()
+
+    #
+    # Add source into concepts
+    #
+    #c = concepts.addConceptKeyType(ModelToExport + ":" + xname, x.get(ARCHI_TYPE)[10:])
+
+    #
+    # for each RelationShip, find the Source and Target
+    #
+    for y in nc:
+        if y.tag == "child":
+            logger.debug("%d.%s" % (n, y.tag))
+            yc, yname = getElementName(tree, y.get("archimateElement"))
+            d = concepts.addConceptKeyType(yname, yc.get(ARCHI_TYPE)[10:])
+            getChildren(tree, d, y)
+
+        if y.tag == "sourceConnection":
+            logger.debug("skip - %s" % y.tag)
+
+            yid = y.get("id")
+            yi = y.items()
+
+            sid = y.get("source")
+            s, sname = getChildName(tree, sid)
+
+            tid = y.get("target")
+            t, tname = getChildName(tree, tid)
+
+            relid = y.get("relationship")
+            rel, rname = getElementName(tree, relid)
+
+            if rname == None:
+                rname = "Target"
+
+            d = concepts.addConceptKeyType(rname, rel.get(ARCHI_TYPE)[10:])
+            e = d.addConceptKeyType(tname, t.get(ARCHI_TYPE)[10:])
+
+            logger.debug("    %s" % yi)
+            logger.debug("%s,%s,%s,%s,%s,%s\n" % (sname, s.get(ARCHI_TYPE), rel.get(ARCHI_TYPE), rname, tname, t.get(ARCHI_TYPE)))
+
+        #recurseElement(t, e, tree)
+
+def getModel(ModelToExport, concepts, tree):
+    #
+    # Find DiagramModel Element to Export
+    #
+    xp = "//element[@name='%s']" % (ModelToExport)
+    logger.debug("XP : %s" % xp)
+
+    se = tree.xpath(xp)
+
+    nse = len(se)
+    logger.debug("num se : %d" % nse)
+    #
+    # Iterate over the DiagramModel's DiagramObjects children
+    #
+    for m in se:
+        if m.get(ARCHI_TYPE) == "archimate:ArchimateDiagramModel":
+            logger.debug("%s:%s:%s" % (m.get("name"), m.get(ARCHI_TYPE), m.tag))
+
+            r = m.getchildren()
+
+            c = concepts.addConceptKeyType(m.get("name"), m.get(ARCHI_TYPE)[10:])
+
+            #
+            # for each DiagramObject, Find the ArchimateElement
+            #
+            for x in r:
+
+                if x.get(ARCHI_TYPE) != "archimate:DiagramObject":
+                    continue
+
+                xid = x.get("id")
+
+                xc, xname = getElementName(tree, x.get("archimateElement"))
+
+                logger.info("  %s[%s]" % (xname, x.get(ARCHI_TYPE)))
+
+                d = c.addConceptKeyType(xname, xc.get(ARCHI_TYPE)[10:])
+
+                getChildren(tree, d, x)
+
+    return concepts
 
 def getEdgesForNode(nodeName, searchType, dictNodes, dictEdges, n=5):
     listNodes = list()
@@ -294,12 +443,27 @@ def getEdges(tree, folder, dictAttrib):
     for x in se:
         getNode(x, dictAttrib)
 
+def getModelsInFolder(tree, folder):
+    xp = "//folder[@name='%s']" % (folder)
+
+    se = tree.xpath(xp)
+
+    modelList = se[0].getchildren()
+
+    models = list()
+
+    for x in modelList:
+        modelName = str(x.get("name"))
+        models.append(modelName)
+
+    return models
+
 def getFolders(tree):
-    r = tree.xpath('folder')
+    se = tree.xpath('folder')
 
     l = list()
 
-    for x in r:
+    for x in se:
         l.append(x.get("name"))
         logger.debug("%s" % (x.get("name")))
 
@@ -326,9 +490,29 @@ def getElementName(tree, id):
     se = tree.xpath(xp)
 
     if len(se) > 0:
-        return se[0], se[0].get("name")
+        element = se[0]
+        name = se[0].get("name")
+        if name == None:
+            name = element.get(ARCHI_TYPE)[10:]
+
+        logger.debug("getElementName - %s:%s" % (element.get(ARCHI_TYPE), name))
+        return element, name
     else:
         return None, None
+
+def getNameID(value):
+    logger.info("    Search for : %s" % value)
+    if dictName.has_key(value):
+        idd = dictName[value]
+        logger.debug("    Found! : %s" % idd)
+    else:
+        idd =  getID()
+        dictName[value] = idd
+        logger.debug(    "New I  : %s" % idd)
+
+    logger.debug("%s" % dictName)
+
+    return idd
 
 def logTypeCounts():
     logger.info("Type Counts")
@@ -393,19 +577,6 @@ def insertRel(tag, folder, tree, attrib):
 
     return idd
 
-def getNameID(value):
-    logger.info("    Search for : %s" % value)
-    if dictName.has_key(value):
-        idd = dictName[value]
-        logger.debug("    Found! : %s" % idd)
-    else:
-        idd =  getID()
-        dictName[value] = idd
-        logger.debug(    "New I  : %s" % idd)
-
-    logger.debug("%s" % dictName)
-
-    return idd
 
 def logNode(n, type):
 
@@ -428,20 +599,6 @@ def logNode(n, type):
 def logAll(tree, type="archimate:ApplicationComponent"):
     for x in tree.getroot():
         logNode(x, type)
-
-def outputXML(tree, filename="import_artifacts.archimate"):#
-    output = StringIO.StringIO()
-    tree.write(output, pretty_print=True)
-
-    logger.debug("%s" % (output.getvalue()))
-
-    logger.info("Saved to : %s" % filename)
-
-    f = open(filename,'w')
-    f.write(output.getvalue())
-    f.close()
-
-    output.close()
 
 def insertTwoColumns(tree, folder, subfolder, fileMetaEntity, eType):
 
@@ -800,30 +957,6 @@ def insertConcepts(tree, concepts, n=0):
             attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
             insertRel("element", "Relations", tree, attrib)
 
-def cleanCapital(s):
-    r = ""
-
-    if s == None:
-        return None
-
-    v = s.replace(":"," ")
-    v = v.replace("|"," ")
-    v = v.replace(" "," ")
-    v = v.replace("_"," ")
-    v = v.replace("-"," ")
-    v = v.replace("/"," ")
-
-    n = 0
-    for x in v:
-        if x == x.upper() and n != 0:
-            r = r + " " + x
-        else:
-            r =r + x
-
-        n += 1
-
-    logger.debug("cleanCapital : %s" % r)
-    return r
 
 
 def folderConcepts(tree, concepts):
