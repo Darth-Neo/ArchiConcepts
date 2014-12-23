@@ -41,26 +41,23 @@ if __name__ == "__main__":
     concepts = Concepts("Entities", "BusinessObject")
 
     for x in al.dictEdges.keys():
-        logger.info("[%s]=%s" % (x, al.dictEdges[x]))
+        logger.debug("[%s]=%s" % (x, al.dictEdges[x][ARCHI_TYPE]))
 
-        if True:
-            source = al.dictEdges[x]["source"]
-            target = al.dictEdges[x]["target"]
 
-            logger.info("  Source : %s" % source)
-            logger.info("  Target : %s" % target)
+        source = al.dictEdges[x]["source"]
+        target = al.dictEdges[x]["target"]
 
-            if al.dictEdges[x][ARCHI_TYPE] in al.relations:
-                logger.info("%s   ->  [ %s ]  ->   %s" % (al.dictNodes[source]["name"],
-                                                          al.dictEdges[x][ARCHI_TYPE],
-                                                          al.dictNodes[target]["name"]))
+        logger.debug("  Source : %s" % source)
+        logger.debug("  Target : %s" % target)
 
-                listNodes = al.getEdgesForNode(source, rels)
-                for x in listNodes:
-                    logger.debug("    %s" % (x))
+        if al.dictEdges[x][ARCHI_TYPE] in al.relations:
+            logger.info("%s   ->  [ %s ]  ->   %s" % (al.dictNodes[source]["name"][:20],
+                                                      al.dictEdges[x][ARCHI_TYPE],
+                                                      al.dictNodes[target]["name"][:20]))
 
-        else:
-            pass
+            listNodes = al.getEdgesForNode(source, rels)
+            for x in listNodes:
+                logger.debug("    %s" % (x))
 
     if False:
         al.logTypeCounts()

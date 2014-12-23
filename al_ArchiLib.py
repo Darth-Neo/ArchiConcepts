@@ -390,7 +390,7 @@ class ArchiLib(object):
         stp = self.tree.xpath(xp)
 
         for x in stp:
-            logger.info("Index %d:%d Depth" % (m, n))
+            logger.debug("Index %d:%d Depth" % (m, n))
 
             sourceNE = x.get("source")
             targetNE = x.get("target")
