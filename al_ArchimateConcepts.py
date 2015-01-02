@@ -15,7 +15,7 @@ from lxml import etree
 
 from al_ArchiLib import *
 
-if __name__ == "__main__":
+def al_ArchimateConcepts():
     fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
     fileArchiP = "archi.p"
     fileArchiModel = 'archi.archimate'
@@ -40,3 +40,5 @@ if __name__ == "__main__":
     #
     #al.createArchimate(fileArchiModel, fileArchiP)
 
+if __name__ == "__main__":
+    al_ArchimateConcepts()

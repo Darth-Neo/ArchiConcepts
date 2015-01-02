@@ -41,8 +41,10 @@ if __name__ == "__main__":
     concepts = Concepts("Entities", "BusinessObject")
 
     for x in al.dictEdges.keys():
-        logger.debug("[%s]=%s" % (x, al.dictEdges[x][ARCHI_TYPE]))
-
+        try:
+            logger.debug("[%s]=%s" % (x, al.dictEdges[x][ARCHI_TYPE]))
+        except:
+            logger.warn("[%s]-%s ARCH_TYPE Exception" % (x, al.dictNodes[x]))
 
         source = al.dictEdges[x]["source"]
         target = al.dictEdges[x]["target"]

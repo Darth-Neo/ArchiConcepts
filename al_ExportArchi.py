@@ -55,7 +55,8 @@ def getWords(s, concepts):
             e = concepts.addConceptKeyType(lemmaWord, "Word")
             f = e.addConceptKeyType(pos, "POS")
 
-if __name__ == "__main__":
+def al_ExportArchi():
+
     fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
     fileConcepts = "export.p"
     fileIMG = "export.png"
@@ -101,3 +102,6 @@ if __name__ == "__main__":
         GC.graphConcepts(concepts, filename=fileIMG)
 
     #concepts.logConcepts()
+
+if __name__ == "__main__":
+    al_ExportArchi()

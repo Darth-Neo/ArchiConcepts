@@ -300,16 +300,20 @@ class ArchiLib(object):
     #
     # Model functions via dictionaries
     #
-    def logTypeCounts(self):
-        logger.info("Type Counts")
+    def logTypeCounts(self, ListOnly = False):
+        if not ListOnly:
+            logger.info("Type Counts")
 
         listCounts = self.dictCount.items()
 
-        for x in sorted(listCounts, key=lambda c: abs(c[1]), reverse=False):
-            if x[1] > 1:
-                logger.info("  %d - %s" % (x[1], x[0]))
+        if not ListOnly:
+            for x in sorted(listCounts, key=lambda c: abs(c[1]), reverse=False):
+                if x[1] > 1:
+                    logger.info("  %d - %s" % (x[1], x[0]))
 
-        logger.info(" ")
+            logger.info(" ")
+
+        return listCounts
 
     def countNodeType(self, type):
         if self.dictCount.has_key(type):

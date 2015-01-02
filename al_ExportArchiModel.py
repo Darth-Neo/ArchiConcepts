@@ -16,8 +16,7 @@ from nl_lib.Concepts import Concepts
 
 from al_ArchiLib import *
 
-if __name__ == "__main__":
-
+def al_ExportArchiModel():
     fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
     fileExport="export" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
 
@@ -44,3 +43,6 @@ if __name__ == "__main__":
     Concepts.saveConcepts(concepts, "Estimation.p")
 
     al.outputCSVtoFile(concepts)
+
+if __name__ == "__main__":
+    al_ExportArchiModel()
