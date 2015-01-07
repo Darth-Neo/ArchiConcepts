@@ -23,33 +23,28 @@ def addGraphNodes(graph, concepts, n=0):
         logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
 
         graph.addConcept(c)
+
         if len(c.getConcepts()) > THRESHOLD:
             addGraphNodes(graph, c, n)
 
 def addGraphEdges(graph, concepts, n=0):
     n += 1
-    i = 1
+
     for c in concepts.getConcepts().values():
 
         logger.info("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
 
-        if i == 1:
-            p = concepts
-            graph.addConcept(p)
-            graph.addConcept(c)
+        graph.addConcept(c)
+
+        try:
             if isinstance(graph, Neo4JGraph):
                 graph.addEdge(concepts, c, c.typeName)
             else:
                 graph.addEdge(concepts, c)
-            i += 1
-        else:
-            try:
-                if isinstance(graph, Neo4JGraph):
-                    graph.addEdge(concepts, c, c.typeName)
-                else:
-                    graph.addEdge(concepts, c)
-            except:
-                pass
+
+        except:
+            logger.warn("Ops...")
+            pass
 
         if len(c.getConcepts()) != 0:
             addGraphEdges(graph, c, n)
@@ -59,14 +54,14 @@ def graphConcepts(concepts, filename="example.png"):
     gdb = "http://localhost:7474/db/data/"
     #gdb = "http://10.92.82.60:7574/db/data/"
 
-    if False:
+    if True:
         graph = Neo4JGraph(gdb)
-        logger.info("Clear the Graph @" + gdb)
-        graph.clearGraphDB()
+        #logger.info("Clear the Graph @" + gdb)
+        #graph.clearGraphDB()
 
     #graph = PatternGraph()
     #graph = NetworkXGraph()
-    graph = GraphVizGraph()
+    #graph = GraphVizGraph()
 
     logger.info("Adding nodes the graph ...")
     addGraphNodes(graph, concepts)
@@ -94,27 +89,15 @@ def graphConcepts(concepts, filename="example.png"):
    
 if __name__ == "__main__":
     cfl = list()
-    #cfl.append("documents.p")
-    #cfl.append("NVPChunks.p")
-    #cfl.append("chunks.p")
-    #cfl.append("req.p")
-    #cfl.append("topicsDict.p")
-    #cfl.append("TopicChunks.p")
-    #cfl.append("ngrams.p")
-    #cfl.append("ngramscore.p")
-    #cfl.append("ngramsubject.p")
-    cfl.append("Estimation20142212_154605.p")
     #cfl.append("pptx.p")
     #cfl.append("documentsSimilarity.p")
     #cfl.append("batches.p")
-    #cfl.append("export.p")
+    cfl.append("export.p")
     #cfl.append("req.p")
     #cfl.append("report.p")
 
-    #homeDir = os.getcwd()
-    homeDir = "/Users/morrj140/Development/GitRepository/ArchiConcepts"
-    #homeDir = "/Users/morrj140/Development/GitRepository/DirCrawler"
-    #homeDir = "/Users/morrj140/Development/GitRepository/DirCrawler/Research_20141709_104529"
+    homeDir = os.getcwd()
+    #homeDir = "/Users/morrj140/Development/GitRepository/ArchiConcepts"
 
     os.chdir(homeDir)
 

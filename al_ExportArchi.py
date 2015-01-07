@@ -28,10 +28,12 @@ from al_ArchiLib import *
 
 import al_GraphConcepts as GC
 
+import hashlib
+
 dictCount = dict()
 
 
-def findConcept(concept, name, n=0):
+def findConcept(concepts, name, n=0):
     n += 1
     c = None
 
@@ -45,7 +47,6 @@ def findConcept(concept, name, n=0):
            c = findConcept(x, name, n)
     return c
 
-
 def getWords(s, concepts):
     lemmatizer = WordNetLemmatizer()
 
@@ -55,12 +56,13 @@ def getWords(s, concepts):
             e = concepts.addConceptKeyType(lemmaWord, "Word")
             f = e.addConceptKeyType(pos, "POS")
 
-def al_ExportArchi():
+def al_ExportArchi(fileArchimate):
 
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
     fileConcepts = "export.p"
     fileIMG = "export.png"
     p, fname = os.path.split(fileArchimate)
+
+    m = hashlib.md5()
 
     logger.info("Using : %s" % fileArchimate)
 
@@ -79,6 +81,7 @@ def al_ExportArchi():
         logger.debug("[%s]=%s" % (al.dictEdges[x]["id"], x))
 
         if al.dictEdges[x].has_key("source"):
+            typeEdge   = al.dictEdges[x][ARCHI_TYPE]
             source = al.dictEdges[x]["source"]
             target = al.dictEdges[x]["target"]
 
@@ -93,10 +96,16 @@ def al_ExportArchi():
             sc = concepts.addConceptKeyType(sourceName, al.dictNodes[source][ARCHI_TYPE][10:])
             #getWords(sourceName, sc)
 
-            tc = sc.addConceptKeyType(targetName, al.dictNodes[target][ARCHI_TYPE][10:])
+            nameEdge = "(" + sourceName + "," + targetName + ")"
+            nh = typeEdge[10:] + "-" + hashlib.sha224(nameEdge).hexdigest()
+
+            rc = sc.addConceptKeyType(nh, typeEdge[10:])
+
+            tc = rc.addConceptKeyType(targetName, al.dictNodes[target][ARCHI_TYPE][10:])
             #getWords(sourceName, tc)
 
     Concepts.saveConcepts(concepts, fileConcepts)
+    logger.info("Concepts Saved : %s" % fileConcepts)
 
     if False:
         GC.graphConcepts(concepts, filename=fileIMG)
@@ -104,4 +113,6 @@ def al_ExportArchi():
     #concepts.logConcepts()
 
 if __name__ == "__main__":
-    al_ExportArchi()
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
+
+    al_ExportArchi(fileArchimate)
