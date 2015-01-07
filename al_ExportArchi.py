@@ -110,6 +110,8 @@ def al_ExportArchi(fileArchimate):
     if False:
         GC.graphConcepts(concepts, filename=fileIMG)
 
+    return concepts
+
     #concepts.logConcepts()
 
 if __name__ == "__main__":

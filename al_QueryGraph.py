@@ -20,7 +20,13 @@ from py2neo.neo4j import GraphDatabaseService, CypherQuery, Node, Relationship
 
 logger.setLevel(logging.INFO)
 
-cypheQuery = "MATCH (n { name: 'Node' })-[r]-() DELETE n, r"
+cypher_ExampleQuery = "MATCH n RETURN n LIMIT 5"
+cypherDeleteNodesQuery = "MATCH (n { name: 'Node' })-[r]-() DELETE n, r"
+cypherBusinessObjectQuery = "MATCH (n:`BusinessObject` {name :'Inventory'}) RETURN n"
+cypherApplicationServiceQuery = "MATCH (n:`ApplicationService`)-[r1]-m-[r2]-o RETURN n, r1, m, r2, o "
+
+
+# MATCH (n {name :'Inventory', typeName:'BusinessObject'})-->m RETURN count(m)
 
 if __name__ == "__main__":
     gdb = "http://localhost:7474/db/data/"
@@ -30,14 +36,20 @@ if __name__ == "__main__":
     #logger.info("Clear the Graph @" + gdb)
     #graph.clearGraphDB()
 
-    #qs = "MATCH n RETURN n LIMIT 5"
-    qs = "MATCH (n:`ApplicationService`)-[r1]-m-[r2]-o RETURN n, r1, m, r2, o "
+    #qs = cypheApplicationServiceQuery
+    #qs = cypherBusinessObjectQuery
+
+    qs = "MATCH (n {typeName:'BusinessObject'})--m-->(o {typeName: 'BusinessProcess'}) RETURN n, m, o"
 
     qd = graph.query(qs)
+
+    listQuery = list()
 
     for x in qd:
         n = 0
         logger.debug("%s[%d]" % (x, n))
+
+        xl = list()
 
         for v in x.values:
 
@@ -47,13 +59,25 @@ if __name__ == "__main__":
             name = v["name"]
             typeName =v["typeName"]
 
-            if typeName != None and typeName == "Edge":
-                name = name[:-56]
+            if n == 2:
+                name = name[:-57]
 
             if name != None and typeName != None:
-                logger.info("%s%s[%s]" % (spaces, name, typeName))
+                logger.debug("%s%s[%s]" % (spaces, name, typeName))
 
+            l = list()
+            l.append(name)
+            l.append(typeName)
 
+            xl.append(l)
+        listQuery.append(xl)
+
+    #qd = graph.query(cypherDeleteNodesQuery)
+
+    nl = sorted(listQuery, key=lambda c: c[0], reverse=False)
+
+    for x in nl:
+        logger.info("%s->%s->%s" % (x[0][0], x[1][0], x[2][0]))
 
 
 

@@ -30,21 +30,18 @@ def addGraphNodes(graph, concepts, n=0):
 def addGraphEdges(graph, concepts, n=0):
     n += 1
 
+    graph.addConcept(concepts)
+
     for c in concepts.getConcepts().values():
 
         logger.info("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
 
         graph.addConcept(c)
 
-        try:
-            if isinstance(graph, Neo4JGraph):
-                graph.addEdge(concepts, c, c.typeName)
-            else:
-                graph.addEdge(concepts, c)
-
-        except:
-            logger.warn("Ops...")
-            pass
+        if isinstance(graph, Neo4JGraph):
+            graph.addEdge(concepts, c, c.typeName)
+        else:
+            graph.addEdge(concepts, c)
 
         if len(c.getConcepts()) != 0:
             addGraphEdges(graph, c, n)
@@ -88,31 +85,11 @@ def graphConcepts(concepts, filename="example.png"):
         graph.exportGraph()
    
 if __name__ == "__main__":
-    cfl = list()
-    #cfl.append("pptx.p")
-    #cfl.append("documentsSimilarity.p")
-    #cfl.append("batches.p")
-    cfl.append("export.p")
-    #cfl.append("req.p")
-    #cfl.append("report.p")
+    conceptFile = "export.p"
 
-    homeDir = os.getcwd()
-    #homeDir = "/Users/morrj140/Development/GitRepository/ArchiConcepts"
+    exportConcepts = Concepts.loadConcepts(conceptFile)
 
-    os.chdir(homeDir)
-
-    c = Concepts("GraphConcepts", "GRAPH")
-    
-    for cf in cfl:
-        # Change current directory to enable to save pickles
-        logger.info("Loading :" + homeDir + os.sep + cf)
-        c.addConcept(Concepts.loadConcepts(homeDir + os.sep + cf))
-
-    # c.logConcepts()
-
-    filename = "Concepts_" + time.strftime("%Y%d%m_%H%M%S") + ".png"
-    
-    graphConcepts(c, filename=filename)
+    graphConcepts(exportConcepts)
 
     
 
