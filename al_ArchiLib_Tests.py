@@ -7,14 +7,24 @@ import sys
 import os
 import StringIO
 import time
+import json
+import logging
+
+from py2neo.neo4j import GraphDatabaseService, CypherQuery, Node, Relationship
 
 from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
-
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
+from nl_lib.ConceptGraph import PatternGraph, NetworkXGraph, Neo4JGraph, GraphVizGraph
+
+logger = Logger.setupLogging(__name__)
+
+logger.setLevel(logging.DEBUG)
+
+lg = logger.info
 
 from al_ArchiLib import *
+from al_QueryGraph import *
 
 fileArchimate = "Testing.archimate"
 
@@ -185,10 +195,81 @@ def test_ExportArchiModel():
     al.outputCSVtoFile(concepts)
     assert (os.path.isfile(fileExport)  == True)
 
+def _executeQuery(qs, graph, log=False):
+    lq = cypherQuery(graph, qs)
+
+    if log == True:
+        logResults(lq)
+
+    return lq
+
+def test_QueryGraph():
+    gdb = "http://localhost:7474/db/data/"
+    #gdb = "http://10.92.82.60:7574/db/data/"
+
+    graph = Neo4JGraph(gdb)
+
+    qs = "MATCH n RETURN n LIMIT 5"
+    lq = _executeQuery(qs, graph)
+    lg("%d : %s" % (len(lq), qs))
+
+    qs = "MATCH (n { name: 'Node' })-[r]-() DELETE n, r"
+    lq = _executeQuery(qs, graph)
+    lg("%d : %s" % (len(lq), qs))
+
+    qs = "MATCH (n:`BusinessObject` {name :'Inventory'}) RETURN n"
+    ql = _executeQuery(qs, graph)
+    lg("%d : %s" % (len(lq), qs))
+
+    qs = "MATCH (n:`ApplicationService`)-[r1]-m-[r2]-o RETURN n, r1, m, r2, o "
+    lq = _executeQuery(qs, graph)
+    lg("%d : %s" % (len(lq), qs))
+
+    qs = "MATCH (n {typeName:'BusinessObject'})--m-->(o {typeName: 'BusinessProcess'}) RETURN n, m, o"
+    lq = _executeQuery(qs, graph)
+    lg("%d : %s" % (len(lq), qs))
+
+    qs = "MATCH (n {typeName:'BusinessEvent'}) -- (m {typeName : 'TriggeringRelationship'}) -- (o {typeName: 'BusinessProcess'}) RETURN n, m, o"
+    lq = _executeQuery(qs, graph)
+    lg("%d : %s" % (len(lq), qs))
+
+    qs = "MATCH (n {typeName:'BusinessProcess'}) -- (m {typeName : 'AccessRelationship'}) -- (o {typeName: 'BusinessObject'}) RETURN n, m, o"
+    _executeQuery(qs, graph)
+    lg("%d : %s" % (len(lq), qs))
+
+    qs = "MATCH (n {typeName:'BusinessProcess'}) -- (m {typeName : 'UsedByRelationship'}) -- (o {typeName: 'ApplicationService'}) RETURN n, m, o"
+    lq = _executeQuery(qs, graph)
+    lg("%d : %s" % (len(lq), qs))
+
+    qs = "MATCH (n {typeName:'ApplicationService'}) -- (m {typeName : 'UsedByRelationship'}) -- (o {typeName: 'ApplicationComponent'}) RETURN n, m, o"
+    lq = _executeQuery(qs, graph)
+    lg("%d : %s" % (len(lq), qs))
+
+    qs = "MATCH (n {typeName:'Requirement'}) -- (m {typeName : 'AssociationRelationship'}) -- (o {typeName: 'BusinessObject'}) RETURN n, m, o"
+    lq = _executeQuery(qs, graph)
+    lg("%d : %s" % (len(lq), qs))
+
+    qs = "MATCH (n {typeName:'BusinessObject'}) -- (m {typeName : 'RealisationRelationship'}) -- (o {typeName: 'DataObject'}) RETURN n, m, o"
+    lq = _executeQuery(qs, graph)
+    lg("%d : %s" % (len(lq), qs))
+
+    qs = "MATCH (n {typeName:'BusinessObject'}) -- m -- (o {typeName: 'DataObject'}) RETURN n, m, count(o)"
+    lq = _executeQuery(qs, graph)
+    lg("%d : %s" % (len(lq), qs))
+
+    qs = "MATCH (n {typeName:'BusinessObject'})--m--(o {typeName:'Requirement'}) RETURN n, count(o)"
+    lq = _executeQuery(qs, graph)
+    lg("%d : %s" % (len(lq), qs))
+
+    qs = "MATCH (n {typeName:'BusinessObject'})-- m -- (o {typeName:'Requirement'}) RETURN n, o"
+    lq = _executeQuery(qs, graph)
+    lg("%d : %s" % (len(lq), qs))
+
 if __name__ == "__main__":
 
     #test_CheckForArchimateFile()
     #test_Archi_Counts()
     #test_ExportArchi()
     #test_ExportArchiFolderModels()
-    test_ExportArchiModel()
+    #test_ExportArchiModel()
+    test_QueryGraph()
