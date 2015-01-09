@@ -54,7 +54,7 @@ def analyzeGraph(graph, gl, title, scale=1, threshold=0.0005):
     len_pr = len(gl)
     sum_pr = 0.0
 
-    logger.debug("---%s---[%d]" % (title, len(gl)))
+    logger.info("---%s---[%d]" % (title, len(gl)))
 
     n = 0
     for x in gl:
@@ -66,11 +66,11 @@ def analyzeGraph(graph, gl, title, scale=1, threshold=0.0005):
             if gl[x] > pr:
                 pr = gl[x]
 
-            #if gl.has_key(["typeName"]):
-            typeName = gNodes[x]['typeName']
+            if gNodes[x].has_key(["typeName"]):
+                typeName = gNodes[x]['typeName']
 
             if gl[x] > threshold:
-                logger.info("%s : %s[%s]=%3.4f" % (title, x, typeName, gl[x]*scale))
+                logger.debug("%s : %s[%s]=%3.4f" % (title, x, typeName, gl[x]*scale))
 
             updateNeo4J(graphNeo4J, x, typeName, title, gl[x]*scale)
 
@@ -79,7 +79,7 @@ def analyzeGraph(graph, gl, title, scale=1, threshold=0.0005):
             updateNeo4J(graphNeo4J, x, typeName, "Degree", degree)
 
         else:
-            logger.info("%s [%d]" % (x, n))
+            logger.debug("%s [%d]" % (x, n))
 
     logger.info("Len gl[x]=%3.4f" % len_pr)
     logger.info("Max gl[x]=%3.4f" % pr)
@@ -99,11 +99,11 @@ def updateNeo4J(graphNeo4J, name, typeName, metricName, metricValue):
         return
 
     UpdateQuery = "match (n {typeName:\"%s\", name:\"%s\"}) set n.%s = %3.4f return n" % (typeName, name, metricName, metricValue)
-    logger.info("UpdateQuery : %s" % UpdateQuery)
+    logger.debug("UpdateQuery : %s" % UpdateQuery)
     cypherQuery(graphNeo4J, UpdateQuery)
 
 
-def graphConcepts(concepts, filename="example.png", draw=False, save=False):
+def analyzeConcepts(concepts, filename="example.png", draw=False, save=False):
     graph = NetworkXGraph()
     #graph = GraphVizGraph()
     #graph = PatternGraph()
@@ -155,7 +155,7 @@ if __name__ == "__main__":
 
     exportConcepts = Concepts.loadConcepts(conceptFile)
 
-    graphConcepts(exportConcepts)
+    analyzeConcepts(exportConcepts)
 
     
 

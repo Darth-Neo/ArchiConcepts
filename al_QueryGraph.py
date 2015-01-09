@@ -6,15 +6,16 @@ __author__ = 'morrj140'
 
 import os
 import logging
+import time
+import json
+
 from nl_lib import Logger
 from nl_lib.Concepts import Concepts
 from nl_lib.ConceptGraph import PatternGraph, NetworkXGraph, Neo4JGraph, GraphVizGraph
 from nl_lib.Constants import *
 
 logger = Logger.setupLogging(__name__)
-
-import time
-import json
+logger.setLevel(logging.INFO)
 
 from py2neo.neo4j import GraphDatabaseService, CypherQuery, Node, Relationship
 
@@ -59,14 +60,14 @@ def cypherQuery(graph, qs):
                 xl.append(st)
                 xl.append(typeName)
 
-            if name != None and typeName != None:
-                logger.debug("%s%s[%s]" % (spaces, name, typeName))
+            #if name != None and typeName != None:
+            #    logger.debug("%s%s[%s]" % (spaces, name, typeName))
 
         listQuery.append(xl)
 
     return listQuery, qd
 
-def logResults(lq, n=0):
+def logResults(lq, fileOut=None, n=0):
     n += 1
 
     spaces = " " * n
@@ -89,18 +90,25 @@ def logResults(lq, n=0):
     if len(rs) != 0:
         logger.info("%s" % (rs[1:]))
 
+        if fileOut != None:
+            f.write("%s\n" % (rs[1:]))
+
+
+
+
 if __name__ == "__main__":
-    #gdb = "http://localhost:7474/db/data/"
-    gdb = "http://10.92.82.60:7574/db/data/"
+    gdb = "http://localhost:7474/db/data/"
+    #gdb = "http://10.92.82.60:7574/db/data/"
 
     graph = Neo4JGraph(gdb)
     #logger.info("Clear the Graph @" + gdb)
     #graph.clearGraphDB()
 
-    #qsDropNode = "MATCH (n { name: 'Node' })-[r]-() DELETE n, r"
+    demoQuery = "MATCH (n {typeName:'Stakeholder'})-- (m )-- (o {typeName:'WorkPackage'}) -- (p) -- (q {typeName:'BusinessObject'}) RETURN n, m, o,p, q"
+
+    #UpdateQuery = "match (n {typeName:'BusinessObject', name:'Contract'}) set n.PageRank = 1 return n"
 
     #qs = "MATCH n RETURN n LIMIT 5"
-    #qs = "MATCH (n {typeName:`BusinessObject`, name :'Inventory'}) RETURN n"
     #qs = "MATCH (n:`ApplicationService`)-[r1]-m-[r2]-o RETURN n, r1, m, r2, o "
     #qs = "MATCH (n {typeName:'BusinessObject'})--m-->(o {typeName: 'BusinessProcess'}) RETURN n, m, o"
     #qs = "MATCH (n {typeName:'BusinessEvent'}) -- (m {typeName : 'TriggeringRelationship'}) -- (o {typeName: 'BusinessProcess'}) RETURN n, m, o"
@@ -114,20 +122,18 @@ if __name__ == "__main__":
     #qs = "MATCH (n {typeName:'BusinessObject'})-- m -- (o {typeName:'Requirement'}) RETURN n, o"
     #qs = "MATCH (n {typeName:'Stakeholder'})-- (m {typeName:'CompositionRelationship'})-- (o {typeName:'Stakeholder'}) RETURN n, o"
     #qs = "MATCH (n {typeName:'BusinessObject'}) -- (m {typeName : 'AssociationRelationship'}) -- (o {typeName:'Requirement' })  RETURN n, count(m) ORDER BY count(m) DESC"
-    #qs ="MATCH (n {typeName:'BusinessObject'}) -- (m {typeName : 'AssociationRelationship'}) -- (o {typeName:'WorkPackage' }) RETURN n,m,o"
+    #qs = "MATCH (n {typeName:'BusinessObject'}) -- (m {typeName : 'AssociationRelationship'}) -- (o {typeName:'WorkPackage' }) RETURN n,m,o"
     #qs = "MATCH (n {typeName:'Stakeholder'})-- (m )-- (o {typeName:'WorkPackage'}) -- (p) -- (q {typeName:'BusinessObject'}) RETURN n, m, o,p, q"
     #qs = "MATCH (n {typeName:'Stakeholder'})-- (m )-- (o {typeName:'WorkPackage'}) -- (p) -- (q {typeName:'BusinessObject'}) -- r -- (s {typeName:'Requirement'}) RETURN n, m, o,p, q, r, count(s)"
     #qs = "MATCH (n {typeName:'WorkPackage'})-- (m {typeName:'AssociationRelationship'})-- (o {typeName:'Stakeholder'}) RETURN n, o"
 
-    #qs = "MATCH (n {typeName:'BusinessObject'}) -- m -- (o {typeName:'Requirement' }) with n, count(o) as rc  set n.RequirementCount=rc RETURN n.name, rc order by rc desc"
+    lq, qd = cypherQuery(graph, qs)
 
-    UpdateQuery = "match (n {typeName:'BusinessObject', name:'Contract'}) set n.PageRank = 1 return n"
+    fileExport = "ExportQuery.csv"
 
-    lq, qd = cypherQuery(graph, UpdateQuery)
+    f = open(fileExport,'w')
 
-    if False:
-        nl = sorted(lq, key=lambda c: c[1][0], reverse=True)
+    logResults(lq, f)
 
-    logResults(lq)
-
-
+    f.close()
+    logger.info("Save Model : %s" % fileExport)

@@ -14,6 +14,8 @@ from nl_lib.Constants import *
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
+import al_AnalyzeGraph as AC
+
 def addGraphNodes(graph, concepts, n=0, threshold=1):
     n += 1
     for c in concepts.getConcepts().values():
@@ -68,7 +70,7 @@ def logGraph(gl, title, scale=1):
     logger.info("Max gl[x]=%3.4f" % pr)
     logger.info("Avg gl[x]=%3.4f" % (sum_pr / len_pr))
 
-def graphConcepts(concepts, filename="example.png"):
+def importNeo4J(concepts, filename="example.png"):
 
     call(["/Users/morrj140/Development/neo4j-community-2.1.2/bin/reset.sh"])
 
@@ -82,18 +84,26 @@ def graphConcepts(concepts, filename="example.png"):
     logger.info("Adding edges the graph ...")
     addGraphEdges(graph, concepts)
 
-
     if isinstance(graph, Neo4JGraph):
         graph.setNodeLabels()
 
-   
+        DropNode = "MATCH (n { name: 'Node' })-[r]-() DELETE n, r"
+
+        AC.cypherQuery(graph, DropNode)
+
+        CountRequirements = "MATCH (n {typeName:'BusinessObject'}) -- m -- (o {typeName:'Requirement' }) with n, count(o) as rc  set n.RequirementCount=rc RETURN n.name, rc order by rc desc"
+
+        AC.cypherQuery(graph, CountRequirements)
+
 if __name__ == "__main__":
 
     conceptFile = "export.p"
 
     exportConcepts = Concepts.loadConcepts(conceptFile)
 
-    graphConcepts(exportConcepts)
+    importNeo4J(exportConcepts)
+
+
 
     
 

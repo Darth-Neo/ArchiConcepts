@@ -7,8 +7,12 @@ import sys
 import os
 import StringIO
 import time
+import hashlib
+import logging
+
 from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
+logger.setLevel(logging.INFO)
 
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
@@ -25,13 +29,6 @@ from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
 from al_ArchiLib import *
-
-import al_AnalyzeGraph as GC
-
-import hashlib
-
-dictCount = dict()
-
 
 def findConcept(concepts, name, n=0):
     n += 1
@@ -107,14 +104,11 @@ def al_ExportArchi(fileArchimate):
     Concepts.saveConcepts(concepts, fileConcepts)
     logger.info("Concepts Saved : %s" % fileConcepts)
 
-    if False:
-        GC.graphConcepts(concepts, filename=fileIMG)
-
     return concepts
 
     #concepts.logConcepts()
 
 if __name__ == "__main__":
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v17.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v18.archimate"
 
     al_ExportArchi(fileArchimate)
