@@ -26,7 +26,7 @@ from nltk.stem import PorterStemmer, WordNetLemmatizer
 
 from al_ArchiLib import *
 
-import al_GraphConcepts as GC
+import al_AnalyzeGraph as GC
 
 import hashlib
 
@@ -115,6 +115,6 @@ def al_ExportArchi(fileArchimate):
     #concepts.logConcepts()
 
 if __name__ == "__main__":
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v17.archimate"
 
     al_ExportArchi(fileArchimate)

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# Natural Language Processing of Information
+# Concept Logging
 #
 __author__ = 'morrj140'
 

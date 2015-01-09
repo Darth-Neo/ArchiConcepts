@@ -1,6 +1,6 @@
 #! /usr/bin/python
 #
-# Natural Language Processing of PMO Information
+# Natural Language Processing of Neo4J Information
 #
 __author__ = 'morrj140'
 
@@ -19,8 +19,6 @@ import json
 from py2neo.neo4j import GraphDatabaseService, CypherQuery, Node, Relationship
 
 logger.setLevel(logging.INFO)
-
-# MATCH (n {name :'Inventory', typeName:'BusinessObject'})-->m RETURN count(m)
 
 def cypherQuery(graph, qs):
 
@@ -66,7 +64,7 @@ def cypherQuery(graph, qs):
 
         listQuery.append(xl)
 
-    return listQuery
+    return listQuery, qd
 
 def logResults(lq, n=0):
     n += 1
@@ -92,32 +90,38 @@ def logResults(lq, n=0):
         logger.info("%s" % (rs[1:]))
 
 if __name__ == "__main__":
-    gdb = "http://localhost:7474/db/data/"
-    #gdb = "http://10.92.82.60:7574/db/data/"
+    #gdb = "http://localhost:7474/db/data/"
+    gdb = "http://10.92.82.60:7574/db/data/"
 
     graph = Neo4JGraph(gdb)
     #logger.info("Clear the Graph @" + gdb)
     #graph.clearGraphDB()
 
-    #qs = cypheApplicationServiceQuery
-    #qs = cypherBusinessObjectQuery
+    #qsDropNode = "MATCH (n { name: 'Node' })-[r]-() DELETE n, r"
 
     #qs = "MATCH n RETURN n LIMIT 5"
-    #qs = "MATCH (n { name: 'Node' })-[r]-() DELETE n, r"
-    #qs = "MATCH (n:`BusinessObject` {name :'Inventory'}) RETURN n"
+    #qs = "MATCH (n {typeName:`BusinessObject`, name :'Inventory'}) RETURN n"
     #qs = "MATCH (n:`ApplicationService`)-[r1]-m-[r2]-o RETURN n, r1, m, r2, o "
     #qs = "MATCH (n {typeName:'BusinessObject'})--m-->(o {typeName: 'BusinessProcess'}) RETURN n, m, o"
     #qs = "MATCH (n {typeName:'BusinessEvent'}) -- (m {typeName : 'TriggeringRelationship'}) -- (o {typeName: 'BusinessProcess'}) RETURN n, m, o"
     #qs = "MATCH (n {typeName:'BusinessProcess'}) -- (m {typeName : 'AccessRelationship'}) -- (o {typeName: 'BusinessObject'}) RETURN n, m, o"
     #qs = "MATCH (n {typeName:'BusinessProcess'}) -- (m {typeName : 'UsedByRelationship'}) -- (o {typeName: 'ApplicationService'}) RETURN n, m, o"
     #qs = "MATCH (n {typeName:'ApplicationService'}) -- (m {typeName : 'UsedByRelationship'}) -- (o {typeName: 'ApplicationComponent'}) RETURN n, m, o"
-    qs = "MATCH (n {typeName:'Requirement'}) -- (m {typeName : 'AssociationRelationship'}) -- (o {typeName: 'BusinessObject'}) RETURN n, m, o"
+    #qs = "MATCH (n {typeName:'Requirement'}) -- (m {typeName : 'AssociationRelationship'}) -- (o {typeName: 'BusinessObject'}) RETURN n, m, o"
     #qs = "MATCH (n {typeName:'BusinessObject'}) -- (m {typeName : 'RealisationRelationship'}) -- (o {typeName: 'DataObject'}) RETURN n, m, o"
     #qs = "MATCH (n {typeName:'BusinessObject'}) -- m -- (o {typeName: 'DataObject'}) RETURN n, m, count(o)"
     #qs = "MATCH (n {typeName:'BusinessObject'})--m--(o {typeName:'Requirement'}) RETURN n, count(o)"
     #qs = "MATCH (n {typeName:'BusinessObject'})-- m -- (o {typeName:'Requirement'}) RETURN n, o"
+    #qs = "MATCH (n {typeName:'Stakeholder'})-- (m {typeName:'CompositionRelationship'})-- (o {typeName:'Stakeholder'}) RETURN n, o"
+    #qs = "MATCH (n {typeName:'BusinessObject'}) -- (m {typeName : 'AssociationRelationship'}) -- (o {typeName:'Requirement' })  RETURN n, count(m) ORDER BY count(m) DESC"
+    #qs ="MATCH (n {typeName:'BusinessObject'}) -- (m {typeName : 'AssociationRelationship'}) -- (o {typeName:'WorkPackage' }) RETURN n,m,o"
+    #qs = "MATCH (n {typeName:'Stakeholder'})-- (m )-- (o {typeName:'WorkPackage'}) -- (p) -- (q {typeName:'BusinessObject'}) RETURN n, m, o,p, q"
+    #qs = "MATCH (n {typeName:'Stakeholder'})-- (m )-- (o {typeName:'WorkPackage'}) -- (p) -- (q {typeName:'BusinessObject'}) -- r -- (s {typeName:'Requirement'}) RETURN n, m, o,p, q, r, count(s)"
+    #qs = "MATCH (n {typeName:'WorkPackage'})-- (m {typeName:'AssociationRelationship'})-- (o {typeName:'Stakeholder'}) RETURN n, o"
 
-    lq = cypherQuery(graph, qs)
+    UpdateQuery = "match (n {typeName:'BusinessObject', name:'Contract'}) set n.PageRank = 1 return n"
+
+    lq, qd = cypherQuery(graph, UpdateQuery)
 
     if False:
         nl = sorted(lq, key=lambda c: c[1][0], reverse=True)

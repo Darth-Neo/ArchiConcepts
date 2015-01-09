@@ -12,7 +12,7 @@ from nl_lib.ConceptGraph import PatternGraph, NetworkXGraph, Neo4JGraph, GraphVi
 from nl_lib.Constants import *
 
 import al_ExportArchi as ExportArchi
-import al_GraphConcepts as GraphConcepts
+import al_AnalyzeGraph as GraphConcepts
 
 logger = Logger.setupLogging(__name__)
 

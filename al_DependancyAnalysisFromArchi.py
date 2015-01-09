@@ -25,7 +25,7 @@ from nltk.stem import PorterStemmer, WordNetLemmatizer
 
 from al_ArchiLib import *
 
-import al_GraphConcepts as GC
+import al_AnalyzeGraph as GC
 
 # The graph nodes
 class Task(object):

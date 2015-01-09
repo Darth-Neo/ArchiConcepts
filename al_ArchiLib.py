@@ -45,7 +45,8 @@ class ArchiLib(object):
                     "archimate:FlowRelationship",
                     "archimate:AssignmentRelationship",
                     "archimate:AssociationRelationship",
-                    'archimate:RealisationRelationship')
+                    'archimate:RealisationRelationship',
+                    'archimate:CompositionRelationship')
 
     entities = ("archimate:BusinessEvent",
                 "archimate:BusinessObject",
@@ -54,7 +55,8 @@ class ArchiLib(object):
                 "archimate:ApplicationComponent",
                 "archimate:DataObject",
                 "archimate:Requirement",
-                "archimate:Stakeholder")
+                "archimate:Stakeholder",
+                "archimate:WorkPackage")
 
     def __init__(self, fileArchimate=None, fileExport=None):
 
