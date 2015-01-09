@@ -119,6 +119,8 @@ if __name__ == "__main__":
     #qs = "MATCH (n {typeName:'Stakeholder'})-- (m )-- (o {typeName:'WorkPackage'}) -- (p) -- (q {typeName:'BusinessObject'}) -- r -- (s {typeName:'Requirement'}) RETURN n, m, o,p, q, r, count(s)"
     #qs = "MATCH (n {typeName:'WorkPackage'})-- (m {typeName:'AssociationRelationship'})-- (o {typeName:'Stakeholder'}) RETURN n, o"
 
+    #qs = "MATCH (n {typeName:'BusinessObject'}) -- m -- (o {typeName:'Requirement' }) with n, count(o) as rc  set n.RequirementCount=rc RETURN n.name, rc order by rc desc"
+
     UpdateQuery = "match (n {typeName:'BusinessObject', name:'Contract'}) set n.PageRank = 1 return n"
 
     lq, qd = cypherQuery(graph, UpdateQuery)

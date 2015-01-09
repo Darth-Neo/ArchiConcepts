@@ -14,16 +14,14 @@ from nl_lib.Constants import *
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
-THRESHOLD = 1
-
-def addGraphNodes(graph, concepts, n=0):
+def addGraphNodes(graph, concepts, n=0, threshold=1):
     n += 1
     for c in concepts.getConcepts().values():
         logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
 
         graph.addConcept(c)
 
-        if len(c.getConcepts()) > THRESHOLD:
+        if len(c.getConcepts()) > threshold:
             addGraphNodes(graph, c, n)
 
 def addGraphEdges(graph, concepts, n=0):
