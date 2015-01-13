@@ -1,17 +1,19 @@
-__author__ = 'morrj140'
-
-__author__ = 'morrj140'
-
-import sys
+#!/usr/bin/python
+#
+# Natural Language Processing of Concepts from Archimate Information
+#
 import os
-import StringIO
+from subprocess import call
 import time
+import logging
 from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
-
-from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
+from nl_lib.ConceptGraph import Neo4JGraph
 from nl_lib.TopicsModel import TopicsModel
+from nl_lib.Constants import *
+
+logger = Logger.setupLogging(__name__)
+logger.setLevel(logging.INFO)
 
 from lxml import etree
 
@@ -30,14 +32,6 @@ num_topics = 25
 num_words  = 10
 similarity = 0.95
 
-namespaces={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
-
-XML_NS         =  "http://www.w3.org/2001/XMLSchema-instance"
-ARCHIMATE_NS   =  "http://www.archimatetool.com/archimate"
-NS_MAP = {"xsi": XML_NS, "archimate" : ARCHIMATE_NS}
-
-ARCHI_TYPE = "{http://www.w3.org/2001/XMLSchema-instance}type"
-
 class Collocations(object):
     concepts         = None
 
@@ -46,7 +40,6 @@ class Collocations(object):
     conceptsNGramSubject = None
 
     conceptFile      = "documents.p"
-
     ngramFile        = "ngrams.p"
     ngramScoreFile   = "ngramscore.p"
     ngramSubjectFile = "ngramsubject.p"
@@ -57,7 +50,7 @@ class Collocations(object):
 
         logger.info("Load Concepts from %s " % (conceptFile))
         self.concepts = Concepts.loadConcepts(conceptFile)
-        logger.info("Loaded Concepts")
+        logger.info("Load Complete")
 
         self.conceptsNGram = Concepts("n-gram", "NGRAM")
         self.conceptsNGramScore = Concepts("NGram_Score", "Score")
@@ -67,22 +60,6 @@ class Collocations(object):
         return self.conceptsNGram, self.conceptsNGramScore, self.conceptsNGramSubject
 
     def find_collocations(self):
-        stop = stopwords.words('english')
-        stop.append("This")
-        stop.append("The")
-        stop.append(",")
-        stop.append(".")
-        stop.append("..")
-        stop.append("...")
-        stop.append("...).")
-        stop.append("\")..")
-        stop.append(".")
-        stop.append(";")
-        stop.append("/")
-        stop.append(")")
-        stop.append("(")
-        stop.append("must")
-        stop.append("system")
 
         lemmatizer = WordNetLemmatizer()
 
@@ -93,8 +70,10 @@ class Collocations(object):
 
         dictWords = dict()
 
+        n = 0
         for document in self.concepts.getConcepts().values():
-            logger.info("Document %s" % document.name)
+            n += 1
+            logger.info("%d - Document %s" % (n, document.name))
             for concept in document.getConcepts().values():
                logger.debug("Word %s" % concept.name)
 
@@ -199,7 +178,7 @@ class DocumentsSimilarity(object):
         logger.info("--Compute Topics--")
         self.topics = self.tm.computeTopics(self.documentsList, nt=num_topics, nw=num_words)
 
-        if False:
+        if True:
             logger.info("--Log Topics--")
             self.tm.logTopics(self.topics)
 
@@ -233,11 +212,11 @@ class DocumentsSimilarity(object):
 
             s1 = set(e)
             s2 = set(d)
-            common =  s1 & s2
+            common = s1 & s2
             lc = [x for x in common]
-            logger.debug("  Common Topics : %s" % (lc))
+            logger.info("  Common Topics : %s" % (lc))
 
-            self.doComputation(indexNum, similarityThreshold)
+            self.doComputation(indexNum, similarityThreshold, tfAddWords=True)
 
         Concepts.saveConcepts(self.conceptsSimilarity, conceptsSimilarityFile)
 
@@ -245,7 +224,7 @@ class DocumentsSimilarity(object):
 
         return self.conceptsSimilarity
 
-    def doComputation(self, j, similarityThreshold, tfAddWords=False):
+    def doComputation(self, j, similarityThreshold, tfAddWords=True):
         logger.debug("--doComputation--")
         pl = self.tm.computeSimilar(j, self.documentsList, similarityThreshold)
 
@@ -259,88 +238,93 @@ class DocumentsSimilarity(object):
                     l1 = "".join(x + " " for x in l[1])
                     ps = self.conceptsSimilarity.addConceptKeyType(l1, "Similar")
                     ps.count = TopicsModel.convertMetric(l[0])
-                    #rt1 = ps.addConceptKeyType(str(l[3]), "SimilarTopics")
-                    #rt1 = len(l[3])
+
                     l2 = "".join(x + " " for x in l[2])
                     pt = ps.addConceptKeyType(l2, "Concept")
-                    #rt2 = pt.addConceptKeyType(str(l[4]), "ProjectTopics")
-                    #rt2.count = len(l[4])
+
                     common = set(l[1]) & set(l[2])
                     lc = [x for x in common]
 
+                    logger.debug("  l    : %s" % l)
                     logger.debug("  l[1] : %s" % (l1))
                     logger.debug("  l[2] : %s" % (l2))
-                    logger.debug("  Common : %s" % (lc))
+                    logger.info("  Common : %s" % (lc))
 
                     if tfAddWords == True:
                         for x in common:
-                            logger.debug("x : %s" % x)
-                            pc = pt.addConceptKeyType(x, "CommonTopic")
-                            pc.count = len(lc)
+                            if not x in stop:
+                                logger.debug("x : %s" % x)
+                                pc = pt.addConceptKeyType(x, "CommonTopic")
+                                pc.count = len(lc)
 
         else:
             logger.debug("   similarity below threshold")
 
 
 if __name__ == "__main__":
-    fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC V2.archimate"
-    fileOut="report" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
+
     fileConcepts = "req.p"
 
+    al = ArchiLib()
+
     etree.QName(ARCHIMATE_NS, 'model')
-    tree = etree.parse(fileArchimateIn)
+    tree = etree.parse(fileArchimate)
 
-    searchType = ("archimate:Requirement")
-                # "archimate:ApplicationFunction",
-                # "archimate:ApplicationService",
-                # "archimate:ApplicationComponent",
-                # "archimate:BusinessProcess")
+    searchTypes = list()
+    searchTypes.append("archimate:Requirement")
+    nl = al.getTypeNodes(searchTypes)
 
-    logAll(tree, type=searchType)
+    reqConcepts = Concepts("Rqmnts", "Requirements")
+    for x in nl:
+        reqConcepts.addConceptKeyType(x, "Requirement")
 
-    if False:
-        logger.info("Find nGrams")
-        fc = Collocations(fileConcepts)
+    Concepts.saveConcepts(reqConcepts, 'documents.p')
+
+    if True:
+        logger.info("Find nGrams...")
+        fc = Collocations()
         fc.find_collocations()
 
-    logger.info("Find Topics")
-    concepts = Concepts("Requirement", "Requirements")
-    n = 0
-    for sentence in dictName:
-        n += 1
-        logger.debug("%s" % sentence)
+    if True:
+        logger.info("Find Topics...")
+        concepts = Concepts("Requirement", "Requirements")
+        n = 0
+        for sentence in al.dictName:
+            n += 1
+            logger.debug("%s" % sentence)
 
-        c = concepts.addConceptKeyType("Document" + str(n), "Document")
-        d = c.addConceptKeyType(sentence, "Sentence" + str(n))
-        #d = c.addConceptKeyType(sentence, "Sentence")
+            c = concepts.addConceptKeyType("Document" + str(n), "Document")
+            d = c.addConceptKeyType(sentence, "Sentence" + str(n))
+            #d = c.addConceptKeyType(sentence, "Sentence")
+
+            if True and sentence != None:
+                cleanSentence = ' '.join([word for word in sentence.split(" ") if word not in stop])
+                for word, pos in nltk.pos_tag(nltk.wordpunct_tokenize(cleanSentence)):
+                    if len(word) > 1 and pos[0] == "N":
+                        e = d.addConceptKeyType(word, "Word")
+                        f = e.addConceptKeyType(pos, "POS")
+
+        Concepts.saveConcepts(concepts, fileConcepts)
+
+        logger.info("Find Similarities")
+        npbt = DocumentsSimilarity()
+        npbt.createTopics(fileConcepts)
 
         if True:
-            cleanSentence = ' '.join([word for word in sentence.split() if word not in stop])
-            for word, pos in nltk.pos_tag(nltk.wordpunct_tokenize(cleanSentence)):
-                if len(word) > 1 and pos[0] == "N":
-                    e = d.addConceptKeyType(word, "Word")
-                    f = e.addConceptKeyType(pos, "POS")
+            nc = npbt.findSimilarties("GapsSimilarity.p")
 
-    Concepts.saveConcepts(concepts, fileConcepts)
+            nc.logConcepts()
 
-    logger.info("Find Similarities")
-    npbt = DocumentsSimilarity()
-    npbt.createTopics(fileConcepts)
+            if False:
+                logger.debug("Topics")
+                listTopics = list()
+                ncg = npbt.topicConcepts.getConcepts().values()
+                for x in ncg:
+                    logger.info("%s[%d]" % (x.name, x.count))
+                    lt = (x.name, x.count)
+                    listTopics.append(lt)
 
-    nc = npbt.findSimilarties("GapsSimilarity.p")
-
-    nc.logConcepts()
-
-    if False:
-        logger.debug("Topics")
-        listTopics = list()
-        ncg = npbt.topicConcepts.getConcepts().values()
-        for x in ncg:
-            logger.info("%s[%d]" % (x.name, x.count))
-            lt = (x.name, x.count)
-            listTopics.append(lt)
-
-        logger.info("Topics Sorted")
-        for x in sorted(listTopics, key=lambda c: abs(c[1]), reverse=False):
-            logger.info("Topic : %s[%d]" % (x[0], x[1]))
+                logger.info("Topics Sorted")
+                for x in sorted(listTopics, key=lambda c: abs(c[1]), reverse=False):
+                    logger.info("Topic : %s[%d]" % (x[0], x[1]))
 

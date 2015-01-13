@@ -16,7 +16,8 @@ import networkx as nx
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
-from al_QueryGraph import *
+from al_ArchiLib import *
+import al_QueryGraph as QG
 
 def addGraphNodes(graph, concepts, n=0, threshold=0.0005):
     n += 1
@@ -48,7 +49,9 @@ def analyzeGraph(graph, gl, title, scale=1, threshold=0.0005):
 
     gNodes = graph.node
 
-    graphNeo4J = connectNeo4J()
+    # gdb is set in al_ArchiLib
+    logger.debug("Neo4J instance : %s" % gdb)
+    graphNeo4J = Neo4JGraph(gdb)
 
     pr = 0
     len_pr = len(gl)
@@ -59,38 +62,34 @@ def analyzeGraph(graph, gl, title, scale=1, threshold=0.0005):
     n = 0
     for x in gl:
 
+        nodeValue = gl[x]
+
         n += 1
-        if isinstance(gl, dict) and x != None:
-            sum_pr = gl[x]
 
-            if gl[x] > pr:
-                pr = gl[x]
+        sum_pr = nodeValue
 
-            if gNodes[x].has_key(["typeName"]):
-                typeName = gNodes[x]['typeName']
+        if nodeValue > pr:
+            pr = nodeValue
 
-            if gl[x] > threshold:
-                logger.debug("%s : %s[%s]=%3.4f" % (title, x, typeName, gl[x]*scale))
+        nodeKey = gNodes[x]
 
-            updateNeo4J(graphNeo4J, x, typeName, title, gl[x]*scale)
+        if isinstance(nodeKey, dict) and nodeKey.has_key("typeName"):
+            typeName = nodeKey['typeName']
+
+            updateNeo4J(graphNeo4J, x, typeName, title, nodeValue*scale)
 
             degree = nx.degree(graph)[x]
 
             updateNeo4J(graphNeo4J, x, typeName, "Degree", degree)
 
-        else:
-            logger.debug("%s [%d]" % (x, n))
+            if nodeValue > threshold:
+                logger.debug("%s : %s[%s]=%3.4f" % (title, x, typeName, nodeValue*scale))
 
+
+    logger.info("Metrics fer %s" % title)
     logger.info("Len gl[x]=%3.4f" % len_pr)
     logger.info("Max gl[x]=%3.4f" % pr)
     logger.info("Avg gl[x]=%3.4f" % (sum_pr / len_pr))
-
-def connectNeo4J(gdb="http://localhost:7474/db/data/"):
-    #gdb = "http://10.92.82.60:7574/db/data/"
-
-    graphNeo4J = Neo4JGraph(gdb)
-
-    return graphNeo4J
 
 def updateNeo4J(graphNeo4J, name, typeName, metricName, metricValue):
 
@@ -100,62 +99,42 @@ def updateNeo4J(graphNeo4J, name, typeName, metricName, metricValue):
 
     UpdateQuery = "match (n {typeName:\"%s\", name:\"%s\"}) set n.%s = %3.4f return n" % (typeName, name, metricName, metricValue)
     logger.debug("UpdateQuery : %s" % UpdateQuery)
-    cypherQuery(graphNeo4J, UpdateQuery)
+    QG.cypherQuery(graphNeo4J, UpdateQuery)
 
 
-def analyzeConcepts(concepts, filename="example.png", draw=False, save=False):
+def analyzeNetworkX(concepts):
     graph = NetworkXGraph()
-    #graph = GraphVizGraph()
-    #graph = PatternGraph()
 
-    logger.info("Adding nodes the graph ...")
+    logger.info("Adding NetworkX nodes to the graph ...")
     addGraphNodes(graph, concepts)
 
-    logger.info("Adding edges the graph ...")
+    logger.info("Adding NetworkX edges to the graph ...")
     addGraphEdges(graph, concepts)
 
-    if isinstance(graph, GraphVizGraph):
-        graph.exportGraph(filename=filename)
-        logger.info("Saved Graph - %s" % filename)
+    #gl = nx.connected_components(graph.G) # [[1, 2, 3], ['spam']]
+    #analyzeGraph(graph.G, gl, "Connected")
 
-    if isinstance(graph, NetworkXGraph):
+    #gl = nx.clustering(graph.G)
+    #analyzeGraph(graph.G, gl, "Cluster")
 
-        if draw == True:
-            graph.drawGraph(filename)
+    #gl = nx.closeness_centrality(graph.G)
+    #analyzeGraph(graph.G, gl, "Closeness")
 
-        if save == True:
-            graph.saveGraph(filename)
-            logger.info("Saved Graph - %s" % filename)
+    #gl = nx.betweenness_centrality(graph.G)
+    #analyzeGraph(graph.G, gl, "Betweenness_Centrality")
 
-        #gl = nx.connected_components(graph.G) # [[1, 2, 3], ['spam']]
-        #analyzeGraph(graph.G, gl, "Connected")
+    gl = nx.pagerank(graph.G)
+    analyzeGraph(graph.G, gl, "PageRank", scale=1)
 
-        #gl = nx.clustering(graph.G)
-        #analyzeGraph(graph.G, gl, "Cluster")
-
-        #gl = nx.closeness_centrality(graph.G)
-        #analyzeGraph(graph.G, gl, "Closeness")
-
-        #gl = nx.betweenness_centrality(graph.G)
-        #analyzeGraph(graph.G, gl, "Betweenness_Centrality")
-
-        gl = nx.pagerank(graph.G)
-        analyzeGraph(graph.G, gl, "PageRank", scale=1)
-
-        #gl = nx.hits(graph.G)
-        #analyzeGraph(graph.G, gl, "Hits")
-        
-    if isinstance(graph, PatternGraph):
-        logger.info("Exporting Graph")
-        graph.exportGraph()
+    #gl = nx.hits(graph.G)
+    #analyzeGraph(graph.G, gl, "Hits")
    
 if __name__ == "__main__":
 
-    conceptFile = "export.p"
+    logger.info("Export File : %s" % fileExport)
+    exportConcepts = Concepts.loadConcepts(fileExport)
 
-    exportConcepts = Concepts.loadConcepts(conceptFile)
-
-    analyzeConcepts(exportConcepts)
+    analyzeNetworkX(exportConcepts)
 
     
 

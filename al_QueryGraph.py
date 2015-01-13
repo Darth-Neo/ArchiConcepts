@@ -19,7 +19,36 @@ logger.setLevel(logging.INFO)
 
 from py2neo.neo4j import GraphDatabaseService, CypherQuery, Node, Relationship
 
-logger.setLevel(logging.INFO)
+from al_ArchiLib import *
+
+def Traversal(ql):
+
+    qs = "MATCH"
+    n=0
+    for x in ql:
+        qs = qs + " (n%d {typeName:'%s'}) --" % (n, x)
+        n += 1
+
+    qr = " Return"
+    for m in range(0, n, 1):
+        qr = qr + " n%s," % m
+
+    query = qs[:-3] + qr[:-1]
+
+    logger.info("%s" % query)
+
+    #qs = "MATCH (n {typeName:'BusinessObject'})-- m -- (o {typeName:'Requirement'}) RETURN n, o"
+    #qs = "MATCH (n {typeName:'BusinessObject'}) -- m -- (o {typeName: 'DataObject'}) RETURN n, m, count(o)"
+    #qs = "MATCH (n {typeName:'BusinessObject'})--m--(o {typeName:'Requirement'}) RETURN n, count(o)"
+
+    #qs = "MATCH (n {typeName:'Stakeholder'})-- (m {typeName:'AssociationRelationship'})-- (o {typeName:'ApplicationFunction'}) RETURN n, o"
+    qs = "MATCH (n {typeName:'BusinessObject'}) -- (m {typeName : 'AssociationRelationship'}) -- (o {typeName:'Requirement' })  RETURN n, count(m) ORDER BY count(m) DESC"
+    #qs = "MATCH (n {typeName:'BusinessObject'}) -- (m {typeName : 'AssociationRelationship'}) -- (o {typeName:'WorkPackage' }) RETURN n,m,o"
+    #qs = "MATCH (n {typeName:'Stakeholder'})-- (m )-- (o {typeName:'WorkPackage'}) -- (p) -- (q {typeName:'BusinessObject'}) RETURN n, m, o,p, q"
+    #qs = "MATCH (n {typeName:'Stakeholder'})-- (m )-- (o {typeName:'WorkPackage'}) -- (p) -- (q {typeName:'BusinessObject'}) -- r -- (s {typeName:'Requirement'}) RETURN n, m, o,p, q, r, count(s)"
+    #qs = "MATCH (n {typeName:'WorkPackage'})-- (m {typeName:'AssociationRelationship'})-- (o {typeName:'Stakeholder'}) RETURN n, o"
+
+    return query
 
 def cypherQuery(graph, qs):
 
@@ -67,7 +96,7 @@ def cypherQuery(graph, qs):
 
     return listQuery, qd
 
-def logResults(lq, fileOut=None, n=0):
+def logResults(lq, f=None, n=0):
     n += 1
 
     spaces = " " * n
@@ -75,7 +104,7 @@ def logResults(lq, fileOut=None, n=0):
     rs = ""
     for x in lq:
         if isinstance(x, tuple) or isinstance(x, list):
-            logResults(x,  n)
+            logResults(x, f, n)
 
         elif isinstance(x, str) or isinstance(x, unicode):
             if x == "Nodes" or x is None or len(x) == 0:
@@ -90,50 +119,46 @@ def logResults(lq, fileOut=None, n=0):
     if len(rs) != 0:
         logger.info("%s" % (rs[1:]))
 
-        if fileOut != None:
+        if f != None:
             f.write("%s\n" % (rs[1:]))
 
-
-
-
-if __name__ == "__main__":
-    gdb = "http://localhost:7474/db/data/"
-    #gdb = "http://10.92.82.60:7574/db/data/"
-
-    graph = Neo4JGraph(gdb)
-    #logger.info("Clear the Graph @" + gdb)
-    #graph.clearGraphDB()
-
-    demoQuery = "MATCH (n {typeName:'Stakeholder'})-- (m )-- (o {typeName:'WorkPackage'}) -- (p) -- (q {typeName:'BusinessObject'}) RETURN n, m, o,p, q"
-
-    #UpdateQuery = "match (n {typeName:'BusinessObject', name:'Contract'}) set n.PageRank = 1 return n"
-
-    #qs = "MATCH n RETURN n LIMIT 5"
-    #qs = "MATCH (n:`ApplicationService`)-[r1]-m-[r2]-o RETURN n, r1, m, r2, o "
-    #qs = "MATCH (n {typeName:'BusinessObject'})--m-->(o {typeName: 'BusinessProcess'}) RETURN n, m, o"
-    #qs = "MATCH (n {typeName:'BusinessEvent'}) -- (m {typeName : 'TriggeringRelationship'}) -- (o {typeName: 'BusinessProcess'}) RETURN n, m, o"
-    #qs = "MATCH (n {typeName:'BusinessProcess'}) -- (m {typeName : 'AccessRelationship'}) -- (o {typeName: 'BusinessObject'}) RETURN n, m, o"
-    #qs = "MATCH (n {typeName:'BusinessProcess'}) -- (m {typeName : 'UsedByRelationship'}) -- (o {typeName: 'ApplicationService'}) RETURN n, m, o"
-    #qs = "MATCH (n {typeName:'ApplicationService'}) -- (m {typeName : 'UsedByRelationship'}) -- (o {typeName: 'ApplicationComponent'}) RETURN n, m, o"
-    #qs = "MATCH (n {typeName:'Requirement'}) -- (m {typeName : 'AssociationRelationship'}) -- (o {typeName: 'BusinessObject'}) RETURN n, m, o"
-    #qs = "MATCH (n {typeName:'BusinessObject'}) -- (m {typeName : 'RealisationRelationship'}) -- (o {typeName: 'DataObject'}) RETURN n, m, o"
-    #qs = "MATCH (n {typeName:'BusinessObject'}) -- m -- (o {typeName: 'DataObject'}) RETURN n, m, count(o)"
-    #qs = "MATCH (n {typeName:'BusinessObject'})--m--(o {typeName:'Requirement'}) RETURN n, count(o)"
-    #qs = "MATCH (n {typeName:'BusinessObject'})-- m -- (o {typeName:'Requirement'}) RETURN n, o"
-    #qs = "MATCH (n {typeName:'Stakeholder'})-- (m {typeName:'CompositionRelationship'})-- (o {typeName:'Stakeholder'}) RETURN n, o"
-    #qs = "MATCH (n {typeName:'BusinessObject'}) -- (m {typeName : 'AssociationRelationship'}) -- (o {typeName:'Requirement' })  RETURN n, count(m) ORDER BY count(m) DESC"
-    #qs = "MATCH (n {typeName:'BusinessObject'}) -- (m {typeName : 'AssociationRelationship'}) -- (o {typeName:'WorkPackage' }) RETURN n,m,o"
-    #qs = "MATCH (n {typeName:'Stakeholder'})-- (m )-- (o {typeName:'WorkPackage'}) -- (p) -- (q {typeName:'BusinessObject'}) RETURN n, m, o,p, q"
-    #qs = "MATCH (n {typeName:'Stakeholder'})-- (m )-- (o {typeName:'WorkPackage'}) -- (p) -- (q {typeName:'BusinessObject'}) -- r -- (s {typeName:'Requirement'}) RETURN n, m, o,p, q, r, count(s)"
-    #qs = "MATCH (n {typeName:'WorkPackage'})-- (m {typeName:'AssociationRelationship'})-- (o {typeName:'Stakeholder'}) RETURN n, o"
-
-    lq, qd = cypherQuery(graph, qs)
-
-    fileExport = "ExportQuery.csv"
-
-    f = open(fileExport,'w')
+def queryExport(lq):
+    # csvExport defined in al_ArchiLib
+    f = open(csvExport,'w')
 
     logResults(lq, f)
 
     f.close()
-    logger.info("Save Model : %s" % fileExport)
+
+    logger.info("Save Model : %s" % csvExport)
+
+
+if __name__ == "__main__":
+    # gdb defined in al_ArchiLib
+    logger.info("Neo4J instance : %s" % gdb)
+    graph = Neo4JGraph(gdb)
+
+    #demoQuery = "MATCH (n {typeName:'Stakeholder'})-- (m )-- (o {typeName:'WorkPackage'}) -- (p) -- (q {typeName:'BusinessObject'}) RETURN n, m, o,p, q"
+    #UpdateQuery = "match (n {typeName:'BusinessObject', name:'Contract'}) set n.PageRank = 1 return n"
+    #demoQuery = "MATCH (l {typeName:'BusinessProcess'}) -- w --  (n {typeName:'ApplicationService'}) -- m -- (o {typeName: 'ApplicationComponent'}) -- r -- (q {typeName: 'DataObject'}) RETURN l, w, n, m, o, r, q"
+
+    ql = list()
+    ql.append("BusinessEvent")
+    ql.append("TriggeringRelationship")
+    ql.append("BusinessProcess")
+    ql.append("FlowRelationship")
+    ql.append("BusinessProcess")
+    ql.append("AccessRelationship")
+    ql.append("BusinessObject")
+    ql.append("UsedByRelationship")
+    ql.append("ApplicationService")
+    #ql.append("UsedByRelationship")
+    #ql.append("ApplicationComponent")
+    #ql.append("RealisationRelationship")
+    #ql.append("DataObject")
+
+    qs = Traversal(ql)
+
+    lq, qd = cypherQuery(graph, qs)
+
+    queryExport(lq)

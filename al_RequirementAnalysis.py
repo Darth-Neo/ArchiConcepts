@@ -172,12 +172,10 @@ class Chunks(object):
         Concepts.saveConcepts(self.chunkConcepts, self.chunkFile)
 
 if __name__ == "__main__":
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
-    #fileExport="report" + time.strftime("%Y%d%m_%H%M%S") +".csv"
-    fileExport="report.csv"
+
     fileConcepts = "req.p"
 
-    al = ArchiLib(fileArchimate, fileExport)
+    al = ArchiLib()
 
     al.logTypeCounts()
 

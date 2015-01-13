@@ -14,7 +14,9 @@ from nl_lib.Constants import *
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
-import al_AnalyzeGraph as AC
+from al_ArchiLib import *
+
+import al_QueryGraph as CG
 
 def addGraphNodes(graph, concepts, n=0, threshold=1):
     n += 1
@@ -70,36 +72,34 @@ def logGraph(gl, title, scale=1):
     logger.info("Max gl[x]=%3.4f" % pr)
     logger.info("Avg gl[x]=%3.4f" % (sum_pr / len_pr))
 
-def importNeo4J(concepts, filename="example.png"):
-
+def clearNeo4J():
     call(["/Users/morrj140/Development/neo4j-community-2.1.2/bin/reset.sh"])
 
-    gdb = "http://localhost:7474/db/data/"
-    #gdb = "http://10.92.82.60:7574/db/data/"
+def importNeo4J(concepts):
+
+    clearNeo4J()
+
+    logger.info("Neo4J instance : %s" % gdb)
     graph = Neo4JGraph(gdb)
 
-    logger.info("Adding nodes the graph ...")
+    logger.info("Adding Neo4J nodes to the graph ...")
     addGraphNodes(graph, concepts)
 
-    logger.info("Adding edges the graph ...")
+    logger.info("Adding Neo4J edges to the graph ...")
     addGraphEdges(graph, concepts)
 
-    if isinstance(graph, Neo4JGraph):
-        graph.setNodeLabels()
+    graph.setNodeLabels()
 
-        DropNode = "MATCH (n { name: 'Node' })-[r]-() DELETE n, r"
+    DropNode = "MATCH (n { name: 'Node' })-[r]-() DELETE n, r"
+    CG.cypherQuery(graph, DropNode)
 
-        AC.cypherQuery(graph, DropNode)
-
-        CountRequirements = "MATCH (n {typeName:'BusinessObject'}) -- m -- (o {typeName:'Requirement' }) with n, count(o) as rc  set n.RequirementCount=rc RETURN n.name, rc order by rc desc"
-
-        AC.cypherQuery(graph, CountRequirements)
+    CountRequirements = "MATCH (n {typeName:'BusinessObject'}) -- m -- (o {typeName:'Requirement' }) with n, count(o) as rc  set n.RequirementCount=rc RETURN n.name, rc order by rc desc"
+    CG.cypherQuery(graph, CountRequirements)
 
 if __name__ == "__main__":
 
-    conceptFile = "export.p"
-
-    exportConcepts = Concepts.loadConcepts(conceptFile)
+    logger.info("Export File : %s" % fileExport)
+    exportConcepts = Concepts.loadConcepts(fileExport)
 
     importNeo4J(exportConcepts)
 

@@ -10,9 +10,11 @@ import StringIO
 import csv
 import random
 import time
+import logging
 
 from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
+logger.setLevel(logging.INFO)
 
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
@@ -24,11 +26,22 @@ XML_NS         =  NS_MAP["xsi"]
 ARCHIMATE_NS   =  NS_MAP["archimate"]
 ARCHI_TYPE = "{%s}type" % NS_MAP["xsi"]
 
-class ArchiLib(object):
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
+# IP of Neo4J Graph
+gdb = "http://localhost:7474/db/data/"
+#gdb = "http://10.92.82.60:7574/db/data/"
 
-    #fileExport="export" + time.strftime("%Y%d%m_%H%M%S") +".csv"
-    fileExport="export.csv"
+# file of Archimate XML
+fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v18.archimate"
+
+# Export file used to persist Concepts
+fileExport    = "export.p"
+timeFileExport="export" + time.strftime("%Y%d%m_%H%M%S") +".csv"
+
+fileImage = "export.png"
+
+csvExport = "ExportQuery.csv"
+
+class ArchiLib(object):
 
     #dictRelation = dict()
     #dictAttrib = dict()
@@ -58,12 +71,18 @@ class ArchiLib(object):
                 "archimate:Stakeholder",
                 "archimate:WorkPackage")
 
-    def __init__(self, fileArchimate=None, fileExport=None):
+    def __init__(self, fa=None, fe=None):
 
-        if fileArchimate != None:
+        if fa != None:
+            self.fileArchimate = fa
+        else:
+            global fileArchimate
             self.fileArchimate = fileArchimate
 
-        if fileExport != None:
+        if fe != None:
+            self.fileExport = fe
+        else:
+            global fileExport
             self.fileExport = fileExport
 
         etree.QName(ARCHIMATE_NS, 'model')

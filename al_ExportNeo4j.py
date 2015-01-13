@@ -11,18 +11,19 @@ from nl_lib.Concepts import Concepts
 from nl_lib.ConceptGraph import PatternGraph, NetworkXGraph, Neo4JGraph, GraphVizGraph
 from nl_lib.Constants import *
 
-import al_ExportArchi as ExportArchi
-import al_AnalyzeGraph as GraphConcepts
+from al_ArchiLib import *
+
+import al_ExportArchi as EA
+import al_AnalyzeGraph as AG
 
 logger = Logger.setupLogging(__name__)
 
 logger.setLevel(logging.INFO)
 
 if __name__ == "__main__":
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
 
-    concepts = ExportArchi.al_ExportArchi(fileArchimate)
+    concepts = EA.al_ExportArchi()
 
-    GraphConcepts.graphConcepts(concepts)
+    AG.graphConcepts(concepts)
 
 
