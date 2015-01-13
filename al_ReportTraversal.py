@@ -17,10 +17,7 @@ from lxml import etree
 from al_ArchiLib import *
 
 if __name__ == "__main__":
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v15.archimate"
-    fileExport="report" + time.strftime("%Y%d%m_%H%M%S") +".csv"
-
-    al = ArchiLib(fileArchimate, fileExport)
+    al = ArchiLib()
 
     al.logTypeCounts()
 

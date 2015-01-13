@@ -129,12 +129,9 @@ def getWords(s, concepts):
 
 
 if __name__ == "__main__":
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v31.archimate"
-    p, fname = os.path.split(fileArchimate)
 
     logger.info("Using : %s" % fileArchimate)
-
-    al = ArchiLib(fileArchimate)
+    al = ArchiLib()
 
     al.logTypeCounts()
 
@@ -151,11 +148,11 @@ if __name__ == "__main__":
 
             logger.info("  Rel    : %s" % (al.dictEdges[x][ARCHI_TYPE]))
 
-            if al.dictEdges[x][ARCHI_TYPE] in ("archimate:UsedByRelationship"):
+            if al.dictEdges[x][ARCHI_TYPE] in ("archimate:FlowRelationship"):
 
-                al._countNodeType(al.dictNodes[source][ARCHI_TYPE])
-                al._countNodeType(al.dictNodes[target][ARCHI_TYPE])
-                al._countNodeType(al.dictEdges[x][ARCHI_TYPE])
+                #al._countNodeType(al.dictNodes[source][ARCHI_TYPE])
+                #al._countNodeType(al.dictNodes[target][ARCHI_TYPE])
+                #al._countNodeType(al.dictEdges[x][ARCHI_TYPE])
 
                 if (al.dictNodes[source][ARCHI_TYPE] == "archimate:BusinessProcess") and \
                         al.dictNodes[target][ARCHI_TYPE] == "archimate:BusinessProcess":
