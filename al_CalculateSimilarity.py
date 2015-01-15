@@ -27,7 +27,9 @@ from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
 from al_ArchiLib import *
-
+#
+# Similarity Constraints
+#
 num_topics = 50
 num_words  = 10
 similarity = 0.90

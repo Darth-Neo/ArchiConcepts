@@ -17,10 +17,8 @@ from nl_lib.Concepts import Concepts
 from al_ArchiLib import *
 
 def al_ExportArchiModel():
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
-    fileExport="export" + time.strftime("%Y%d%m_%H%M%S") +" .csv"
 
-    al = ArchiLib(fileArchimate, fileExport)
+    al = ArchiLib()
 
     listMTE = list()
     #listMTE.append("5. Contract Management")

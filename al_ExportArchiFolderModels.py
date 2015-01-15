@@ -17,11 +17,7 @@ from nl_lib.Concepts import Concepts
 from al_ArchiLib import *
 
 def al_ExportArchiFolderModels():
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
-    #fileExport="report" + time.strftime("%Y%d%m_%H%M%S") +".csv"
-    fileExport="report.csv"
-
-    al = ArchiLib(fileArchimate, fileExport)
+    al = ArchiLib()
 
     al.logTypeCounts()
 

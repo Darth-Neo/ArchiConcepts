@@ -198,8 +198,6 @@ if __name__ == "__main__":
                     e = d.addConceptKeyType(word, "Word")
                     f = e.addConceptKeyType(pos, "POS")
 
-
-
     Concepts.saveConcepts(concepts, conceptsFile)
     logger.info("Saved : %s" % conceptsFile)
 
