@@ -16,7 +16,6 @@ from lxml import etree
 from al_ArchiLib import *
 
 def al_ArchimateConcepts():
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
     fileArchiP = "archi.p"
     fileArchiModel = 'archi.archimate'
 
@@ -24,7 +23,7 @@ def al_ArchimateConcepts():
 
     concepts = Concepts(fileArchiP, "Archimate")
 
-    al = ArchiLib(fileArchimate)
+    al = ArchiLib()
 
     al.logTypeCounts()
 

@@ -16,17 +16,13 @@ logger = Logger.setupLogging(__name__)
 from al_ArchiLib import *
 
 if __name__ == "__main__":
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
-    fileMetaEntity = "import.csv"
-
-    p, fname = os.path.split(fileArchimate)
     logger.info("Using : %s" % fileArchimate)
 
-    al = ArchiLib(fileArchimate)
+    al = ArchiLib()
 
     al.logTypeCounts()
 
-    fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/DVC Business Requirements.csv"
+    fileMetaEntity = "import.csv"
     logger.info("Using : %s" % fileArchimate)
     al.insertNColumns("Motivation", "BusinessRequirements20141126", fileMetaEntity)
 

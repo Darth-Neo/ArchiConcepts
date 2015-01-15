@@ -53,19 +53,18 @@ def getWords(s, concepts):
             e = concepts.addConceptKeyType(lemmaWord, "Word")
             f = e.addConceptKeyType(pos, "POS")
 
-def al_ExportArchi():
+def al_ExportArchi(al=None):
     logger.info("Archimate File : %s" % fileArchimate)
     logger.info("Export File    : %s" % fileExport)
+
+    if al == None:
+        al = ArchiLib()
 
     p, fname = os.path.split(fileArchimate)
 
     m = hashlib.md5()
 
-    logger.info("Using : %s" % fileArchimate)
-
-    al = ArchiLib()
-
-    al.logTypeCounts()
+    #al.logTypeCounts()
 
     concepts = Concepts("Node", "Nodes")
 
@@ -102,9 +101,8 @@ def al_ExportArchi():
             #getWords(sourceName, tc)
 
     Concepts.saveConcepts(concepts, fileExport)
-    logger.info("Concepts Saved : %s" % fileExport)
 
-    return concepts
+    return concepts, al
 
 if __name__ == "__main__":
 

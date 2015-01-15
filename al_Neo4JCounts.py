@@ -19,7 +19,7 @@ from al_ArchiLib import *
 
 import al_QueryGraph as CG
 
-if __name__ == "__main__":
+def Neo4JCounts():
     # gdb defined in al_ArchiLib
     logger.info("Neo4J instance : %s" % gdb)
     graph = Neo4JGraph(gdb)
@@ -31,3 +31,6 @@ if __name__ == "__main__":
         logger.info("%26s\t%d" % (x[0], x[2]))
 
     #CG.logResults(lq)
+
+if __name__ == "__main__":
+    Neo4JCounts()

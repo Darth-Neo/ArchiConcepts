@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# Requirement Analysis
+# Requirement Analysis via NLP Chunks noun.verb(predicate)
 #
 __author__ = 'morrj140'
 
@@ -141,7 +141,7 @@ class Chunks(object):
                     logger.debug("object   : %s" % [x for x in sentence.objects])
 
                     if sentence.subjects is not None:
-                        logger.info("Sentence : %s" % sentence.chunks)
+                        logger.debug("Sentence : %s" % sentence.chunks)
 
                         for chunk in sentence.chunks:
                             logger.debug("Chunk  : %s" % chunk)
@@ -154,46 +154,54 @@ class Chunks(object):
 
                             for subject in sentence.subjects:
                                 logger.debug(" Subject.realtion : %s " % subject.relation)
-                                logger.info(" Subject : %s " % subject.string)
+                                logger.debug(" Subject : %s " % subject.string)
                                 f = e.addConceptKeyType(subject.string, "SBJ")
 
                                 for verb in sentence.verbs:
                                     if verb.relation == subject.relation:
                                         logger.debug("  Verb.realtion : %s " % verb.relation)
-                                        logger.info("  Verb   : %s " % verb.string)
+                                        logger.debug("  Verb   : %s " % verb.string)
                                         g = f.addConceptKeyType(verb.string, "VP")
 
                                         for obj in sentence.objects:
                                             if obj.relation == verb.relation:
                                                 logger.debug("    Obj.realtion : %s " % obj.relation)
-                                                logger.info("    Object : %s " % obj.string)
+                                                logger.debug("    Object : %s " % obj.string)
                                                 g.addConceptKeyType(obj.string, "OBJ")
 
         Concepts.saveConcepts(self.chunkConcepts, self.chunkFile)
+        logger.info("Saved : %s" % self.chunkFile)
 
 if __name__ == "__main__":
 
-    fileConcepts = "req.p"
-
+    conceptsFile = "req.p"
     al = ArchiLib()
 
-    al.logTypeCounts()
+    searchTypes = list()
+    searchTypes.append("archimate:Requirement")
+    nl = al.getTypeNodes(searchTypes)
 
-    concepts = Concepts("Requirement", "Requirement")
+    logger.info("Find Words in Requirements...")
+    concepts = Concepts("Requirement", "Requirements")
     n = 0
-    for sentence in al.dictName:
+    for sentence in nl:
         n += 1
         logger.debug("%s" % sentence)
 
         c = concepts.addConceptKeyType("Document" + str(n), "Document")
         d = c.addConceptKeyType(sentence, "Sentence" + str(n))
 
-        cleanSentence = ' '.join([word for word in sentence.split() if word not in stop])
-        for word, pos in nltk.pos_tag(nltk.wordpunct_tokenize(cleanSentence)):
-            if len(word) > 1 and pos[0] == "N":
-                e = d.addConceptKeyType(word, pos)
+        if True and sentence != None:
+            cleanSentence = ' '.join([word for word in sentence.split(" ") if word not in stop])
+            for word, pos in nltk.pos_tag(nltk.wordpunct_tokenize(cleanSentence)):
+                if len(word) > 1 and pos[0] == "N":
+                    e = d.addConceptKeyType(word, "Word")
+                    f = e.addConceptKeyType(pos, "POS")
 
-    Concepts.saveConcepts(concepts, fileConcepts)
+
+
+    Concepts.saveConcepts(concepts, conceptsFile)
+    logger.info("Saved : %s" % conceptsFile)
 
     chunks = Chunks(concepts)
     chunks.createChunks()

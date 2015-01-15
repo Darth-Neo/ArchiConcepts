@@ -22,7 +22,7 @@ import al_QueryGraph as QG
 def addGraphNodes(graph, concepts, n=0, threshold=0.0005):
     n += 1
     for c in concepts.getConcepts().values():
-        logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
+        logger.info("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
 
         graph.addConcept(c)
 
@@ -36,7 +36,7 @@ def addGraphEdges(graph, concepts, n=0):
 
     for c in concepts.getConcepts().values():
 
-        logger.debug("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
+        logger.info("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
 
         graph.addConcept(c)
 
@@ -50,7 +50,7 @@ def analyzeGraph(graph, gl, title, scale=1, threshold=0.0005):
     gNodes = graph.node
 
     # gdb is set in al_ArchiLib
-    logger.debug("Neo4J instance : %s" % gdb)
+    logger.info("Neo4J instance : %s" % gdb)
     graphNeo4J = Neo4JGraph(gdb)
 
     pr = 0
@@ -82,9 +82,7 @@ def analyzeGraph(graph, gl, title, scale=1, threshold=0.0005):
 
             updateNeo4J(graphNeo4J, x, typeName, "Degree", degree)
 
-            if nodeValue > threshold:
-                logger.debug("%s : %s[%s]=%3.4f" % (title, x, typeName, nodeValue*scale))
-
+            logger.debug("%s : %s[%s]=%3.4f" % (title, x, typeName, nodeValue*scale))
 
     logger.info("Metrics fer %s" % title)
     logger.info("Len gl[x]=%3.4f" % len_pr)
@@ -101,8 +99,11 @@ def updateNeo4J(graphNeo4J, name, typeName, metricName, metricValue):
     logger.debug("UpdateQuery : %s" % UpdateQuery)
     QG.cypherQuery(graphNeo4J, UpdateQuery)
 
-
 def analyzeNetworkX(concepts):
+    concepts = Concepts.loadConcepts(fileExport)
+
+    logger.info(" Concepts : %s[%d][%s]" % (concepts.name, len(concepts.getConcepts()), concepts.typeName))
+
     graph = NetworkXGraph()
 
     logger.info("Adding NetworkX nodes to the graph ...")
@@ -111,6 +112,12 @@ def analyzeNetworkX(concepts):
     logger.info("Adding NetworkX edges to the graph ...")
     addGraphEdges(graph, concepts)
 
+    gl = nx.pagerank(graph.G)
+    analyzeGraph(graph.G, gl, "PageRank", scale=1)
+
+    #
+    #  Other NetworkX metrics of Interest
+    #
     #gl = nx.connected_components(graph.G) # [[1, 2, 3], ['spam']]
     #analyzeGraph(graph.G, gl, "Connected")
 
@@ -123,18 +130,11 @@ def analyzeNetworkX(concepts):
     #gl = nx.betweenness_centrality(graph.G)
     #analyzeGraph(graph.G, gl, "Betweenness_Centrality")
 
-    gl = nx.pagerank(graph.G)
-    analyzeGraph(graph.G, gl, "PageRank", scale=1)
-
     #gl = nx.hits(graph.G)
     #analyzeGraph(graph.G, gl, "Hits")
    
 if __name__ == "__main__":
-
-    logger.info("Export File : %s" % fileExport)
-    exportConcepts = Concepts.loadConcepts(fileExport)
-
-    analyzeNetworkX(exportConcepts)
+    analyzeNetworkX()
 
     
 

@@ -37,6 +37,8 @@ def Traversal(ql):
 
     logger.info("%s" % query)
 
+    #qsDemo = "MATCH (l:WorkPackage) -- w -- (n:ApplicationComponent) -- q -- (p:ApplicationService) -- a -- (b:BusinessProcess) where n.name = 'Contract Management' RETURN l, w, n, q, p, a, b "
+
     #qs = "MATCH (n {typeName:'BusinessObject'})-- m -- (o {typeName:'Requirement'}) RETURN n, o"
     #qs = "MATCH (n {typeName:'BusinessObject'}) -- m -- (o {typeName: 'DataObject'}) RETURN n, m, count(o)"
     #qs = "MATCH (n {typeName:'BusinessObject'})--m--(o {typeName:'Requirement'}) RETURN n, count(o)"

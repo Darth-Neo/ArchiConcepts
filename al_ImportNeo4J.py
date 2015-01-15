@@ -73,11 +73,13 @@ def logGraph(gl, title, scale=1):
     logger.info("Avg gl[x]=%3.4f" % (sum_pr / len_pr))
 
 def clearNeo4J():
+    logger.info("Reset Neo4J Graph DB")
     call(["/Users/morrj140/Development/neo4j-community-2.1.2/bin/reset.sh"])
 
-def importNeo4J(concepts):
+def importNeo4J(concepts, ClearNeo4J=False):
 
-    clearNeo4J()
+    if ClearNeo4J:
+        clearNeo4J()
 
     logger.info("Neo4J instance : %s" % gdb)
     graph = Neo4JGraph(gdb)
@@ -90,18 +92,23 @@ def importNeo4J(concepts):
 
     graph.setNodeLabels()
 
-    DropNode = "MATCH (n { name: 'Node' })-[r]-() DELETE n, r"
-    CG.cypherQuery(graph, DropNode)
+    if ClearNeo4J:
+        DropNode = "MATCH (n { name: 'Node' })-[r]-() DELETE n, r"
+        CG.cypherQuery(graph, DropNode)
 
-    CountRequirements = "MATCH (n {typeName:'BusinessObject'}) -- m -- (o {typeName:'Requirement' }) with n, count(o) as rc  set n.RequirementCount=rc RETURN n.name, rc order by rc desc"
-    CG.cypherQuery(graph, CountRequirements)
+        CountRequirements = "MATCH (n {typeName:'BusinessObject'}) -- m -- (o {typeName:'Requirement' }) with n, count(o) as rc  set n.RequirementCount=rc RETURN n.name, rc order by rc desc"
+        CG.cypherQuery(graph, CountRequirements)
+
+    return concepts
 
 if __name__ == "__main__":
 
-    logger.info("Export File : %s" % fileExport)
-    exportConcepts = Concepts.loadConcepts(fileExport)
+    #fileExport
+    fileImport = "batches.p"
 
-    importNeo4J(exportConcepts)
+    importConcepts = Concepts.loadConcepts(fileImport)
+
+    importNeo4J(importConcepts)
 
 
 

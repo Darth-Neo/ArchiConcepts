@@ -31,7 +31,7 @@ gdb = "http://localhost:7474/db/data/"
 #gdb = "http://10.92.82.60:7574/db/data/"
 
 # file of Archimate XML
-fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v18.archimate"
+fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v19.archimate"
 
 # Export file used to persist Concepts
 fileExport    = "export.p"
@@ -330,7 +330,7 @@ class ArchiLib(object):
         listCounts = self.dictCount.items()
 
         if not ListOnly:
-            for x in sorted(listCounts, key=lambda c: abs(c[1]), reverse=False):
+            for x in sorted(listCounts, key=lambda c: abs(c[1]), reverse=True):
                 if x[1] > 1:
                     logger.info("  %d - %s" % (x[1], x[0]))
 

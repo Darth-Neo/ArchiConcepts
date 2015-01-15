@@ -14,39 +14,7 @@ logger = Logger.setupLogging(__name__)
 
 from al_ArchiLib import *
 
-if __name__ == "__main__":
-    #conceptFile = "documents.p"
-    #conceptFile = "words.p"
-    #conceptFile = "chunks.p"
-    #conceptFile = "topicChunks.p"
-    #conceptFile = "topicsDict.p"
-    #conceptFile = "documentsSimilarity.p"
-    conceptFile = "GapsSimilarity.p"
-    #conceptFile = "NVPChunks.p"
-    #conceptFile = "ngrams.p"
-    #conceptFile = "ngramscore.p"
-    #conceptFile = "ngramsubject.p"
-    #conceptFile = "archi.p"
-    #conceptFile = "traversal.p"
-    #conceptFile = "batches.p"
-    #conceptFile = "export.p"
-    #conceptFile = "req.p"
-    #conceptFile = "Systems.p"
-    #conceptFile = "Contract Management.p"
-    #conceptFile = "Estimation20142212_180938.p"
-    #conceptFile = "pptx.p"
-
-    #dir = "/Users/morrj140/Development/GitRepository/DirCrawler/CodeGen/Research_20141709_104529"
-    directory = os.getcwd()
-
-    #filePath = dir + os.sep + conceptFile
-    filePath = directory + os.sep + conceptFile
-
-    logger.info("Loading :" + filePath)
-    concepts = Concepts.loadConcepts(filePath)
-
-    #concepts.logConcepts()
-
+def distribution(concepts):
     distribution = dict()
 
     for x in concepts.getConcepts().values():
@@ -75,6 +43,43 @@ if __name__ == "__main__":
     for x in sorted(listCommon, key=lambda c: abs(c[1]), reverse=False):
             logger.info("  %d - %s" % (x[1], x[0]))
 
+
+if __name__ == "__main__":
+    #conceptFile = "documents.p"
+    #conceptFile = "words.p"
+    #conceptFile = "chunks.p"
+    #conceptFile = "topicChunks.p"
+    #conceptFile = "topicsDict.p"
+    #conceptFile = "documentsSimilarity.p"
+    #conceptFile = "GapsSimilarity.p"
+    #conceptFile = "NVPChunks.p"
+    #conceptFile = "ngrams.p"
+    #conceptFile = "ngramscore.p"
+    #conceptFile = "ngramsubject.p"
+    #conceptFile = "archi.p"
+    #conceptFile = "traversal.p"
+    #conceptFile = "batches.p"
+    #conceptFile = "export.p"
+    #conceptFile = "req.p"
+    #conceptFile = "Systems.p"
+    #conceptFile = "Contract Management.p"
+    #conceptFile = "Estimation20142212_180938.p"
+    #conceptFile = "pptx.p"
+
+    conceptFile = "batches.p"
+
+    #dir = "/Users/morrj140/Development/GitRepository/DirCrawler/CodeGen/Research_20141709_104529"
+    directory = os.getcwd()
+
+    #filePath = dir + os.sep + conceptFile
+    filePath = directory + os.sep + conceptFile
+
+    logger.info("Loading :" + filePath)
+    concepts = Concepts.loadConcepts(filePath)
+
+    concepts.logConcepts()
+
+    #distribution(concepts)
 
     #concepts.printConcepts(list)
     #Concepts.outputConceptsToCSV(concepts, fileExport)
