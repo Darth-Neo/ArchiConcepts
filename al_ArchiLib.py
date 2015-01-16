@@ -32,6 +32,7 @@ gdb = "http://localhost:7474/db/data/"
 
 # file of Archimate XML
 fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v19.archimate"
+#fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v34.archimate"
 
 # Export file used to persist Concepts
 fileExport    = "export.p"

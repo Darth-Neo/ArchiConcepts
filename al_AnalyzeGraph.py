@@ -22,7 +22,7 @@ import al_QueryGraph as QG
 def addGraphNodes(graph, concepts, n=0, threshold=0.0005):
     n += 1
     for c in concepts.getConcepts().values():
-        logger.info("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
+        logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
 
         graph.addConcept(c)
 
@@ -36,7 +36,7 @@ def addGraphEdges(graph, concepts, n=0):
 
     for c in concepts.getConcepts().values():
 
-        logger.info("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
+        logger.debug("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
 
         graph.addConcept(c)
 
@@ -57,7 +57,7 @@ def analyzeGraph(graph, gl, title, scale=1, threshold=0.0005):
     len_pr = len(gl)
     sum_pr = 0.0
 
-    logger.info("---%s---[%d]" % (title, len(gl)))
+    logger.debug("---%s---[%d]" % (title, len(gl)))
 
     n = 0
     for x in gl:
@@ -99,7 +99,7 @@ def updateNeo4J(graphNeo4J, name, typeName, metricName, metricValue):
     logger.debug("UpdateQuery : %s" % UpdateQuery)
     QG.cypherQuery(graphNeo4J, UpdateQuery)
 
-def analyzeNetworkX(concepts):
+def analyzeNetworkX():
     concepts = Concepts.loadConcepts(fileExport)
 
     logger.info(" Concepts : %s[%d][%s]" % (concepts.name, len(concepts.getConcepts()), concepts.typeName))

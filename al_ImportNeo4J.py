@@ -61,8 +61,9 @@ def logGraph(gl, title, scale=1):
                 sum_pr = gl[x]
                 if gl[x] > pr:
                     pr = gl[x]
-                if gl[x] > 0.0005:
-                    logger.info("%s [%d]:%s=%3.4f" % (title, n, x, gl[x]*scale))
+
+                logger.info("%s [%d]:%s=%3.4f" % (title, n, x, gl[x]*scale))
+
             else:
                 logger.info("%s [%d]" % (x, n))
     except:
@@ -73,13 +74,15 @@ def logGraph(gl, title, scale=1):
     logger.info("Avg gl[x]=%3.4f" % (sum_pr / len_pr))
 
 def clearNeo4J():
-    logger.info("Reset Neo4J Graph DB")
-    call(["/Users/morrj140/Development/neo4j-community-2.1.2/bin/reset.sh"])
+    if gdb == "http://localhost:7474/db/data/":
+        logger.info("Reset Neo4J Graph DB")
+        call(["/Users/morrj140/Development/neo4j-community-2.1.2/bin/reset.sh"])
 
 def importNeo4J(concepts, ClearNeo4J=False):
 
     if ClearNeo4J:
-        clearNeo4J()
+        #clearNeo4J()
+        pass
 
     logger.info("Neo4J instance : %s" % gdb)
     graph = Neo4JGraph(gdb)
@@ -103,7 +106,7 @@ def importNeo4J(concepts, ClearNeo4J=False):
 
 if __name__ == "__main__":
 
-    #fileExport
+    #fileImport = fileExport
     fileImport = "batches.p"
 
     importConcepts = Concepts.loadConcepts(fileImport)
