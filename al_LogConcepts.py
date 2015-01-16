@@ -14,7 +14,7 @@ logger = Logger.setupLogging(__name__)
 
 from al_ArchiLib import *
 
-def distribution(concepts):
+def distribution():
     distribution = dict()
 
     for x in concepts.getConcepts().values():
@@ -79,7 +79,8 @@ if __name__ == "__main__":
 
     concepts.logConcepts()
 
-    #distribution(concepts)
+
+
 
     #concepts.printConcepts(list)
     #Concepts.outputConceptsToCSV(concepts, fileExport)

@@ -79,7 +79,7 @@ class Chunks(object):
             d = self.chunkConcepts.addConceptKeyType(document.name, "Document")
 
             for sentence in document.getConcepts().values():
-                logger.info("%s(%s)" % (sentence.name, sentence.typeName))
+                logger.debug("%s(%s)" % (sentence.name, sentence.typeName))
                 cleanSentence = ' '.join([word for word in sentence.name.split() if word not in stop])
 
                 listSentence = list()

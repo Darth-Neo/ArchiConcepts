@@ -81,15 +81,16 @@ if __name__ == "__main__":
     #conceptFile = "TopicChunks.p"
     #conceptFile = "ngrams.p"
     #conceptFile = "ngramscore.p"
-    conceptFile = "ngramsubject.p"
+    #conceptFile = "ngramsubject.p"
     #conceptFile = "archi.p"
+    conceptFile = "batches.p"
 
     c = Concepts("GraphConcepts", "GRAPH")
     concepts = Concepts.loadConcepts(conceptFile)
 
     # c.logConcepts()
 
-    graphConcepts(concepts, filename="DVC.png")
+    graphConcepts(concepts, filename="DVCBatches.png")
 
 
 

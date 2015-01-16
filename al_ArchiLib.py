@@ -1036,6 +1036,9 @@ class ArchiLib(object):
             return self.getID()
         return r
 
+    def getID(self):
+        return self._getID()
+
     def _cleanString(self, s):
         r = ""
         if s == None:

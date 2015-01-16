@@ -135,7 +135,7 @@ def dependancyAnalysis():
 
     #al.logTypeCounts()
 
-    concepts = Concepts("BusinessProcess", "BusinessProcess")
+    concepts = Concepts("BusinessProcess", "archimate:BusinessProcess")
 
     count = 0
     listTSort = list()
@@ -238,7 +238,7 @@ def dependancyAnalysis():
 
     format_nodes(nodes)
 
-    conceptBatches = Concepts("Batch", "Batches")
+    conceptBatches = Concepts("Batch", "archimate:WorkPackage")
 
     n = 0
     logger.info("Batches:")
@@ -246,9 +246,9 @@ def dependancyAnalysis():
     for bundle in batches:
         n += 1
         name = "Batch %d" % n
-        c = conceptBatches.addConceptKeyType(name, "Batch")
+        c = conceptBatches.addConceptKeyType(name, "archimate:WorkPackage")
         for node in bundle:
-            c.addConceptKeyType(node.name, "BusinessProcess")
+            c.addConceptKeyType(node.name, "archimate:BusinessProcess")
 
         logger.info("%d : %s" % (n, ", ".join(node.name.lstrip() for node in bundle)))
 
