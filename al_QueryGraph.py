@@ -143,23 +143,25 @@ if __name__ == "__main__":
     #demoQuery = "MATCH (n {typeName:'Stakeholder'})-- (m )-- (o {typeName:'WorkPackage'}) -- (p) -- (q {typeName:'BusinessObject'}) RETURN n, m, o,p, q"
     #UpdateQuery = "match (n {typeName:'BusinessObject', name:'Contract'}) set n.PageRank = 1 return n"
     #demoQuery = "MATCH (l {typeName:'BusinessProcess'}) -- w --  (n {typeName:'ApplicationService'}) -- m -- (o {typeName: 'ApplicationComponent'}) -- r -- (q {typeName: 'DataObject'}) RETURN l, w, n, m, o, r, q"
+    qs = "MATCH (a:ApplicationService) -- z -- (b:ApplicationComponent) -- y -- (c:ApplicationComponent) RETURN a, z, b, y, c"
 
-    ql = list()
-    ql.append("BusinessEvent")
-    ql.append("TriggeringRelationship")
-    ql.append("BusinessProcess")
-    ql.append("FlowRelationship")
-    ql.append("BusinessProcess")
-    ql.append("AccessRelationship")
-    ql.append("BusinessObject")
-    ql.append("UsedByRelationship")
-    ql.append("ApplicationService")
-    #ql.append("UsedByRelationship")
-    #ql.append("ApplicationComponent")
-    #ql.append("RealisationRelationship")
-    #ql.append("DataObject")
+    if False:
+        ql = list()
+        ql.append("BusinessEvent")
+        ql.append("TriggeringRelationship")
+        ql.append("BusinessProcess")
+        ql.append("FlowRelationship")
+        ql.append("BusinessProcess")
+        ql.append("AccessRelationship")
+        ql.append("BusinessObject")
+        ql.append("UsedByRelationship")
+        ql.append("ApplicationService")
+        #ql.append("UsedByRelationship")
+        #ql.append("ApplicationComponent")
+        #ql.append("RealisationRelationship")
+        #ql.append("DataObject")
 
-    qs = Traversal(ql)
+        qs = Traversal(ql)
 
     lq, qd = cypherQuery(graph, qs)
 

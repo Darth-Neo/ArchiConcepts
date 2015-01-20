@@ -18,10 +18,16 @@ from al_ArchiLib import *
 
 import al_QueryGraph as CG
 
+def cleanTypeName(concept):
+    if concept.typeName[:10] == "archimate:" :
+        concept.typeName = concept.typeName[10:]
+
 def addGraphNodes(graph, concepts, n=0, threshold=1):
     n += 1
     for c in concepts.getConcepts().values():
         logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
+
+        cleanTypeName(c)
 
         graph.addConcept(c)
 
@@ -35,17 +41,14 @@ def addGraphEdges(graph, concepts, n=0):
 
     for c in concepts.getConcepts().values():
 
-        logger.debug("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
+        logger.info("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
 
+        cleanTypeName(c)
         graph.addConcept(c)
 
-        if isinstance(graph, Neo4JGraph):
-            graph.addEdge(concepts, c, c.typeName)
-        else:
-            graph.addEdge(concepts, c)
+        graph.addEdge(concepts, c, c.typeName)
 
-        if len(c.getConcepts()) != 0:
-            addGraphEdges(graph, c, n)
+        addGraphEdges(graph, c, n)
 
 def logGraph(gl, title, scale=1):
     pr = 0
@@ -86,6 +89,8 @@ def importNeo4J(concepts, ClearNeo4J=False):
 
     logger.info("Neo4J instance : %s" % gdb)
     graph = Neo4JGraph(gdb)
+
+    graph.clearGraphDB()
 
     logger.info("Adding Neo4J nodes to the graph ...")
     addGraphNodes(graph, concepts)

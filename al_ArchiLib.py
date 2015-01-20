@@ -27,8 +27,8 @@ ARCHIMATE_NS   =  NS_MAP["archimate"]
 ARCHI_TYPE = "{%s}type" % NS_MAP["xsi"]
 
 # IP of Neo4J Graph
-gdb = "http://localhost:7474/db/data/"
-#gdb = "http://10.92.82.60:7574/db/data/"
+#gdb = "http://localhost:7474/db/data/"
+gdb = "http://10.92.82.60:7574/db/data/"
 
 # file of Archimate XML
 fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v19.archimate"
