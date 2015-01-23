@@ -21,6 +21,11 @@ from nl_lib.Concepts import Concepts
 
 from lxml import etree
 
+from openpyxl import Workbook
+from openpyxl import load_workbook
+from openpyxl.compat import range
+from openpyxl.cell import get_column_letter
+
 #
 # Archimate XML
 #
@@ -179,6 +184,24 @@ class ArchiLib(object):
         output = StringIO.StringIO()
         self.tree.write(output, pretty_print=True)
         logger.info("%s" % (output.getvalue()))
+
+    def exportExcel(fileIn, fileOut, workSheetTitle="Scope Items"):
+
+        wb = load_workbook(filename = fileIn)
+
+        ws = wb.create_sheet()
+
+        ws.title = workSheetTitle
+
+        ws['F5'] = 3.14
+
+        for col_idx in range(1, 40):
+            col = get_column_letter(col_idx)
+            for row in range(1, 600):
+                ws.cell('%s%s'%(col, row)).value = '%s%s' % (col, row)
+
+        wb.save(filename = fileOut)
+
 
     #
     # Model transversal functions via XPath

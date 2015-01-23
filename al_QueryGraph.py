@@ -19,6 +19,12 @@ logger.setLevel(logging.INFO)
 
 from py2neo.neo4j import GraphDatabaseService, CypherQuery, Node, Relationship
 
+from openpyxl import Workbook
+from openpyxl import load_workbook
+from openpyxl.compat import range
+from openpyxl.cell import get_column_letter
+from openpyxl.worksheet import Worksheet
+
 from al_ArchiLib import *
 from al_Neo4JCounts import *
 
@@ -51,11 +57,26 @@ def cypherQuery(graph, qs):
 
     n = 0
 
+    ColHdr = True
+
     for x in qd:
+
+        n += 1
 
         logger.debug("%s[%d]" % (x, n))
 
-        n += 1
+        if n == 1:
+            cl = list()
+            m = 0
+            for y in x.columns:
+                m += 1
+                logger.debug("  %s[%d]" % (y, m))
+                cl.append(y)
+                cl.append("Type%d" % m)
+
+            listQuery.append(cl)
+
+            continue
 
         xl = list()
 
@@ -86,6 +107,7 @@ def cypherQuery(graph, qs):
 
     return listQuery, qd
 
+
 def logResults(lq, f=None, n=0):
     n += 1
 
@@ -108,9 +130,7 @@ def logResults(lq, f=None, n=0):
 
     if len(rs) != 0:
         logger.info("%s" % (rs[1:]))
-
-        if f != None:
-            f.write("%s\n" % (rs[1:]))
+        f.write("%s\n" % (rs[1:]))
 
 def queryExport(lq):
 
@@ -124,14 +144,47 @@ def queryExport(lq):
     logger.info("Exported %d rows" % len(lq))
     logger.info("Save Model : %s" % csvFileExport)
 
+def queryExportExcel(lq, fileIn, fileOut):
+
+    wb = load_workbook(filename = fileIn)
+
+    ws = wb.create_sheet()
+
+    ws.title = "Scope Items"
+    m = 0
+    n = 0
+
+    for x in lq:
+        n += 1
+
+        logger.debug("x in lq : %s" % x)
+
+        m = 0
+        for y in x:
+            m += 1
+
+            col = get_column_letter(m)
+            logger.debug("col : %s" % col)
+
+            logger.debug("y : %s" % y)
+
+            rs = "%s%s" % (col, n)
+            logger.info("Row %d \t rs : %s : %s" % (n, rs, y))
+
+            ws.cell(rs).value = ("%s" % (y))
+
+    wb.save(filename = fileOut)
+
+    logger.info("Saved file : %s" % fileOut)
+
 
 if __name__ == "__main__":
     # gdb defined in al_ArchiLib
     logger.debug("Neo4J instance : %s" % gdb)
-    
+
     graph = Neo4JGraph(gdb)
 
-    Neo4JCounts()
+    #Neo4JCounts()
 
     #
     # Useful Cypher Queries
@@ -142,17 +195,26 @@ if __name__ == "__main__":
 
     ql = list()
 
-    if False:
+    if True:
         ql.append("ApplicationFunction")
         ql.append("ApplicationComponent")
         ql.append("ApplicationService")
-        ql.append("BusinessProcess")
         qs = Traversal(ql)
 
-    elif True:
+    elif False:
         ql.append("BusinessObject")
         ql.append("BusinessProcess")
         ql.append("ApplicationService")
+        ql.append("ApplicationComponent")
+        ql.append("ApplicationFunction")
+        qs = Traversal(ql)
+
+    elif False:
+        ql.append("WorkPackage")
+        ql.append("BusinessProcess")
+        ql.append("ApplicationService")
+        ql.append("ApplicationComponent")
+        ql.append("ApplicationFunction")
         qs = Traversal(ql)
 
     elif False:
@@ -162,11 +224,12 @@ if __name__ == "__main__":
         qs4 = "MATCH (n0:ApplicationService)--(r0)--(n2:ApplicationComponent)--(r2)--(n3:DataObject) RETURN n1,r1,n2, r2, n3"
         qs5 = "MATCH (n0:BusinessObject)--(r0)--(n1:DataObject) RETURN n0, r0, n1"
         qs6 = "MATCH (n0:BusinessProcess)--(r0)--(n1: BusinessObject)--(r1)--(n2:DataObject)--(r2)--(n3: ApplicationComponent) RETURN n0, r0, n1, r1, n2, r2, n3"
+        qs = qs1
 
-    elif False:
+    elif True:
         #qs = "MATCH (n0:BusinessObject)--(r0)--(n1:Requirement) RETURN n0, r0, n1"
-        #qs = "MATCH (n0:BusinessObject)--(r0)--(n1:Requirement) RETURN n0, count(n1)"
-        qs = "MATCH (n0:BusinessObject)--(r0:AssociationRelationship)--(n1:Requirement)  RETURN n0, n0.PageRank, n0.RequirementCount, n0.Degree, n0.count, count(n1) ORDER BY count(n1) DESC"
+        qs = "MATCH (n0:BusinessObject)--(r0)--(n1:Requirement) RETURN n0, count(n1) ORDER BY count(n1) DESC"
+        #qs = "MATCH (n0:BusinessObject)--(r0:AssociationRelationship)--(n1:Requirement)  RETURN n0, n0.PageRank, n0.RequirementCount, n0.Degree, n0.count, count(n1) ORDER BY count(n1) DESC"
         #qs = "MATCH (n0:BusinessObject) RETURN n0, n0.PageRank, n0.RequirementCount, n0.Degree, n0.count"
         #qs = "MATCH (n0:DataObject) RETURN n0, n0.PageRank, n0.RequirementCount, n0.Degree, n0.count"
 
@@ -176,3 +239,8 @@ if __name__ == "__main__":
     lq, qd = cypherQuery(graph, qs)
 
     queryExport(lq)
+
+    fileIn = 'Template_Estimate.xlsx'
+    fileOut = 'Template_Estimate_new.xlsx'
+
+    queryExportExcel(lq, fileIn, fileOut)
