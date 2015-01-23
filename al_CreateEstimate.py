@@ -6,6 +6,7 @@ __author__ = 'morrj140'
 import datetime
 import logging
 from nl_lib import Logger
+from nl_lib.ConceptGraph import PatternGraph, NetworkXGraph, Neo4JGraph, GraphVizGraph
 from nl_lib.Concepts import Concepts
 from nl_lib.Constants import *
 
@@ -18,35 +19,54 @@ from openpyxl.compat import range
 from openpyxl.cell import get_column_letter
 from openpyxl.worksheet import Worksheet as worksheet
 
-def exportExcel(fileIn, fileOut):
+from al_ArchiLib import *
+import al_QueryGraph as QG
+
+def queryExportExcel(lq, fileIn, fileOut):
 
     wb = load_workbook(filename = fileIn)
 
     ws = wb.create_sheet()
 
     ws.title = "Scope Items"
-    ws['F5'] = 3.14
+    m = 0
+    n = 0
 
-    for col_idx in range(1, 20):
+    for x in lq:
+        n += 1
 
-        logger.info("col_idx : %d" % col_idx)
+        logger.debug("x in lq : %s" % x)
 
-        col = get_column_letter(col_idx)
+        m = 0
+        for y in x:
+            m += 1
 
-        logger.info("Col : %d" % col_idx)
+            col = get_column_letter(m)
+            logger.debug("col : %s" % col)
 
-        for row in range(1, 10):
+            logger.debug("y : %s" % y)
 
-            rc = '%s%s'%(col, row)
+            rs = "%s%s" % (col, n)
+            logger.info("Row %d \t rs : %s : %s" % (n, rs, y))
 
-            logger.info("row : %s\tRow,Col : %s" % (row, rc))
-
-            ws.cell(rc).value = '%s%s' % (col, row)
+            ws.cell(rs).value = ("%s" % (y))
 
     wb.save(filename = fileOut)
+
+    logger.info("Saved file : %s" % fileOut)
 
 if __name__ == "__main__":
     fileIn = 'Template_Estimate.xlsx'
     fileOut = 'Template_Estimate_new.xlsx'
 
-    exportExcel(fileIn, fileOut)
+    graph = Neo4JGraph(gdb)
+
+    ql = list()
+    ql.append("ApplicationFunction")
+    ql.append("ApplicationComponent")
+    ql.append("ApplicationService")
+    qs = QG.Traversal(ql)
+
+    lq, qd = QG.cypherQuery(graph, qs)
+
+    queryExportExcel(lq, fileIn, fileOut)
