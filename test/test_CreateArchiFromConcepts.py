@@ -17,7 +17,7 @@ from lxml import etree
 
 from traceback import format_exc
 
-import al_ImportArchi as ia
+import al_ImportIntoArchi as ia
 import al_CreateArchiFromConcepts as cafc
 
 import pytest

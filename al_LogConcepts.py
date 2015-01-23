@@ -59,14 +59,13 @@ if __name__ == "__main__":
     #conceptFile = "archi.p"
     #conceptFile = "traversal.p"
     #conceptFile = "batches.p"
-    #conceptFile = "export.p"
+    conceptFile = "export.p"
     #conceptFile = "req.p"
     #conceptFile = "Systems.p"
     #conceptFile = "Contract Management.p"
     #conceptFile = "Estimation20142212_180938.p"
     #conceptFile = "pptx.p"
-
-    conceptFile = "batches.p"
+    #conceptFile = "batches.p"
 
     #dir = "/Users/morrj140/Development/GitRepository/DirCrawler/CodeGen/Research_20141709_104529"
     directory = os.getcwd()
@@ -78,9 +77,6 @@ if __name__ == "__main__":
     concepts = Concepts.loadConcepts(filePath)
 
     concepts.logConcepts()
-
-
-
 
     #concepts.printConcepts(list)
     #Concepts.outputConceptsToCSV(concepts, fileExport)

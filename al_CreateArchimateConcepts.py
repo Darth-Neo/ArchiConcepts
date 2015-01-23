@@ -16,12 +16,12 @@ from lxml import etree
 from al_ArchiLib import *
 
 def al_ArchimateConcepts():
-    fileArchiP = "archi.p"
+    fileArchConcepts = "archi.p"
     fileArchiModel = 'archi.archimate'
 
     logger.info("Using : %s" % fileArchimate)
 
-    concepts = Concepts(fileArchiP, "Archimate")
+    concepts = Concepts(fileArchConcepts, "Archimate")
 
     al = ArchiLib()
 
@@ -31,13 +31,13 @@ def al_ArchimateConcepts():
     # Create Concepts from Arhimate
     #
     al.folderConcepts(concepts)
-    Concepts.saveConcepts(concepts, fileArchiP)
-    logger.info("Saved concepts to : %s" % fileArchiP)
+    Concepts.saveConcepts(concepts, fileArchConcepts)
+    logger.info("Saved concepts to : %s" % fileArchConcepts)
 
     #
     # Generate Archimate from Concepts
     #
-    #al.createArchimate(fileArchiModel, fileArchiP)
+    #al.createArchimate(fileArchiModel, fileArchConcepts)
 
 if __name__ == "__main__":
     al_ArchimateConcepts()

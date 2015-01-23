@@ -266,6 +266,7 @@ def test_QueryGraph():
     lg("%d : %s" % (len(lq), qs))
 
 if __name__ == "__main__":
+    os.chdir("./test")
 
     #test_CheckForArchimateFile()
     #test_Archi_Counts()

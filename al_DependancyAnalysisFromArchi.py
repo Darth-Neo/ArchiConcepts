@@ -26,7 +26,7 @@ from nltk.stem import PorterStemmer, WordNetLemmatizer
 from al_ArchiLib import *
 
 import al_GraphConcepts as GC
-import al_ImportNeo4J  as IN
+import al_ImportConceptsIntoNeo4J  as IN
 
 # The graph nodes
 class Task(object):
@@ -133,8 +133,6 @@ def dependancyAnalysis():
 
     al = ArchiLib()
 
-    #al.logTypeCounts()
-
     concepts = Concepts("BusinessProcess", "archimate:BusinessProcess")
 
     count = 0
@@ -150,9 +148,9 @@ def dependancyAnalysis():
 
             if al.dictEdges[x][ARCHI_TYPE] in ("archimate:FlowRelationship"):
 
-                al.countNodeType(al.dictNodes[source][ARCHI_TYPE])
-                al.countNodeType(al.dictNodes[target][ARCHI_TYPE])
-                al.countNodeType(al.dictEdges[x][ARCHI_TYPE])
+                #al.countNodeType(al.dictNodes[source][ARCHI_TYPE])
+                #al.countNodeType(al.dictNodes[target][ARCHI_TYPE])
+                #al.countNodeType(al.dictEdges[x][ARCHI_TYPE])
 
                 if (al.dictNodes[source][ARCHI_TYPE] == "archimate:BusinessProcess") and \
                         al.dictNodes[target][ARCHI_TYPE] == "archimate:BusinessProcess":
@@ -187,11 +185,10 @@ def dependancyAnalysis():
                     l.append(target)
                     l.append(source)
                     listTSort.append(l)
-                    count = count + 1
 
     logger.debug("Edges = %s" % listTSort)
 
-    Concepts.saveConcepts(concepts, "traversal.p")
+    Concepts.saveConcepts(concepts, fileConceptsTraversal)
 
     if True:
         GC.graphConcepts(concepts, filename="DependancyAnalysis.png")
@@ -252,7 +249,7 @@ def dependancyAnalysis():
 
         logger.info("%d : %s" % (n, ", ".join(node.name.lstrip() for node in bundle)))
 
-    Concepts.saveConcepts(conceptBatches, "batches.p")
+    Concepts.saveConcepts(conceptBatches, fileConceptsBatches)
 
     return conceptBatches
 

@@ -41,7 +41,7 @@ def addGraphEdges(graph, concepts, n=0):
 
     for c in concepts.getConcepts().values():
 
-        logger.info("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
+        logger.debug("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
 
         cleanTypeName(c)
         graph.addConcept(c)
@@ -77,20 +77,20 @@ def logGraph(gl, title, scale=1):
     logger.info("Avg gl[x]=%3.4f" % (sum_pr / len_pr))
 
 def clearNeo4J():
-    if gdb == "http://localhost:7474/db/data/":
+    if gdb == LocalGBD:
         logger.info("Reset Neo4J Graph DB")
-        call(["/Users/morrj140/Development/neo4j-community-2.1.2/bin/reset.sh"])
+        call([resetNeo4J])
 
 def importNeo4J(concepts, ClearNeo4J=False):
 
     if ClearNeo4J:
-        #clearNeo4J()
-        pass
+        clearNeo4J()
 
     logger.info("Neo4J instance : %s" % gdb)
     graph = Neo4JGraph(gdb)
 
-    graph.clearGraphDB()
+    if ClearNeo4J:
+        graph.clearGraphDB()
 
     logger.info("Adding Neo4J nodes to the graph ...")
     addGraphNodes(graph, concepts)
@@ -104,19 +104,14 @@ def importNeo4J(concepts, ClearNeo4J=False):
         DropNode = "MATCH (n { name: 'Node' })-[r]-() DELETE n, r"
         CG.cypherQuery(graph, DropNode)
 
-        CountRequirements = "MATCH (n {typeName:'BusinessObject'}) -- m -- (o {typeName:'Requirement' }) with n, count(o) as rc  set n.RequirementCount=rc RETURN n.name, rc order by rc desc"
-        CG.cypherQuery(graph, CountRequirements)
-
-    return concepts
+    CountRequirements = "MATCH (n {typeName:'BusinessObject'}) -- m -- (o {typeName:'Requirement' }) with n, count(o) as rc  set n.RequirementCount=rc RETURN n.name, rc order by rc desc"
+    CG.cypherQuery(graph, CountRequirements)
 
 if __name__ == "__main__":
 
-    #fileImport = fileExport
-    fileImport = "batches.p"
+    importConcepts = Concepts.loadConcepts(fileConceptsExport)
 
-    importConcepts = Concepts.loadConcepts(fileImport)
-
-    importNeo4J(importConcepts)
+    importNeo4J(importConcepts, ClearNeo4J=True)
 
 
 

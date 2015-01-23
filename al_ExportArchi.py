@@ -55,16 +55,15 @@ def getWords(s, concepts):
 
 def al_ExportArchi(al=None):
     logger.info("Archimate File : %s" % fileArchimate)
-    logger.info("Export File    : %s" % fileExport)
+    logger.info("Export File    : %s" % fileConceptsExport)
 
     if al == None:
         al = ArchiLib()
+        al.logTypeCounts()
 
     p, fname = os.path.split(fileArchimate)
 
     m = hashlib.md5()
-
-    #al.logTypeCounts()
 
     concepts = Concepts("Node", "Nodes")
 
@@ -74,12 +73,18 @@ def al_ExportArchi(al=None):
     count = 0
     listTSort = list()
     for x in al.dictEdges.keys():
-        logger.debug("[%s]=%s" % (al.dictEdges[x]["id"], x))
+        logger.debug("Edge [%s]=%s" % (al.dictEdges[x], x))
 
-        if al.dictEdges[x].has_key("source"):
+        if al.dictEdges[x].has_key("source") and al.dictEdges[x].has_key("target"):
+
             typeEdge   = al.dictEdges[x][ARCHI_TYPE]
+            logger.debug("Edge   : %s" % typeEdge)
+
             source = al.dictEdges[x]["source"]
+            logger.debug("Source : %s" % source)
+
             target = al.dictEdges[x]["target"]
+            logger.debug("Target : %s" % target)
 
             logger.debug("  Rel    : %s" % (al.dictEdges[x][ARCHI_TYPE]))
 
@@ -88,19 +93,29 @@ def al_ExportArchi(al=None):
 
             logger.debug(" %s--%s--%s" % (sourceName, al.dictEdges[x][ARCHI_TYPE][10:], targetName))
 
-            l = list()
-            sc = concepts.addConceptKeyType(sourceName, al.dictNodes[source][ARCHI_TYPE][10:])
-            #getWords(sourceName, sc)
+            if al.dictNodes.has_key(source):
+                l = list()
+                sc = concepts.addConceptKeyType(sourceName, al.dictNodes[source][ARCHI_TYPE][10:])
+                #getWords(sourceName, sc)
 
             nameEdge = "(" + sourceName + "," + targetName + ")"
-            nh = typeEdge[10:] + "-" + hashlib.sha224(nameEdge).hexdigest()
+            logger.debug("nameEdge : %s[%d]" % (nameEdge, len(nameEdge)))
+            logger.debug("typeEdge : %s" % typeEdge[10:])
+
+            ne = str(al.cleanString(nameEdge))
+            hl = hashlib.sha224(str(ne)).hexdigest()
+
+            logger.debug("hash : %s" % hl)
+
+            nh = "%s-%s" % (typeEdge[10:], hl)
 
             rc = sc.addConceptKeyType(nh, typeEdge[10:])
 
-            tc = rc.addConceptKeyType(targetName, al.dictNodes[target][ARCHI_TYPE][10:])
-            #getWords(sourceName, tc)
+            if al.dictNodes.has_key(target):
+                tc = rc.addConceptKeyType(targetName, al.dictNodes[target][ARCHI_TYPE][10:])
+                #getWords(sourceName, tc)
 
-    Concepts.saveConcepts(concepts, fileExport)
+    Concepts.saveConcepts(concepts, fileConceptsExport)
 
     return concepts, al
 

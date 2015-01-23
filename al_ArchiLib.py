@@ -21,56 +21,85 @@ from nl_lib.Concepts import Concepts
 
 from lxml import etree
 
+#
+# Archimate XML
+#
 NS_MAP={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
 XML_NS         =  NS_MAP["xsi"]
 ARCHIMATE_NS   =  NS_MAP["archimate"]
 ARCHI_TYPE = "{%s}type" % NS_MAP["xsi"]
 
+#
 # IP of Neo4J Graph
-#gdb = "http://localhost:7474/db/data/"
-gdb = "http://10.92.82.60:7574/db/data/"
+#
+LocalGBD  = "http://localhost:7474/db/data/"
+RemoteGDB = "http://10.92.82.60:7574/db/data/"
+gdb = LocalGBD
 
+#
 # file of Archimate XML
-fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v19.archimate"
+#
+fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v22.archimate"
 #fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v34.archimate"
+fileArchimateTest = os.getcwd() + "/test/Testing.archimate"
 
-# Export file used to persist Concepts
-fileExport    = "export.p"
-timeFileExport="export" + time.strftime("%Y%d%m_%H%M%S") +".csv"
+#
+# Files Used
+#
+fileConceptsExport         = "export.p"
+fileTimeConceptsExport     = "export" + time.strftime("%Y%d%m_%H%M%S") +".p"
+fileConceptsBatches        = "batches.p"
+fileConceptsTraversal      = "traversal.p"
 
-fileImage = "export.png"
+csvFileExport ="export.csv"
+csvTimeFileExport ="export" + time.strftime("%Y%d%m_%H%M%S") +".csv"
 
-csvExport = "ExportQuery.csv"
+csvQueryExport      = "ExportQuery.csv"
+csvTimeQueryExport  = "ExportQuery" + time.strftime("%Y%d%m_%H%M%S") +".csv"
 
+fileExportImage      = "export.png"
+fileTimeExportImage  = "export" + time.strftime("%Y%d%m_%H%M%S") +".png"
+
+#
+# Script to reset Neo4J
+#
+resetNeo4J = "/Users/morrj140/Development/neo4j-community-2.1.2/bin/reset.sh"
+
+#
+# Archimate Edges
+#
+relations = {"TriggeringRelationship" : "archimate:TriggeringRelationship",
+                    "UsedByRelationship" : "archimate:UsedByRelationship",
+                    "AccessRelationship" : "archimate:AccessRelationship",
+                    "FlowRelationship" : "archimate:FlowRelationship",
+                    "AssignmentRelationship" : "archimate:AssignmentRelationship",
+                    "AssociationRelationship" : "archimate:AssociationRelationship",
+                    "RealisationRelationship" : "archimate:RealisationRelationship",
+                    "CompositionRelationship" : "archimate:CompositionRelationship"}
+
+#
+# Archimate Nodes
+#
+entities = {"BusinessEvent" : "archimate:BusinessEvent",
+            "BusinessObject" : "archimate:BusinessObject",
+            "BusinessProcess" : "archimate:BusinessProcess",
+            "ApplicationService" : "archimate:ApplicationService",
+            "ApplicationComponent" : "archimate:ApplicationComponent",
+            "DataObject" : "archimate:DataObject",
+            "Requirement" : "archimate:Requirement",
+            "Stakeholder" : "archimate:Stakeholder",
+            "WorkPackage"  : "archimate:WorkPackage"}
+
+#
+# Main class to make life easier
+#
 class ArchiLib(object):
 
-    #dictRelation = dict()
-    #dictAttrib = dict()
-
-    dictName = dict()
+    dictName  = dict()
     dictEdges = dict()
     dictNodes = dict()
-    dictCount = dict()
     dictBP    = dict()
-
-    relations = ("archimate:TriggeringRelationship",
-                    "archimate:UsedByRelationship",
-                    "archimate:AccessRelationship",
-                    "archimate:FlowRelationship",
-                    "archimate:AssignmentRelationship",
-                    "archimate:AssociationRelationship",
-                    'archimate:RealisationRelationship',
-                    'archimate:CompositionRelationship')
-
-    entities = ("archimate:BusinessEvent",
-                "archimate:BusinessObject",
-                "archimate:BusinessProcess",
-                "archimate:ApplicationService",
-                "archimate:ApplicationComponent",
-                "archimate:DataObject",
-                "archimate:Requirement",
-                "archimate:Stakeholder",
-                "archimate:WorkPackage")
+    dictCount = dict()
 
     def __init__(self, fa=None, fe=None):
 
@@ -83,8 +112,8 @@ class ArchiLib(object):
         if fe != None:
             self.fileExport = fe
         else:
-            global fileExport
-            self.fileExport = fileExport
+            global fileConceptsExport
+            self.fileExport = fileConceptsExport
 
         etree.QName(ARCHIMATE_NS, 'model')
 
@@ -369,7 +398,7 @@ class ArchiLib(object):
 
         attributes = el.attrib
 
-        # Not every node will have a type
+         # Not every node will have a type
         if el.tag in ("element", "child"):
             self.countNodeType(attributes[ARCHI_TYPE])
 
@@ -509,6 +538,20 @@ class ArchiLib(object):
         logger.debug("%s" % self.dictName)
 
         return idd
+
+    #
+    # Model functions via dictionaries
+    #
+    def logTypeCounts(self, ListOnly = False):
+        if not ListOnly:
+            logger.info("Type Counts")
+            listCounts = self.dictCount.items()
+
+            for x in sorted(listCounts, key=lambda c: abs(c[1]), reverse=True):
+                if x[1] > 1:
+                    logger.info(" %d - %s" % (x[1], x[0]))
+            logger.info(" ")
+        return listCounts
 
 
     def insertNode(self, tag, folder, attrib):
@@ -1039,6 +1082,9 @@ class ArchiLib(object):
 
     def getID(self):
         return self._getID()
+
+    def cleanString(self, s):
+        return  self._cleanString(s)
 
     def _cleanString(self, s):
         r = ""

@@ -57,7 +57,7 @@ def analyzeGraph(graph, gl, title, scale=1, threshold=0.0005):
     len_pr = len(gl)
     sum_pr = 0.0
 
-    logger.debug("---%s---[%d]" % (title, len(gl)))
+    logger.info("---%s---[%d]" % (title, len(gl)))
 
     n = 0
     for x in gl:
@@ -76,16 +76,20 @@ def analyzeGraph(graph, gl, title, scale=1, threshold=0.0005):
         if isinstance(nodeKey, dict) and nodeKey.has_key("typeName"):
             typeName = nodeKey['typeName']
 
+            if typeName in relations.keys():
+                logger.debug("Skip : %s" % typeName)
+                continue
+
             updateNeo4J(graphNeo4J, x, typeName, title, nodeValue*scale)
 
             degree = nx.degree(graph)[x]
 
             updateNeo4J(graphNeo4J, x, typeName, "Degree", degree)
 
-            logger.debug("%s : %s[%s]=%3.4f" % (title, x, typeName, nodeValue*scale))
+            logger.info("%s : %s[%s]=%3.4f" % (title, x, typeName, nodeValue*scale))
 
-    logger.info("Metrics fer %s" % title)
-    logger.info("Len gl[x]=%3.4f" % len_pr)
+    logger.info("Metrics for %s" % title)
+    logger.info("Len gl[x]=%3.4f" % n ) #len_pr)
     logger.info("Max gl[x]=%3.4f" % pr)
     logger.info("Avg gl[x]=%3.4f" % (sum_pr / len_pr))
 
@@ -99,8 +103,9 @@ def updateNeo4J(graphNeo4J, name, typeName, metricName, metricValue):
     logger.debug("UpdateQuery : %s" % UpdateQuery)
     QG.cypherQuery(graphNeo4J, UpdateQuery)
 
-def analyzeNetworkX():
-    concepts = Concepts.loadConcepts(fileExport)
+def analyzeNetworkX(concepts=None):
+    if concepts == None:
+        concepts = Concepts.loadConcepts(fileConceptsExport)
 
     logger.info(" Concepts : %s[%d][%s]" % (concepts.name, len(concepts.getConcepts()), concepts.typeName))
 

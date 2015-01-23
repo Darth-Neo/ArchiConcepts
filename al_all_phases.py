@@ -22,7 +22,7 @@ from al_ArchiLib import *
 
 import al_DependancyAnalysisFromArchi as DA
 import al_ExportArchi  as EA
-import al_ImportNeo4J  as IN
+import al_ImportConceptsIntoNeo4J  as IN
 import al_AnalyzeGraph as AG
 
 import al_Neo4JCounts as NC
@@ -37,26 +37,16 @@ if __name__ == "__main__":
     al.logTypeCounts()
 
     logger.info("...Export Archi...")
-    concepts, al = EA.al_ExportArchi()
+    concepts, al = EA.al_ExportArchi(al)
 
     logger.info("...Import Neo4J...")
-    concepts = IN.importNeo4J(concepts, ClearNeo4J=True)
+    IN.importNeo4J(concepts, ClearNeo4J=True)
 
     logger.info("...Neo4J Counts...")
     NC.Neo4JCounts()
 
     logger.info("...Analyze NetworkX...")
-    AG.analyzeNetworkX()
-
-    logger.info("...Neo4J Counts...")
-    NC.Neo4JCounts()
-
-    logger.info("...Analyze Dependencies...")
-    conceptBatches = DA.dependancyAnalysis()
-    IN.importNeo4J(conceptBatches, ClearNeo4J=False)
-
-    logger.info("***Neo4J Counts...")
-    NC.Neo4JCounts()
+    AG.analyzeNetworkX(concepts)
 
     #measure wall time
     localtime = time.asctime( time.localtime(t1))
