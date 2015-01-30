@@ -2,6 +2,9 @@
 #
 # Natural Language Processing of Concepts to Neo4J Information
 #
+__author__ = 'morrj140'
+__VERSION__ = '0.1'
+
 import os
 from subprocess import call
 import time
@@ -18,16 +21,16 @@ from al_ArchiLib import *
 
 import al_QueryGraph as CG
 
-def cleanTypeName(concept):
-    if concept.typeName[:10] == "archimate:" :
-        concept.typeName = concept.typeName[10:]
+
 
 def addGraphNodes(graph, concepts, n=0, threshold=1):
     n += 1
     for c in concepts.getConcepts().values():
         logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
 
-        cleanTypeName(c)
+        ArchiLib.cleanConcept(c)
+
+        c.name = c.name.replace("\"", "'")
 
         graph.addConcept(c)
 
@@ -43,7 +46,10 @@ def addGraphEdges(graph, concepts, n=0):
 
         logger.debug("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
 
-        cleanTypeName(c)
+        ArchiLib.cleanConcept(c)
+
+        c.name = c.name.replace("\"", "'")
+
         graph.addConcept(c)
 
         graph.addEdge(concepts, c, c.typeName)

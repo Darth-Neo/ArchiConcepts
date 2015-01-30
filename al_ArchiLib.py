@@ -1,8 +1,9 @@
 #!/usr/bin/python
 #
-# Archimate to Concepts
+# Archimate Libray
 #
 __author__ = 'morrj140'
+__VERSION__ = '0.1'
 
 import sys
 import os
@@ -44,9 +45,14 @@ gdb = LocalGBD
 #
 # file of Archimate XML
 #
-fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v22.archimate"
-#fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v34.archimate"
-fileArchimateTest = os.getcwd() + "/test/Testing.archimate"
+#fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v24.archimate"
+fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v34.archimate"
+#fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DAM Estimate.archimate"
+
+#
+# Test Archimate File
+#
+fileArchimateTest = os.getcwd() + "./test/Testing.archimate"
 
 #
 # Files Used
@@ -99,7 +105,6 @@ entities = {"BusinessEvent" : "archimate:BusinessEvent",
 # Main class to make life easier
 #
 class ArchiLib(object):
-
     dictName  = dict()
     dictEdges = dict()
     dictNodes = dict()
@@ -107,22 +112,18 @@ class ArchiLib(object):
     dictCount = dict()
 
     def __init__(self, fa=None, fe=None):
+        global fileArchimate
+        global fileConceptsExport
 
         if fa != None:
-            self.fileArchimate = fa
-        else:
-            global fileArchimate
-            self.fileArchimate = fileArchimate
+            fileArchimate = fa
 
         if fe != None:
-            self.fileExport = fe
-        else:
-            global fileConceptsExport
-            self.fileExport = fileConceptsExport
+            fileExport = fe
 
         etree.QName(ARCHIMATE_NS, 'model')
 
-        self.tree = etree.parse(self.fileArchimate)
+        self.tree = etree.parse(fileArchimate)
 
         # Populate Dictionaries for easier code
         self.parseAll()
@@ -145,6 +146,9 @@ class ArchiLib(object):
 
         if fileExport != None:
             self.fileExport = fileExport
+        else:
+            global csvFileExport
+            self.fileExport = csvFileExport
 
         listOutput = concepts.listCSVConcepts()
 
@@ -399,7 +403,7 @@ class ArchiLib(object):
 
     def parseAll(self):
         for x in self.tree.getroot():
-            logger.info("Folder : %s" % x.get("name"))
+            logger.debug("Folder : %s" % x.get("name"))
             self.getElementsFromFolder(x.get("name"))
 
     def getElementsFromFolder(self, folder):
@@ -566,6 +570,7 @@ class ArchiLib(object):
     # Model functions via dictionaries
     #
     def logTypeCounts(self, ListOnly = False):
+        listCounts = list()
         if not ListOnly:
             logger.info("Type Counts")
             listCounts = self.dictCount.items()
@@ -1161,6 +1166,7 @@ class ArchiLib(object):
         logger.debug("dml[%d]" % (len(dml)))
 
         return None
+
     #
     # Generic print of info
     #
@@ -1241,8 +1247,18 @@ class ArchiLib(object):
             if len(r) > 0:
                 self.print_xml(r[0], i=1)
 
+    @staticmethod
     def addToNodeDict(self, type, d):
         if d.has_key(type):
             d[type] += 1
         else:
             d[type] = 1
+
+    @staticmethod
+    def cleanConcept(concept):
+        if concept.typeName[:10] == "archimate:" :
+            concept.typeName = concept.typeName[10:]
+
+        concept.name = concept.name.replace("\"", "'")
+
+        return concept

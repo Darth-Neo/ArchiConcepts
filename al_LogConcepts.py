@@ -3,6 +3,7 @@
 # Concept Logging
 #
 __author__ = 'morrj140'
+__VERSION__ = '0.1'
 
 import os
 from nl_lib.Constants import *
@@ -14,17 +15,18 @@ logger = Logger.setupLogging(__name__)
 
 from al_ArchiLib import *
 
-def distribution():
+def distribution(concepts):
     distribution = dict()
+    strCommon = ""
 
     for x in concepts.getConcepts().values():
-        logger.info("%s" % x.name)
+        logger.debug("%s[%d]" % (x.name, x.count))
         for y in x.getConcepts().values():
-            logger.info("%s" % y.name)
+            logger.debug("%s" % y.name)
 
             strCommon = ""
             for z in y.getConcepts().values():
-                logger.info("%s" % z.name)
+                logger.debug("%s" % z.name)
                 strCommon = strCommon + " " + z.name
 
         if distribution.has_key(strCommon):
@@ -34,7 +36,7 @@ def distribution():
 
     listCommon = list()
     for x in distribution:
-        logger.info("%s : %d" % (x, distribution[x]))
+        logger.debug("%s : %d" % (x, distribution[x]))
         dl = list()
         dl.append(x)
         dl.append(distribution[x])
@@ -49,7 +51,7 @@ if __name__ == "__main__":
     #conceptFile = "words.p"
     #conceptFile = "chunks.p"
     #conceptFile = "topicChunks.p"
-    #conceptFile = "topicsDict.p"
+    conceptFile = "topicsDict.p"
     #conceptFile = "documentsSimilarity.p"
     #conceptFile = "GapsSimilarity.p"
     #conceptFile = "NVPChunks.p"
@@ -59,7 +61,7 @@ if __name__ == "__main__":
     #conceptFile = "archi.p"
     #conceptFile = "traversal.p"
     #conceptFile = "batches.p"
-    conceptFile = "export.p"
+    #conceptFile = "export.p"
     #conceptFile = "req.p"
     #conceptFile = "Systems.p"
     #conceptFile = "Contract Management.p"

@@ -3,6 +3,7 @@
 # Archimate Counts
 #
 __author__ = 'morrj140'
+__VERSION__ = '0.1'
 
 import os
 from nl_lib.Constants import *

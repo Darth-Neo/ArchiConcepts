@@ -3,6 +3,7 @@
 # Export Archimate into Neo4J
 #
 __author__ = 'morrj140'
+__VERSION__ = '0.1'
 
 import sys
 import os
@@ -29,9 +30,12 @@ import al_Neo4JCounts as NC
 
 if __name__ == "__main__":
 
+    CleanNeo4j = False
+
     # measure process time, wall time
     t0 = time.clock()
-    t1 = time.time()
+
+    start_time = time.time()
 
     al = ArchiLib()
     al.logTypeCounts()
@@ -40,23 +44,33 @@ if __name__ == "__main__":
     concepts, al = EA.al_ExportArchi(al)
 
     logger.info("...Import Neo4J...")
-    IN.importNeo4J(concepts, ClearNeo4J=True)
+
+    if  CleanNeo4j == True:
+        IN.importNeo4J(concepts, ClearNeo4J=True)
+    else:
+        IN.importNeo4J(concepts)
 
     logger.info("...Neo4J Counts...")
     NC.Neo4JCounts()
 
     logger.info("...Analyze NetworkX...")
-    AG.analyzeNetworkX(concepts)
+    if  CleanNeo4j == True:
+        AG.analyzeNetworkX(concepts)
+    else:
+        AG.analyzeNetworkX()
 
     #measure wall time
-    localtime = time.asctime( time.localtime(t1))
-    logger.info("Start      time : %s" % localtime)
+    strStartTime = time.asctime(time.localtime(start_time))
+    logger.info("Start time : %s" % strStartTime)
 
-    localtime = time.asctime( time.localtime(time.time()) )
-    logger.info("Completion time : %s" % localtime)
+    end_time = time.time()
+
+    strEndTime = time.asctime(time.localtime(end_time))
+    logger.info("End   time : %s" % strEndTime)
 
     # measure process time
-    timeTaken = (time.clock() - t0)
+    timeTaken = end_time - start_time
+
     minutes = timeTaken / 60
     hours = minutes / 60
     logger.info("Process Time = %4.2f seconds, %d Minutes, %d hours" % (timeTaken, minutes, hours))

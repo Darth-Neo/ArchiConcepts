@@ -1,8 +1,11 @@
 __author__ = 'morrj140'
 #!/usr/bin/python
 #
-# Archimate to Dependancy Analysis
+# Export Archimate to Concepts
 #
+__author__ = 'morrj140'
+__VERSION__ = '0.1'
+
 import sys
 import os
 import StringIO

@@ -3,6 +3,7 @@
 # Natural Language Processing of PMO Information
 #
 __author__ = 'morrj140'
+__VERSION__ = '0.1'
 
 import os
 import logging

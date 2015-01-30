@@ -3,10 +3,13 @@
 # Estimate Scope_Items Export
 #
 __author__ = 'morrj140'
+__VERSION__ = '0.1'
+
 import datetime
+import time
 import logging
 from nl_lib import Logger
-from nl_lib.ConceptGraph import PatternGraph, NetworkXGraph, Neo4JGraph, GraphVizGraph
+from nl_lib.ConceptGraph import Neo4JGraph
 from nl_lib.Concepts import Concepts
 from nl_lib.Constants import *
 
@@ -22,16 +25,21 @@ from openpyxl.worksheet import Worksheet as worksheet
 from al_ArchiLib import *
 import al_QueryGraph as QG
 
-def queryExportExcel(lq, fileIn, fileOut):
+def queryExportExcel(lq, fileIn, fileOut, wst=None):
 
     wb = load_workbook(filename = fileIn)
 
+    if wst == None:
+        wsTitle = "Import Items" + time.strftime("%Y%d%m_%H%M%S")
+    else:
+        wsTitle = wst
+
     ws = wb.create_sheet()
+    ws.title = wsTitle
 
-    ws.title = "Scope Items"
-    m = 0
+    logger.info("Created Worksheet %s" % wsTitle)
+
     n = 0
-
     for x in lq:
         n += 1
 
@@ -47,7 +55,7 @@ def queryExportExcel(lq, fileIn, fileOut):
             logger.debug("y : %s" % y)
 
             rs = "%s%s" % (col, n)
-            logger.info("Row %d \t rs : %s : %s" % (n, rs, y))
+            logger.debug("%s : %s" % (rs, y))
 
             ws.cell(rs).value = ("%s" % (y))
 
@@ -57,16 +65,21 @@ def queryExportExcel(lq, fileIn, fileOut):
 
 if __name__ == "__main__":
     fileIn = 'Template_Estimate.xlsx'
+    #fileOut = 'Template_Estimate_%s_new.xlsx' % time.strftime("%Y%d%m_%H%M%S")
     fileOut = 'Template_Estimate_new.xlsx'
 
     graph = Neo4JGraph(gdb)
 
-    ql = list()
-    ql.append("ApplicationFunction")
-    ql.append("ApplicationComponent")
-    ql.append("ApplicationService")
-    qs = QG.Traversal(ql)
+    qs = "MATCH "
+    qs = qs +    "(n0:ApplicationFunction)-- (r0)"
+    qs = qs + "-- (n1:ApplicationComponent)--(r1)"
+    qs = qs + "-- (n2:ApplicationService)--  (r2)"
+    qs = qs + "-- (n3:BusinessProcess)--     (r3)"
+    qs = qs + "-- (n4:BusinessObject) "
+    qs = qs + "Return n0, r0, n1, r1, n2, r2, n3, r3, n4, n4.PageRank, n4.RequirementCount, n4.Degree"
 
     lq, qd = QG.cypherQuery(graph, qs)
 
     queryExportExcel(lq, fileIn, fileOut)
+
+    logger.info("%d rows returned" % len(lq))

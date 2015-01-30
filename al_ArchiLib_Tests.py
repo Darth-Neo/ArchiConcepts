@@ -3,6 +3,8 @@
 # al_ArchiLib Testing
 #
 __author__ = 'morrj140'
+__VERSION__ = '0.1'
+
 import sys
 import os
 import StringIO
@@ -21,12 +23,10 @@ logger = Logger.setupLogging(__name__)
 
 logger.setLevel(logging.DEBUG)
 
-lg = logger.info
-
 from al_ArchiLib import *
 from al_QueryGraph import *
 
-fileArchimate = "Testing.archimate"
+fileArchimate = "./test/Testing.archimate"
 
 def test_Archi_Counts():
 
@@ -40,9 +40,11 @@ def test_Archi_Counts():
                 "archimate:BusinessObject" : 5, "archimate:BusinessProcess" : 7,
                 "archimate:BusinessEvent" : 2, "archimate:ApplicationComponent" : 3}
 
-    al = ArchiLib(fileArchimate)
+    al = ArchiLib(fa=fileArchimate)
 
     listCounts = al.logTypeCounts(ListOnly=True)
+
+    logger.info("listCounts : %d" % len(listCounts))
 
     assert (len(listCounts)   == 10)
 
@@ -75,7 +77,7 @@ def test_ExportArchi():
     al = None
     concepts = None
 
-    al = ArchiLib(fileArchimate)
+    al = ArchiLib(fa=fileArchimate)
 
     assert (al != None)
 
@@ -124,7 +126,7 @@ def test_ExportArchiFolderModels():
     conceptsFile = "Estimation.p"
 
     assert (os.path.isfile(fileArchimate)  == True)
-    al = ArchiLib(fileArchimate, fileExport)
+    al = ArchiLib(fa=fileArchimate, fe=fileExport)
 
     folder = "Scenarios"
 
@@ -161,7 +163,7 @@ def test_ArchimateConcepts():
 
     concepts = Concepts(fileArchiP, "Archimate")
 
-    al = ArchiLib(fileArchimate)
+    al = ArchiLib(fa=fileArchimate)
 
     #
     # Create Concepts from Arhimate
@@ -179,7 +181,7 @@ def test_ExportArchiModel():
 
     assert (os.path.isfile(fileArchimate)  == True)
 
-    al = ArchiLib(fileArchimate, fileExport)
+    al = ArchiLib(fa=fileArchimate, fe=fileExport)
 
     listMTE = list()
     listMTE.append("01. Market to Leads")
@@ -211,66 +213,67 @@ def test_QueryGraph():
 
     qs = "MATCH n RETURN n LIMIT 5"
     lq = _executeQuery(qs, graph)
-    lg("%d : %s" % (len(lq), qs))
+    logger.info("%d : %s" % (len(lq), qs))
 
     qs = "MATCH (n { name: 'Node' })-[r]-() DELETE n, r"
     lq = _executeQuery(qs, graph)
-    lg("%d : %s" % (len(lq), qs))
+    logger.info("%d : %s" % (len(lq), qs))
 
     qs = "MATCH (n:`BusinessObject` {name :'Inventory'}) RETURN n"
     ql = _executeQuery(qs, graph)
-    lg("%d : %s" % (len(lq), qs))
+    logger.info("%d : %s" % (len(lq), qs))
 
     qs = "MATCH (n:`ApplicationService`)-[r1]-m-[r2]-o RETURN n, r1, m, r2, o "
     lq = _executeQuery(qs, graph)
-    lg("%d : %s" % (len(lq), qs))
+    logger.info("%d : %s" % (len(lq), qs))
 
     qs = "MATCH (n {typeName:'BusinessObject'})--m-->(o {typeName: 'BusinessProcess'}) RETURN n, m, o"
     lq = _executeQuery(qs, graph)
-    lg("%d : %s" % (len(lq), qs))
+    logger.info("%d : %s" % (len(lq), qs))
 
     qs = "MATCH (n {typeName:'BusinessEvent'}) -- (m {typeName : 'TriggeringRelationship'}) -- (o {typeName: 'BusinessProcess'}) RETURN n, m, o"
     lq = _executeQuery(qs, graph)
-    lg("%d : %s" % (len(lq), qs))
+    logger.info("%d : %s" % (len(lq), qs))
 
     qs = "MATCH (n {typeName:'BusinessProcess'}) -- (m {typeName : 'AccessRelationship'}) -- (o {typeName: 'BusinessObject'}) RETURN n, m, o"
     _executeQuery(qs, graph)
-    lg("%d : %s" % (len(lq), qs))
+    logger.info("%d : %s" % (len(lq), qs))
 
     qs = "MATCH (n {typeName:'BusinessProcess'}) -- (m {typeName : 'UsedByRelationship'}) -- (o {typeName: 'ApplicationService'}) RETURN n, m, o"
     lq = _executeQuery(qs, graph)
-    lg("%d : %s" % (len(lq), qs))
+    logger.info("%d : %s" % (len(lq), qs))
 
     qs = "MATCH (n {typeName:'ApplicationService'}) -- (m {typeName : 'UsedByRelationship'}) -- (o {typeName: 'ApplicationComponent'}) RETURN n, m, o"
     lq = _executeQuery(qs, graph)
-    lg("%d : %s" % (len(lq), qs))
+    logger.info("%d : %s" % (len(lq), qs))
 
     qs = "MATCH (n {typeName:'Requirement'}) -- (m {typeName : 'AssociationRelationship'}) -- (o {typeName: 'BusinessObject'}) RETURN n, m, o"
     lq = _executeQuery(qs, graph)
-    lg("%d : %s" % (len(lq), qs))
+    logger.info("%d : %s" % (len(lq), qs))
 
     qs = "MATCH (n {typeName:'BusinessObject'}) -- (m {typeName : 'RealisationRelationship'}) -- (o {typeName: 'DataObject'}) RETURN n, m, o"
     lq = _executeQuery(qs, graph)
-    lg("%d : %s" % (len(lq), qs))
+    logger.info("%d : %s" % (len(lq), qs))
 
     qs = "MATCH (n {typeName:'BusinessObject'}) -- m -- (o {typeName: 'DataObject'}) RETURN n, m, count(o)"
     lq = _executeQuery(qs, graph)
-    lg("%d : %s" % (len(lq), qs))
+    logger.info("%d : %s" % (len(lq), qs))
 
     qs = "MATCH (n {typeName:'BusinessObject'})--m--(o {typeName:'Requirement'}) RETURN n, count(o)"
     lq = _executeQuery(qs, graph)
-    lg("%d : %s" % (len(lq), qs))
+    logger.info("%d : %s" % (len(lq), qs))
 
     qs = "MATCH (n {typeName:'BusinessObject'})-- m -- (o {typeName:'Requirement'}) RETURN n, o"
     lq = _executeQuery(qs, graph)
-    lg("%d : %s" % (len(lq), qs))
+    logger.info("%d : %s" % (len(lq), qs))
 
 if __name__ == "__main__":
-    os.chdir("./test")
 
-    #test_CheckForArchimateFile()
-    #test_Archi_Counts()
-    #test_ExportArchi()
-    #test_ExportArchiFolderModels()
-    #test_ExportArchiModel()
+    #os.chdir("./test")
+
+    test_CheckForArchimateFile()
+    test_Archi_Counts()
+    test_ExportArchi()
+    test_ExportArchiFolderModels()
+    test_ExportArchiModel()
     test_QueryGraph()

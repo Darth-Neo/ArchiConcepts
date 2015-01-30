@@ -1,4 +1,9 @@
+#!/usr/bin/python
+#
+# Example for Speech Recognition
+#
 __author__ = 'morrj140'
+__VERSION__ = '0.1'
 
 import speech_recognition as sr
 

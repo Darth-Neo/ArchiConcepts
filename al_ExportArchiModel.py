@@ -4,6 +4,8 @@
 # Archimate to export a model
 #
 __author__ = 'morrj140'
+__VERSION__ = '0.1'
+
 import sys
 import os
 import StringIO
@@ -20,6 +22,8 @@ def al_ExportArchiModel():
 
     al = ArchiLib()
 
+    logger.info("Using : %s" % fileArchimate)
+
     listMTE = list()
     #listMTE.append("5. Contract Management")
     #listMTE.append("4. Contract Prep")
@@ -31,8 +35,9 @@ def al_ExportArchiModel():
 
     #listMTE.append("All Scenarios")
     #listMTE.append("Business Concepts")
-    listMTE.append("System of Record")
+    #listMTE.append("System of Record")
 
+    listMTE.append("To-Be DAM Functional Reference Architecture")
     concepts = Concepts("Export", "Model")
 
     for ModelToExport in listMTE:

@@ -1,3 +1,10 @@
+#!/usr/bin/python
+#
+# Example for Text Classification
+#
+__author__ = 'morrj140'
+__VERSION__ = '0.1'
+
 from textblob import TextBlob
 from textblob.classifiers import NaiveBayesClassifier
 

@@ -1,8 +1,9 @@
 #! /usr/bin/python
 #
-# Natural Language Processing of Neo4J Information
+# Query Neo4J Information in Cypher
 #
 __author__ = 'morrj140'
+__VERSION__ = '0.1'
 
 import os
 import logging
@@ -144,47 +145,18 @@ def queryExport(lq):
     logger.info("Exported %d rows" % len(lq))
     logger.info("Save Model : %s" % csvFileExport)
 
-def queryExportExcel(lq, fileIn, fileOut):
-
-    wb = load_workbook(filename = fileIn)
-
-    ws = wb.create_sheet()
-
-    ws.title = "Scope Items"
-    m = 0
-    n = 0
-
-    for x in lq:
-        n += 1
-
-        logger.debug("x in lq : %s" % x)
-
-        m = 0
-        for y in x:
-            m += 1
-
-            col = get_column_letter(m)
-            logger.debug("col : %s" % col)
-
-            logger.debug("y : %s" % y)
-
-            rs = "%s%s" % (col, n)
-            logger.info("Row %d \t rs : %s : %s" % (n, rs, y))
-
-            ws.cell(rs).value = ("%s" % (y))
-
-    wb.save(filename = fileOut)
-
-    logger.info("Saved file : %s" % fileOut)
-
-
 if __name__ == "__main__":
     # gdb defined in al_ArchiLib
     logger.debug("Neo4J instance : %s" % gdb)
 
     graph = Neo4JGraph(gdb)
 
-    #Neo4JCounts()
+    # measure process time, wall time
+    t0 = time.clock()
+
+    start_time = time.time()
+
+    Neo4JCounts()
 
     #
     # Useful Cypher Queries
@@ -193,9 +165,30 @@ if __name__ == "__main__":
     #demoQuery1 = "MATCH (n0:Stakeholder)-- (r0)-- (n1:WorkPackage)--(r1)--(n2:BusinessObject) RETURN n0, r0, n1, r1, n2"
     #demoQuery2 = "MATCH (n0:WorkPackage)--(r0)--(n1:ApplicationComponent)--(r1)--(n2:ApplicationService)--(r2)--(n3:BusinessProcess) where n1.name = 'Contract Management' RETURN n0, r0, n1, r1, n2, r2, n3"
 
+    #delNodes = "MATCH (n { name: 'Node' })-[r]-() DELETE n, r"
+
     ql = list()
 
     if True:
+        qs = "match (n0:BusinessEvent) --> (r0:TriggeringRelationship) --> (n1:BusinessProcess) --> (r1:TriggeringRelationship) --> (n2:BusinessEvent) return n0, r0, n1, r1,  n2"
+
+    elif False:
+        qs = "MATCH (n0:BusinessObject) --> () --> (n1:BusinessProcess) "
+        qs = qs + "where (toint(substring(n1.name, 0, 1)) is null ) "
+        qs = qs + "return n0.name, n1.name order by n0.name desc"
+
+    elif True:
+        qs = "match (n:BusinessProcess) <-- (r) <-- (m:ApplicationService) "
+        qs = qs + "with n, m, count(r) as cr "
+        qs = qs + " where cr > 0 "
+        qs = qs + " return n.name, m.name, cr"
+
+    elif False:
+        qs = "MATCH (n:Requirement) <-- () <-- (n0:BusinessObject) --> () -->  (n1:BusinessProcess) "
+        qs = qs + "where (toint(substring(n1.name, 0, 1)) is null ) "
+        qs = qs + "return count(n), n0.name, n0.Degree, n0.PageRank, n1.name, n1.Degree, n1.PageRank order by n0.name desc"
+
+    elif False:
         ql.append("ApplicationFunction")
         ql.append("ApplicationComponent")
         ql.append("ApplicationService")
@@ -224,9 +217,29 @@ if __name__ == "__main__":
         qs4 = "MATCH (n0:ApplicationService)--(r0)--(n2:ApplicationComponent)--(r2)--(n3:DataObject) RETURN n1,r1,n2, r2, n3"
         qs5 = "MATCH (n0:BusinessObject)--(r0)--(n1:DataObject) RETURN n0, r0, n1"
         qs6 = "MATCH (n0:BusinessProcess)--(r0)--(n1: BusinessObject)--(r1)--(n2:DataObject)--(r2)--(n3: ApplicationComponent) RETURN n0, r0, n1, r1, n2, r2, n3"
-        qs = qs1
+        qs7 = "MATCH (n:Requirement)<--() <-- (n0:BusinessObject) --> () --> (n1:BusinessProcess) <-- () <-- (n2:ApplicationService)-->()-->(n3:ApplicationComponent)-->()-->(n4:ApplicationFunction) Return n0, count(n), n1, n2, n3, n4 order by count(n) desc, n0.name"
+        qs = qs7
 
-    elif True:
+    elif False:
+        qs = "MATCH    (n:Requirement)           <--() "
+        qs = qs + "<-- (n0:BusinessObject)      --> ()"
+        qs = qs + "--> (n1:BusinessProcess)     <-- ()"
+        qs = qs + "<-- (n2:ApplicationService)   -->()"
+        qs = qs + "--> (n3:ApplicationComponent) -->()"
+        qs = qs + "--> (n4:ApplicationFunction) "
+        qs = qs + "Return n0, count(n), n1, n2, n3, n4 "
+        qs = qs + "order by count(n) desc, n0.name"
+
+    elif False:
+        qs = "MATCH    (n0:BusinessObject)      --> ()"
+        qs = qs + "--> (n1:BusinessProcess)     <-- ()"
+        qs = qs + "<-- (n2:ApplicationService)   -->()"
+        qs = qs + "--> (n3:ApplicationComponent) -->()"
+        qs = qs + "--> (n4:ApplicationFunction) "
+        qs = qs + "Return n0, n1, n2, n3, n4 "
+        qs = qs + "order by n0.name desc"
+
+    elif False:
         #qs = "MATCH (n0:BusinessObject)--(r0)--(n1:Requirement) RETURN n0, r0, n1"
         qs = "MATCH (n0:BusinessObject)--(r0)--(n1:Requirement) RETURN n0, count(n1) ORDER BY count(n1) DESC"
         #qs = "MATCH (n0:BusinessObject)--(r0:AssociationRelationship)--(n1:Requirement)  RETURN n0, n0.PageRank, n0.RequirementCount, n0.Degree, n0.count, count(n1) ORDER BY count(n1) DESC"
@@ -240,7 +253,19 @@ if __name__ == "__main__":
 
     queryExport(lq)
 
-    fileIn = 'Template_Estimate.xlsx'
-    fileOut = 'Template_Estimate_new.xlsx'
+    #measure wall time
+    strStartTime = time.asctime(time.localtime(start_time))
+    logger.info("Start time : %s" % strStartTime)
 
-    queryExportExcel(lq, fileIn, fileOut)
+    end_time = time.time()
+
+    strEndTime = time.asctime(time.localtime(end_time))
+    logger.info("End   time : %s" % strEndTime)
+
+    # measure process time
+    timeTaken = end_time - start_time
+
+    minutes = timeTaken / 60
+    hours = minutes / 60
+    logger.info("Process Time = %4.2f seconds, %d Minutes, %d hours" % (timeTaken, minutes, hours))
+

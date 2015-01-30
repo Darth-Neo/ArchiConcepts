@@ -2,6 +2,9 @@
 #
 # Natural Language Processing of Archimate Information
 #
+__author__ = 'morrj140'
+__VERSION__ = '0.1'
+
 import os
 from nl_lib import Logger
 logger = Logger.setupLogging(__name__)

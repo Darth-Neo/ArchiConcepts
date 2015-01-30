@@ -2,6 +2,9 @@
 #
 # Natural Language Processing of Archimate Information
 #
+__author__ = 'morrj140'
+__VERSION__ = '0.1'
+
 import os
 from subprocess import call
 import time
@@ -24,6 +27,8 @@ def addGraphNodes(graph, concepts, n=0, threshold=0.0005):
     for c in concepts.getConcepts().values():
         logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
 
+        ArchiLib.cleanConcept(c)
+
         graph.addConcept(c)
 
         if len(c.getConcepts()) > threshold:
@@ -37,6 +42,8 @@ def addGraphEdges(graph, concepts, n=0):
     for c in concepts.getConcepts().values():
 
         logger.debug("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
+
+        ArchiLib.cleanConcept(c)
 
         graph.addConcept(c)
 

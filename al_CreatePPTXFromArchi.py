@@ -1,4 +1,9 @@
+#!/usr/bin/python
+#
+# Create PPTX from Archimate XML
+#
 __author__ = 'morrj140'
+__VERSION__ = '0.1'
 
 import sys
 import os

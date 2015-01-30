@@ -1,4 +1,10 @@
+#!/usr/bin/python
+#
+# XML Merging for Two Archimate XML to One.
+#
 __author__ = 'morrj140'
+__VERSION__ = '0.1'
+
 import sys
 import os
 import StringIO

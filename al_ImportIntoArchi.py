@@ -2,6 +2,9 @@
 #
 # Archimate to Concepts
 #
+__author__ = 'morrj140'
+__VERSION__ = '0.1'
+
 import sys
 import os
 import StringIO
@@ -22,9 +25,9 @@ if __name__ == "__main__":
 
     al.logTypeCounts()
 
-    fileMetaEntity = "import.csv"
-    logger.info("Using : %s" % fileArchimate)
-    al.insertNColumns("Motivation", "BusinessRequirements20141126", fileMetaEntity)
+    fileMetaEntity = "UseCases.csv"
+
+    al.insertNColumns("Motivation", "UseCases20150128", fileMetaEntity)
 
 
     #fileMetaEntity = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Who_What_How_20141024.csv"
@@ -102,4 +105,4 @@ if __name__ == "__main__":
     #al.insertIntoFolder(tree, "Motivation", fileMetaEntity, eType="archimate:Stakeholder")
     #al.insertIntoFolder(tree, "Relations", fileMetaEntity, eType="archimate:BusinessFunction")
 
-    al.outputXML()
+    al.outputXMLtoFile()

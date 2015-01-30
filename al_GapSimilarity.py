@@ -2,6 +2,9 @@
 #
 # Natural Language Processing of Concepts from Archimate Information
 #
+__author__ = 'morrj140'
+__VERSION__ = '0.1'
+
 import os
 from subprocess import call
 import time
@@ -149,6 +152,7 @@ class DocumentsSimilarity(object):
     threads = None
     topics = None
     topicConcepts = None
+    lemmatizer = None
 
     def __init__(self):
         pass
@@ -171,7 +175,8 @@ class DocumentsSimilarity(object):
             logger.info("--Log Topics--")
             self.tm.logTopics(self.topics)
 
-        self.listTopics = [x[0].encode('ascii', errors="ignore").strip() for x in self.topics]
+        #self.listTopics = [x[0].encode('ascii', errors="ignore").strip() for x in self.topics]
+        self.listTopics = [x[0] for x in self.topics]
 
         logger.info("--Saving Topics--")
 
@@ -255,6 +260,8 @@ class DocumentsSimilarity(object):
 if __name__ == "__main__":
     al = ArchiLib()
 
+    lemmatizer = WordNetLemmatizer()
+
     etree.QName(ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimate)
 
@@ -276,7 +283,8 @@ if __name__ == "__main__":
             cleanSentence = ' '.join([word for word in sentence.split(" ") if word not in stop])
             for word, pos in nltk.pos_tag(nltk.wordpunct_tokenize(cleanSentence)):
                 if len(word) > 1 and pos[0] == "N":
-                    e = d.addConceptKeyType(word, "Word")
+                    lemmaWord =lemmatizer.lemmatize(word.lower())
+                    e = d.addConceptKeyType(lemmaWord, "LemmaWord")
                     f = e.addConceptKeyType(pos, "POS")
 
     if True:

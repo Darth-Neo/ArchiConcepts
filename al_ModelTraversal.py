@@ -2,6 +2,9 @@
 #
 # Archimate Model to Concepts
 #
+__author__ = 'morrj140'
+__VERSION__ = '0.1'
+
 import sys
 import os
 import StringIO

@@ -1,7 +1,10 @@
 #!/usr/bin/python
 #
-# Archimate to Concepts
+# Archimate Deduping
 #
+__author__ = 'morrj140'
+__VERSION__ = '0.1'
+
 import sys
 import os
 import StringIO

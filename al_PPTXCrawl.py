@@ -1,4 +1,9 @@
+#!/usr/bin/python
+#
+# PPTX Crawl
+#
 __author__ = 'morrj140'
+__VERSION__ = '0.1'
 
 import logging
 from nl_lib import Logger
