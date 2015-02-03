@@ -18,9 +18,7 @@ logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
 from al_ArchiLib import *
-
 import al_QueryGraph as CG
-
 
 
 def addGraphNodes(graph, concepts, n=0, threshold=1):
@@ -98,6 +96,9 @@ def importNeo4J(concepts, ClearNeo4J=False):
     if ClearNeo4J:
         graph.clearGraphDB()
 
+    else:
+        pass
+
     logger.info("Adding Neo4J nodes to the graph ...")
     addGraphNodes(graph, concepts)
 
@@ -109,6 +110,9 @@ def importNeo4J(concepts, ClearNeo4J=False):
     if ClearNeo4J:
         DropNode = "MATCH (n { name: 'Node' })-[r]-() DELETE n, r"
         CG.cypherQuery(graph, DropNode)
+
+        DropDuplicates = "match p=(n)--(r0:Relation), q=(m)--(r1:Relation) where n.name = m.name and n.typeName = m.typeName delete m, r1"
+        CG.cypherQuery(graph, DropDuplicates)
 
     CountRequirements = "MATCH (n {typeName:'BusinessObject'}) -- m -- (o {typeName:'Requirement' }) with n, count(o) as rc  set n.RequirementCount=rc RETURN n.name, rc order by rc desc"
     CG.cypherQuery(graph, CountRequirements)

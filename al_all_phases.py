@@ -30,11 +30,8 @@ import al_Neo4JCounts as NC
 
 if __name__ == "__main__":
 
-    CleanNeo4j = False
-
     # measure process time, wall time
     t0 = time.clock()
-
     start_time = time.time()
 
     al = ArchiLib()
@@ -53,11 +50,11 @@ if __name__ == "__main__":
     logger.info("...Neo4J Counts...")
     NC.Neo4JCounts()
 
-    logger.info("...Analyze NetworkX...")
-    if  CleanNeo4j == True:
-        AG.analyzeNetworkX(concepts)
-    else:
-        AG.analyzeNetworkX()
+    #logger.info("...Analyze NetworkX...")
+    #if  CleanNeo4j == True:
+    #    AG.analyzeNetworkX(concepts)
+    #else:
+    #    AG.analyzeNetworkX()
 
     #measure wall time
     strStartTime = time.asctime(time.localtime(start_time))

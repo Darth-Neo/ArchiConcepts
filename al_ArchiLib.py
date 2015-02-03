@@ -46,8 +46,10 @@ gdb = LocalGBD
 # file of Archimate XML
 #
 #fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v24.archimate"
+#CleanNeo4j = False
+
 fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v34.archimate"
-#fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DAM Estimate.archimate"
+CleanNeo4j = False
 
 #
 # Test Archimate File
@@ -1262,3 +1264,30 @@ class ArchiLib(object):
         concept.name = concept.name.replace("\"", "'")
 
         return concept
+
+def startTimer():
+    # measure process time, wall time
+    t0 = time.clock()
+    start_time = time.time()
+    strStartTime = time.asctime(time.localtime(start_time))
+    logger.info("Start time : %s" % strStartTime)
+
+    return start_time
+
+
+def stopTimer(start_time):
+    #measure wall time
+    strStartTime = time.asctime(time.localtime(start_time))
+    logger.info("Start time : %s" % strStartTime)
+
+    end_time = time.time()
+
+    strEndTime = time.asctime(time.localtime(end_time))
+    logger.info("End   time : %s" % strEndTime)
+
+    # measure process time
+    timeTaken = end_time - start_time
+
+    minutes = timeTaken / 60
+    hours = minutes / 60
+    logger.info("Process Time = %4.2f seconds, %d Minutes, %d hours" % (timeTaken, minutes, hours))
