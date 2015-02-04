@@ -45,11 +45,11 @@ gdb = LocalGBD
 #
 # file of Archimate XML
 #
-#fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v24.archimate"
-#CleanNeo4j = False
-
-fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v34.archimate"
+fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v24.archimate"
 CleanNeo4j = False
+
+#fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v34.archimate"
+#CleanNeo4j = False
 
 #
 # Test Archimate File

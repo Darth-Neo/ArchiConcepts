@@ -15,45 +15,50 @@ logger = Logger.setupLogging(__name__)
 
 from al_ArchiLib import *
 
-def distribution(concepts):
+def distribution(concepts, tc=None):
     distribution = dict()
     strCommon = ""
 
+    if tc != None:
+        topicList = [[x.name, x.count] for x in tc.getConcepts().values()]
+        topicSortedList = sorted(topicList, key=lambda c: c[1], reverse=False)
+        topics = [ a[0] for a in topicSortedList]
+
+    # Document
     for x in concepts.getConcepts().values():
         logger.debug("%s[%d]" % (x.name, x.count))
+
+        # Topic
         for y in x.getConcepts().values():
             logger.debug("%s" % y.name)
 
-            strCommon = ""
-            for z in y.getConcepts().values():
-                logger.debug("%s" % z.name)
-                strCommon = strCommon + " " + z.name
+            lls = [z.name.lower() for z in y.getConcepts().values()]
+            lss = sorted(lls, key=lambda c: c, reverse=False)
+            strCommon = " ".join([x for x in lss]).replace(".", "")
 
         if distribution.has_key(strCommon):
             distribution[strCommon] += 1
         else:
             distribution[strCommon] = 1
 
-    listCommon = list()
-    for x in distribution:
-        logger.debug("%s : %d" % (x, distribution[x]))
-        dl = list()
-        dl.append(x)
-        dl.append(distribution[x])
-        listCommon.append(dl)
+    listCommon = sorted([ x for x in distribution.items() ], key=lambda c: c[1], reverse=False)
 
-    for x in sorted(listCommon, key=lambda c: abs(c[1]), reverse=False):
-            logger.info("  %d - %s" % (x[1], x[0]))
+    lcd = [ [y, x.count(" ") + 1, x] for x, y in listCommon if y > 2]
 
+    for x, y, z in lcd:
+        logger.info("%d[%d] : %s" % (x, y, z))
+        
+        words = [a for a in z.split(" ")]
+        if len(words) > 0:
+            for w in words:
+                if ((tc != None) and (w in topics)) :
+                    topicCount = [q[1] for q in topicList if q[0] == w]
+                    logger.info("  Topic : %s[%d]" % (w, topicCount[0]))
 
 if __name__ == "__main__":
-    #conceptFile = "documents.p"
-    #conceptFile = "words.p"
-    #conceptFile = "chunks.p"
-    #conceptFile = "topicChunks.p"
-    conceptFile = "topicsDict.p"
-    #conceptFile = "documentsSimilarity.p"
-    #conceptFile = "GapsSimilarity.p"
+
+    #conceptFile = "topicsDict.p"
+    conceptFile = "GapsSimilarity.p"
     #conceptFile = "NVPChunks.p"
     #conceptFile = "ngrams.p"
     #conceptFile = "ngramscore.p"
@@ -63,27 +68,25 @@ if __name__ == "__main__":
     #conceptFile = "batches.p"
     #conceptFile = "export.p"
     #conceptFile = "req.p"
-    #conceptFile = "Systems.p"
-    #conceptFile = "Contract Management.p"
-    #conceptFile = "Estimation20142212_180938.p"
-    #conceptFile = "pptx.p"
-    #conceptFile = "batches.p"
 
     #dir = "/Users/morrj140/Development/GitRepository/DirCrawler/CodeGen/Research_20141709_104529"
     directory = os.getcwd()
 
-    #filePath = dir + os.sep + conceptFile
     filePath = directory + os.sep + conceptFile
 
     logger.info("Loading :" + filePath)
     concepts = Concepts.loadConcepts(filePath)
 
-    concepts.logConcepts()
 
+
+    concepts.logConcepts()
     #concepts.printConcepts(list)
     #Concepts.outputConceptsToCSV(concepts, fileExport)
 
-
+    logger.info("Distribution Analysis")
+    tc = Concepts.loadConcepts("topicsDict.p")
+    #distribution(concepts, tc)
+    distribution(concepts)
 
         
 
