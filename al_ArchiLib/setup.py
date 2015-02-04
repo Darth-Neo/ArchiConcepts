@@ -14,7 +14,7 @@ setup(name='al_Archilib',
       author='Darth Neo',
       author_email='morrisspid.james@gmail.com',
       license='MIT',
-      packages=['al_ArchiLib'],
+      packages=['.'],
       zip_safe=False,
 
       classifiers=[
