@@ -13,9 +13,9 @@ import time
 
 logger = Logger.setupLogging(__name__)
 
-from al_ArchiLib import *
+import al_ArchiLib as AL
 
 if __name__ == "__main__":
-    al = ArchiLib()
+    al = AL.ArchiLib()
 
     al.logTypeCounts()

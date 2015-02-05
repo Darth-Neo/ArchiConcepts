@@ -26,7 +26,7 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-from al_ArchiLib import *
+import al_ArchiLib as AL
 
 import al_GraphConcepts as GC
 import al_ImportConceptsIntoNeo4J  as IN
@@ -132,9 +132,9 @@ def getWords(s, concepts):
 
 def dependancyAnalysis():
 
-    logger.info("Using : %s" % fileArchimate)
+    logger.info("Using : %s" % AL.fileArchimate)
 
-    al = ArchiLib()
+    al = AL.ArchiLib()
 
     concepts = Concepts("BusinessProcess", "archimate:BusinessProcess")
 
@@ -147,16 +147,16 @@ def dependancyAnalysis():
             source = al.dictEdges[x]["source"]
             target = al.dictEdges[x]["target"]
 
-            logger.debug("  Rel    : %s" % (al.dictEdges[x][ARCHI_TYPE]))
+            logger.debug("  Rel    : %s" % (al.dictEdges[x][AL.ARCHI_TYPE]))
 
-            if al.dictEdges[x][ARCHI_TYPE] in ("archimate:FlowRelationship"):
+            if al.dictEdges[x][AL.ARCHI_TYPE] in ("archimate:FlowRelationship"):
 
                 #al.countNodeType(al.dictNodes[source][ARCHI_TYPE])
                 #al.countNodeType(al.dictNodes[target][ARCHI_TYPE])
                 #al.countNodeType(al.dictEdges[x][ARCHI_TYPE])
 
-                if (al.dictNodes[source][ARCHI_TYPE] == "archimate:BusinessProcess") and \
-                        al.dictNodes[target][ARCHI_TYPE] == "archimate:BusinessProcess":
+                if (al.dictNodes[source][AL.ARCHI_TYPE] == "archimate:BusinessProcess") and \
+                        al.dictNodes[target][AL.ARCHI_TYPE] == "archimate:BusinessProcess":
 
                     sourceName = al.getNodeName(source)
                     targetName = al.getNodeName(target)
@@ -191,15 +191,15 @@ def dependancyAnalysis():
 
     logger.debug("Edges = %s" % listTSort)
 
-    Concepts.saveConcepts(concepts, fileConceptsTraversal)
+    Concepts.saveConcepts(concepts, AL.fileConceptsTraversal)
 
     if True:
         GC.graphConcepts(concepts, filename="DependancyAnalysis.png")
 
     index = 0
     for x in listTSort:
-        logger.debug("%d %s[%s] -%s-> %s[%s]" % (index, al.dictNodes[x[0]]["name"], al.dictNodes[x[0]][ARCHI_TYPE], "UsedBy",
-                                                al.dictNodes[x[1]]["name"], al.dictNodes[x[1]][ARCHI_TYPE]))
+        logger.debug("%d %s[%s] -%s-> %s[%s]" % (index, al.dictNodes[x[0]]["name"], al.dictNodes[x[0]][AL.ARCHI_TYPE], "UsedBy",
+                                                al.dictNodes[x[1]]["name"], al.dictNodes[x[1]][AL.ARCHI_TYPE]))
         index = index + 1
 
         al.addToNodeDict(al.dictNodes[x[0]]["name"], al.dictBP)
@@ -252,7 +252,7 @@ def dependancyAnalysis():
 
         logger.info("%d : %s" % (n, ", ".join(node.name.lstrip() for node in bundle)))
 
-    Concepts.saveConcepts(conceptBatches, fileConceptsBatches)
+    Concepts.saveConcepts(conceptBatches, AL.fileConceptsBatches)
 
     return conceptBatches
 

@@ -17,7 +17,7 @@ from nl_lib.Constants import *
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
-from al_ArchiLib import *
+import al_ArchiLib as AL
 import al_QueryGraph as CG
 
 
@@ -26,7 +26,7 @@ def addGraphNodes(graph, concepts, n=0, threshold=1):
     for c in concepts.getConcepts().values():
         logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
 
-        ArchiLib.cleanConcept(c)
+        AL.cleanConcept(c)
 
         c.name = c.name.replace("\"", "'")
 
@@ -44,7 +44,7 @@ def addGraphEdges(graph, concepts, n=0):
 
         logger.debug("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
 
-        ArchiLib.cleanConcept(c)
+        AL.cleanConcept(c)
 
         c.name = c.name.replace("\"", "'")
 
@@ -81,17 +81,17 @@ def logGraph(gl, title, scale=1):
     logger.info("Avg gl[x]=%3.4f" % (sum_pr / len_pr))
 
 def clearNeo4J():
-    if gdb == LocalGBD:
+    if AL.gdb == AL.LocalGBD:
         logger.info("Reset Neo4J Graph DB")
-        call([resetNeo4J])
+        call([AL.resetNeo4J])
 
 def importNeo4J(concepts, ClearNeo4J=False):
 
     if ClearNeo4J:
         clearNeo4J()
 
-    logger.info("Neo4J instance : %s" % gdb)
-    graph = Neo4JGraph(gdb)
+    logger.info("Neo4J instance : %s" % AL.gdb)
+    graph = Neo4JGraph(AL.gdb)
 
     if ClearNeo4J:
         graph.clearGraphDB()
@@ -119,7 +119,7 @@ def importNeo4J(concepts, ClearNeo4J=False):
 
 if __name__ == "__main__":
 
-    importConcepts = Concepts.loadConcepts(fileConceptsExport)
+    importConcepts = Concepts.loadConcepts(AL.fileConceptsExport)
 
     importNeo4J(importConcepts, ClearNeo4J=True)
 

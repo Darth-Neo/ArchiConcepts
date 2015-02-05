@@ -31,7 +31,7 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-from al_ArchiLib import *
+import al_ArchiLib as AL
 
 def findConcept(concepts, name, n=0):
     n += 1
@@ -57,14 +57,14 @@ def getWords(s, concepts):
             f = e.addConceptKeyType(pos, "POS")
 
 def al_ExportArchi(al=None):
-    logger.info("Archimate File : %s" % fileArchimate)
-    logger.info("Export File    : %s" % fileConceptsExport)
+    logger.info("Archimate File : %s" % AL.fileArchimate)
+    logger.info("Export File    : %s" % AL.fileConceptsExport)
 
     if al == None:
-        al = ArchiLib()
+        al = AL.ArchiLib()
         al.logTypeCounts()
 
-    p, fname = os.path.split(fileArchimate)
+    p, fname = os.path.split(AL.fileArchimate)
 
     m = hashlib.md5()
 
@@ -80,7 +80,7 @@ def al_ExportArchi(al=None):
 
         if al.dictEdges[x].has_key("source") and al.dictEdges[x].has_key("target"):
 
-            typeEdge   = al.dictEdges[x][ARCHI_TYPE]
+            typeEdge   = al.dictEdges[x][AL.ARCHI_TYPE]
             logger.debug("Edge   : %s" % typeEdge)
 
             source = al.dictEdges[x]["source"]
@@ -89,16 +89,16 @@ def al_ExportArchi(al=None):
             target = al.dictEdges[x]["target"]
             logger.debug("Target : %s" % target)
 
-            logger.debug("  Rel    : %s" % (al.dictEdges[x][ARCHI_TYPE]))
+            logger.debug("  Rel    : %s" % (al.dictEdges[x][AL.ARCHI_TYPE]))
 
             sourceName = al.getNodeName(source)
             targetName = al.getNodeName(target)
 
-            logger.debug(" %s--%s--%s" % (sourceName, al.dictEdges[x][ARCHI_TYPE][10:], targetName))
+            logger.debug(" %s--%s--%s" % (sourceName, al.dictEdges[x][AL.ARCHI_TYPE][10:], targetName))
 
             if al.dictNodes.has_key(source):
                 l = list()
-                sc = concepts.addConceptKeyType(sourceName, al.dictNodes[source][ARCHI_TYPE][10:])
+                sc = concepts.addConceptKeyType(sourceName, al.dictNodes[source][AL.ARCHI_TYPE][10:])
                 #getWords(sourceName, sc)
 
             nameEdge = "(" + sourceName + "," + targetName + ")"
@@ -115,10 +115,10 @@ def al_ExportArchi(al=None):
             rc = sc.addConceptKeyType(nh, typeEdge[10:])
 
             if al.dictNodes.has_key(target):
-                tc = rc.addConceptKeyType(targetName, al.dictNodes[target][ARCHI_TYPE][10:])
+                tc = rc.addConceptKeyType(targetName, al.dictNodes[target][AL.ARCHI_TYPE][10:])
                 #getWords(sourceName, tc)
 
-    Concepts.saveConcepts(concepts, fileConceptsExport)
+    Concepts.saveConcepts(concepts, AL.fileConceptsExport)
 
     return concepts, al
 

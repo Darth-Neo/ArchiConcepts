@@ -15,17 +15,17 @@ from nl_lib.Concepts import Concepts
 
 from lxml import etree
 
-from al_ArchiLib import *
+import al_ArchiLib as AL
 
 def al_ArchimateConcepts():
     fileArchConcepts = "archi.p"
     fileArchiModel = 'archi.archimate'
 
-    logger.info("Using : %s" % fileArchimate)
+    logger.info("Using : %s" % AL.fileArchimate)
 
     concepts = Concepts(fileArchConcepts, "Archimate")
 
-    al = ArchiLib()
+    al = AL.ArchiLib()
 
     al.logTypeCounts()
 

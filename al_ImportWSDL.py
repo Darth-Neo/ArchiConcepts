@@ -11,20 +11,23 @@ import StringIO
 import csv
 import random
 
+from lxml import etree
+
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
 
 from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
 
-from al_ArchiLib import *
+import al_ArchiLib as AL
 
 if __name__ == "__main__":
-
     # Archimate
-    fileArchimate = "//Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v16.archimate"
-    etree.QName(ARCHIMATE_NS, 'model')
-    treeArchi = etree.parse(fileArchimate)
+
+    etree.QName(AL.ARCHIMATE_NS, 'model')
+    treeArchi = etree.parse(AL.fileArchimate)
+
+    al = AL.ArchiLib()
 
     dirWSDL = "/Users/morrj140/Documents/SolutionEngineering/Jawa/Jawa_v2_rc37"
 
@@ -45,6 +48,6 @@ if __name__ == "__main__":
                     method = x[4:-4]
                     logger.info("x : %s" % method)
 
-                    insertTwoColumns(treeArchi, "Application", "New Jawa", "archimate:ApplicationService", nFile, method)
+                    al.insertTwoColumns(treeArchi, "Application", "New Jawa", "archimate:ApplicationService", nFile, method)
 
-    outputXML(treeArchi)
+    al.outputXML(treeArchi)

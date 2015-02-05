@@ -16,13 +16,13 @@ logger = Logger.setupLogging(__name__)
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
 
-from al_ArchiLib import *
+import al_ArchiLib as AL
 
 def al_ExportArchiModel():
 
-    al = ArchiLib()
+    al = AL.ArchiLib()
 
-    logger.info("Using : %s" % fileArchimate)
+    logger.info("Using : %s" % AL.fileArchimate)
 
     listMTE = list()
     #listMTE.append("5. Contract Management")

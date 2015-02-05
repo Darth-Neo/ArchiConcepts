@@ -29,7 +29,7 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-from al_ArchiLib import *
+import al_ArchiLib as AL
 
 num_topics = 100
 num_words  = 50
@@ -258,12 +258,12 @@ class DocumentsSimilarity(object):
 
 
 if __name__ == "__main__":
-    al = ArchiLib()
+    al = AL.ArchiLib()
 
     lemmatizer = WordNetLemmatizer()
 
-    etree.QName(ARCHIMATE_NS, 'model')
-    tree = etree.parse(fileArchimate)
+    etree.QName(AL.ARCHIMATE_NS, 'model')
+    tree = etree.parse(AL.fileArchimate)
 
     searchTypes = list()
     searchTypes.append("archimate:Requirement")

@@ -20,7 +20,7 @@ from lxml import etree
 
 from traceback import format_exc
 
-from al_ArchiLib import *
+import al_ArchiLib as AL
 
 # Constants
 EMU = 914400.0
@@ -194,7 +194,7 @@ def shapeDim(shape, dictNodeXY):
 
 def addDictNodes(nid, name, dictNodes):
 
-    name = cleanString(name.rstrip(" ").lstrip(" "))
+    name = AL.cleanString(name.rstrip(" ").lstrip(" "))
 
     if not (len(name) > 0):
         logger.warn("No Name!")
@@ -320,7 +320,7 @@ def crawlPPTX(concepts, path_to_presentation):
             if idx == 0:
                 titleSlide = ph.text
 
-        u = cleanString(titleSlide)
+        u = AL.cleanString(titleSlide)
 
         logger.info("%d.%s" % (sNum, u))
         tss = "%d.%s" % (sNum, u)
@@ -360,7 +360,7 @@ def crawlPPTX(concepts, path_to_presentation):
 
                     addDictNodes(nid, name, dictNodes)
 
-                    b = q.addConceptKeyType(cleanString(name), "Node")
+                    b = q.addConceptKeyType(AL.cleanString(name), "Node")
                     b.addConceptKeyType("t", str(t))
                     b.addConceptKeyType("l", str(l))
                     b.addConceptKeyType("h", str(h))
@@ -491,7 +491,7 @@ def crawlPPTX(concepts, path_to_presentation):
                         logger.debug("%s %s:%2.3f" % (target, ld, dimSource[ld]))
                         f.addConceptKeyType(ld, str(dimTarget[ld]))
 
-                    f.addConceptKeyType(cleanString(edge), "Edge")
+                    f.addConceptKeyType(AL.cleanString(edge), "Edge")
 
 
         if tbTotal != 0:

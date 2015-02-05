@@ -19,14 +19,12 @@ from nl_lib.Concepts import Concepts
 from nl_lib.ConceptGraph import PatternGraph, NetworkXGraph, GraphVizGraph, Neo4JGraph
 from nl_lib.Constants import *
 
-from al_ArchiLib import *
-
+import al_ArchiLib                    as AL
 import al_DependancyAnalysisFromArchi as DA
-import al_ExportArchi  as EA
-import al_ImportConceptsIntoNeo4J  as IN
-import al_AnalyzeGraph as AG
-
-import al_Neo4JCounts as NC
+import al_ExportArchi                 as EA
+import al_ImportConceptsIntoNeo4J     as IN
+import al_AnalyzeGraph                as AG
+import al_Neo4JCounts                 as NC
 
 if __name__ == "__main__":
 
@@ -34,7 +32,7 @@ if __name__ == "__main__":
     t0 = time.clock()
     start_time = time.time()
 
-    al = ArchiLib()
+    al = AL.ArchiLib()
     al.logTypeCounts()
 
     logger.info("...Export Archi...")
@@ -42,7 +40,7 @@ if __name__ == "__main__":
 
     logger.info("...Import Neo4J...")
 
-    if  CleanNeo4j == True:
+    if  AL.CleanNeo4j == True:
         IN.importNeo4J(concepts, ClearNeo4J=True)
     else:
         IN.importNeo4J(concepts)

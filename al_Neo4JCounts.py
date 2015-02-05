@@ -16,14 +16,13 @@ from nl_lib.Constants import *
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
-from al_ArchiLib import *
-
+import al_ArchiLib as AL
 import al_QueryGraph as QG
 
 def Neo4JCounts():
     # gdb defined in al_ArchiLib
-    logger.info("Neo4J instance : %s" % gdb)
-    graph = Neo4JGraph(gdb)
+    logger.info("Neo4J instance : %s" % AL.gdb)
+    graph = Neo4JGraph(AL.gdb)
 
     qs = "MATCH (n) RETURN n.typeName, count(n.typeName) order by count(n.typeName) DESC"
     lq, qd = QG.cypherQuery(graph, qs)

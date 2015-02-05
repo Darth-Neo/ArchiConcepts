@@ -22,7 +22,7 @@ from openpyxl.compat import range
 from openpyxl.cell import get_column_letter
 from openpyxl.worksheet import Worksheet as worksheet
 
-from al_ArchiLib import *
+import al_ArchiLib as AL
 import al_QueryGraph as QG
 
 def queryExportExcel(lq, fileIn, fileOut, wst=None):
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     #fileOut = 'Template_Estimate_%s_new.xlsx' % time.strftime("%Y%d%m_%H%M%S")
     fileOut = 'Template_Estimate_new.xlsx'
 
-    graph = Neo4JGraph(gdb)
+    graph = Neo4JGraph(AL.gdb)
 
     qs = "MATCH "
     qs = qs +    "(n0:ApplicationFunction)-- (r0)"

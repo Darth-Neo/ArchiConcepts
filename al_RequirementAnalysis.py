@@ -35,7 +35,7 @@ from pattern.vector import Vector, distance, NB
 from pattern.db import csv
 from pattern.en import parse, Sentence, parsetree
 
-from al_ArchiLib import *
+import al_ArchiLib as AL
 
 logger.setLevel(logging.INFO)
 
@@ -176,7 +176,7 @@ class Chunks(object):
 if __name__ == "__main__":
 
     conceptsFile = "req.p"
-    al = ArchiLib()
+    al = AL.ArchiLib()
 
     searchTypes = list()
     searchTypes.append("archimate:Requirement")

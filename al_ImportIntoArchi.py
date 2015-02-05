@@ -16,12 +16,12 @@ from nl_lib.Concepts import Concepts
 from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
 
-from al_ArchiLib import *
+import al_ArchiLib as AL
 
 if __name__ == "__main__":
-    logger.info("Using : %s" % fileArchimate)
+    logger.info("Using : %s" % AL.fileArchimate)
 
-    al = ArchiLib()
+    al = AL.ArchiLib()
 
     al.logTypeCounts()
 

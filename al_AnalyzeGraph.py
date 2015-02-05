@@ -19,7 +19,7 @@ import networkx as nx
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
-from al_ArchiLib import *
+import al_ArchiLib as AL
 import al_QueryGraph as QG
 
 def addGraphNodes(graph, concepts, n=0, threshold=0.0005):
@@ -27,7 +27,7 @@ def addGraphNodes(graph, concepts, n=0, threshold=0.0005):
     for c in concepts.getConcepts().values():
         logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
 
-        ArchiLib.cleanConcept(c)
+        AL.ArchiLib.cleanConcept(c)
 
         graph.addConcept(c)
 
@@ -43,7 +43,7 @@ def addGraphEdges(graph, concepts, n=0):
 
         logger.debug("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
 
-        ArchiLib.cleanConcept(c)
+        AL.ArchiLib.cleanConcept(c)
 
         graph.addConcept(c)
 
@@ -57,8 +57,8 @@ def analyzeGraph(graph, gl, title, scale=1, threshold=0.0005):
     gNodes = graph.node
 
     # gdb is set in al_ArchiLib
-    logger.info("Neo4J instance : %s" % gdb)
-    graphNeo4J = Neo4JGraph(gdb)
+    logger.info("Neo4J instance : %s" % AL.gdb)
+    graphNeo4J = Neo4JGraph(AL.gdb)
 
     pr = 0
     len_pr = len(gl)
@@ -83,7 +83,7 @@ def analyzeGraph(graph, gl, title, scale=1, threshold=0.0005):
         if isinstance(nodeKey, dict) and nodeKey.has_key("typeName"):
             typeName = nodeKey['typeName']
 
-            if typeName in relations.keys():
+            if typeName in AL.relations.keys():
                 logger.debug("Skip : %s" % typeName)
                 continue
 
@@ -112,7 +112,7 @@ def updateNeo4J(graphNeo4J, name, typeName, metricName, metricValue):
 
 def analyzeNetworkX(concepts=None):
     if concepts == None:
-        concepts = Concepts.loadConcepts(fileConceptsExport)
+        concepts = Concepts.loadConcepts(AL.fileConceptsExport)
 
     logger.info(" Concepts : %s[%d][%s]" % (concepts.name, len(concepts.getConcepts()), concepts.typeName))
 

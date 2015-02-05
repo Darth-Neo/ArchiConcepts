@@ -27,7 +27,7 @@ import al_ImportIntoArchi as ia
 SLD_LAYOUT_TITLE_AND_CONTENT = 1
 TITLE_ONLY_SLIDE_LAYOUT = 5
 
-from al_ArchiLib import *
+import al_ArchiLib as AL
 
 A_NS           =  "http://schemas.openxmlformats.org/drawingml/2006/main"
 P_NS           =  "http://schemas.openxmlformats.org/presentationml/2006/main"
@@ -95,11 +95,11 @@ def getNode(n, listModels, type):
 
     attributes = n.attrib
 
-    if attributes.get(ARCHI_TYPE) == type:
+    if attributes.get(AL.ARCHI_TYPE) == type:
         if attributes.get("id") != None:
             listModels.append((n, attributes))
 
-            logger.debug("%s : %s:%s:%s:%s" % (DIAGRAM_MODEL, n.tag, n.get("name"), n.get("id"), attributes.get(ARCHI_TYPE)))
+            logger.debug("%s : %s:%s:%s:%s" % (DIAGRAM_MODEL, n.tag, n.get("name"), n.get("id"), attributes.get(AL.ARCHI_TYPE)))
 
     for y in n:
         getNode(y, listModels, type)
@@ -283,7 +283,7 @@ if __name__ == "__main__":
     PPTXFilename = 'test3.pptx'
     fileArchimateIn = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v23.archimate"
 
-    etree.QName(ARCHIMATE_NS, 'model')
+    etree.QName(AL.ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimateIn)
 
     #ia.logAll(tree, "archimate:ApplicationComponent")
@@ -327,12 +327,12 @@ if __name__ == "__main__":
         listDO.append(ls)
 
         p = "//element[@id=\"%s\"]" % (x[0].get("id"))
-        r = tree.xpath(p, namespaces=NS_MAP)
+        r = tree.xpath(p, namespaces=AL.NS_MAP)
         xc = r[0].getchildren()
 
         for y in xc:
             child = str(y.get("archimateElement"))
-            logger.debug("  %s[%s]: entity:%s" % (y.get(ARCHI_TYPE), y.get("id"), child))
+            logger.debug("  %s[%s]: entity:%s" % (y.get(AL.ARCHI_TYPE), y.get("id"), child))
 
             n = findNode(tree, child)
 
@@ -344,9 +344,9 @@ if __name__ == "__main__":
 
             z = y.getchildren()
             for w in z:
-                logger.debug("    %s[%s]" % (w.get(ARCHI_TYPE), w.get("id")))
+                logger.debug("    %s[%s]" % (w.get(AL.ARCHI_TYPE), w.get("id")))
 
-                if w.get(ARCHI_TYPE) == "archimate:Connection":
+                if w.get(AL.ARCHI_TYPE) == "archimate:Connection":
                     logger.debug("      source=%s, target=%s, relationship=%s" % (w.get("source"), w.get("target"), w.get("relationship")))
 
                     ls = list()
@@ -356,7 +356,7 @@ if __name__ == "__main__":
 
                     relation = w.get("relationship")
                     rn = findNode(tree, relation)
-                    logger.debug("      relation : %s[%s]" % (rn.get("name"), rn.get(ARCHI_TYPE)))
+                    logger.debug("      relation : %s[%s]" % (rn.get("name"), rn.get(AL.ARCHI_TYPE)))
                     if rn.get("name") != None:
                         ls.append(str(rn.get("name")))
 
@@ -371,8 +371,8 @@ if __name__ == "__main__":
                 elif w.get("x") != None:
                     logger.debug("    x=%s, y=%s" % (w.get("x"), w.get("y")))
                     ls = list()
-                    ls.append(str(y.get(ARCHI_TYPE)))
-                    ls.append(str(n.get(ARCHI_TYPE)))
+                    ls.append(str(y.get(AL.ARCHI_TYPE)))
+                    ls.append(str(n.get(AL.ARCHI_TYPE)))
                     ls.append(shapeName)
                     ls.append(str(y.get("id")))
                     ls.append(str(w.get("x")))

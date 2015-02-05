@@ -26,7 +26,8 @@ from openpyxl.compat import range
 from openpyxl.cell import get_column_letter
 from openpyxl.worksheet import Worksheet
 
-from al_ArchiLib import *
+import al_ArchiLib as AL
+
 from al_Neo4JCounts import *
 
 def Traversal(ql):
@@ -46,9 +47,6 @@ def Traversal(ql):
     logger.info("%s" % query)
 
     return query
-
-def getColumnHeaders(qs):
-    pass
 
 def cypherQuery(graph, qs):
 
@@ -136,20 +134,20 @@ def logResults(lq, f=None, n=0):
 def queryExport(lq):
 
     # csvExport defined in al_ArchiLib
-    f = open(csvFileExport,'w')
+    f = open(AL.csvFileExport,'w')
 
     logResults(lq, f)
 
     f.close()
 
     logger.info("Exported %d rows" % len(lq))
-    logger.info("Save Model : %s" % csvFileExport)
+    logger.info("Save Model : %s" % AL.csvFileExport)
 
 if __name__ == "__main__":
     # gdb defined in al_ArchiLib
-    logger.debug("Neo4J instance : %s" % gdb)
+    logger.debug("Neo4J instance : %s" % AL.gdb)
 
-    graph = Neo4JGraph(gdb)
+    graph = Neo4JGraph(AL.gdb)
 
     # measure process time, wall time
     t0 = time.clock()

@@ -19,14 +19,14 @@ from nl_lib.Concepts import Concepts
 from lxml import etree
 import nltk
 
-from al_ArchiLib import *
+import al_ArchiLib as AL
 
 logger.setLevel(logging.INFO)
 
 if __name__ == "__main__":
     fileConcepts = "req.p"
 
-    al = ArchiLib()
+    al = AL.ArchiLib()
 
     al.logTypeCounts()
 
@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
     for x in al.dictEdges.keys():
         try:
-            logger.debug("[%s]=%s" % (x, al.dictEdges[x][ARCHI_TYPE]))
+            logger.debug("[%s]=%s" % (x, al.dictEdges[x][AL.ARCHI_TYPE]))
         except:
             logger.warn("[%s]-%s ARCH_TYPE Exception" % (x, al.dictNodes[x]))
 
@@ -50,9 +50,9 @@ if __name__ == "__main__":
         logger.debug("  Source : %s" % source)
         logger.debug("  Target : %s" % target)
 
-        if al.dictEdges[x][ARCHI_TYPE] in al.relations:
+        if al.dictEdges[x][AL.ARCHI_TYPE] in al.relations:
             logger.info("%s   ->  [ %s ]  ->   %s" % (al.dictNodes[source]["name"][:20],
-                                                      al.dictEdges[x][ARCHI_TYPE],
+                                                      al.dictEdges[x][AL.ARCHI_TYPE],
                                                       al.dictNodes[target]["name"][:20]))
 
             listNodes = al.getEdgesForNode(source, rels)

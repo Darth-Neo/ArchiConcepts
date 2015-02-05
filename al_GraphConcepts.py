@@ -16,8 +16,6 @@ from nl_lib.Concepts import Concepts
 from nl_lib.ConceptGraph import PatternGraph, GraphVizGraph
 from nl_lib.Constants import *
 
-from al_ArchiLib import *
-
 def addGraphNodes(graph, concepts, n=0, threshold=0.0005):
     n += 1
     for c in concepts.getConcepts().values():

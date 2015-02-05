@@ -12,8 +12,7 @@ from nl_lib.Concepts import Concepts
 from nl_lib.ConceptGraph import PatternGraph, NetworkXGraph, Neo4JGraph, GraphVizGraph
 from nl_lib.Constants import *
 
-from al_ArchiLib import *
-
+import al_ArchiLib as AL
 import al_ExportArchi as EA
 import al_AnalyzeGraph as AG
 import al_QueryGraph as QG
@@ -28,8 +27,8 @@ def exportNeo4JToConcepts(concepts):
     # Match n return n limit 25
 
     # gdb defined in al_ArchiLib
-    logger.info("Neo4J instance : %s" % gdb)
-    graph = Neo4JGraph(gdb)
+    logger.info("Neo4J instance : %s" % AL.gdb)
+    graph = Neo4JGraph(AL.gdb)
 
     qs = "Match n return n"
 
@@ -58,7 +57,7 @@ def exportNeo4JToConcepts(concepts):
 if __name__ == "__main__":
 
     # measure process time, wall time
-    start_time = startTimer()
+    start_time = AL.startTimer()
 
     concepts = Concepts("Neo4J", "Neo4J Graph DB")
 
@@ -66,5 +65,5 @@ if __name__ == "__main__":
 
     AG.analyzeNetworkX(concepts)
 
-    stopTimer(start_time)
+    AL.stopTimer(start_time)
 
