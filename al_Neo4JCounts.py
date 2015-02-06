@@ -16,20 +16,15 @@ from nl_lib.Constants import *
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
-import al_ArchiLib as AL
-import al_QueryGraph as QG
+from al_ArchiLib.Constants import *
+from al_ArchiLib.Neo4JLib import Neo4JLib
 
-def Neo4JCounts():
-    # gdb defined in al_ArchiLib
-    logger.info("Neo4J instance : %s" % AL.gdb)
-    graph = Neo4JGraph(AL.gdb)
+if __name__ == "__main__":
+    nj = Neo4JLib()
 
     qs = "MATCH (n) RETURN n.typeName, count(n.typeName) order by count(n.typeName) DESC"
-    lq, qd = QG.cypherQuery(graph, qs)
+    lq, qd = nj.cypherQuery(qs)
 
     logger.info("Neo4J Counts")
     for x in sorted(lq[1:], key=lambda c: int(c[2]), reverse=True):
         logger.info("%4d : %s" % (x[2], x[0]))
-
-if __name__ == "__main__":
-    Neo4JCounts()

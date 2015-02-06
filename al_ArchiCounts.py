@@ -6,16 +6,14 @@ __author__ = 'morrj140'
 __VERSION__ = '0.1'
 
 import os
-from nl_lib.Constants import *
-from nl_lib import Logger
-from nl_lib.Concepts import Concepts
 import time
 
+from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
 
-import al_ArchiLib as AL
+from al_ArchiLib.Constants import *
+from al_ArchiLib.ArchiLib import ArchiLib
 
 if __name__ == "__main__":
-    al = AL.ArchiLib()
-
+    al = ArchiLib()
     al.logTypeCounts()

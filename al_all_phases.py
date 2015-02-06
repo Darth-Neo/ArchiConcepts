@@ -15,22 +15,17 @@ from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
-from nl_lib.Concepts import Concepts
-from nl_lib.ConceptGraph import PatternGraph, NetworkXGraph, GraphVizGraph, Neo4JGraph
-from nl_lib.Constants import *
-
-import al_ArchiLib                    as AL
-import al_DependancyAnalysisFromArchi as DA
-import al_ExportArchi                 as EA
-import al_ImportConceptsIntoNeo4J     as IN
-import al_AnalyzeGraph                as AG
-import al_Neo4JCounts                 as NC
+from al_ArchiLib.Constants import *
+from al_ArchiLib.ArchiLib import ArchiLib as AL
+from al_ArchiLib.DependencyAnalysis import DependencyAnalysis as DA
+from al_ArchiLib.ExportArchi import ExportArchi as EA
+from al_ArchiLib.ImportNeo4J import ImportNeo4J as IN
+from al_ArchiLib.AnalyzeGraph import AnalyzeGraph as AG
+from al_ArchiLib.Neo4JLib import Neo4JLib as NL
 
 if __name__ == "__main__":
 
-    # measure process time, wall time
-    t0 = time.clock()
-    start_time = time.time()
+    start_time = AL.startTimer()
 
     al = AL.ArchiLib()
     al.logTypeCounts()
@@ -46,26 +41,13 @@ if __name__ == "__main__":
         IN.importNeo4J(concepts)
 
     logger.info("...Neo4J Counts...")
-    NC.Neo4JCounts()
+    NL.Neo4JCounts()
 
-    #logger.info("...Analyze NetworkX...")
-    #if  CleanNeo4j == True:
-    #    AG.analyzeNetworkX(concepts)
-    #else:
-    #    AG.analyzeNetworkX()
+    logger.info("...Analyze NetworkX...")
+    ag = AG.AnalyzeGraph()
+    if  CleanNeo4j == True:
+        ag.analyzeNetworkX(concepts)
+    else:
+        ag.analyzeNetworkX()
 
-    #measure wall time
-    strStartTime = time.asctime(time.localtime(start_time))
-    logger.info("Start time : %s" % strStartTime)
-
-    end_time = time.time()
-
-    strEndTime = time.asctime(time.localtime(end_time))
-    logger.info("End   time : %s" % strEndTime)
-
-    # measure process time
-    timeTaken = end_time - start_time
-
-    minutes = timeTaken / 60
-    hours = minutes / 60
-    logger.info("Process Time = %4.2f seconds, %d Minutes, %d hours" % (timeTaken, minutes, hours))
+    AL.stopTimer(start_time)

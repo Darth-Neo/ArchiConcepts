@@ -47,7 +47,6 @@ setup(name='al_Archilib',
 
     # List run-time dependencies here.  These will be installed by pip when your
     # project is installed.
-    install_requires = ['nltk', 'pattern', 'gensim', 'networkx', 'matplotlib', 'pytagcloud', 'numpy', 'py2neo',
-                        'cython', 'lxml', 'openpyxl', 'python-pptx', 'python-docx'],)
+    install_requires = ['nltk', 'networkx', 'py2neo', 'lxml', 'openpyxl', 'pygraphviz', 'python-pptx', 'python-docx'],)
 
 

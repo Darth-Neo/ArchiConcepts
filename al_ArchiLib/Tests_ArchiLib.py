@@ -23,8 +23,9 @@ logger = Logger.setupLogging(__name__)
 
 logger.setLevel(logging.DEBUG)
 
-from al_ArchiLib import *
-from al_QueryGraph import *
+from al_ArchiLib.Constants import *
+from al_ArchiLib.ArchiLib import ArchiLib as AL
+from al_ArchiLib.Neo4JLib import Neo4JLib as NL
 
 fileArchimate = "./test/Testing.archimate"
 
@@ -40,7 +41,7 @@ def test_Archi_Counts():
                 "archimate:BusinessObject" : 5, "archimate:BusinessProcess" : 7,
                 "archimate:BusinessEvent" : 2, "archimate:ApplicationComponent" : 3}
 
-    al = ArchiLib(fa=fileArchimate)
+    al = AL.ArchiLib(fa=fileArchimate)
 
     listCounts = al.logTypeCounts(ListOnly=True)
 
@@ -77,7 +78,7 @@ def test_ExportArchi():
     al = None
     concepts = None
 
-    al = ArchiLib(fa=fileArchimate)
+    al = AL.ArchiLib(fa=fileArchimate)
 
     assert (al != None)
 
@@ -126,7 +127,7 @@ def test_ExportArchiFolderModels():
     conceptsFile = "Estimation.p"
 
     assert (os.path.isfile(fileArchimate)  == True)
-    al = ArchiLib(fa=fileArchimate, fe=fileExport)
+    al = AL.ArchiLib(fa=fileArchimate, fe=fileExport)
 
     folder = "Scenarios"
 
@@ -163,7 +164,7 @@ def test_ArchimateConcepts():
 
     concepts = Concepts(fileArchiP, "Archimate")
 
-    al = ArchiLib(fa=fileArchimate)
+    al = AL.ArchiLib(fa=fileArchimate)
 
     #
     # Create Concepts from Arhimate
@@ -181,7 +182,7 @@ def test_ExportArchiModel():
 
     assert (os.path.isfile(fileArchimate)  == True)
 
-    al = ArchiLib(fa=fileArchimate, fe=fileExport)
+    al = AL.ArchiLib(fa=fileArchimate, fe=fileExport)
 
     listMTE = list()
     listMTE.append("01. Market to Leads")
@@ -198,10 +199,11 @@ def test_ExportArchiModel():
     assert (os.path.isfile(fileExport)  == True)
 
 def _executeQuery(qs, graph, log=False):
-    lq = cypherQuery(graph, qs)
+    nj = NL.Neo4JLib()
+    lq = nj.cypherQuery(graph, qs)
 
     if log == True:
-        logResults(lq)
+        nj.logResults(lq)
 
     return lq
 

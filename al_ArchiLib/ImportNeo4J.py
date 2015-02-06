@@ -18,26 +18,35 @@ logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
 from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib
-from al_ArchiLib.ConceptsGraph import ConceptsGraph
-from al_ArchiLib.Neo4JLib import Neo4JLib
+from al_ArchiLib.ArchiLib import ArchiLib as AL
+from al_ArchiLib.Neo4JLib import Neo4JLib as NL
 
-class ImportConceptsNeo4J(object):
+class ImportNeo4J(object):
 
     def __init__(self):
-        self.nj = Neo4JLib()
+        self.CleanNeo4j = CleanNeo4j
+
+        if self.ClearNeo4J:
+            self.clearNeo4J()
+
+        logger.info("Neo4J instance : %s" % gdb)
+        self.graph = Neo4JGraph(gdb)
+
+        if self.ClearNeo4J:
+            self.graph.clearGraphDB()
+
+        self.nj = NL.Neo4jLib()
 
     def addGraphNodes(self, concepts, n=0, threshold=1):
-
         n += 1
         for c in concepts.getConcepts().values():
             logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
 
-            ArchiLib.cleanConcept(c)
+            AL.cleanConcept(c)
 
             c.name = c.name.replace("\"", "'")
 
-            self.nj.graph.addConcept(c)
+            self.graph.addConcept(c)
 
             if len(c.getConcepts()) > threshold:
                 self.addGraphNodes(c, n)
@@ -45,19 +54,19 @@ class ImportConceptsNeo4J(object):
     def addGraphEdges(self, concepts, n=0):
         n += 1
 
-        self.nj.graph.addConcept(concepts)
+        self.graph.addConcept(concepts)
 
         for c in concepts.getConcepts().values():
 
             logger.debug("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
 
-            ArchiLib.cleanConcept(c)
+            AL.cleanConcept(c)
 
             c.name = c.name.replace("\"", "'")
 
-            self.nj.graph.addConcept(c)
+            self.graph.addConcept(c)
 
-            self.nj.graph.addEdge(concepts, c, c.typeName)
+            self.graph.addEdge(concepts, c, c.typeName)
 
             self.addGraphEdges(c, n)
 
@@ -88,19 +97,11 @@ class ImportConceptsNeo4J(object):
         logger.info("Avg gl[x]=%3.4f" % (sum_pr / len_pr))
 
     def clearNeo4J(self):
-        if gdb == LocalGBD:
+        if AL.gdb == AL.LocalGBD:
             logger.info("Reset Neo4J Graph DB")
-            call([resetNeo4J])
+            call([AL.resetNeo4J])
 
     def importNeo4J(self, concepts, ClearNeo4J=False):
-
-        if ClearNeo4J:
-            self.clearNeo4J()
-
-        if ClearNeo4J:
-            self.nj.graph.clearGraphDB()
-        else:
-            pass
 
         logger.info("Adding Neo4J nodes to the graph ...")
         self.addGraphNodes(concepts)
@@ -108,7 +109,7 @@ class ImportConceptsNeo4J(object):
         logger.info("Adding Neo4J edges to the graph ...")
         self.addGraphEdges(concepts)
 
-        self.nj.graph.setNodeLabels()
+        self.graph.setNodeLabels()
 
         if ClearNeo4J:
             DropNode = "MATCH (n { name: 'Node' })-[r]-() DELETE n, r"
@@ -122,19 +123,15 @@ class ImportConceptsNeo4J(object):
 
 if __name__ == "__main__":
 
-    start_time = ArchiLib.startTimer()
+    importConcepts = Concepts.loadConcepts(AL.fileConceptsExport)
 
-    icnj = ImportConceptsNeo4J()
-
-    importConcepts = Concepts.loadConcepts(fileConceptsExport)
-
-    icnj.importNeo4J(importConcepts, ClearNeo4J=True)
-
-    ArchiLib.stopTimer(start_time)
+    in4j = ImportNeo4J()
+    in4j.importNeo4J(importConcepts, ClearNeo4J=True)
 
 
 
-    
+
+
 
 
 

@@ -29,11 +29,8 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-import al_ArchiLib as AL
-
-num_topics = 100
-num_words  = 50
-similarity = 0.95
+from al_ArchiLib.Constants import *
+from al_ArchiLib.ArchiLib import ArchiLib
 
 class Collocations(object):
     concepts         = None
@@ -155,7 +152,9 @@ class DocumentsSimilarity(object):
     lemmatizer = None
 
     def __init__(self):
-        pass
+        self.num_topics = 100
+        self.num_words  = 50
+        self.similarity = 0.95
 
     def createTopics(self, concepts):
 
@@ -169,7 +168,7 @@ class DocumentsSimilarity(object):
         logger.info("--Read " + str(len(self.documentsList)) + " Documents, with " + str(self.wordcount) + " words.")
 
         logger.info("--Compute Topics--")
-        self.topics = self.tm.computeTopics(self.documentsList, nt=num_topics, nw=num_words)
+        self.topics = self.tm.computeTopics(self.documentsList, nt=self.num_topics, nw=self.num_words)
 
         if True:
             logger.info("--Log Topics--")
@@ -191,7 +190,7 @@ class DocumentsSimilarity(object):
         self.conceptsSimilarity = Concepts("ConceptsSimilarity", "Similarities")
 
         # Compute similarity between documents / concepts
-        similarityThreshold = similarity
+        similarityThreshold = self.similarity
 
         for document in self.documentsList:
             indexNum = self.documentsList.index(document)
@@ -258,12 +257,12 @@ class DocumentsSimilarity(object):
 
 
 if __name__ == "__main__":
-    al = AL.ArchiLib()
+    al = ArchiLib()
 
     lemmatizer = WordNetLemmatizer()
 
-    etree.QName(AL.ARCHIMATE_NS, 'model')
-    tree = etree.parse(AL.fileArchimate)
+    etree.QName(ARCHIMATE_NS, 'model')
+    tree = etree.parse(fileArchimate)
 
     searchTypes = list()
     searchTypes.append("archimate:Requirement")

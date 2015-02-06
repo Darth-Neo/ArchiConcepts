@@ -26,135 +26,17 @@ from openpyxl.compat import range
 from openpyxl.cell import get_column_letter
 from openpyxl.worksheet import Worksheet
 
-import al_ArchiLib as AL
-
-from al_Neo4JCounts import *
-
-def Traversal(ql):
-
-    qs = "MATCH"
-    n=0
-    for x in ql:
-        qs = qs + " (n%d:%s)--(r%d:relation)--" % (n, x, n)
-        n += 1
-
-    qr = " Return"
-    for m in range(0, n, 1):
-        qr = qr + " n%s, r%d," % (m, m)
-
-    query = qs[:-11] + qr[:-5]
-
-    logger.info("%s" % query)
-
-    return query
-
-def cypherQuery(graph, qs):
-
-    qd = graph.query(qs)
-
-    listQuery = list()
-
-    n = 0
-
-    ColHdr = True
-
-    for x in qd:
-
-        n += 1
-
-        logger.debug("%s[%d]" % (x, n))
-
-        if n == 1:
-            cl = list()
-            m = 0
-            for y in x.columns:
-                m += 1
-                logger.debug("  %s[%d]" % (y, m))
-                cl.append(y)
-                cl.append("Type%d" % m)
-
-            listQuery.append(cl)
-
-            continue
-
-        xl = list()
-
-        for v in x.values:
-
-            if isinstance(v, Node):
-                name = v["name"][:40]
-                typeName =v["typeName"]
-
-                xl.append(name)
-                xl.append(typeName)
-
-            elif isinstance(v, int) or isinstance(v, float):
-                count = v
-                typeName ="Number"
-
-                xl.append(count)
-                xl.append(typeName)
-
-            elif isinstance(v, str) or isinstance(v, unicode):
-                st = v
-                typeName ="String"
-
-                xl.append(st)
-                xl.append(typeName)
-
-        listQuery.append(xl)
-
-    return listQuery, qd
-
-
-def logResults(lq, f=None, n=0):
-    n += 1
-
-    spaces = " " * n
-
-    rs = ""
-    for x in lq:
-        if isinstance(x, tuple) or isinstance(x, list):
-            logResults(x, f, n)
-
-        elif isinstance(x, str) or isinstance(x, unicode):
-            if x == "Nodes" or x is None or len(x) == 0:
-                continue
-            logger.debug("%s %s" % (spaces, x))
-            rs += ", %s" % (x)
-
-        elif isinstance(x, float) or isinstance(x, int):
-            logger.debug("%s %s" % (spaces, x))
-            rs += ", %s" % (x)
-
-    if len(rs) != 0:
-        logger.info("%s" % (rs[1:]))
-        f.write("%s\n" % (rs[1:]))
-
-def queryExport(lq):
-
-    # csvExport defined in al_ArchiLib
-    f = open(AL.csvFileExport,'w')
-
-    logResults(lq, f)
-
-    f.close()
-
-    logger.info("Exported %d rows" % len(lq))
-    logger.info("Save Model : %s" % AL.csvFileExport)
+from al_ArchiLib.Constants import *
+from al_ArchiLib.ArchiLib import ArchiLib
+from al_ArchiLib.Neo4JLib import Neo4JLib
 
 if __name__ == "__main__":
-    # gdb defined in al_ArchiLib
-    logger.debug("Neo4J instance : %s" % AL.gdb)
 
-    graph = Neo4JGraph(AL.gdb)
+    nj = Neo4JLib()
 
-    # measure process time, wall time
-    t0 = time.clock()
+    start_time = ArchiLib.startTimer()
 
-    start_time = time.time()
-
-    Neo4JCounts()
+    nj.Neo4JCounts()
 
     #
     # Useful Cypher Queries
@@ -259,23 +141,9 @@ if __name__ == "__main__":
     else:
         qs = "match (n0:WorkPackage) --(r0)--(n1:BusinessProcess)--(r1)--(n2:ApplicationService) where n0.name='Batch %d'  return n0, r0, n1,r1, n2" % (1)
 
-    lq, qd = cypherQuery(graph, qs)
+    lq, qd = nj.cypherQuery(qs)
 
-    queryExport(lq)
+    nj.queryExport(lq)
 
-    #measure wall time
-    strStartTime = time.asctime(time.localtime(start_time))
-    logger.info("Start time : %s" % strStartTime)
-
-    end_time = time.time()
-
-    strEndTime = time.asctime(time.localtime(end_time))
-    logger.info("End   time : %s" % strEndTime)
-
-    # measure process time
-    timeTaken = end_time - start_time
-
-    minutes = timeTaken / 60
-    hours = minutes / 60
-    logger.info("Process Time = %4.2f seconds, %d Minutes, %d hours" % (timeTaken, minutes, hours))
+    ArchiLib.stopTimer(start_time)
 

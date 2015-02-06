@@ -12,6 +12,7 @@ import logging
 import time
 from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
+logger.setLevel(logging.INFO)
 
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
@@ -35,14 +36,13 @@ from pattern.vector import Vector, distance, NB
 from pattern.db import csv
 from pattern.en import parse, Sentence, parsetree
 
-import al_ArchiLib as AL
-
-logger.setLevel(logging.INFO)
+from al_ArchiLib.Constants import *
+from al_ArchiLib.ArchiLib import ArchiLib as AL
 
 class Chunks(object):
 
-    conceptFile = 'documents.p'
-    chunkFile = 'chunks.p'
+    conceptFile = fileConceptsDocuments
+    chunkFile = fileConceptsChunks
     concepts = None
     chunkConcepts = None
 
@@ -175,7 +175,7 @@ class Chunks(object):
 
 if __name__ == "__main__":
 
-    conceptsFile = "req.p"
+    conceptsFile = AL.fileRequirementsConcepts
     al = AL.ArchiLib()
 
     searchTypes = list()

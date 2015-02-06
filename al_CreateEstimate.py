@@ -22,53 +22,13 @@ from openpyxl.compat import range
 from openpyxl.cell import get_column_letter
 from openpyxl.worksheet import Worksheet as worksheet
 
-import al_ArchiLib as AL
-import al_QueryGraph as QG
+from al_ArchiLib.Constants import *
+from al_ArchiLib.ArchiLib import ArchiLib
+from al_ArchiLib.Neo4JLib import Neo4JLib
 
-def queryExportExcel(lq, fileIn, fileOut, wst=None):
-
-    wb = load_workbook(filename = fileIn)
-
-    if wst == None:
-        wsTitle = "Import Items" + time.strftime("%Y%d%m_%H%M%S")
-    else:
-        wsTitle = wst
-
-    ws = wb.create_sheet()
-    ws.title = wsTitle
-
-    logger.info("Created Worksheet %s" % wsTitle)
-
-    n = 0
-    for x in lq:
-        n += 1
-
-        logger.debug("x in lq : %s" % x)
-
-        m = 0
-        for y in x:
-            m += 1
-
-            col = get_column_letter(m)
-            logger.debug("col : %s" % col)
-
-            logger.debug("y : %s" % y)
-
-            rs = "%s%s" % (col, n)
-            logger.debug("%s : %s" % (rs, y))
-
-            ws.cell(rs).value = ("%s" % (y))
-
-    wb.save(filename = fileOut)
-
-    logger.info("Saved file : %s" % fileOut)
 
 if __name__ == "__main__":
-    fileIn = 'Template_Estimate.xlsx'
-    #fileOut = 'Template_Estimate_%s_new.xlsx' % time.strftime("%Y%d%m_%H%M%S")
-    fileOut = 'Template_Estimate_new.xlsx'
-
-    graph = Neo4JGraph(AL.gdb)
+    nj = Neo4JLib()
 
     qs = "MATCH "
     qs = qs +    "(n0:ApplicationFunction)-- (r0)"
@@ -78,8 +38,8 @@ if __name__ == "__main__":
     qs = qs + "-- (n4:BusinessObject) "
     qs = qs + "Return n0, r0, n1, r1, n2, r2, n3, r3, n4, n4.PageRank, n4.RequirementCount, n4.Degree"
 
-    lq, qd = QG.cypherQuery(graph, qs)
+    lq, qd = nj.cypherQuery(qs)
 
-    queryExportExcel(lq, fileIn, fileOut)
+    nj.queryExportExcel(lq)
 
     logger.info("%d rows returned" % len(lq))

@@ -18,10 +18,26 @@ from nl_lib.Concepts import Concepts
 
 from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
-from al_ArchiLib.ExportModel import ExportArchiModel
+
+class ExportArchiModel(object):
+
+    def __init__(self):
+        self.al = ArchiLib()
+        self.fileArchimate = fileArchimate
+
+    def exportArchiModel(self, listMTE):
+
+        logger.info("Using : %s" % self.fileArchimate)
+        concepts = Concepts("Export", "Model")
+
+        for ModelToExport in listMTE:
+            self.al.recurseModel(ModelToExport, concepts)
+
+        Concepts.saveConcepts(concepts, fileEstimationConcepts)
+
+        self.al.outputCSVtoFile(concepts)
 
 if __name__ == "__main__":
-
     eam = ExportArchiModel()
 
     listMTE = list()

@@ -15,11 +15,11 @@ from nl_lib.Concepts import Concepts
 
 from lxml import etree
 
-import al_ArchiLib as AL
+from al_ArchiLib.Constants import *
+from al_ArchiLib.ArchiLib import ArchiLib as AL
 
 def al_ArchimateConcepts():
-    fileArchConcepts = "archi.p"
-    fileArchiModel = 'archi.archimate'
+
 
     logger.info("Using : %s" % AL.fileArchimate)
 
