@@ -32,6 +32,11 @@ class ConceptsGraph(object):
         else:
             self.fileImage = fileImage
 
+        #
+        # Hack to get GraphViz to work
+        #
+        os.environ['PATH'] = "%s:/opt/local/bin" % os.environ['PATH']
+
     def addGraphNodes(self, concepts, n=0):
 
         n += 1
