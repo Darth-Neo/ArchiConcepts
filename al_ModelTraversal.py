@@ -18,7 +18,8 @@ from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
 from lxml import etree
 
-import al_ArchiLib as AL
+from al_ArchiLib.Constants import *
+from al_ArchiLib.ArchiLib import ArchiLib
 
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
@@ -54,11 +55,11 @@ def listNode(al, ID, n):
 
     spaces = " " * n
 
-    logger.debug("%sS%d:%s[%s]" % (spaces, n, node.get("name"), node.get(AL.ARCHI_TYPE)))
+    logger.debug("%sS%d:%s[%s]" % (spaces, n, node.get("name"), node.get(ARCHI_TYPE)))
 
     cl = list()
     cl.append(node.get("name"))
-    cl.append(node.get(AL.ARCHI_TYPE))
+    cl.append(node.get(ARCHI_TYPE))
     return cl
 
 def recurseNodes(al, childID, clc, depth = 4):
@@ -75,7 +76,7 @@ def recurseNodes(al, childID, clc, depth = 4):
     logger.debug("%slen sr : %d" % (spaces, len(sr)))
 
     for x in sr:
-        logger.debug("%s%s" % (spaces, x.get(AL.ARCHI_TYPE)[10:]))
+        logger.debug("%s%s" % (spaces, x.get(ARCHI_TYPE)[10:]))
 
         # find everything I point to
         if x.get("source") == childID:
@@ -101,11 +102,8 @@ def savePickleList(l, cfile):
     cf.close()
 
 if __name__ == "__main__":
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
-    #fileExport="report" + time.strftime("%Y%d%m_%H%M%S") +".csv"
-    fileExport="report.csv"
 
-    al = AL.ArchiLib(fileArchimate, fileExport)
+    al = ArchiLib(fileArchimate, fileReportExport)
 
     al.logTypeCounts()
 
@@ -127,11 +125,11 @@ if __name__ == "__main__":
         childID = x.get("archimateElement")
         z = al.findElementByID(childID)[0]
 
-        logger.info("%s[%s]" % (z.get("name"), z.get(AL.ARCHI_TYPE)))
+        logger.info("%s[%s]" % (z.get("name"), z.get(ARCHI_TYPE)))
 
         cl = list()
         cl.append(z.get("name"))
-        cl.append(z.get(AL.ARCHI_TYPE))
+        cl.append(z.get(ARCHI_TYPE))
         listConcepts.append(cl)
 
         recurseNodes(al, childID, listConcepts)
@@ -148,6 +146,6 @@ if __name__ == "__main__":
     cvsLists(listConcepts, f)
 
     f.close()
-    logger.info("Saved CSV to %s" % fileExport)
+    logger.info("Saved CSV to %s" % fileOut)
 
 

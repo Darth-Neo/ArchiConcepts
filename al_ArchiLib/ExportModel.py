@@ -21,9 +21,14 @@ from al_ArchiLib.ArchiLib import ArchiLib
 
 class ExportArchiModel(object):
 
-    def __init__(self):
+    def __init__(self, afileArchimate=None):
+
         self.al = ArchiLib()
-        self.fileArchimate = fileArchimate
+
+        if afileArchimate == None:
+            self.fileArchimate = fileArchimate
+        else:
+            self.fileArchimate = afileArchimate
 
     def exportArchiModel(self, listMTE):
 
@@ -38,6 +43,9 @@ class ExportArchiModel(object):
         self.al.outputCSVtoFile(concepts)
 
 if __name__ == "__main__":
+
+    start_time = ArchiLib.startTimer()
+
     eam = ExportArchiModel()
 
     listMTE = list()
@@ -56,3 +64,5 @@ if __name__ == "__main__":
     listMTE.append("To-Be DAM Functional Reference Architecture")
 
     eam.exportArchiModel(listMTE)
+
+    ArchiLib.stopTimer(start_time)

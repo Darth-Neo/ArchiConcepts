@@ -59,9 +59,8 @@ fileNeo4JNodes             = "nodes.p"
 #
 # PowerPoint Filename
 #
-filePPTXIn = 'test.pptx'
-filePPTXOut = 'test_out.pptx'
-filePPTXCrawl = "test" + os.sep + "test_example.pptx"
+filePPTX = 'test.pptx'
+fileTPPTX = 'tested.pptx'
 
 #
 # Estimate Template
@@ -81,7 +80,6 @@ fileTimeExportImage  = "export" + time.strftime("%Y%d%m_%H%M%S") +".png"
 
 #fileReportExport="report" + time.strftime("%Y%d%m_%H%M%S") +".csv"
 fileReportExport="report.csv"
-
 
 #
 # Script to reset Neo4J

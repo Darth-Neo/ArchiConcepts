@@ -16,14 +16,14 @@ from nl_lib.Concepts import Concepts
 
 from lxml import etree
 
-import al_ArchiLib as AL
+from al_ArchiLib.Constants import *
+from al_ArchiLib.ArchiLib import ArchiLib
 
 if __name__ == "__main__":
     fileArchiP = "archi.p"
     fileArchiModel = 'archi.archimate'
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v16.archimate"
 
-    al = AL.ArchiLib(fileArchimate)
+    al = ArchiLib(fileArchimate)
 
     al.logTypeCounts()
 

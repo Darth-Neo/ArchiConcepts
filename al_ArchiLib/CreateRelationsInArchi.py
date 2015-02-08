@@ -30,7 +30,10 @@ import ArchiLib as AL
 from nltk.corpus import wordnet_ic
 brown_ic = wordnet_ic.ic('ic-brown.dat')
 
-class CreateRelations(object):
+from Constants import *
+from ArchiLib import ArchiLib
+
+class CreateRelationsInArchi(object):
 
     dictReq = dict()
 
@@ -39,18 +42,18 @@ class CreateRelations(object):
         lemmatizer = WordNetLemmatizer()
 
         # Archimate
-        self.fileArchimate = AL.fileArchimate
+        self.fileArchimate = fileArchimate
         self.fileExport="report" + time.strftime("%Y%d%m_%H%M%S") +".csv"
 
-        al = AL.ArchiLib(self.fileArchimate, self.fileExport)
+        al = ArchiLib(self.fileArchimate, self.fileExport)
 
         al.logTypeCounts()
 
-        etree.QName(AL.ARCHIMATE_NS, 'model')
+        etree.QName(ARCHIMATE_NS, 'model')
 
         self.tree = etree.parse(self.fileArchimate)
 
-    def build(self):
+    def createRelations(self):
 
         self.dictReq = self.al.dictName
 
@@ -86,3 +89,13 @@ class CreateRelations(object):
                     self.al.insertRel("element", "Relations", self.tree, attrib)
 
         self.al.outputXMLtoFile()
+
+if __name__ == "__main__":
+
+    start_time = ArchiLib.startTimer()
+
+    rcia = CreateRelationsInArchi()
+
+    rcia.createRelations()
+
+    ArchiLib.stopTimer(start_time)

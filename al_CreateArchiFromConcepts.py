@@ -19,7 +19,7 @@ from lxml import etree
 from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
 
-class CreateArchiFromConcepts(object):
+class ConceptsImportArchi(object):
 
     dictPoints = dict()
     dictDO = dict()
@@ -329,16 +329,25 @@ class CreateArchiFromConcepts(object):
             self.al.outputXML(self.tree, self.fileImportArchimate)
 
 if __name__ == "__main__":
-    cafc = CreateArchiFromConcepts()
 
-    logger.info("loading Concepts : %s" % filePPTXConcepts)
-    concepts = Concepts.loadConcepts(filePPTXConcepts)
+    start_time = ArchiLib.startTimer()
 
-    #aConcepts.logConcepts()
+    ic = ConceptsImportArchi()
 
-    cafc.createDiagramModels(concepts)
+    logger.info("Using : %s" % fileArchimate)
 
-    cafc.outputXML()
+    logger.info("Loading :" + fileConceptsBatches)
+    concepts = Concepts.loadConcepts(fileConceptsBatches)
 
+    # Create Subfolder
+    folder = "Implementation & Migration"
+    subfolder = "Dependancy Analysis - %s" % time.strftime("%Y%d%m_%H%M%S")
+
+
+    ic.importConcepts(concepts, folder, subfolder)
+
+    ic.exportXML()
+
+    ArchiLib.stopTimer(start_time)
 
 

@@ -257,6 +257,9 @@ class DocumentsSimilarity(object):
 
 
 if __name__ == "__main__":
+
+    start_time = ArchiLib.startTimer()
+
     al = ArchiLib()
 
     lemmatizer = WordNetLemmatizer()
@@ -317,3 +320,4 @@ if __name__ == "__main__":
                 for x in sorted(listTopics, key=lambda c: abs(c[1]), reverse=False):
                     logger.info("Topic : %s[%d]" % (x[0], x[1]))
 
+    ArchiLib.stopTimer(start_time)

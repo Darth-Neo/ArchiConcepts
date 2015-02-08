@@ -18,10 +18,10 @@ logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
 from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib as AL
-from al_ArchiLib.Neo4JLib import Neo4JLib as NL
+from al_ArchiLib.ArchiLib import ArchiLib
+from al_ArchiLib.Neo4JLib import Neo4JLib
 
-class ImportNeo4J(object):
+class ConceptsImportNeo4J(object):
 
     def __init__(self):
         self.CleanNeo4j = CleanNeo4j
@@ -35,14 +35,15 @@ class ImportNeo4J(object):
         if self.ClearNeo4J:
             self.graph.clearGraphDB()
 
-        self.nj = NL.Neo4jLib()
+        self.al = ArchiLib()
+        self.nj = Neo4JLib()
 
     def addGraphNodes(self, concepts, n=0, threshold=1):
         n += 1
         for c in concepts.getConcepts().values():
             logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
 
-            AL.cleanConcept(c)
+            self.al.cleanConcept(c)
 
             c.name = c.name.replace("\"", "'")
 
@@ -60,7 +61,7 @@ class ImportNeo4J(object):
 
             logger.debug("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
 
-            AL.cleanConcept(c)
+            self.al.cleanConcept(c)
 
             c.name = c.name.replace("\"", "'")
 
@@ -97,9 +98,9 @@ class ImportNeo4J(object):
         logger.info("Avg gl[x]=%3.4f" % (sum_pr / len_pr))
 
     def clearNeo4J(self):
-        if AL.gdb == AL.LocalGBD:
+        if gdb == LocalGBD:
             logger.info("Reset Neo4J Graph DB")
-            call([AL.resetNeo4J])
+            call([self.al.resetNeo4J])
 
     def importNeo4J(self, concepts, ClearNeo4J=False):
 
@@ -123,10 +124,15 @@ class ImportNeo4J(object):
 
 if __name__ == "__main__":
 
-    importConcepts = Concepts.loadConcepts(AL.fileConceptsExport)
+    start_time = ArchiLib.startTimer()
 
-    in4j = ImportNeo4J()
+    importConcepts = Concepts.loadConcepts(ArchiLib.fileConceptsExport)
+
+    in4j = ConceptsImportNeo4J()
+
     in4j.importNeo4J(importConcepts, ClearNeo4J=True)
+
+    ArchiLib.stopTimer(start_time)
 
 
 

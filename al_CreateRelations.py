@@ -15,9 +15,17 @@ import random
 from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
 
-from al_ArchiLib.CreateRelations import *
+from al_ArchiLib.Constants import *
+from al_ArchiLib.al_ArchiLib import ArchiLib
+from al_ArchiLib.CreateRelationsInArchi import CreateRelationsInArchi
+
 
 if __name__ == "__main__":
 
-    cr = CreateRelations()
-    cr.build()
+    start_time = ArchiLib.startTimer()
+
+    cr = CreateRelationsInArchi()
+
+    cr.createRelations()
+
+    ArchiLib.stopTimer(start_time)

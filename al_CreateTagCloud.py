@@ -20,6 +20,9 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
+from al_ArchiLib.Constants import *
+from al_ArchiLib.ArchiLib import ArchiLib
+
 logger = Logger.setupLogging(__name__)
 
 def createTopicsCloud(concepts, topic, numWords=50, scale=0.25):
@@ -57,6 +60,8 @@ def updateConceptLemma(concepts, lemmatizer):
 
 
 if __name__ == "__main__":
+
+    start_time = ArchiLib.startTimer()
 
     #conceptFile = "TopicChunks.p"
     #topic = "Chunk"
@@ -101,4 +106,7 @@ if __name__ == "__main__":
     concepts = Concepts.loadConcepts(filePath)
 
     createTopicsCloud(concepts, topic)
+
+    ArchiLib.stopTimer(start_time)
+
 

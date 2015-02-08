@@ -14,10 +14,12 @@ logger = Logger.setupLogging(__name__)
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
 
-from al_ArchiLib.CreatePPTX import *
+from al_ArchiLib.Constants import *
+from al_ArchiLib.ArchiCreatePPTX import ArchiCreatePPTX
 
 if __name__ == "__main__":
-    cpfa = CreatePPTX()
+
+    cpfa = ArchiCreatePPTX()
 
     cpfa.build()
 

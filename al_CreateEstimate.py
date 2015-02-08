@@ -16,12 +16,6 @@ from nl_lib.Constants import *
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
-from openpyxl import Workbook
-from openpyxl import load_workbook
-from openpyxl.compat import range
-from openpyxl.cell import get_column_letter
-from openpyxl.worksheet import Worksheet as worksheet
-
 from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.Neo4JLib import Neo4JLib

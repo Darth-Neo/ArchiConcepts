@@ -23,9 +23,9 @@ logger = Logger.setupLogging(__name__)
 
 logger.setLevel(logging.DEBUG)
 
-from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib as AL
-from al_ArchiLib.Neo4JLib import Neo4JLib as NL
+from Constants import *
+from ArchiLib import ArchiLib as AL
+from Neo4JLib import Neo4JLib as NL
 
 fileArchimate = "./test/Testing.archimate"
 

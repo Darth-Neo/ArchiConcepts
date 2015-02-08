@@ -14,7 +14,7 @@ import time
 logger = Logger.setupLogging(__name__)
 
 from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib as AL
+from al_ArchiLib.ArchiLib import ArchiLib
 
 def distribution(concepts, tc=None):
     distribution = dict()
@@ -78,8 +78,6 @@ if __name__ == "__main__":
 
     logger.info("Loading :" + filePath)
     concepts = Concepts.loadConcepts(filePath)
-
-
 
     concepts.logConcepts()
     #concepts.printConcepts(list)

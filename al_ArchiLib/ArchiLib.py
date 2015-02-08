@@ -1025,9 +1025,25 @@ class ArchiLib(object):
 
                 self.createArchimateElements(xmlSheet, x, element)
 
-    #
-    # Utility Functions
-    #
+
+
+    def _checkDuplicate(self, dmID, x):
+        xp = "//element[@id='" + dmID + "']"
+        dm = self.tree.xpath(xp)[0]
+
+        dml = dm.getchildren()
+
+        Duplicate = False
+        for xdml in dml:
+            logger.info("%s" % (xdml.get("name")))
+            xdml_name = xdml.get("name")
+            if xdml_name == x.name:
+                logger.debug("%s Duplicate!" % xdml.get("id"))
+                return xdml.get("id")
+
+        logger.debug("dml[%d]" % (len(dml)))
+
+        return None
 
     def _getID(self):
         r = str(hex(random.randint(0, 16777215)))[-6:] + str(hex(random.randint(0, 16777215))[-2:])
@@ -1039,9 +1055,6 @@ class ArchiLib(object):
     def getID(self):
         return self._getID()
 
-    def cleanString(self, s):
-        return  self._cleanString(s)
-
     def _cleanString(self, s):
         r = ""
         if s == None:
@@ -1051,6 +1064,10 @@ class ArchiLib(object):
             if x.isalnum() or x in (" ", "-", "."):
                 r = r + x
         return r.lstrip(" ").rstrip(" ")
+
+    def cleanString(self, s):
+        return  self._cleanString(s)
+
 
     def _cleanCapital(self, s):
         r = ""
@@ -1077,113 +1094,13 @@ class ArchiLib(object):
         logger.debug("cleanCapital : %s" % r)
         return r
 
-    def _checkDuplicate(self, dmID, x):
-        xp = "//element[@id='" + dmID + "']"
-        dm = self.tree.xpath(xp)[0]
-
-        dml = dm.getchildren()
-
-        Duplicate = False
-        for xdml in dml:
-            logger.info("%s" % (xdml.get("name")))
-            xdml_name = xdml.get("name")
-            if xdml_name == x.name:
-                logger.debug("%s Duplicate!" % xdml.get("id"))
-                return xdml.get("id")
-
-        logger.debug("dml[%d]" % (len(dml)))
-
-        return None
-
-    #
-    # Generic print of info
-    #
-    def print_xml(self, el, i=3, n=0):
-        if i==0:
-            return
-
-        spaces = " " * n
-        n = n + 1
-
-        #print("%se.%d.%s - %s" % (spaces, i, el.tag, el.text))
-        print("%se.%d.%s" % (spaces, i, el.tag))
-
-        spaces = " " * n
-        n = n + 1
-
-        #nm = el.nsmap
-        #for n in nm:
-        #    print("--%s = %s" % (n, nm[n]))
-
-        attributes = el.attrib
-        for atr in attributes:
-            print("%sa.%d.%s = %s" % (spaces, i, atr, attributes[atr]))
-
-        i = i - 1
-        for elm in el:
-            self.print_xml(elm, i, n)
-
-    def print_folders(self):
-        r = self.tree.xpath('folder')
-
-        for x in r:
-            print("%s" % (x.get("name")))
-
-    def print_folder(self, folder):
-
-        se = self.tree.xpath("folder[@name='%s']" % (folder))
-
-        for x in se:
-            self.print_xml(x, i=6)
-
-    def print_elements(self):
-        r = self.tree.getroot()
-
-        r = self.tree.xpath('folder/element')
-
-        for x in r:
-            print x.get("name")
-
-    def print_id(self, id):
-        a = "id"
-        p = "//child[@%s=\"%s\"]" % (a, id)
-        r = self.tree.xpath("//@id=\"%s\"" % id, namespaces=NS_MAP)
-
-        try:
-            self.print_xml(r[0], i=1)
-        except:
-            print("Fail - %s" % p)
-
-    def print_types(self, a):
-
-        dictTypes = dict()
-
-        r = self.tree.xpath("//@%s" % a, namespaces=NS_MAP)
-
-        for x in r:
-            if dictTypes.has_key(x):
-                dictTypes[x] += 1
-            else:
-                dictTypes[x] = 1
-
-        for x in dictTypes:
-            logger.info("Parent - %s:ID - %s" % (x.getparent().get("name"),x.getparent().get("id")))
-
-            p = "//element[@%s=\"%s\"]" % (a, x)
-            r = self.tree.xpath(p, namespaces=NS_MAP)
-
-            if len(r) > 0:
-                self.print_xml(r[0], i=1)
-
-    @staticmethod
-    def addToNodeDict(type, d):
+    def addToNodeDict(self, type, d):
         if d.has_key(type):
             d[type] += 1
         else:
             d[type] = 1
 
-    @staticmethod
-    def cleanConcept(concept):
+    def cleanConcept(self, concept):
         if concept.typeName[:10] == "archimate:" :
             concept.typeName = concept.typeName[10:]
 
@@ -1205,7 +1122,7 @@ class ArchiLib(object):
     def stopTimer(start_time):
         #measure wall time
         strStartTime = time.asctime(time.localtime(start_time))
-        logger.info("Start time : %s" % strStartTime)
+        logger.info("\nStart time : %s" % strStartTime)
 
         end_time = time.time()
 

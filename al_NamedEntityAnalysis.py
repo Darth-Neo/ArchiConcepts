@@ -20,14 +20,14 @@ from lxml import etree
 import nltk
 
 from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib as AL
+from al_ArchiLib.ArchiLib import ArchiLib
 
 logger.setLevel(logging.INFO)
 
 if __name__ == "__main__":
     fileConcepts = "req.p"
 
-    al = AL.ArchiLib()
+    al = ArchiLib()
 
     al.logTypeCounts()
 

@@ -37,7 +37,7 @@ from pattern.db import csv
 from pattern.en import parse, Sentence, parsetree
 
 from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib as AL
+from al_ArchiLib.ArchiLib import ArchiLib
 
 class Chunks(object):
 
@@ -175,8 +175,8 @@ class Chunks(object):
 
 if __name__ == "__main__":
 
-    conceptsFile = AL.fileRequirementsConcepts
-    al = AL.ArchiLib()
+    conceptsFile = fileRequirementsConcepts
+    al = ArchiLib()
 
     searchTypes = list()
     searchTypes.append("archimate:Requirement")

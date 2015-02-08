@@ -31,13 +31,18 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib
+from Constants import *
+from ArchiLib import ArchiLib
 
 class ExportArchi(object):
 
     def __init__(self):
-        pass
+        logger.info("Archimate File : %s" % fileArchimate)
+        logger.info("Export File    : %s" % fileConceptsExport)
+
+        self.al = ArchiLib()
+
+        self.al.logTypeCounts()
 
     def findConcept(self, concepts, name, n=0):
         n += 1
@@ -62,15 +67,7 @@ class ExportArchi(object):
                 e = concepts.addConceptKeyType(lemmaWord, "Word")
                 f = e.addConceptKeyType(pos, "POS")
 
-    def exportArchi(self, al=None):
-        logger.info("Archimate File : %s" % fileArchimate)
-        logger.info("Export File    : %s" % fileConceptsExport)
-
-        if al == None:
-            self.al = ArchiLib()
-            self.al.logTypeCounts()
-
-        p, fname = os.path.split(fileArchimate)
+    def exportArchi(self):
 
         m = hashlib.md5()
 
@@ -126,8 +123,13 @@ class ExportArchi(object):
 
         Concepts.saveConcepts(concepts, fileConceptsExport)
 
-        return concepts, al
+        return concepts
 
 if __name__ == "__main__":
+    start_time = ArchiLib.startTimer()
+
     ea = ExportArchi()
+
     ea.exportArchi()
+
+    ArchiLib.stopTimer(start_time)

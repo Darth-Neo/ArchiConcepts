@@ -16,6 +16,8 @@ from nl_lib.Concepts import Concepts
 from nl_lib.ConceptGraph import PatternGraph, GraphVizGraph
 from nl_lib.Constants import *
 
+from Constants import *
+
 class ConceptsGraph(object):
 
     def __init__(self, graph=None, fileImage=None):

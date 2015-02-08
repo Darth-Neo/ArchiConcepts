@@ -25,13 +25,18 @@ from al_ArchiLib.ArchiLib import ArchiLib as AL
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
+from al_ArchiLib.Constants import *
+from al_ArchiLib.ArchiLib import ArchiLib
+
+
 class TraverseNodes(object):
 
     def __init__(self, nameModel):
+
         self.fileArchimate = fileArchimate
         self.csvFileExport = csvFileExport
 
-        self.al = AL.ArchiLib(self.fileArchimate, self.csvfileExport)
+        self.al = ArchiLib(self.fileArchimate, self.csvfileExport)
 
         self.al.logTypeCounts()
 

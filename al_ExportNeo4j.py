@@ -26,6 +26,7 @@ if __name__ == "__main__":
     concepts = Concepts("Neo4J", "Neo4J Graph DB")
 
     nj = Neo4JLib()
+
     nj.exportNeo4JToConcepts(concepts)
 
     ArchiLib.stopTimer(start_time)

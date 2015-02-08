@@ -18,19 +18,20 @@ from pptx import Presentation
 from pptx.enum.shapes import MSO_SHAPE
 from pptx.util import Inches
 from pptx.dml.color import RGBColor
-from pptx.enum.dml import MSO_THEME_COLOR
+#from pptx.enum.dml import MSO_THEME_COLOR
 from pptx.util import Pt
-from pptx.oxml.shapes import connector
-from pptx.parts.slide import _SlideShapeTree
+#from pptx.oxml.shapes import connector
+#from pptx.parts.slide import _SlideShapeTree
 
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
 
-import ArchiLib as AL
+from Constants import *
+from ArchiLib import ArchiLib
 
-class CreatePPTX(object):
+class ArchiCreatePPTX(object):
 
-    def __init__(self):
+    def __init__(self, afileArchimate=None, afilePPTXIn=None, afilePPTXOut=None):
         self.A_NS           =  "http://schemas.openxmlformats.org/drawingml/2006/main"
         self.P_NS           =  "http://schemas.openxmlformats.org/presentationml/2006/main"
         self.R_NS           =  "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
@@ -43,11 +44,28 @@ class CreatePPTX(object):
         self.SCALE = 0.90
         self.EMU = 914400.0
 
-        self.filePPTX      = AL.filePPTX
-        self.fileArchimate = AL.fileArchimate
+        if afilePPTXIn == None:
+            self.filePPTX      = filePPTXIn
+        else:
+            self.filePPTX      = afilePPTXIn
 
-        etree.QName(AL.ARCHIMATE_NS, 'model')
+        if afilePPTXOut == None:
+            self.filePPTXOut   = filePPTXOut
+        else:
+            self.filePPTXOut   = afilePPTXOut
+
+        if afileArchimate == None:
+            self.fileArchimate = fileArchimate
+        else:
+            self.fileArchimate = afileArchimate
+
+        if os.path.isfile(self.fileArchimate) <> True:
+            logger.error("File does not exist : %s" % self.fileArchimate)
+
+        etree.QName(ARCHIMATE_NS, 'model')
         self.tree = etree.parse(self.fileArchimate)
+
+        self.prs = Presentation()
 
     # Example of what the xml for a connector looks like
     def addXMLConnector(self, shape):
@@ -105,16 +123,16 @@ class CreatePPTX(object):
 
         attributes = n.attrib
 
-        if attributes.get(AL.ARCHI_TYPE) == type:
+        if attributes.get(ARCHI_TYPE) == type:
             if attributes.get("id") != None:
                 listModels.append((n, attributes))
 
-                logger.debug("%s : %s:%s:%s:%s" % (AL.DIAGRAM_MODEL, n.tag, n.get("name"), n.get("id"), attributes.get(AL.ARCHI_TYPE)))
+                logger.debug("%s : %s:%s:%s:%s" % (DIAGRAM_MODEL, n.tag, n.get("name"), n.get("id"), attributes.get(ARCHI_TYPE)))
 
         for y in n:
             self.getNode(y, listModels, type)
 
-    def getAll(self, listModels, type=AL.DIAGRAM_MODEL):
+    def getAll(self, listModels, type=DIAGRAM_MODEL):
         for x in self.tree.getroot():
             self.getNode(x, listModels, type)
 
@@ -292,16 +310,15 @@ class CreatePPTX(object):
                 zip_file.write(os.path.join(root, file))
         zip_file.close
 
-    def build(self):
+    def buildPPTX(self):
 
-        prs = Presentation()
-        title_only_slide_layout = prs.slide_layouts[self.TITLE_ONLY_SLIDE_LAYOUT]
+        title_only_slide_layout = self.prs.slide_layouts[self.TITLE_ONLY_SLIDE_LAYOUT]
 
-        slide = prs.slides.add_slide(title_only_slide_layout)
+        slide = self.prs.slides.add_slide(title_only_slide_layout)
         shapes = slide.shapes
 
         timeTxt = time.strftime("%Y%d%m_%H%M%S")
-        shapes.title.text = "Built from %s on %s" % (timeTxt)
+        shapes.title.text = "Built on %s" % (timeTxt)
 
         listModels = list()
         listConnectors = list()
@@ -329,26 +346,26 @@ class CreatePPTX(object):
             listDO.append(ls)
 
             p = "//element[@id=\"%s\"]" % (x[0].get("id"))
-            r = createPPTX.tree.xpath(p, namespaces=AL.NS_MAP)
+            r = createPPTX.tree.xpath(p, namespaces=NS_MAP)
             xc = r[0].getchildren()
 
             for y in xc:
                 child = str(y.get("archimateElement"))
-                logger.debug("  %s[%s]: entity:%s" % (y.get(AL.ARCHI_TYPE), y.get("id"), child))
+                logger.debug("  %s[%s]: entity:%s" % (y.get(ARCHI_TYPE), y.get("id"), child))
 
                 n = createPPTX.findNode(child)
 
                 if n == None or isinstance(n, list):
                     continue
 
-                shapeName = str(n.get("name"))
+                shapeName = n.get("name").encode('ascii',errors='ignore')
                 logger.debug("  DO = %s" % (shapeName))
 
                 z = y.getchildren()
                 for w in z:
-                    logger.debug("    %s[%s]" % (w.get(AL.ARCHI_TYPE), w.get("id")))
+                    logger.debug("    %s[%s]" % (w.get(ARCHI_TYPE), w.get("id")))
 
-                    if w.get(AL.ARCHI_TYPE) == "archimate:Connection":
+                    if w.get(ARCHI_TYPE) == "archimate:Connection":
                         logger.debug("      source=%s, target=%s, relationship=%s" % (w.get("source"), w.get("target"), w.get("relationship")))
 
                         ls = list()
@@ -358,7 +375,7 @@ class CreatePPTX(object):
 
                         relation = w.get("relationship")
                         rn = createPPTX.findNode(relation)
-                        logger.debug("      relation : %s[%s]" % (rn.get("name"), rn.get(AL.ARCHI_TYPE)))
+                        logger.debug("      relation : %s[%s]" % (rn.get("name"), rn.get(ARCHI_TYPE)))
                         if rn.get("name") != None:
                             ls.append(str(rn.get("name")))
 
@@ -373,8 +390,8 @@ class CreatePPTX(object):
                     elif w.get("x") != None:
                         logger.debug("    x=%s, y=%s" % (w.get("x"), w.get("y")))
                         ls = list()
-                        ls.append(str(y.get(AL.ARCHI_TYPE)))
-                        ls.append(str(n.get(AL.ARCHI_TYPE)))
+                        ls.append(str(y.get(ARCHI_TYPE)))
+                        ls.append(str(n.get(ARCHI_TYPE)))
                         ls.append(shapeName)
                         ls.append(str(y.get("id")))
                         ls.append(str(w.get("x")))
@@ -391,8 +408,8 @@ class CreatePPTX(object):
                     #
                     # New Slide
                     #
-                    slide_layout = prs.slide_layouts[self.TITLE_ONLY_SLIDE_LAYOUT]
-                    slide = prs.slides.add_slide(slide_layout)
+                    slide_layout = self.prs.slide_layouts[self.TITLE_ONLY_SLIDE_LAYOUT]
+                    slide = self.prs.slides.add_slide(slide_layout)
                     shapes = slide.shapes
 
                     shapes.title.text = "%s" % (model[1])
@@ -459,8 +476,10 @@ class CreatePPTX(object):
                     listConnectors.append(ll)
 
         # save file
-        logger.info("Saved %s" % createPPTX.PPTXFilename)
-        prs.save(createPPTX.PPTXFilename)
+        logger.info("\n Saved %s" % self.filePPTXOut)
+        self.prs.save(self.filePPTXOut)
+
+        return self.prs
 
         #
         # Add Connectors
@@ -471,9 +490,12 @@ class CreatePPTX(object):
 
 if __name__ == "__main__":
 
-    createPPTX = CreatePPTX()
+    start_time = ArchiLib.startTimer()
 
-    createPPTX.build()
+    createPPTX = ArchiCreatePPTX()
 
+    createPPTX.buildPPTX()
+
+    ArchiLib.stopTimer(start_time)
 
 

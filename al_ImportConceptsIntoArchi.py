@@ -18,7 +18,7 @@ from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
 
 from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib as AL
+from al_ArchiLib.ArchiLib import ArchiLib
 
 dictConcepts = dict()
 
@@ -47,7 +47,7 @@ def insertConceptRelation(concepts, n=0):
         attrib = dict()
         attrib["source"] = sourceID
         attrib["target"] = targetID
-        attrib[AL.ARCHI_TYPE] = "archimate:AssociationRelationship"
+        attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
         al.insertRel(tag, "Relations", attrib)
 
         insertConceptRelation(concept, n)
@@ -59,7 +59,7 @@ def insertConceptNode(concepts, subfolder, n=0):
     if n == 0:
         attrib = dict()
         attrib["name"] = concepts.name
-        attrib[AL.ARCHI_TYPE] = concepts.typeName
+        attrib[ARCHI_TYPE] = concepts.typeName
         al.insertNode(tag, folder, attrib)
         C_ID = attrib["id"]
 
@@ -72,7 +72,7 @@ def insertConceptNode(concepts, subfolder, n=0):
     for concept in concepts.getConcepts().values():
         attrib = dict()
         attrib["name"] = concept.name
-        attrib[AL.ARCHI_TYPE] = concept.typeName
+        attrib[ARCHI_TYPE] = concept.typeName
         al.insertNode(tag, folder, attrib)
         C_ID = attrib["id"]
 
@@ -85,13 +85,13 @@ def insertConceptNode(concepts, subfolder, n=0):
 
 
 if __name__ == "__main__":
-    logger.info("Using : %s" % AL.fileArchimate)
+    logger.info("Using : %s" % fileArchimate)
 
     conceptFile = "batches.p"
     logger.info("Loading :" + conceptFile)
     concepts = Concepts.loadConcepts(conceptFile)
 
-    al = AL.ArchiLib()
+    al = ArchiLib()
 
     # Create Subfolder
     folder = "Implementation & Migration"

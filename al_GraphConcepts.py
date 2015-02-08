@@ -17,9 +17,12 @@ from nl_lib.ConceptGraph import PatternGraph, GraphVizGraph
 from nl_lib.Constants import *
 
 from al_ArchiLib.Constants import *
+from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.ConceptsGraph import ConceptsGraph
 
 if __name__ == "__main__":
+    start_time = ArchiLib.startTimer()
+
     #conceptFile = "documents.p"
     #conceptFile = "words.p"
     #conceptFile = "NVPChunks.p"
@@ -38,7 +41,10 @@ if __name__ == "__main__":
     # c.logConcepts()
 
     cg = ConceptsGraph(fileImage="DVCBatches.png")
+
     cg.conceptsGraph(concepts)
+
+    ArchiLib.stopTimer(start_time)
 
 
 

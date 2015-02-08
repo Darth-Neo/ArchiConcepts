@@ -20,15 +20,16 @@ from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
 
 from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib as AL
+from al_ArchiLib.ArchiLib import ArchiLib
 
 if __name__ == "__main__":
-    # Archimate
 
-    etree.QName(AL.ARCHIMATE_NS, 'model')
-    treeArchi = etree.parse(AL.fileArchimate)
+    start_time = ArchiLib.startTimer()
 
-    al = AL.ArchiLib()
+    etree.QName(ARCHIMATE_NS, 'model')
+    treeArchi = etree.parse(fileArchimate)
+
+    al = ArchiLib()
 
     dirWSDL = "/Users/morrj140/Documents/SolutionEngineering/Jawa/Jawa_v2_rc37"
 
@@ -52,3 +53,5 @@ if __name__ == "__main__":
                     al.insertTwoColumns(treeArchi, "Application", "New Jawa", "archimate:ApplicationService", nFile, method)
 
     al.outputXML(treeArchi)
+
+    ArchiLib.stopTimer(start_time)

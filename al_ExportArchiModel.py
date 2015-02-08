@@ -22,6 +22,8 @@ from al_ArchiLib.ExportModel import ExportArchiModel
 
 if __name__ == "__main__":
 
+    start_time = ArchiLib.startTimer()
+
     eam = ExportArchiModel()
 
     listMTE = list()
@@ -40,3 +42,5 @@ if __name__ == "__main__":
     listMTE.append("To-Be DAM Functional Reference Architecture")
 
     eam.exportArchiModel(listMTE)
+
+    ArchiLib.stopTimer(start_time)

@@ -17,12 +17,14 @@ from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
 
 from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib as AL
+from al_ArchiLib.ArchiLib import ArchiLib
 
 if __name__ == "__main__":
-    logger.info("Using : %s" % AL.fileArchimate)
+    start_time = ArchiLib.startTimer()
 
-    al = AL.ArchiLib()
+    logger.info("Using : %s" % fileArchimate)
+
+    al = ArchiLib()
 
     al.logTypeCounts()
 
@@ -107,3 +109,5 @@ if __name__ == "__main__":
     #al.insertIntoFolder(tree, "Relations", fileMetaEntity, eType="archimate:BusinessFunction")
 
     al.outputXMLtoFile()
+
+    ArchiLib.stopTimer(start_time)

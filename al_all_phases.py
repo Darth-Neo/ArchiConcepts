@@ -19,7 +19,7 @@ from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib as AL
 from al_ArchiLib.DependencyAnalysis import DependencyAnalysis as DA
 from al_ArchiLib.ExportArchi import ExportArchi as EA
-from al_ArchiLib.ImportNeo4J import ImportNeo4J as IN
+from al_ArchiLib.ConceptsImportNeo4J import ImportNeo4J as IN
 from al_ArchiLib.AnalyzeGraph import AnalyzeGraph as AG
 from al_ArchiLib.Neo4JLib import Neo4JLib as NL
 

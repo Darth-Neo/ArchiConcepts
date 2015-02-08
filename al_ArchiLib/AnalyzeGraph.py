@@ -27,6 +27,7 @@ from al_ArchiLib.Neo4JLib import Neo4JLib
 class AnalyzeGraph(object):
 
     def __init__(self):
+        self.al = ArchiLib()
         self.nj = Neo4JLib()
         self.graph = NetworkXGraph()
 
@@ -40,7 +41,7 @@ class AnalyzeGraph(object):
         for c in concepts.getConcepts().values():
             logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
 
-            ArchiLib.cleanConcept(c)
+            self.al.cleanConcept(c)
 
             self.graph.addConcept(c)
 
@@ -56,7 +57,7 @@ class AnalyzeGraph(object):
 
             logger.debug("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
 
-            ArchiLib.cleanConcept(c)
+            self.al.cleanConcept(c)
 
             self.graph.addConcept(c)
 

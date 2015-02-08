@@ -21,8 +21,13 @@ from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.ExportFolderModels import ExportArchiFolderModels
 
 if __name__ == "__main__":
+    start_time = ArchiLib.startTimer()
+
     eafm = ExportArchiFolderModels()
+
     eafm.exportArchiFolderModels()
+
+    ArchiLib.stopTimer(start_time)
 
 
 

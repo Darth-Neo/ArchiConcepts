@@ -39,6 +39,7 @@ if __name__ == "__main__":
     start_time = ArchiLib.startTimer()
 
     ea = ExportArchi()
+
     ea.exportArchi()
 
     ArchiLib.stopTimer(start_time)

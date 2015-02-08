@@ -23,6 +23,7 @@ class ExportArchiFolderModels (object):
 
     def __init__(self, FNT=False):
         self.al = ArchiLib()
+
         self.al.logTypeCounts()
 
         if FNT == True:
@@ -30,34 +31,35 @@ class ExportArchiFolderModels (object):
         else:
             self.conceptsFile = fileEstimationConcepts
 
-    def exportArchiFolderModels(self):
+    def exportArchiFolderModels(self, folder):
 
-        if True:
-            folder = "Scenarios"
+        logger.info("Exporting Folder : %s" % folder)
 
-            logger.info("Exporting Folder : %s" % folder)
-            listMTE = self.al.getModelsInFolder(folder)
+        listMTE = self.al.getModelsInFolder(folder)
 
-            concepts = Concepts("Export", "Pickle")
+        concepts = Concepts("Export", "Pickle")
 
-            for ModelToExport in listMTE:
-                logger.info("  Model : %s" % ModelToExport)
-                d = concepts.addConceptKeyType(ModelToExport, "Model")
-                self.al.recurseModel(ModelToExport, d)
-
-            #concepts.logConcepts()
-        else:
-            concepts = Concepts.loadConcepts(self.conceptsFile)
+        for ModelToExport in listMTE:
+            logger.info("  Model : %s" % ModelToExport)
+            d = concepts.addConceptKeyType(ModelToExport, "Model")
+            self.al.recurseModel(ModelToExport, d)
 
         self.al.outputCSVtoFile(concepts)
 
         Concepts.saveConcepts(concepts, self.conceptsFile)
+
         logger.info("Save Concepts : %s" % self.conceptsFile)
 
 
 if __name__ == "__main__":
-    eafm = ExportArchiFolderModels()
-    eafm.exportArchiFolderModels()
+    start_time = ArchiLib.startTimer()
 
+    eafm = ExportArchiFolderModels()
+
+    folder = "Scenarios"
+
+    eafm.exportArchiFolderModels(folder)
+
+    ArchiLib.stopTimer(start_time)
 
 

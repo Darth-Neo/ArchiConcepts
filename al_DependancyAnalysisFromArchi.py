@@ -31,5 +31,12 @@ from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.DependencyAnalysis import *
 
 if __name__ == "__main__":
-    concepts = dependancyAnalysis()
+    start_time = ArchiLib.startTimer()
+
+    da = DependancyAnalysis(fileArchimate)
+
+    concepts = da.dependancyAnalysis()
+
     concepts.logConcepts()
+
+    ArchiLib.stopTimer(start_time)

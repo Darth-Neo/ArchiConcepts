@@ -17,27 +17,14 @@ from lxml import etree
 
 from traceback import format_exc
 
-import al_ImportIntoArchi as ia
+from al_ArchiLib.Constants import *
+from al_ArchiLib.Neo4JLib import Neo4JLib
 import al_CreateArchiFromConcepts as cafc
 
 import pytest
 
-NS_MAP={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
-XML_NS         =  NS_MAP["xsi"]
-ARCHIMATE_NS   =  NS_MAP["archimate"]
-
-ARCHI_TYPE = "{%s}type" % NS_MAP["xsi"]
-
 def test_PPTXCrawl():
-    #graph = NetworkXGraph()
-
-    #path_to_presentation = "/Users/morrj140/PycharmProjects/ArchiConcepts/example2.pptx"
-    #path_to_presentation = "/Users/morrj140/PycharmProjects/ArchiConcepts/ARP-TBX - High Level Solution_Draft_v9.pptx"
-    #path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/ARP-TBX - High Level Solution_Draft_v10a.pptx"
-    #path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/Accovia_Replacement_Messages.pptx"
-    #path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/ARP-TBX - Next Level Solution -v1.pptx"
-
-    path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/simple2.pptx"
+    path_to_presentation = "/Users/morrj140/Development/GitRepository/ArchiConcepts/test/simple.pptx"
 
     c = Concepts("Application", "Relations")
 
@@ -47,6 +34,6 @@ def test_PPTXCrawl():
 
     c.logConcepts()
 
-    Concepts.saveConcepts(c, "pptx.p")
+    Concepts.saveConcepts(c, filePPTXConcepts)
 
     assert isinstance(c, Concepts)
