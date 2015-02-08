@@ -18,31 +18,31 @@ logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
 from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib
-from al_ArchiLib.Neo4JLib import Neo4JLib
+from al_ArchiLib.ArchiLib import ArchiLib as AL
+from al_ArchiLib.Neo4JLib import Neo4JLib as NL
 
-class ConceptsImportNeo4J(object):
+class ImportNeo4J(object):
 
-    def __init__(self, ClearNeo4J=False):
+    def __init__(self):
+        self.CleanNeo4j = CleanNeo4j
 
-        if CleanNeo4j == True:
+        if self.ClearNeo4J:
             self.clearNeo4J()
 
         logger.info("Neo4J instance : %s" % gdb)
         self.graph = Neo4JGraph(gdb)
 
-        if CleanNeo4j == True:
+        if self.ClearNeo4J:
             self.graph.clearGraphDB()
 
-        self.al = ArchiLib()
-        self.nj = Neo4JLib()
+        self.nj = NL.Neo4jLib()
 
     def addGraphNodes(self, concepts, n=0, threshold=1):
         n += 1
         for c in concepts.getConcepts().values():
             logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
 
-            self.al.cleanConcept(c)
+            AL.cleanConcept(c)
 
             c.name = c.name.replace("\"", "'")
 
@@ -60,7 +60,7 @@ class ConceptsImportNeo4J(object):
 
             logger.debug("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
 
-            self.al.cleanConcept(c)
+            AL.cleanConcept(c)
 
             c.name = c.name.replace("\"", "'")
 
@@ -97,9 +97,9 @@ class ConceptsImportNeo4J(object):
         logger.info("Avg gl[x]=%3.4f" % (sum_pr / len_pr))
 
     def clearNeo4J(self):
-        if gdb == LocalGBD:
+        if AL.gdb == AL.LocalGBD:
             logger.info("Reset Neo4J Graph DB")
-            call([self.al.resetNeo4J])
+            call([AL.resetNeo4J])
 
     def importNeo4J(self, concepts, ClearNeo4J=False):
 
@@ -123,15 +123,10 @@ class ConceptsImportNeo4J(object):
 
 if __name__ == "__main__":
 
-    start_time = ArchiLib.startTimer()
+    importConcepts = Concepts.loadConcepts(AL.fileConceptsExport)
 
-    importConcepts = Concepts.loadConcepts(ArchiLib.fileConceptsExport)
-
-    in4j = ConceptsImportNeo4J()
-
+    in4j = ImportNeo4J()
     in4j.importNeo4J(importConcepts, ClearNeo4J=True)
-
-    ArchiLib.stopTimer(start_time)
 
 
 

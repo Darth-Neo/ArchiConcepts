@@ -31,21 +31,12 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-from Constants import *
-from ArchiLib import ArchiLib
+import ArchiLib as AL
 
 class ExportArchi(object):
 
-    def __init__(self, al=None):
-        logger.info("Archimate File : %s" % fileArchimate)
-        logger.info("Export File    : %s" % fileConceptsExport)
-
-        if al == None:
-            self.al = ArchiLib()
-        else:
-            self.al = al
-
-        self.al.logTypeCounts()
+    def __init__(self):
+        pass
 
     def findConcept(self, concepts, name, n=0):
         n += 1
@@ -70,48 +61,56 @@ class ExportArchi(object):
                 e = concepts.addConceptKeyType(lemmaWord, "Word")
                 f = e.addConceptKeyType(pos, "POS")
 
-    def exportArchi(self):
+    def exportArchi(self, al=None):
+        logger.info("Archimate File : %s" % AL.fileArchimate)
+        logger.info("Export File    : %s" % AL.fileConceptsExport)
+
+        if al == None:
+            self.al = AL.ArchiLib()
+            self.al.logTypeCounts()
+
+        p, fname = os.path.split(AL.fileArchimate)
 
         m = hashlib.md5()
 
         concepts = Concepts("Node", "Nodes")
 
-        logger.info("Found %d Nodes" % len(self.al.dictNodes))
-        logger.info("Found %d Edges" % len(self.al.dictEdges))
+        logger.info("Found %d Nodes" % len(al.dictNodes))
+        logger.info("Found %d Edges" % len(al.dictEdges))
 
         count = 0
         listTSort = list()
-        for x in self.al.dictEdges.keys():
-            logger.debug("Edge [%s]=%s" % (self.al.dictEdges[x], x))
+        for x in al.dictEdges.keys():
+            logger.debug("Edge [%s]=%s" % (al.dictEdges[x], x))
 
-            if self.al.dictEdges[x].has_key("source") and self.al.dictEdges[x].has_key("target"):
+            if al.dictEdges[x].has_key("source") and al.dictEdges[x].has_key("target"):
 
-                typeEdge   = self.al.dictEdges[x][ARCHI_TYPE]
+                typeEdge   = al.dictEdges[x][AL.ARCHI_TYPE]
                 logger.debug("Edge   : %s" % typeEdge)
 
-                source = self.al.dictEdges[x]["source"]
+                source = al.dictEdges[x]["source"]
                 logger.debug("Source : %s" % source)
 
-                target = self.al.dictEdges[x]["target"]
+                target = al.dictEdges[x]["target"]
                 logger.debug("Target : %s" % target)
 
-                logger.debug("  Rel    : %s" % (self.al.dictEdges[x][ARCHI_TYPE]))
+                logger.debug("  Rel    : %s" % (al.dictEdges[x][AL.ARCHI_TYPE]))
 
-                sourceName = self.al.getNodeName(source)
-                targetName = self.al.getNodeName(target)
+                sourceName = al.getNodeName(source)
+                targetName = al.getNodeName(target)
 
-                logger.debug(" %s--%s--%s" % (sourceName, self.al.dictEdges[x][ARCHI_TYPE][10:], targetName))
+                logger.debug(" %s--%s--%s" % (sourceName, al.dictEdges[x][AL.ARCHI_TYPE][10:], targetName))
 
-                if self.al.dictNodes.has_key(source):
+                if al.dictNodes.has_key(source):
                     l = list()
-                    sc = concepts.addConceptKeyType(sourceName, self.al.dictNodes[source][ARCHI_TYPE][10:])
+                    sc = concepts.addConceptKeyType(sourceName, al.dictNodes[source][AL.ARCHI_TYPE][10:])
                     #getWords(sourceName, sc)
 
                 nameEdge = "(" + sourceName + "," + targetName + ")"
                 logger.debug("nameEdge : %s[%d]" % (nameEdge, len(nameEdge)))
                 logger.debug("typeEdge : %s" % typeEdge[10:])
 
-                ne = str(self.al.cleanString(nameEdge))
+                ne = str(al.cleanString(nameEdge))
                 hl = hashlib.sha224(str(ne)).hexdigest()
 
                 logger.debug("hash : %s" % hl)
@@ -120,19 +119,14 @@ class ExportArchi(object):
 
                 rc = sc.addConceptKeyType(nh, typeEdge[10:])
 
-                if self.al.dictNodes.has_key(target):
-                    tc = rc.addConceptKeyType(targetName, self.al.dictNodes[target][ARCHI_TYPE][10:])
+                if al.dictNodes.has_key(target):
+                    tc = rc.addConceptKeyType(targetName, al.dictNodes[target][AL.ARCHI_TYPE][10:])
                     #getWords(sourceName, tc)
 
-        Concepts.saveConcepts(concepts, fileConceptsExport)
+        Concepts.saveConcepts(concepts, AL.fileConceptsExport)
 
-        return concepts, self.al
+        return concepts, al
 
 if __name__ == "__main__":
-    start_time = ArchiLib.startTimer()
-
     ea = ExportArchi()
-
     ea.exportArchi()
-
-    ArchiLib.stopTimer(start_time)

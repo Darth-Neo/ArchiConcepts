@@ -16,38 +16,42 @@ logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
 from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib as AL
-from al_ArchiLib.DependencyAnalysis import DependencyAnalysis as DA
-from al_ArchiLib.ExportArchi import ExportArchi as EA
-from al_ArchiLib.ConceptsImportNeo4J import ImportNeo4J as IN
-from al_ArchiLib.AnalyzeGraph import AnalyzeGraph as AG
-from al_ArchiLib.Neo4JLib import Neo4JLib as NL
+from al_ArchiLib.ArchiLib import ArchiLib
+from al_ArchiLib.ExportArchi import ExportArchi
+from al_ArchiLib.ConceptsImportNeo4J import ConceptsImportNeo4J
+from al_ArchiLib.AnalyzeGraph import AnalyzeGraph
+from al_ArchiLib.Neo4JLib import Neo4JLib
 
 if __name__ == "__main__":
 
-    start_time = AL.startTimer()
+    start_time = ArchiLib.startTimer()
 
-    al = AL.ArchiLib()
+    al = ArchiLib()
     al.logTypeCounts()
 
+    nj = Neo4JLib()
+    nj.Neo4JCounts()
+
+    ea = ExportArchi(al)
+
     logger.info("...Export Archi...")
-    concepts, al = EA.al_ExportArchi(al)
+    concepts, al = ea.exportArchi()
 
     logger.info("...Import Neo4J...")
 
-    if  AL.CleanNeo4j == True:
-        IN.importNeo4J(concepts, ClearNeo4J=True)
-    else:
-        IN.importNeo4J(concepts)
+    in4j = ConceptsImportNeo4J(ClearNeo4J=True)
+    in4j.importNeo4J(concepts)
+
 
     logger.info("...Neo4J Counts...")
-    NL.Neo4JCounts()
+    nj.Neo4JCounts()
 
     logger.info("...Analyze NetworkX...")
-    ag = AG.AnalyzeGraph()
+    ag = AnalyzeGraph()
+
     if  CleanNeo4j == True:
         ag.analyzeNetworkX(concepts)
     else:
         ag.analyzeNetworkX()
 
-    AL.stopTimer(start_time)
+    ArchiLib.stopTimer(start_time)
