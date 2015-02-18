@@ -509,7 +509,9 @@ class ArchiLib(object):
             logger.info(" ")
         return listCounts
 
-
+    #
+    # Node - <element xsi:type="archimate:Node" id="612a9b73" name="Linux Server"/>
+    #
     def insertNode(self, tag, folder, attrib):
         idd = None
 
@@ -531,12 +533,13 @@ class ArchiLib(object):
                 self.dictName[value] = idd
                 attrib["id"] = idd
 
-                xp = "//folder[@name='" + folder + "']"
                 elm = etree.Element(tag, attrib, nsmap=NS_MAP)
 
+                xp = "//folder[@name='" + folder + "']"
                 txp = self.tree.xpath(xp)
                 txp[0].insert(0, elm)
                 logger.debug("inNew!   : %s" % idd)
+
         except:
             logger.warn("attrib: %s" % (attrib))
 
@@ -565,127 +568,28 @@ class ArchiLib(object):
 
         return idd
 
-    def insertTwoColumns(self, folder, subfolder, fileMetaEntity, eType):
+    # Properties
+    # <element xsi:type="archimate:BusinessProcess" id="0ad0bac9" name="06.0 Activity Reports">
+    #        <property key="ExampleName" value="ExampleValue"/>
+    # </element>
+    def addProperties(self, properties):
 
-        #<element xsi:type="archimate:Node" id="612a9b73" name="Linux Server"/>
+        idd = properties["ID"]
+        node = self.findElementByID(idd)
 
-        file = open(fileMetaEntity, "rU")
-        reader = csv.reader(file)
-
-        xp = "folder[@name='" + folder + "']"
-        tag = "element"
-
-        # <folder name="Process" id="e23b1e50">
-
-        attrib = dict()
-        attrib["id"] = self._getID()
-        attrib["name"] = subfolder
-        self.insertNode("folder", folder, attrib)
-
-        folder = subfolder
-
-        rownum = 0
-
-        for row in reader:
-            if rownum == 0:
-                rownum += 1
-                continue
-
-            logger.info("rownum : %d" % rownum)
-            logger.info("row    : %s" % row)
-
-            CM1 = row[0].decode(encoding='UTF-8',errors='ignore').lstrip()
-            CM2 = row[1].decode(encoding='UTF-8',errors='ignore').lstrip()
-
-            C1 = CM1
-            attrib = dict()
-            attrib["name"] = CM1
-            attrib[ARCHI_TYPE] = eType
-            self.insertNode(tag, folder, attrib)
-            CM1_ID = attrib["id"]
-
-            C2 = CM2
-            attrib = dict()
-            attrib["name"] = CM2
-            attrib[ARCHI_TYPE] = eType
-            self.insertNode(tag, folder, attrib)
-            CM2_ID = attrib["id"]
-
-            attrib = dict()
-            attrib["source"] = CM1_ID
-            attrib["target"] = CM2_ID
-            attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-            self.insertRel(tag, "Relations", attrib)
-
-            C1 = C1.replace(":",".")
-            C1 = C1.replace("|",".")
-            C1 = C1.replace(" ",".")
-            C1 = C1.replace("_",".")
-            C1 = C1.replace(" ",".")
-
-            listC1 = list()
-            for x in C1.split("."):
-                attrib = dict()
-                attrib["name"] = x
-                attrib[ARCHI_TYPE] = eType
-                self.insertNode(tag, folder, attrib)
-                listC1.append(attrib["id"])
-
-            C2 = C2.replace(":",".")
-            C2 = C2.replace("|",".")
-            C2 = C2.replace(" ",".")
-            C2 = C2.replace("_",".")
-            C2 = C2.replace(" ",".")
-
-            listC2 = list()
-            for x in C2.split("."):
-                attrib = dict()
-                attrib["name"] = x
-                attrib[ARCHI_TYPE] = eType
-                self.insertNode(tag, folder, attrib)
-                listC2.append(attrib["id"])
-
-            if len(listC1) > 1:
-                pl = listC1[0]
-                for y in listC1[1:]:
-                    attrib = dict()
-                    attrib["source"] = pl
-                    attrib["target"] = y
-                    attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-                    self.insertRel(tag, "Relations", attrib)
-                    pl = y
-
-            if len(listC2) > 1:
-                pl = listC2[0]
-                for y in listC2[1:]:
-                    attrib = dict()
-                    attrib["source"] = pl
-                    attrib["target"] = y
-                    attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-                    self.insertRel(tag, "Relations", attrib)
-                    pl = y
-
-            attrib = dict()
-            attrib["source"] = listC1[0]
-            attrib["target"] = listC2[0]
-            attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-            self.insertRel(tag, "Relations", attrib)
-
-            attrib = dict()
-            attrib["source"] = CM1_ID
-            attrib["target"] = listC1[0]
-            attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-            self.insertRel(tag, "Relations", attrib)
-
-            attrib = dict()
-            attrib["source"] = CM2_ID
-            attrib["target"] = listC2[0]
-            attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-            self.insertRel(tag, "Relations", attrib)
+        n = 0
+        for key, value in properties.items():
+            if key != "ID":
+                prop = dict()
+                prop["key"] = key
+                prop["value"] = value
+                elm = etree.Element("property", prop, nsmap=NS_MAP)
+                node[0].insert(n, elm)
+                n += 1
 
     def insertNColumns(self, folder, subfolder, fileMetaEntity):
 
-        #<element xsi:type="archimate:Node" id="612a9b73" name="Linux Server"/>
+
 
         file = open(fileMetaEntity, "rU")
         reader = csv.reader(file)
@@ -708,12 +612,21 @@ class ArchiLib(object):
 
         listColumnHeaders = list()
 
+        properties = dict()
+
+        PROPERTIES_FLAG = False
+
         for row in reader:
+
             if rownum == 0:
                 rownum += 1
                 for col in row:
-                    colType = "archimate:%s" % col
-                    listColumnHeaders.append(colType)
+                    if col[:8] == "Property":
+                        colType = col
+                        listColumnHeaders.append(colType)
+                    else:
+                        colType = "archimate:%s" % col
+                        listColumnHeaders.append(colType)
                 continue
 
             logger.info("----------------------------------------------------------------------------------------")
@@ -724,10 +637,30 @@ class ArchiLib(object):
             colnum = 0
 
             for col in row:
-                logger.debug("    %d   [%s] %s" % (colnum, listColumnHeaders[colnum], col))
+                logger.info("    %d   [%s] %s" % (colnum, listColumnHeaders[colnum], col))
 
                 CM = self._cleanString(col.decode(encoding='ASCII',errors='ignore').lstrip())
 
+                if listColumnHeaders[colnum][:8] == "Property":
+                    logger.info("Properties : %s - %s" % (listColumnHeaders[colnum][9:], CM))
+
+                    if not properties.has_key("ID"):
+                        properties["ID"] = p
+
+                    properties[listColumnHeaders[colnum][9:]] = CM
+
+                    colnum += 1
+                    continue
+
+                if len(properties) > 0:
+                    logger.info("Add %d Properties" % (len(properties)))
+                    self.addProperties(properties)
+                    properties = dict()
+
+                #
+                # This is for a cvs which assumes value in column
+                # from a previous column
+                #
                 if CM == "" or CM == None:
                     logger.info("Using %d[%s]" % (colnum, previous[colnum]))
                     CM = previous[colnum]
@@ -735,6 +668,9 @@ class ArchiLib(object):
                     previous[colnum] = CM
                     logger.info("CM  %d[%s]" % (colnum, CM))
 
+                #
+                # Create the attributes
+                #
                 attrib = dict()
                 attrib["name"] = CM
                 attrib[ARCHI_TYPE] = listColumnHeaders[colnum]
@@ -754,149 +690,11 @@ class ArchiLib(object):
 
                 colnum += 1
 
-    def insertScenarios(self, fileMetaEntity):
+        if len(properties) > 0:
+            logger.info("Add %d Properties" % (len(properties)))
+            self.addProperties(properties)
+            properties = dict()
 
-        #<element xsi:type="archimate:Node" id="612a9b73" name="Linux Server"/>
-
-        file = open(fileMetaEntity, "rU")
-        reader = csv.reader(file)
-
-        folder = "Relations"
-        xp = "folder[@name='" + folder + "']"
-        tag = "element"
-
-        type = "archimate:AssociationRelationship"
-
-        count = 0
-        rownum = 0
-
-        scenario = ""
-        scenarioID = 0
-
-        for row in reader:
-            logger.info("rownum : %d" % rownum)
-            logger.info("row    : %s" % row)
-            if row[0] == "Scenario":
-                scenario = row[5].decode(encoding='UTF-8',errors='ignore')
-                site = row[1].decode(encoding='UTF-8',errors='ignore')
-
-                attrib = dict()
-                attrib["name"] = scenario
-                attrib[ARCHI_TYPE] = "archimate:BusinessEvent"
-                self.insertNode("element", "Business", attrib)
-                scenarioID = attrib["id"]
-
-                attrib = dict()
-                attrib["name"] = site
-                attrib[ARCHI_TYPE] = "archimate:BusinessFunction"
-                self.insertNode("element", "Business", attrib)
-                siteID = attrib["id"]
-
-                attrib = dict()
-                attrib["source"] = siteID
-                attrib["target"] = scenarioID
-                attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-                self.insertRel("element", "Relations", attrib)
-
-            elif row[0] == "Sub":
-                subscenario = row[5].decode(encoding='UTF-8',errors='ignore')
-                site = row[1].decode(encoding='UTF-8',errors='ignore')
-
-                attrib = dict()
-                attrib["name"] = subscenario.decode(encoding='UTF-8',errors='ignore')
-                attrib[ARCHI_TYPE] = "archimate:BusinessProcess"
-                self.insertNode("element", "Business", attrib)
-                subscenarioID = attrib["id"]
-
-                attrib = dict()
-                attrib["source"] = scenarioID
-                attrib["target"] = subscenarioID
-                attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-                self.insertRel("element", "Relations", attrib)
-
-                attrib = dict()
-                attrib["source"] = siteID
-                attrib["target"] = subscenarioID
-                attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-                self.insertRel("element", "Relations", attrib)
-
-            elif row[0] == "Req":
-
-                try:
-                    segment = row[1]
-                    entity = row[4]
-                    requirement = row[5]
-                    category = row[6]
-                    subcategory = row[7]
-
-                    attrib = dict()
-                    attrib["name"] = requirement
-                    attrib[ARCHI_TYPE] = "archimate:Requirement"
-                    self.insertNode("element", "Motivation", attrib)
-                    requirementID = attrib["id"]
-
-                    attrib = dict()
-                    attrib["name"] = entity
-                    attrib[ARCHI_TYPE] = "archimate:BusinessObject"
-                    self.insertNode("element", "Business", attrib)
-                    entityID = attrib["id"]
-
-                    attrib = dict()
-                    attrib["name"] = segment
-                    attrib[ARCHI_TYPE] = "archimate:BusinessFunction"
-                    self.insertNode("element", "Business", attrib)
-                    segmentID = attrib["id"]
-
-                    attrib = dict()
-                    attrib["name"] = category
-                    attrib[ARCHI_TYPE] = "archimate:BusinessFunction"
-                    self.insertNode("element", "Business", attrib)
-                    categoryID = attrib["id"]
-
-                    attrib = dict()
-                    attrib["name"] = subcategory
-                    attrib[ARCHI_TYPE] = "archimate:BusinessFunction"
-                    self.insertNode("element", "Business", attrib)
-                    subcategoryID = attrib["id"]
-
-                    attrib = dict()
-                    attrib["source"] = entityID
-                    attrib["target"] = requirementID
-                    attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-                    self.insertRel("element", "Relations", attrib)
-
-
-                    attrib = dict()
-                    attrib["source"] = categoryID
-                    attrib["target"] = subcategoryID
-                    attrib[ARCHI_TYPE] = "archimate:CompositionRelationship"
-                    self.insertRel("element", "Relations", attrib)
-
-                    attrib = dict()
-                    attrib["source"] = scenarioID
-                    attrib["target"] = requirementID
-                    attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-                    self.insertRel("element", "Relations", attrib)
-
-                    attrib = dict()
-                    attrib["source"] = subcategoryID
-                    attrib["target"] = requirementID
-                    attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-                    self.insertRel("element", "Relations", attrib)
-
-                    attrib = dict()
-                    #attrib["id"] = getID()
-                    attrib["source"] = segmentID
-                    attrib["target"] = requirementID
-                    attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-                    self.insertRel("element", "Relations", attrib)
-                except:
-                    logger.warn("ops...%s" % row)
-            else:
-                logger.info("Unknown line - %s" % row)
-                pass
-
-            rownum += 1
 
     def insertConcepts(self, tree, concepts, n=0):
 
@@ -1122,7 +920,7 @@ class ArchiLib(object):
     def stopTimer(start_time):
         #measure wall time
         strStartTime = time.asctime(time.localtime(start_time))
-        logger.info("\nStart time : %s" % strStartTime)
+        logger.info("Start time : %s" % strStartTime)
 
         end_time = time.time()
 

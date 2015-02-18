@@ -175,8 +175,9 @@ class Chunks(object):
 
 if __name__ == "__main__":
 
+    al = ArchiLib(fa="/Users/morrj140/Documents/SolutionEngineering/Archimate Models/FOS V4.archimate")
+
     conceptsFile = fileRequirementsConcepts
-    al = ArchiLib()
 
     searchTypes = list()
     searchTypes.append("archimate:Requirement")

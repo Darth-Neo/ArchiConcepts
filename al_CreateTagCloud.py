@@ -91,14 +91,13 @@ if __name__ == "__main__":
 
     lemmatizer = WordNetLemmatizer()
 
-    #directory = "/Users/morrj140/Development/GitRepository/DirCrawler/DVC_20141211_100141"
     directory = os.getcwd()
 
     os.chdir(directory)
 
-    c = Concepts("GraphConcepts", "GRAPH")
+    concepts = Concepts("GraphConcepts", "GRAPH")
 
-    updateConceptLemma(c, lemmatizer)
+    updateConceptLemma(concepts, lemmatizer)
 
     filePath = directory + os.sep + conceptFile
     logger.info("Loading Topics from : " + filePath)

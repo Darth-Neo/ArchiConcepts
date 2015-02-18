@@ -24,8 +24,8 @@ class ConceptsGraph(object):
         self.threshold=0.0005
 
         if graph == None:
-            self.graph = PatternGraph()
-            #self.graph = GraphVizGraph()
+            #self.graph = PatternGraph()
+            self.graph = GraphVizGraph()
         else:
             self.graph = graph
 

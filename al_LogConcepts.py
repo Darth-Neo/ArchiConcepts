@@ -61,7 +61,8 @@ def distribution(concepts, tc=None):
 if __name__ == "__main__":
 
     #conceptFile = "topicsDict.p"
-    conceptFile = "GapsSimilarity.p"
+    #conceptFile = "GapsSimilarity.p"
+    conceptFile  = "chunks.p"
     #conceptFile = "NVPChunks.p"
     #conceptFile = "ngrams.p"
     #conceptFile = "ngramscore.p"

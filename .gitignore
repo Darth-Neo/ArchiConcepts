@@ -1,4 +1,7 @@
 *.p
+build/*
+dist/*
+tmp/*
 *.pyc
 *.mm
 *.projection

@@ -25,7 +25,7 @@ gdb = LocalGBD
 #
 # file of Archimate XML
 #
-fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v24.archimate"
+fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/FOS.archimate"
 CleanNeo4j = False
 
 #fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CodeGen_v34.archimate"
@@ -52,6 +52,7 @@ fileConceptsBatches        = "batches.p"
 fileConceptsTraversal      = "traversal.p"
 fileEstimationConcepts     = "Estimation.p"
 fileRequirementsConcepts   = "req.p"
+fileRelationsConcepts      = "rel.p"
 fileConceptsDocuments      = "documents.p"
 fileConceptsChunks         = "chunks.p"
 fileNeo4JNodes             = "nodes.p"

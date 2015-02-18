@@ -40,7 +40,10 @@ if __name__ == "__main__":
 
     # c.logConcepts()
 
-    cg = ConceptsGraph(fileImage="DVCBatches.png")
+    #graph = PatternGraph()
+    graph = GraphVizGraph()
+
+    cg = ConceptsGraph(graph=graph, fileImage="FOS.png")
 
     cg.conceptsGraph(concepts)
 

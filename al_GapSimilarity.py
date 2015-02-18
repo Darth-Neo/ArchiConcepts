@@ -260,7 +260,7 @@ if __name__ == "__main__":
 
     start_time = ArchiLib.startTimer()
 
-    al = ArchiLib()
+    al = ArchiLib(fa="/Users/morrj140/Documents/SolutionEngineering/Archimate Models/FOS V4.archimate")
 
     lemmatizer = WordNetLemmatizer()
 
