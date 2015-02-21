@@ -3,7 +3,7 @@
 # Export Archimate into Neo4J
 #
 __author__ = 'morrj140'
-__VERSION__ = '0.1'
+__VERSION__ = '0.2'
 
 import sys
 import os
@@ -15,43 +15,33 @@ from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
-from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.ExportArchi import ExportArchi
 from al_ArchiLib.ConceptsImportNeo4J import ConceptsImportNeo4J
 from al_ArchiLib.AnalyzeGraph import AnalyzeGraph
 from al_ArchiLib.Neo4JLib import Neo4JLib
 
+from al_Constants import *
+
 if __name__ == "__main__":
 
     start_time = ArchiLib.startTimer()
 
-    al = ArchiLib()
-    al.logTypeCounts()
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v27.archimate"
 
-    nj = Neo4JLib()
-    nj.Neo4JCounts()
+    al = ArchiLib(fileArchimate)
 
-    ea = ExportArchi(al)
+    ea = ExportArchi(fileArchimate, fileConceptsExport)
 
     logger.info("...Export Archi...")
-    concepts, al = ea.exportArchi()
+    concepts = ea.exportArchi()
 
     logger.info("...Import Neo4J...")
-
     in4j = ConceptsImportNeo4J(ClearNeo4J=True)
     in4j.importNeo4J(concepts)
 
-
-    logger.info("...Neo4J Counts...")
-    nj.Neo4JCounts()
-
     logger.info("...Analyze NetworkX...")
-    ag = AnalyzeGraph()
-
-    if  CleanNeo4j == True:
-        ag.analyzeNetworkX(concepts)
-    else:
-        ag.analyzeNetworkX()
+    ag = AnalyzeGraph(gdb)
+    ag.analyzeNetworkX(concepts)
 
     ArchiLib.stopTimer(start_time)

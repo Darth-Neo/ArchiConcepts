@@ -161,7 +161,7 @@ if __name__ == "__main__":
     #nameModel = "Business Concepts"
     #nameModel = "Service Context - ToBe"
     #nameModel = "Business Requirement Topics"
-    nameModel = "System of Record"
+    nameModel = "System Interaction- ToBe"
 
     tn = TraverseNodes(nameModel)
 

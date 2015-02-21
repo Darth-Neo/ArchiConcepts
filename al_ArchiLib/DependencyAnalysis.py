@@ -26,9 +26,9 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.ConceptsGraph import ConceptsGraph
+from al_ArchiLib.Constants import *
 
 # The graph nodes
 class Task(object):

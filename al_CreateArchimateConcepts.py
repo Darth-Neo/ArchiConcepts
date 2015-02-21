@@ -15,22 +15,21 @@ from nl_lib.Concepts import Concepts
 
 from lxml import etree
 
-from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
+from al_Constants import *
 
 def al_ArchimateConcepts():
-
 
     logger.info("Using : %s" % fileArchimate)
 
     concepts = Concepts(fileArchConcepts, "Archimate")
 
-    al = ArchiLib()
+    al = ArchiLib(fileArchimate)
 
     al.logTypeCounts()
 
     #
-    # Create Concepts from Arhimate
+    # Create Concepts from Archimate
     #
     al.folderConcepts(concepts)
     Concepts.saveConcepts(concepts, fileArchConcepts)

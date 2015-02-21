@@ -36,8 +36,9 @@ from pattern.vector import Vector, distance, NB
 from pattern.db import csv
 from pattern.en import parse, Sentence, parsetree
 
-from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
+
+from al_Constants import *
 
 class Chunks(object):
 
@@ -175,7 +176,9 @@ class Chunks(object):
 
 if __name__ == "__main__":
 
-    al = ArchiLib(fa="/Users/morrj140/Documents/SolutionEngineering/Archimate Models/FOS V4.archimate")
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/FOS V4.archimate"
+
+    al = ArchiLib(fileArchimate)
 
     conceptsFile = fileRequirementsConcepts
 

@@ -20,15 +20,22 @@ from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
 
 class ExportArchiModel(object):
+    fileArchimate = None
+    fileConceptsExport = None
 
-    def __init__(self, afileArchimate=None):
+    def __init__(self, fa=None, fe=None):
 
-        self.al = ArchiLib()
-
-        if afileArchimate == None:
-            self.fileArchimate = fileArchimate
+        if fa != None:
+            self.fileArchimate = fa
         else:
-            self.fileArchimate = afileArchimate
+            self.fileArchimate = fileArchimate
+
+        if fe != None:
+            self.fileConceptsExport = fe
+        else:
+            self.fileConceptsExport = fileConceptsExport
+
+        self.al = ArchiLib(fa=self.fileArchimate, fe=self.fileConceptsExport)
 
     def exportArchiModel(self, listMTE):
 

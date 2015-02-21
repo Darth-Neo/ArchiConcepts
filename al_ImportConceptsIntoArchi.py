@@ -17,8 +17,8 @@ from nl_lib.Concepts import Concepts
 from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
 
-from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
+from al_Constants import *
 
 dictConcepts = dict()
 

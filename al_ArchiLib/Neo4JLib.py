@@ -22,21 +22,25 @@ from openpyxl.compat import range
 from openpyxl.cell import get_column_letter
 from openpyxl.worksheet import Worksheet as worksheet
 
-from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
+from al_ArchiLib.Constants import *
 
 class Neo4JLib(object):
 
-    def __init__(self):
-        # gdb defined in al_ArchiLib
+    fileNeo4JNodes= None
+    csvFileExport = None
+    fileExcelIn   = None
+    fileExcelIn   = None
+
+    def __init__(self, gdb):
         logger.debug("Neo4J instance : %s" % gdb)
 
         self.graph = Neo4JGraph(gdb)
-        self.csvFileExport = csvFileExport
 
-        self.fileExcelIn  = fileExcelIn
-        self.fileExcelOut = fileExcelOut
-        self.fileNodes    = "nodes.p"
+        self.fileNodes     = fileNeo4JNodes
+        self.csvFileExport = csvFileExport
+        self.fileExcelIn   = fileExcelIn
+        self.fileExcelOut  = fileExcelOut
 
     def Traversal(self, ql):
 

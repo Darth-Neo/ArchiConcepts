@@ -17,21 +17,23 @@ from nl_lib.Constants import *
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
-from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.Neo4JLib import Neo4JLib
 
+from al_Constants import *
+
 class ConceptsImportNeo4J(object):
+    clearNeo4J = False
 
     def __init__(self, ClearNeo4J=False):
 
-        if CleanNeo4j == True:
+        if ClearNeo4J == True:
             self.clearNeo4J()
 
         logger.info("Neo4J instance : %s" % gdb)
         self.graph = Neo4JGraph(gdb)
 
-        if CleanNeo4j == True:
+        if ClearNeo4J == True:
             self.graph.clearGraphDB()
 
         self.al = ArchiLib()

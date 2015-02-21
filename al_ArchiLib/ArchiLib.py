@@ -40,18 +40,20 @@ class ArchiLib(object):
     dictCount = dict()
 
     def __init__(self, fa=None, fe=None):
-        global fileArchimate
-        global fileConceptsExport
 
         if fa != None:
-            fileArchimate = fa
+            self.fileArchimate = fa
+        else:
+            self.fileArchimate = fileArchimate
 
         if fe != None:
-            fileExport = fe
+            self.fileConceptsExport = fe
+        else:
+            self.fileConceptsExport = fileConceptsExport
 
         etree.QName(ARCHIMATE_NS, 'model')
 
-        self.tree = etree.parse(fileArchimate)
+        self.tree = etree.parse(self.fileArchimate)
 
         # Populate Dictionaries for easier code
         self.parseAll()

@@ -19,14 +19,15 @@ from nl_lib.Concepts import Concepts
 from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
 
-from al_ArchiLib.Constants import *
+
 from al_ArchiLib.ArchiLib import ArchiLib
+from al_Constants import *
 
 if __name__ == "__main__":
 
     start_time = ArchiLib.startTimer()
 
-    etree.QName(ARCHIMATE_NS, 'model')
+    etree.QName(ArchiLib.ARCHIMATE_NS, 'model')
     treeArchi = etree.parse(fileArchimate)
 
     al = ArchiLib()

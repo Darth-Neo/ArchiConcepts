@@ -11,9 +11,12 @@ import time
 from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
 
-from al_ArchiLib.Constants import *
+
 from al_ArchiLib.ArchiLib import ArchiLib
+from al_Constants import *
 
 if __name__ == "__main__":
-    al = ArchiLib()
+
+    al = ArchiLib(fileArchimate)
+
     al.logTypeCounts()

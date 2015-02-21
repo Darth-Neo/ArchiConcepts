@@ -26,12 +26,15 @@ from pptx.util import Pt
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
 
-from Constants import *
-from ArchiLib import ArchiLib
+from al_ArchiLib.ArchiLib import ArchiLib
+
+from al_ArchiLib.Constants import *
 
 class ArchiCreatePPTX(object):
+    filePPTXIn  = None
+    filePPTXOut = None
 
-    def __init__(self, afileArchimate=None, afilePPTXIn=None, afilePPTXOut=None):
+    def __init__(self, afileArchimate, afilePPTXIn, afilePPTXOut):
         self.A_NS           =  "http://schemas.openxmlformats.org/drawingml/2006/main"
         self.P_NS           =  "http://schemas.openxmlformats.org/presentationml/2006/main"
         self.R_NS           =  "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
@@ -44,20 +47,9 @@ class ArchiCreatePPTX(object):
         self.SCALE = 0.90
         self.EMU = 914400.0
 
-        if afilePPTXIn == None:
-            self.filePPTX      = filePPTXIn
-        else:
-            self.filePPTX      = afilePPTXIn
-
-        if afilePPTXOut == None:
-            self.filePPTXOut   = filePPTXOut
-        else:
-            self.filePPTXOut   = afilePPTXOut
-
-        if afileArchimate == None:
-            self.fileArchimate = fileArchimate
-        else:
-            self.fileArchimate = afileArchimate
+        self.filePPTXIn     = afilePPTXIn
+        self.filePPTXOut    = afilePPTXOut
+        self.fileArchimate  = fileArchimate
 
         if os.path.isfile(self.fileArchimate) <> True:
             logger.error("File does not exist : %s" % self.fileArchimate)
@@ -492,7 +484,11 @@ if __name__ == "__main__":
 
     start_time = ArchiLib.startTimer()
 
-    createPPTX = ArchiCreatePPTX()
+    afileArchimate = ""
+    afilePPTXIn    = "test_in.pptx"
+    afilePPTXOut   = "test_out.pptx"
+
+    createPPTX = ArchiCreatePPTX(afileArchimate, afilePPTXIn, afilePPTXOut)
 
     createPPTX.buildPPTX()
 

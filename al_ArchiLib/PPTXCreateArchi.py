@@ -21,8 +21,8 @@ from lxml import etree
 
 from traceback import format_exc
 
-from Constants import *
-from ArchiLib import ArchiLib
+from al_ArchiLib.ArchiLib import ArchiLib
+from al_ArchiLib.Constants import *
 
 class PPTXCreateArchil(object):
 
@@ -35,13 +35,11 @@ class PPTXCreateArchil(object):
     dictNodeXY = None
     dictTextXY = None
 
-    def __init__(self, fileCrawl=None):
+    def __init__(self, fileCrawl):
         self.EMU = 914400.0
 
-        if fileCrawl == None:
-            self.path_to_presentation = filePPTXCrawl
-        else:
-            self.path_to_presentation = fileCrawl
+
+        self.path_to_presentation = fileCrawl
 
         self.dictNodes = dict()
         self.dictEdges = dict()

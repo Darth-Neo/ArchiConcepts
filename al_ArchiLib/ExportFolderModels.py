@@ -20,16 +20,25 @@ from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
 
 class ExportArchiFolderModels (object):
+    fileArchimate      = None
+    fileConceptsExport = None
+    conceptsFile       = None
 
-    def __init__(self, FNT=False):
-        self.al = ArchiLib()
+    def __init__(self, fa=None, fe=None):
 
-        self.al.logTypeCounts()
-
-        if FNT == True:
-            self.conceptsFile = fileEstimationConcepts + time.strftime("%Y%d%m_%H%M%S") +".p"
+        if fa != None:
+            self.fileArchimate = fa
         else:
-            self.conceptsFile = fileEstimationConcepts
+            self.fileArchimate = fileArchimate
+
+        if fe != None:
+            self.fileConceptsExport = fe
+        else:
+            self.fileConceptsExport = fileConceptsExport
+
+        self.al = ArchiLib(self.fileArchimate, self.fileConceptsExport)
+
+        self.conceptsFile = fileEstimationConcepts
 
     def exportArchiFolderModels(self, folder):
 

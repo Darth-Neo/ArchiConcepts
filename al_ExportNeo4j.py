@@ -14,9 +14,11 @@ logger.setLevel(logging.INFO)
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
 
-from al_ArchiLib.Constants import *
+
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.Neo4JLib import Neo4JLib
+
+from al_Constants import *
 
 if __name__ == "__main__":
 
@@ -25,7 +27,7 @@ if __name__ == "__main__":
 
     concepts = Concepts("Neo4J", "Neo4J Graph DB")
 
-    nj = Neo4JLib()
+    nj = Neo4JLib(gdb)
 
     nj.exportNeo4JToConcepts(concepts)
 

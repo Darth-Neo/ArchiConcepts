@@ -16,14 +16,15 @@ from nl_lib.Constants import *
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
-import al_ArchiLib as AL
+from al_ArchiLib.ArchiLib import ArchiLib
 import al_QueryGraph as QG
 import al_Neo4JCounts as NC
 
+from al_Constants import *
+
 def Neo4JDedups():
-    # gdb defined in al_ArchiLib
-    logger.info("Neo4J instance : %s" % AL.gdb)
-    graph = Neo4JGraph(AL.gdb)
+    logger.info("Neo4J instance : %s" % gdb)
+    graph = Neo4JGraph(gdb)
 
     logger.info("Before Dedup")
     NC.Neo4JCounts()

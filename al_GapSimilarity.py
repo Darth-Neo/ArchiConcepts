@@ -29,8 +29,9 @@ from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
+
+from al_Constants import *
 
 class Collocations(object):
     concepts         = None
@@ -264,7 +265,7 @@ if __name__ == "__main__":
 
     lemmatizer = WordNetLemmatizer()
 
-    etree.QName(ARCHIMATE_NS, 'model')
+    etree.QName(ArchiLib.ARCHIMATE_NS, 'model')
     tree = etree.parse(fileArchimate)
 
     searchTypes = list()

@@ -30,8 +30,8 @@ import ArchiLib as AL
 from nltk.corpus import wordnet_ic
 brown_ic = wordnet_ic.ic('ic-brown.dat')
 
-from Constants import *
-from ArchiLib import ArchiLib
+from al_ArchiLib.ArchiLib import ArchiLib
+from al_ArchiLib.Constants import *
 
 class CreateRelationsInArchi(object):
 

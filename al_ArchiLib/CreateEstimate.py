@@ -22,18 +22,19 @@ from openpyxl.compat import range
 from openpyxl.cell import get_column_letter
 from openpyxl.worksheet import Worksheet as worksheet
 
+from al_ArchiLib.ArchiLib import ArchiLib
+from al_ArchiLib.Neo4JLib import Neo4JLib
 from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib as AL
-from al_ArchiLib.Neo4JLib import Neo4JLib as NL
 
 class CreateEstimate(object):
+    fileExcelIn  = None
+    fileExcelOut = None
 
     def __init__(self):
         self.fileExcelIn = fileExcelIn
         self.fileExcelOut = fileExcelOut
 
-        self.nj = NL.Neo4JLib()
-
+        self.nj = Neo4JLib(gdb)
         self.graph = Neo4JGraph(gdb)
 
     def query(self):
@@ -89,10 +90,10 @@ class CreateEstimate(object):
         logger.info("Saved file : %s" % fileExcelOut)
 
 if __name__ == "__main__":
-    start_time = AL.startTimer()
+    start_time = ArchiLib.startTimer()
 
     ce = CreateEstimate()
 
     ce.exportExcel()
 
-    AL.stopTimer(start_time)
+    ArchiLib.stopTimer(start_time)

@@ -26,9 +26,9 @@ from al_ArchiLib.Neo4JLib import Neo4JLib
 
 class AnalyzeGraph(object):
 
-    def __init__(self):
-        self.al = ArchiLib()
-        self.nj = Neo4JLib()
+    def __init__(self, gdb):
+
+        self.nj = Neo4JLib(gdb)
         self.graph = NetworkXGraph()
 
         self.scale=1
@@ -40,8 +40,6 @@ class AnalyzeGraph(object):
 
         for c in concepts.getConcepts().values():
             logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
-
-            self.al.cleanConcept(c)
 
             self.graph.addConcept(c)
 
@@ -56,8 +54,6 @@ class AnalyzeGraph(object):
         for c in concepts.getConcepts().values():
 
             logger.debug("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
-
-            self.al.cleanConcept(c)
 
             self.graph.addConcept(c)
 
@@ -120,21 +116,19 @@ class AnalyzeGraph(object):
         logger.info("Max gl[x]=%3.4f" % pr)
         logger.info("Avg gl[x]=%3.4f" % (sum_pr / len_pr))
 
-    def analyzeNetworkX(self, concepts=None):
-        if concepts == None:
-            concepts = Concepts.loadConcepts(fileConceptsExport)
-        else:
-            self.concepts = concepts
+    def analyzeNetworkX(self, fileConceptsExport):
 
-        logger.info(" Concepts : %s[%d][%s]" % (concepts.name, len(concepts.getConcepts()), concepts.typeName))
+        self.concepts = Concepts.loadConcepts(fileConceptsExport)
+
+        logger.info(" Concepts : %s[%d][%s]" % (self.concepts.name, len(self.concepts.getConcepts()), self.concepts.typeName))
 
         self.graph = NetworkXGraph()
 
         logger.info("Adding NetworkX nodes to the graph ...")
-        self.addGraphNodes(concepts)
+        self.addGraphNodes(self.concepts)
 
         logger.info("Adding NetworkX edges to the graph ...")
-        self.addGraphEdges(concepts)
+        self.addGraphEdges(self.concepts)
 
         gl = nx.pagerank(self.graph.G)
         self.analyzeGraph(gl, "PageRank")
@@ -161,8 +155,9 @@ if __name__ == "__main__":
 
     start_time = ArchiLib.startTimer()
 
-    ag = AnalyzeGraph()
-    ag.analyzeNetworkX()
+    ag = AnalyzeGraph(gdb)
+
+    ag.analyzeNetworkX(fileConceptsExport)
 
     ArchiLib.stopTimer(start_time)
 

@@ -16,8 +16,8 @@ from nl_lib.Concepts import Concepts
 
 from lxml import etree
 
-from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
+from al_Constants import *
 
 if __name__ == "__main__":
     fileArchiP = "archi.p"

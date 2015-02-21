@@ -13,8 +13,9 @@ import time
 
 logger = Logger.setupLogging(__name__)
 
-from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
+
+from al_Constants import *
 
 def distribution(concepts, tc=None):
     distribution = dict()

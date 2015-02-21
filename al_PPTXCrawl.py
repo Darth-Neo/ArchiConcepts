@@ -20,14 +20,16 @@ from lxml import etree
 
 from traceback import format_exc
 
-from al_ArchiLib.Constants import *
+
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.PPTXCreateArchi import PPTXCreateArchil
 
-if __name__ == "__main__":
-    logger.info("Using : %s" % filePPTXCrawl)
+from al_Constants import *
 
-    cpptx = PPTXCreateArchil(filePPTXCrawl)
+if __name__ == "__main__":
+    logger.info("Using : %s" % filePPTX)
+
+    cpptx = PPTXCreateArchil(filePPTX)
 
     c = cpptx.crawlPPTX()
 

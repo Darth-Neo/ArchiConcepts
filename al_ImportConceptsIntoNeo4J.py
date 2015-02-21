@@ -17,12 +17,10 @@ from nl_lib.Constants import *
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
-from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
-from al_ArchiLib.ConceptsGraph import ConceptsGraph
 from al_ArchiLib.ConceptsImportNeo4J import ConceptsImportNeo4J
-from al_ArchiLib.Neo4JLib import Neo4JLib
 
+from al_Constants import *
 
 if __name__ == "__main__":
 

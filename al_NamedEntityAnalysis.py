@@ -10,58 +10,25 @@ import os
 import StringIO
 import logging
 import time
+
 from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
-
-from nl_lib.Constants import *
-from nl_lib.Concepts import Concepts
-
-from lxml import etree
-import nltk
-
-from al_Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib
-
 logger.setLevel(logging.INFO)
 
+from al_ArchiLib.ArchiLib import ArchiLib
+from al_ArchiLib.AnalyzeNamedEntities import AnalyzeNamedEntities
+
+from al_Constants import *
+
 if __name__ == "__main__":
-    fileConcepts = "req.p"
 
-    al = ArchiLib(fa="/Users/morrj140/Documents/SolutionEngineering/Archimate Models/FOS V4.archimate")
+    start_time = ArchiLib.startTimer()
 
-    al.logTypeCounts()
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v27.archimate"
+    fileRelationsConcepts = "reqs.p"
 
-    rels = ("archimate:AccessRelationship", "archimate:SpecialisationRelationship",
-                    "archimate:CompositionRelationship", "archimate:AggregationRelationship")
+    ane = AnalyzeNamedEntities(fileArchimate, fileRelationsConcepts)
 
-    listType = ("archimate:Requirement",)
-    dictEntities = al.getTypeNodes(listType)
+    ane.analyzeNamedEntities()
 
-    concepts = Concepts("Entities", "BusinessObject")
-
-    for x in al.dictEdges.keys():
-        try:
-            logger.debug("[%s]=%s" % (x, al.dictEdges[x][ARCHI_TYPE]))
-
-            source = al.dictEdges[x]["source"]
-            target = al.dictEdges[x]["target"]
-
-            logger.debug("  Source : %s" % source)
-            logger.debug("  Target : %s" % target)
-        except:
-            logger.warn("[%s] ARCH_TYPE Exception" % (x))
-            continue
-
-        if al.dictEdges[x][ARCHI_TYPE] in rels:
-            logger.info("%s   ->  [ %s ]  ->   %s" % (al.dictNodes[source]["name"][:20],
-                                                      al.dictEdges[x][ARCHI_TYPE],
-                                                      al.dictNodes[target]["name"][:20]))
-
-            listNodes = al.getEdgesForNode(source, rels)
-            for x in listNodes:
-                logger.debug("    %s" % (x))
-
-    if False:
-        al.logTypeCounts()
-
-    Concepts.saveConcepts(concepts, fileRelationsConcepts)
+    ArchiLib.stopTimer(start_time)

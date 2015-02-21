@@ -12,8 +12,6 @@ import time
 import json
 import logging
 
-from py2neo.neo4j import GraphDatabaseService, CypherQuery, Node, Relationship
-
 from nl_lib import Logger
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
@@ -23,15 +21,12 @@ logger = Logger.setupLogging(__name__)
 
 logger.setLevel(logging.DEBUG)
 
-from Constants import *
-from ArchiLib import ArchiLib as AL
-from Neo4JLib import Neo4JLib as NL
-
-fileArchimate = "./test/Testing.archimate"
+from al_ArchiLib.ArchiLib import ArchiLib
+from al_ArchiLib.Neo4JLib import Neo4JLib
 
 def test_Archi_Counts():
 
-    assert (os.path.isfile(fileArchimate)  == True)
+    assert (os.path.isfile(ArchiLib.fileArchimate)  == True)
 
     TestStatus = True
 
@@ -41,7 +36,7 @@ def test_Archi_Counts():
                 "archimate:BusinessObject" : 5, "archimate:BusinessProcess" : 7,
                 "archimate:BusinessEvent" : 2, "archimate:ApplicationComponent" : 3}
 
-    al = AL.ArchiLib(fa=fileArchimate)
+    al = ArchiLib.ArchiLib(fa=ArchiLib.fileArchimate)
 
     listCounts = al.logTypeCounts(ListOnly=True)
 
@@ -66,19 +61,19 @@ def test_Archi_Counts():
 
 def test_CheckForArchimateFile():
 
-    assert (os.path.isfile(fileArchimate)  == True)
+    assert (os.path.isfile(ArchiLib.fileArchimate)  == True)
 
 def test_ExportArchi():
     fileConcepts = "export.p"
 
-    logger.info("Using : %s" % fileArchimate)
+    logger.info("Using : %s" % ArchiLib.fileArchimate)
 
-    assert (os.path.isfile(fileArchimate)  == True)
+    assert (os.path.isfile(ArchiLib.fileArchimate)  == True)
 
     al = None
     concepts = None
 
-    al = AL.ArchiLib(fa=fileArchimate)
+    al = ArchiLib.ArchiLib(fa=ArchiLib.fileArchimate)
 
     assert (al != None)
 
@@ -101,17 +96,17 @@ def test_ExportArchi():
             source = al.dictEdges[x]["source"]
             target = al.dictEdges[x]["target"]
 
-            logger.info("  Rel    : %s" % (al.dictEdges[x][ARCHI_TYPE]))
+            logger.info("  Rel    : %s" % (al.dictEdges[x][ArchiLib.ARCHI_TYPE]))
 
             sourceName = al.getNodeName(source)
             targetName = al.getNodeName(target)
 
-            logger.info(" %s--%s--%s" % (sourceName, al.dictEdges[x][ARCHI_TYPE][10:], targetName))
+            logger.info(" %s--%s--%s" % (sourceName, al.dictEdges[x][ArchiLib.ARCHI_TYPE][10:], targetName))
 
-            sc = concepts.addConceptKeyType(sourceName, al.dictNodes[source][ARCHI_TYPE][10:])
+            sc = concepts.addConceptKeyType(sourceName, al.dictNodes[source][ArchiLib.ARCHI_TYPE][10:])
             #getWords(sourceName, sc)
 
-            tc = sc.addConceptKeyType(targetName, al.dictNodes[target][ARCHI_TYPE][10:])
+            tc = sc.addConceptKeyType(targetName, al.dictNodes[target][ArchiLib.ARCHI_TYPE][10:])
             #getWords(sourceName, tc)
 
     Concepts.saveConcepts(concepts, fileConcepts)
@@ -126,8 +121,8 @@ def test_ExportArchiFolderModels():
     fileExport="report.csv"
     conceptsFile = "Estimation.p"
 
-    assert (os.path.isfile(fileArchimate)  == True)
-    al = AL.ArchiLib(fa=fileArchimate, fe=fileExport)
+    assert (os.path.isfile(ArchiLib.fileArchimate)  == True)
+    al = ArchiLib.ArchiLib(fa=ArchiLib.fileArchimate, fe=fileExport)
 
     folder = "Scenarios"
 
@@ -158,13 +153,13 @@ def test_ArchimateConcepts():
     fileArchiP = "archi.p"
     fileArchiModel = "Testing.archimate"
 
-    logger.info("Using : %s" % fileArchimate)
+    logger.info("Using : %s" % ArchiLib.fileArchimate)
 
-    assert (os.path.isfile(fileArchimate)  == True)
+    assert (os.path.isfile(ArchiLib.fileArchimate)  == True)
 
     concepts = Concepts(fileArchiP, "Archimate")
 
-    al = AL.ArchiLib(fa=fileArchimate)
+    al = ArchiLib.ArchiLib(fa=ArchiLib.fileArchimate)
 
     #
     # Create Concepts from Arhimate
@@ -180,9 +175,9 @@ def test_ExportArchiModel():
     conceptsFile = "Estimation.p"
     fileExport="export.csv"
 
-    assert (os.path.isfile(fileArchimate)  == True)
+    assert (os.path.isfile(ArchiLib.fileArchimate)  == True)
 
-    al = AL.ArchiLib(fa=fileArchimate, fe=fileExport)
+    al = ArchiLib.ArchiLib(fa=ArchiLib.fileArchimate, fe=fileExport)
 
     listMTE = list()
     listMTE.append("01. Market to Leads")
@@ -199,7 +194,7 @@ def test_ExportArchiModel():
     assert (os.path.isfile(fileExport)  == True)
 
 def _executeQuery(qs, graph, log=False):
-    nj = NL.Neo4JLib()
+    nj = Neo4JLib.Neo4JLib()
     lq = nj.cypherQuery(graph, qs)
 
     if log == True:

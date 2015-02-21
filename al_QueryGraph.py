@@ -26,13 +26,14 @@ from openpyxl.compat import range
 from openpyxl.cell import get_column_letter
 from openpyxl.worksheet import Worksheet
 
-from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.Neo4JLib import Neo4JLib
 
+from al_Constants import *
+
 if __name__ == "__main__":
 
-    nj = Neo4JLib()
+    nj = Neo4JLib(gdb)
 
     start_time = ArchiLib.startTimer()
 
@@ -50,12 +51,15 @@ if __name__ == "__main__":
     ql = list()
 
     if True:
+        qs = "MATCH (n:ApplicationFunction)--(r)--(m:ApplicationComponent) RETURN distinct(n.name) as Function, r.typeName as Type, m.name as Component order by n.name"
+
+    elif True:
         # Determine order of service development based on the dependancy analysis done on Business Processes
         #qs="match (l:ApplicationService)--(r0:Relation)-- (n:BusinessProcess)--(r1:Relation)--(m:WorkPackage) return m,l,n order by m.name"
         # Try with Application Component as well
         qs="match (i:DataObject)--(r0:Relation) -- (j:ApplicationComponent)--(r1:Relation)--(l:ApplicationService)--(r2:Relation)-- (n:BusinessProcess)--(r3:Relation)--(m:WorkPackage) return m,n,l,j,i order by m.name"
 
-    elif True:
+    elif False:
         # Determine the business process ordering by the magnitude of the reqiurements
         qs="match (i:Requirement)--(r1:Relation)--(j:BusinessObject)--(r2:Relation)--(k:BusinessProcess)--(r3:Relation)--(l:WorkPackage) return l,k,j,count(i) order by l.name"
 
@@ -69,7 +73,7 @@ if __name__ == "__main__":
         qs = qs + "where (toint(substring(n1.name, 0, 1)) is null ) "
         qs = qs + "return n0.name, n1.name order by n0.name desc"
 
-    elif True:
+    elif False:
         qs = "match (n:BusinessProcess) <-- (r0:Relation) <-- (m:ApplicationService) "
         qs = qs + "with n, m, count(r) as cr "
         qs = qs + " where cr > 0 "
@@ -84,7 +88,7 @@ if __name__ == "__main__":
         ql.append("ApplicationFunction")
         ql.append("ApplicationComponent")
         ql.append("ApplicationService")
-        qs = Traversal(ql)
+        qs = nj.Traversal(ql)
 
     elif False:
         ql.append("BusinessObject")
@@ -92,7 +96,7 @@ if __name__ == "__main__":
         ql.append("ApplicationService")
         ql.append("ApplicationComponent")
         ql.append("ApplicationFunction")
-        qs = Traversal(ql)
+        qs = nj.Traversal(ql)
 
     elif False:
         ql.append("WorkPackage")
@@ -100,7 +104,7 @@ if __name__ == "__main__":
         ql.append("ApplicationService")
         ql.append("ApplicationComponent")
         ql.append("ApplicationFunction")
-        qs = Traversal(ql)
+        qs = nj.Traversal(ql)
 
     elif False:
         qs1 = "MATCH (n0:BusinessEvent)-- (r0)-- (n1:BusinessProcess) -- (r1) -- (n2:BusinessObject)  RETURN n0, r0, n1, r1, n2"

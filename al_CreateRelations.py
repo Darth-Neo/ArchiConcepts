@@ -15,10 +15,10 @@ import random
 from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
 
-from al_ArchiLib.Constants import *
 from al_ArchiLib.al_ArchiLib import ArchiLib
 from al_ArchiLib.CreateRelationsInArchi import CreateRelationsInArchi
 
+from al_Constants import *
 
 if __name__ == "__main__":
 

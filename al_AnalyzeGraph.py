@@ -19,16 +19,18 @@ import networkx as nx
 logger = Logger.setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
-from al_ArchiLib.Constants import *
+
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.AnalyzeGraph import AnalyzeGraph
 from al_ArchiLib.Neo4JLib import Neo4JLib
 
+from al_Constants import *
+
 if __name__ == "__main__":
     start_time = ArchiLib.startTimer()
 
-    ag = AnalyzeGraph()
-    ag.analyzeNetworkX()
+    ag = AnalyzeGraph(gdb)
+    ag.analyzeNetworkX(fileConceptsExport)
 
     ArchiLib.stopTimer(start_time)
 

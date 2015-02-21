@@ -16,15 +16,18 @@ logger = Logger.setupLogging(__name__)
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
 
-from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.ExportModel import ExportArchiModel
+
+from al_Constants import *
 
 if __name__ == "__main__":
 
     start_time = ArchiLib.startTimer()
 
-    eam = ExportArchiModel()
+
+
+    eam = ExportArchiModel(fileArchimate)
 
     listMTE = list()
     #listMTE.append("5. Contract Management")
@@ -39,7 +42,7 @@ if __name__ == "__main__":
     #listMTE.append("Business Concepts")
     #listMTE.append("System of Record")
 
-    listMTE.append("To-Be DAM Functional Reference Architecture")
+    listMTE.append("System Interaction- ToBe")
 
     eam.exportArchiModel(listMTE)
 

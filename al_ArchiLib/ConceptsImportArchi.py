@@ -17,16 +17,18 @@ from nl_lib.Concepts import Concepts
 from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
 
-from Constants import *
-from ArchiLib import ArchiLib
+from al_ArchiLib.ArchiLib import ArchiLib
+from al_ArchiLib.Constants import *
 
 class ConceptsImportArchi(object):
-    dictConcepts = None
-    al = None
+    dictConcepts       = None
+    fileArchimate      = None
+    fileImportConcepts = None
+    al                 = None
 
-    def __init__(self):
+    def __init__(self, fileArchimate, fileConceptsImport):
         self.dictConcepts = dict()
-        self.al = ArchiLib()
+        self.al = ArchiLib(fileArchimate)
 
     def insertConceptRelation(self, concepts, n=0):
         tag = "element"
@@ -111,11 +113,11 @@ if __name__ == "__main__":
 
     start_time = ArchiLib.startTimer()
 
-    ic = ConceptsImportArchi()
-
     logger.info("Using : %s" % fileArchimate)
-
     logger.info("Loading :" + fileConceptsBatches)
+
+    ic = ConceptsImportArchi(fileArchimate, fileConceptsBatches)
+
     concepts = Concepts.loadConcepts(fileConceptsBatches)
 
     # Create Subfolder

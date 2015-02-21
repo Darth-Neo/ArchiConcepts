@@ -35,15 +35,20 @@ from Constants import *
 from ArchiLib import ArchiLib
 
 class ExportArchi(object):
+    fileArchimate = None
+    fileExport    = None
+    al            = None
 
-    def __init__(self, al=None):
-        logger.info("Archimate File : %s" % fileArchimate)
-        logger.info("Export File    : %s" % fileConceptsExport)
+    def __init__(self, fileArchimate, fileConceptsExport):
 
-        if al == None:
-            self.al = ArchiLib()
-        else:
-            self.al = al
+        self.fileArchimate = fileArchimate
+        self.fileConceptsExport = fileConceptsExport
+
+        logger.info("Archimate File : %s" % self.fileArchimate)
+
+        logger.info("Export File    : %s" % self.fileConceptsExport)
+
+        self.al = ArchiLib(fa=fileArchimate, fe=fileConceptsExport)
 
         self.al.logTypeCounts()
 
@@ -124,14 +129,15 @@ class ExportArchi(object):
                     tc = rc.addConceptKeyType(targetName, self.al.dictNodes[target][ARCHI_TYPE][10:])
                     #getWords(sourceName, tc)
 
-        Concepts.saveConcepts(concepts, fileConceptsExport)
+        Concepts.saveConcepts(concepts, self.fileConceptsExport)
 
-        return concepts, self.al
 
 if __name__ == "__main__":
     start_time = ArchiLib.startTimer()
 
-    ea = ExportArchi()
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v27.archimate"
+
+    ea = ExportArchi(fileArchimate, fileConceptsExport)
 
     ea.exportArchi()
 

@@ -16,9 +16,10 @@ from nl_lib.Concepts import Concepts
 from nl_lib.ConceptGraph import PatternGraph, GraphVizGraph
 from nl_lib.Constants import *
 
-from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.ConceptsGraph import ConceptsGraph
+
+from al_Constants import *
 
 if __name__ == "__main__":
     start_time = ArchiLib.startTimer()

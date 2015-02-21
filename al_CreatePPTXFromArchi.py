@@ -11,11 +11,9 @@ import os
 from nl_lib import Logger
 logger = Logger.setupLogging(__name__)
 
-from nl_lib.Constants import *
-from nl_lib.Concepts import Concepts
-
-from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiCreatePPTX import ArchiCreatePPTX
+
+from al_Constants import *
 
 if __name__ == "__main__":
 

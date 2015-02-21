@@ -16,13 +16,13 @@ logger = Logger.setupLogging(__name__)
 
 from xml.etree import ElementTree as et
 
-import al_ArchiLib as AL
+from al_ArchiLib.ArchiLib import ArchiLib
 
 class XMLCombiner(object):
     def __init__(self, filenames):
         assert len(filenames) > 0, 'No filenames!'
 
-        et.register_namespace('archimate', AL.ARCHIMATE_NS)
+        et.register_namespace('archimate', ArchiLib.ARCHIMATE_NS)
 
         # save all the roots, in order, to be processed later
         self.roots = [et.parse(f).getroot() for f in filenames]
