@@ -3,29 +3,32 @@
 # Archimate Export All Models in a Folder
 #
 __author__ = 'morrj140'
-__VERSION__ = '0.1'
+__VERSION__ = '0.3'
 
-import sys
-import os
-import StringIO
-import time
-
-from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
+from al_ArchiLib.Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.ExportFolderModels import ExportArchiFolderModels
 
 from al_Constants import *
 
-if __name__ == "__main__":
+import pytest
+
+def exportArchiFolderModels(fileArchimate, fileConceptsExport, folder):
+
     start_time = ArchiLib.startTimer()
 
-    eafm = ExportArchiFolderModels()
+    eafm = ExportArchiFolderModels(fileArchimate, fileConceptsExport)
 
-    eafm.exportArchiFolderModels()
+    eafm.exportArchiFolderModels(folder)
 
     ArchiLib.stopTimer(start_time)
 
+if __name__ == "__main__":
+    folder = "Scenarios"
+
+    exportArchiFolderModels(fileArchimateTest, fileConceptsExport, folder)
 
 

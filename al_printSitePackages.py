@@ -3,11 +3,9 @@
 # Print python site-packages information
 #
 __author__ = 'morrj140'
-__VERSION__ = '0.1'
+__VERSION__ = '0.3'
 
 import site
-import os
-import logging
 
 if __name__ == "__main__":
 

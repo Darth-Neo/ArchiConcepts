@@ -7,35 +7,31 @@ __VERSION__ = '0.1'
 
 import datetime
 import time
-import logging
-from nl_lib import Logger
-from nl_lib.ConceptGraph import Neo4JGraph
-from nl_lib.Concepts import Concepts
-from nl_lib.Constants import *
 
-logger = Logger.setupLogging(__name__)
-logger.setLevel(logging.INFO)
+from Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
-from openpyxl import Workbook
 from openpyxl import load_workbook
 from openpyxl.compat import range
 from openpyxl.cell import get_column_letter
 from openpyxl.worksheet import Worksheet as worksheet
 
-from al_ArchiLib.ArchiLib import ArchiLib
-from al_ArchiLib.Neo4JLib import Neo4JLib
-from al_ArchiLib.Constants import *
+from ArchiLib import ArchiLib
+from Neo4JLib import Neo4JLib
+from Constants import *
+
+import pytest
 
 class CreateEstimate(object):
     fileExcelIn  = None
     fileExcelOut = None
 
-    def __init__(self):
+    def __init__(self, gdb):
         self.fileExcelIn = fileExcelIn
         self.fileExcelOut = fileExcelOut
 
         self.nj = Neo4JLib(gdb)
-        self.graph = Neo4JGraph(gdb)
 
     def query(self):
         qs = "MATCH "
@@ -89,11 +85,14 @@ class CreateEstimate(object):
 
         logger.info("Saved file : %s" % fileExcelOut)
 
-if __name__ == "__main__":
+def CreateEstimate():
     start_time = ArchiLib.startTimer()
 
-    ce = CreateEstimate()
+    ce = CreateEstimate(gdbTest)
 
     ce.exportExcel()
 
     ArchiLib.stopTimer(start_time)
+
+if __name__ == "__main__":
+    CreateEstimate()

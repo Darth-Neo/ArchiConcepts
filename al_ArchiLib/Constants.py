@@ -16,45 +16,50 @@ ARCHIMATE_NS   =  NS_MAP["archimate"]
 ARCHI_TYPE = "{%s}type" % NS_MAP["xsi"]
 
 #
+# Test Archimate File
+#
+dirTest = os.getcwd() + os.sep + "test" + os.sep
+fileArchimateTest = dirTest + "Testing.archimate"
+
+gdbTest = "http://localhost:7474/db/data/"
+
+#
 # Concept Files Used
 #
-fileArchConcepts           = "archi.p"
-filePPTXConcepts           = "pptx.p"
-fileConceptsExport         = "export.p"
-fileTimeConceptsExport     = "export" + time.strftime("%Y%d%m_%H%M%S") +".p"
-fileConceptsBatches        = "batches.p"
-fileConceptsTraversal      = "traversal.p"
-fileEstimationConcepts     = "Estimation.p"
-fileRequirementsConcepts   = "req.p"
-fileRelationsConcepts      = "rel.p"
-fileConceptsDocuments      = "documents.p"
-fileConceptsChunks         = "chunks.p"
-fileNeo4JNodes             = "nodes.p"
+fileConceptsArch           = dirTest + "archi.p"
+fileConceptsPPTX           = dirTest + "pptx.p"
+fileConceptsExport         = dirTest + "export.p"
+fileConceptsBatches        = dirTest + "batches.p"
+fileConceptsTraversal      = dirTest + "traversal.p"
+fileConceptsEstimation     = dirTest + "Estimation.p"
+fileConceptsRequirements   = dirTest + "req.p"
+fileConceptsRelations      = dirTest + "rel.p"
+fileConceptsDocuments      = dirTest + "documents.p"
+fileConceptsChunks         = dirTest + "chunks.p"
+fileConceptsNodes          = dirTest + "nodes.p"
+fileConceptsNGramsSubject  = dirTest + "ngramsubject.p"
 
 #
-# PowerPoint Filename
+# Common Filenames
 #
-filePPTX = 'test.pptx'
-fileTPPTX = 'tested.pptx'
 
-#
-# Estimate Template
-#
-fileExcelIn = 'Template_Estimate.xlsx'
-#fileExcelOut = 'Template_Estimate_%s_new.xlsx' % time.strftime("%Y%d%m_%H%M%S")
-fileExcelOut = 'Template_Estimate_new.xlsx'
+filePPTXIn    = dirTest + "test_in.pptx"
+filePPTXOut   = dirTest + "test_out.pptx"
 
-csvFileExport ="export.csv"
-csvTimeFileExport ="export" + time.strftime("%Y%d%m_%H%M%S") +".csv"
+fileExcelIn  = dirTest + 'Template_Estimate.xlsx'
+fileExcelOut = dirTest + 'Template_Estimate_new.xlsx'
 
-csvQueryExport      = "ExportQuery.csv"
-csvTimeQueryExport  = "ExportQuery" + time.strftime("%Y%d%m_%H%M%S") +".csv"
+fileCSVExport = dirTest + "export.csv"
+fileCSVExportTime = dirTest + "export" + time.strftime("%Y%d%m_%H%M%S") +".csv"
 
-fileExportImage      = "export.png"
-fileTimeExportImage  = "export" + time.strftime("%Y%d%m_%H%M%S") +".png"
+fileReportExport     = dirTest + "report.csv"
+fileReportExportTime = dirTest + "report" + time.strftime("%Y%d%m_%H%M%S") +".csv"
 
-#fileReportExport="report" + time.strftime("%Y%d%m_%H%M%S") +".csv"
-fileReportExport="report.csv"
+fileCSVQueryExport      = dirTest + "ExportQuery.csv"
+fileCSVQueryExportTime  = dirTest + "ExportQuery" + time.strftime("%Y%d%m_%H%M%S") +".csv"
+
+fileImageExport      = dirTest + "export.png"
+fileImageExportTime  = dirTest + "export" + time.strftime("%Y%d%m_%H%M%S") +".png"
 
 #
 # Archimate Edges

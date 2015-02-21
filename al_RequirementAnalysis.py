@@ -3,22 +3,15 @@
 # Requirement Analysis via NLP Chunks noun.verb(predicate)
 #
 __author__ = 'morrj140'
-__VERSION__ = '0.1'
+__VERSION__ = '0.3'
 
-import sys
-import os
-import StringIO
-import logging
-import time
-from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
-logger.setLevel(logging.INFO)
+from al_ArchiLib.Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
 from nl_lib.TopicsModel import TopicsModel
-
-from lxml import etree
 
 import nltk
 from nltk import tokenize, tag, chunk
@@ -39,6 +32,8 @@ from pattern.en import parse, Sentence, parsetree
 from al_ArchiLib.ArchiLib import ArchiLib
 
 from al_Constants import *
+
+import pytest
 
 class Chunks(object):
 
@@ -174,13 +169,13 @@ class Chunks(object):
         Concepts.saveConcepts(self.chunkConcepts, self.chunkFile)
         logger.info("Saved : %s" % self.chunkFile)
 
-if __name__ == "__main__":
+def requirementAnalysis():
 
     fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/FOS V4.archimate"
 
     al = ArchiLib(fileArchimate)
 
-    conceptsFile = fileRequirementsConcepts
+    conceptsFile = fileConceptsRequirements
 
     searchTypes = list()
     searchTypes.append("archimate:Requirement")
@@ -209,3 +204,5 @@ if __name__ == "__main__":
     chunks = Chunks(concepts)
     chunks.createChunks()
 
+if __name__ == "__main__":
+    requirementAnalysis()

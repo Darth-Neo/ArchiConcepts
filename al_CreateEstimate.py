@@ -3,26 +3,20 @@
 # Estimate Scope_Items Export
 #
 __author__ = 'morrj140'
-__VERSION__ = '0.1'
+__VERSION__ = '0.3'
 
-import datetime
-import time
-import logging
-from nl_lib import Logger
-from nl_lib.ConceptGraph import Neo4JGraph
-from nl_lib.Concepts import Concepts
-from nl_lib.Constants import *
+from al_ArchiLib.Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
-logger = Logger.setupLogging(__name__)
-logger.setLevel(logging.INFO)
-
-from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.Neo4JLib import Neo4JLib
 
 from al_Constants import *
 
-if __name__ == "__main__":
-    nj = Neo4JLib()
+import pytest
+
+def createEstimate(gdb):
+    nj = Neo4JLib(gdb)
 
     qs = "MATCH "
     qs = qs +    "(n0:ApplicationFunction)-- (r0)"
@@ -37,3 +31,6 @@ if __name__ == "__main__":
     nj.queryExportExcel(lq)
 
     logger.info("%d rows returned" % len(lq))
+
+if __name__ == "__main__":
+    createEstimate(gdbTest)

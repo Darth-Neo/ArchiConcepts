@@ -8,24 +8,25 @@ __VERSION__ = '0.1'
 import os
 from subprocess import call
 import time
-import logging
-from nl_lib import Logger
+
+from Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(DEBUG)
+
 from nl_lib.Concepts import Concepts
 from nl_lib.ConceptGraph import Neo4JGraph
 from nl_lib.Constants import *
 
-logger = Logger.setupLogging(__name__)
-logger.setLevel(logging.INFO)
+from ArchiLib import ArchiLib
+from Neo4JLib import Neo4JLib
+from Constants import *
 
-from al_ArchiLib.ArchiLib import ArchiLib
-from al_ArchiLib.Neo4JLib import Neo4JLib
-
-from al_Constants import *
+import pytest
 
 class ConceptsImportNeo4J(object):
     clearNeo4J = False
 
-    def __init__(self, ClearNeo4J=False):
+    def __init__(self, fileArchimate, gdb, ClearNeo4J=False):
 
         if ClearNeo4J == True:
             self.clearNeo4J()
@@ -36,15 +37,13 @@ class ConceptsImportNeo4J(object):
         if ClearNeo4J == True:
             self.graph.clearGraphDB()
 
-        self.al = ArchiLib()
-        self.nj = Neo4JLib()
+        self.al = ArchiLib(fileArchimate)
+        self.nj = Neo4JLib(gdb)
 
     def addGraphNodes(self, concepts, n=0, threshold=1):
         n += 1
         for c in concepts.getConcepts().values():
             logger.debug("%d : %d Node c : %s:%s" % (n, len(c.getConcepts()), c.name, c.typeName))
-
-            self.al.cleanConcept(c)
 
             c.name = c.name.replace("\"", "'")
 
@@ -61,8 +60,6 @@ class ConceptsImportNeo4J(object):
         for c in concepts.getConcepts().values():
 
             logger.debug("%d : %d %s c : %s:%s" % (n, len(c.getConcepts()), concepts.name, c.name, c.typeName))
-
-            self.al.cleanConcept(c)
 
             c.name = c.name.replace("\"", "'")
 
@@ -123,18 +120,22 @@ class ConceptsImportNeo4J(object):
         CountRequirements = "MATCH (n {typeName:'BusinessObject'}) -- m -- (o {typeName:'Requirement' }) with n, count(o) as rc  set n.RequirementCount=rc RETURN n.name, rc order by rc desc"
         self.nj.cypherQuery(CountRequirements)
 
-if __name__ == "__main__":
+def test_ConceptsImportNeo4J():
 
     start_time = ArchiLib.startTimer()
 
-    importConcepts = Concepts.loadConcepts(ArchiLib.fileConceptsExport)
+    logger.info("Using : %s" % fileConceptsExport)
 
-    in4j = ConceptsImportNeo4J()
+    importConcepts = Concepts.loadConcepts(fileConceptsExport)
+
+    in4j = ConceptsImportNeo4J(fileArchimateTest, gdbTest)
 
     in4j.importNeo4J(importConcepts, ClearNeo4J=True)
 
     ArchiLib.stopTimer(start_time)
 
+if __name__ == "__main__":
+    test_ConceptsImportNeo4J()
 
 
 

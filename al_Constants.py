@@ -14,40 +14,63 @@ import time
 LocalGBD  = "http://localhost:7474/db/data/"
 RemoteGDB = "http://10.92.82.60:7574/db/data/"
 gdb = LocalGBD
+gdbTest = LocalGBD
 
-fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v27.archimate"
-
-fileImportPPTX       = 'import_pp.archimate'
-filePPTXArchimate    = "pp_models.archimate"
-fileArchiModel       = 'archi.archimate'
-fileImportConcepts   = "import_concepts.archimate"
+#
+# Archimate XML
+#
+NS_MAP={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
+XML_NS         =  NS_MAP["xsi"]
+ARCHIMATE_NS   =  NS_MAP["archimate"]
+ARCHI_TYPE = "{%s}type" % NS_MAP["xsi"]
 
 #
 # Test Archimate File
 #
-fileArchimateTest = os.getcwd() + "./test/Testing.archimate"
+dirTest = os.getcwd() + os.sep + "test" + os.sep
+fileArchimateTest = dirTest + "Testing.archimate"
+
+fileArchimateModel = dirTest + 'archi.archimate'
 
 #
 # Concept Files Used
 #
-fileArchConcepts           = "archi.p"
-filePPTXConcepts           = "pptx.p"
-fileConceptsExport         = "export.p"
-fileTimeConceptsExport     = "export" + time.strftime("%Y%d%m_%H%M%S") +".p"
-fileConceptsBatches        = "batches.p"
-fileConceptsTraversal      = "traversal.p"
-fileEstimationConcepts     = "Estimation.p"
-fileRequirementsConcepts   = "req.p"
-fileRelationsConcepts      = "rel.p"
-fileConceptsDocuments      = "documents.p"
-fileConceptsChunks         = "chunks.p"
-fileNeo4JNodes             = "nodes.p"
+fileConceptsArch           = dirTest + "archi.p"
+fileConceptsPPTX           = dirTest + "pptx.p"
+fileConceptsExport         = dirTest + "export.p"
+fileConceptsImport         = dirTest + "export.p"
+fileConceptsBatches        = dirTest + "batches.p"
+fileConceptsTraversal      = dirTest + "traversal.p"
+fileConceptsEstimation     = dirTest + "Estimation.p"
+fileConceptsRequirements   = dirTest + "reqs.p"
+fileConceptsDeDups         = dirTest + "dedups.p"
+fileConceptsRelations      = dirTest + "rel.p"
+fileConceptsDocuments      = dirTest + "documents.p"
+fileConceptsChunks         = dirTest + "chunks.p"
+fileConceptsNodes          = dirTest + "nodes.p"
+fileConceptsNGramsSubject  = dirTest + "ngramsubject.p"
 
 #
-# PowerPoint Filename
+# Common Filenames
 #
-filePPTX = 'test.pptx'
-fileTPPTX = 'tested.pptx'
+
+filePPTXIn    = dirTest + "test_in.pptx"
+filePPTXOut   = dirTest + "test_out.pptx"
+
+fileExcelIn  = dirTest + 'Template_Estimate.xlsx'
+fileExcelOut = dirTest + 'Template_Estimate_new.xlsx'
+
+fileCSVExport = dirTest + "export.csv"
+fileCSVExportTime = dirTest + "export" + time.strftime("%Y%d%m_%H%M%S") +".csv"
+
+fileReportExport     = dirTest + "report.csv"
+fileReportExportTime = dirTest + "report" + time.strftime("%Y%d%m_%H%M%S") +".csv"
+
+fileCSVQueryExport      = dirTest + "ExportQuery.csv"
+fileCSVQueryExportTime  = dirTest + "ExportQuery" + time.strftime("%Y%d%m_%H%M%S") +".csv"
+
+fileImageExport      = dirTest + "export.png"
+fileImageExportTime  = dirTest + "export" + time.strftime("%Y%d%m_%H%M%S") +".png"
 
 #
 # Script to reset Neo4J

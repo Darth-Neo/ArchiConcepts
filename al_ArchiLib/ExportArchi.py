@@ -11,11 +11,10 @@ import os
 import StringIO
 import time
 import hashlib
-import logging
 
-from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
-logger.setLevel(logging.INFO)
+from Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
@@ -34,6 +33,8 @@ from nltk.stem import PorterStemmer, WordNetLemmatizer
 from Constants import *
 from ArchiLib import ArchiLib
 
+import pytest
+
 class ExportArchi(object):
     fileArchimate = None
     fileExport    = None
@@ -48,7 +49,7 @@ class ExportArchi(object):
 
         logger.info("Export File    : %s" % self.fileConceptsExport)
 
-        self.al = ArchiLib(fa=fileArchimate, fe=fileConceptsExport)
+        self.al = ArchiLib(self.fileArchimate)
 
         self.al.logTypeCounts()
 
@@ -132,13 +133,15 @@ class ExportArchi(object):
         Concepts.saveConcepts(concepts, self.fileConceptsExport)
 
 
-if __name__ == "__main__":
+def test_ExportArchi():
+
     start_time = ArchiLib.startTimer()
 
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v27.archimate"
-
-    ea = ExportArchi(fileArchimate, fileConceptsExport)
+    ea = ExportArchi(fileArchimateTest, fileConceptsExport)
 
     ea.exportArchi()
 
     ArchiLib.stopTimer(start_time)
+
+if __name__ == "__main__":
+    test_ExportArchi()

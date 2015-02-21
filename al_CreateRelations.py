@@ -3,29 +3,28 @@
 # Archimate Relations
 #
 __author__ = 'morrj140'
-__VERSION__ = '0.1'
+__VERSION__ = '0.3'
 
-import sys
-import os
-import StringIO
-import csv
-import time
-import random
+from al_ArchiLib.Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
-from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
-
-from al_ArchiLib.al_ArchiLib import ArchiLib
+from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.CreateRelationsInArchi import CreateRelationsInArchi
 
 from al_Constants import *
 
-if __name__ == "__main__":
+import pytest
+
+def createRelations(fileArchimate):
 
     start_time = ArchiLib.startTimer()
 
-    cr = CreateRelationsInArchi()
+    cr = CreateRelationsInArchi(fileArchimate)
 
     cr.createRelations()
 
     ArchiLib.stopTimer(start_time)
+
+if __name__ == "__main__":
+    createRelations(fileArchimateTest)

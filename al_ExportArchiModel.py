@@ -4,30 +4,24 @@
 # Archimate to export a model
 #
 __author__ = 'morrj140'
-__VERSION__ = '0.1'
+__VERSION__ = '0.3'
 
-import sys
-import os
-import StringIO
-import time
-from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
-
-from nl_lib.Constants import *
-from nl_lib.Concepts import Concepts
+from al_ArchiLib.Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.ExportModel import ExportArchiModel
 
 from al_Constants import *
 
-if __name__ == "__main__":
+import pytest
+
+def exportArchiModel(fileArchimate, fileConceptsExport):
 
     start_time = ArchiLib.startTimer()
 
-
-
-    eam = ExportArchiModel(fileArchimate)
+    eam = ExportArchiModel(fileArchimate, fileConceptsExport)
 
     listMTE = list()
     #listMTE.append("5. Contract Management")
@@ -47,3 +41,6 @@ if __name__ == "__main__":
     eam.exportArchiModel(listMTE)
 
     ArchiLib.stopTimer(start_time)
+
+if __name__ == "__main__":
+    exportArchiModel(fileArchimateTest, fileConceptsExport)

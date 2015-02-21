@@ -5,39 +5,31 @@
 __author__ = 'morrj140'
 __VERSION__ = '0.1'
 
-import os
-from subprocess import call
-import time
+from Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
-import logging
-from nl_lib import Logger
-from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
-from nl_lib.ConceptGraph import PatternGraph, NetworkXGraph, GraphVizGraph, Neo4JGraph
 
-import networkx as nx
+from Constants import *
+from ArchiLib import ArchiLib
 
-logger = Logger.setupLogging(__name__)
-logger.setLevel(logging.INFO)
-
-from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib
-from al_ArchiLib.Neo4JLib import Neo4JLib
+import pytest
 
 class AnalyzeNamedEntities(object):
     fileArchimate           = None
     ffileRelationsConcepts  = None
     al                      = None
 
-    def __init__(self, fileArchimate, fileRelationsConcepts):
+    def __init__(self, fileArchimate, fileConceptsRelations):
 
         self.fileArchimate = fileArchimate
-        self.fileRelationsConcepts = fileRelationsConcepts
+        self.fileConceptsRelations = fileConceptsRelations
 
         logger.info("Archimate File : %s" % self.fileArchimate)
-        logger.info("Export File    : %s" % self.fileRelationsConcepts)
+        logger.info("Export File    : %s" % self.fileConceptsRelations)
 
-        self.al = ArchiLib(fa=fileArchimate, fe=fileRelationsConcepts)
+        self.al = ArchiLib(self.fileArchimate)
 
     def analyzeNamedEntities(self):
         rels = ("archimate:AccessRelationship", "archimate:SpecialisationRelationship",
@@ -72,16 +64,18 @@ class AnalyzeNamedEntities(object):
                     logger.debug("    %s" % (x))
 
 
-        Concepts.saveConcepts(concepts, fileRelationsConcepts)
+        Concepts.saveConcepts(concepts, fileConceptsRelations)
 
 
-if __name__ == "__main__":
+def test_AnalyzeNamedEntities():
+
     start_time = ArchiLib.startTimer()
 
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v27.archimate"
-
-    ane = AnalyzeNamedEntities(fileArchimate, fileRelationsConcepts)
+    ane = AnalyzeNamedEntities(fileArchimateTest, fileConceptsRelations)
 
     ane.analyzeNamedEntities()
 
     ArchiLib.stopTimer(start_time)
+
+if __name__ == "__main__":
+    test_AnalyzeNamedEntities()

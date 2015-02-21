@@ -3,10 +3,12 @@
 # Natural Language Processing of Information
 #
 __author__ = 'morrj140'
-__VERSION__ = '0.1'
+__VERSION__ = '0.3'
 
-import os
-from nl_lib import Logger
+from al_ArchiLib.Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
+
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
 from nl_lib.TopicCloud import TopicCloud
@@ -23,7 +25,7 @@ from nltk.stem import PorterStemmer, WordNetLemmatizer
 from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
 
-logger = Logger.setupLogging(__name__)
+import pytest
 
 def createTopicsCloud(concepts, topic, numWords=50, scale=0.25):
     logger.info("Starting Tag Cloud...")
@@ -59,10 +61,30 @@ def updateConceptLemma(concepts, lemmatizer):
             lemmaWord = lemmatizer.lemmatize(word.lower())
 
 
-if __name__ == "__main__":
+def createTagCloud(conceptFile, topic):
 
     start_time = ArchiLib.startTimer()
 
+    lemmatizer = WordNetLemmatizer()
+
+    directory = os.getcwd()
+
+    os.chdir(directory)
+
+    concepts = Concepts("GraphConcepts", "GRAPH")
+
+    updateConceptLemma(concepts, lemmatizer)
+
+    filePath = directory + os.sep + conceptFile
+    logger.info("Loading Topics from : " + filePath)
+
+    concepts = Concepts.loadConcepts(filePath)
+
+    createTopicsCloud(concepts, topic)
+
+    ArchiLib.stopTimer(start_time)
+
+if __name__ == "__main__":
     #conceptFile = "TopicChunks.p"
     #topic = "Chunk"
 
@@ -89,23 +111,5 @@ if __name__ == "__main__":
     #conceptFile = "ngrams.p"
     #topic = "NGRAM"
 
-    lemmatizer = WordNetLemmatizer()
-
-    directory = os.getcwd()
-
-    os.chdir(directory)
-
-    concepts = Concepts("GraphConcepts", "GRAPH")
-
-    updateConceptLemma(concepts, lemmatizer)
-
-    filePath = directory + os.sep + conceptFile
-    logger.info("Loading Topics from : " + filePath)
-
-    concepts = Concepts.loadConcepts(filePath)
-
-    createTopicsCloud(concepts, topic)
-
-    ArchiLib.stopTimer(start_time)
-
+    createTagCloud(conceptFile, topic)
 

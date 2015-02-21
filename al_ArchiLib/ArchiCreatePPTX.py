@@ -10,8 +10,9 @@ import os
 import StringIO
 import glob, time, math, zipfile
 
-from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
+from Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
 from lxml import etree
 from pptx import Presentation
@@ -23,18 +24,16 @@ from pptx.util import Pt
 #from pptx.oxml.shapes import connector
 #from pptx.parts.slide import _SlideShapeTree
 
-from nl_lib.Constants import *
-from nl_lib.Concepts import Concepts
+from ArchiLib import ArchiLib
+from Constants import *
 
-from al_ArchiLib.ArchiLib import ArchiLib
-
-from al_ArchiLib.Constants import *
+import pytest
 
 class ArchiCreatePPTX(object):
     filePPTXIn  = None
     filePPTXOut = None
 
-    def __init__(self, afileArchimate, afilePPTXIn, afilePPTXOut):
+    def __init__(self, fileArchimate, filePPTXIn, filePPTXOut):
         self.A_NS           =  "http://schemas.openxmlformats.org/drawingml/2006/main"
         self.P_NS           =  "http://schemas.openxmlformats.org/presentationml/2006/main"
         self.R_NS           =  "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
@@ -47,8 +46,8 @@ class ArchiCreatePPTX(object):
         self.SCALE = 0.90
         self.EMU = 914400.0
 
-        self.filePPTXIn     = afilePPTXIn
-        self.filePPTXOut    = afilePPTXOut
+        self.filePPTXIn     = filePPTXIn
+        self.filePPTXOut    = filePPTXOut
         self.fileArchimate  = fileArchimate
 
         if os.path.isfile(self.fileArchimate) <> True:
@@ -316,7 +315,7 @@ class ArchiCreatePPTX(object):
         listConnectors = list()
 
         # From Archimate File
-        createPPTX.getAll(listModels)
+        self.getAll(listModels)
 
         #
         # Iterate through all Archimate Diagrams
@@ -338,14 +337,14 @@ class ArchiCreatePPTX(object):
             listDO.append(ls)
 
             p = "//element[@id=\"%s\"]" % (x[0].get("id"))
-            r = createPPTX.tree.xpath(p, namespaces=NS_MAP)
+            r = self.tree.xpath(p, namespaces=NS_MAP)
             xc = r[0].getchildren()
 
             for y in xc:
                 child = str(y.get("archimateElement"))
                 logger.debug("  %s[%s]: entity:%s" % (y.get(ARCHI_TYPE), y.get("id"), child))
 
-                n = createPPTX.findNode(child)
+                n = self.findNode(child)
 
                 if n == None or isinstance(n, list):
                     continue
@@ -366,17 +365,17 @@ class ArchiCreatePPTX(object):
                         ls.append(str(w.get("target")))
 
                         relation = w.get("relationship")
-                        rn = createPPTX.findNode(relation)
+                        rn = self.findNode(relation)
                         logger.debug("      relation : %s[%s]" % (rn.get("name"), rn.get(ARCHI_TYPE)))
                         if rn.get("name") != None:
                             ls.append(str(rn.get("name")))
 
                         listDO.append(ls)
 
-                        sn = createPPTX.findNode(w.get("source"), tag="child")
+                        sn = self.findNode(w.get("source"), tag="child")
                         logger.debug("  SO = %s" % sn.get("name"))
 
-                        st = createPPTX.findNode(w.get("target"), tag="child")
+                        st = self.findNode(w.get("target"), tag="child")
                         logger.debug("  TO = %s" % st.get("name"))
 
                     elif w.get("x") != None:
@@ -411,7 +410,7 @@ class ArchiCreatePPTX(object):
                 elif model[0] == "archimate:DiagramObject":
                     logger.debug("%s" % model)
                     name = model[2]
-                    x, y = createPPTX.project(model[4], model[5])
+                    x, y = self.project(model[4], model[5])
 
                     if x == None or y == None:
                         continue
@@ -419,8 +418,8 @@ class ArchiCreatePPTX(object):
                     left   = Inches(x)
                     top    = Inches(y)
 
-                    width  = Inches(1.0 * createPPTX.SCALE)
-                    height = Inches(0.75 * createPPTX.SCALE)
+                    width  = Inches(1.0 * self.SCALE)
+                    height = Inches(0.75 * self.SCALE)
 
                     logger.debug("DiagramObject : %s(%s,%s)" % (model[2], model[4], model[5]))
                     logger.debug("    l:%d,t:%d,w:%d,h:%d)" %(left, top, width, height))
@@ -445,7 +444,7 @@ class ArchiCreatePPTX(object):
 
                     font = run.font
                     font.name = "Calibri"
-                    font.size = Pt(10 * createPPTX.SCALE)
+                    font.size = Pt(10 * self.SCALE)
                     font.color.rgb = RGBColor(50, 50, 50) # grey
 
                     # set shape fill
@@ -456,8 +455,8 @@ class ArchiCreatePPTX(object):
                 elif model[0] == "Connector":
                     logger.debug("  model[0] %s, model[1] %s" % (model[1], model[2]))
 
-                    source = createPPTX.findDiagramObject(listDO, model[1])
-                    target = createPPTX.findDiagramObject(listDO, model[2])
+                    source = self.findDiagramObject(listDO, model[1])
+                    target = self.findDiagramObject(listDO, model[2])
 
                     logger.debug("  source %s" % (source))
                     logger.debug("  target %s" % (target))
@@ -479,19 +478,15 @@ class ArchiCreatePPTX(object):
         # logger.debug("====Add Connectors====")
         # fixSlides(PPTXFilename, listConnectors)
 
-
-if __name__ == "__main__":
+def test_ArchiCreatePPTX():
 
     start_time = ArchiLib.startTimer()
 
-    afileArchimate = ""
-    afilePPTXIn    = "test_in.pptx"
-    afilePPTXOut   = "test_out.pptx"
-
-    createPPTX = ArchiCreatePPTX(afileArchimate, afilePPTXIn, afilePPTXOut)
+    createPPTX = ArchiCreatePPTX(fileArchimateTest, filePPTXIn, filePPTXOut)
 
     createPPTX.buildPPTX()
 
     ArchiLib.stopTimer(start_time)
 
-
+if __name__ == "__main__":
+    test_ArchiCreatePPTX()

@@ -1,0 +1,87 @@
+Export,Model
+Export,Model,01. Market to Leads,ArchimateDiagramModel
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Prospect,DataObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Update Lead Information ,ApplicationService
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Update Lead Information ,ApplicationService,UsedByRelationship,UsedByRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Update Lead Information ,ApplicationService,UsedByRelationship,UsedByRelationship,SalesForce.com ,ApplicationComponent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Update Lead Information ,ApplicationService,UsedByRelationship,UsedByRelationship,Update Lead Contact Information ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Request Tour Schedule ,ApplicationService
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Request Tour Schedule ,ApplicationService,UsedByRelationship,UsedByRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Request Tour Schedule ,ApplicationService,UsedByRelationship,UsedByRelationship,SalesForce.com ,ApplicationComponent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Request Tour Schedule ,ApplicationService,UsedByRelationship,UsedByRelationship,Reserve Tour For Lead ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,01. Market to Leads ,BusinessEvent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,01. Market to Leads ,BusinessEvent,TriggeringRelationship,TriggeringRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,01. Market to Leads ,BusinessEvent,TriggeringRelationship,TriggeringRelationship,Market to Leads ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,01. Market to Leads ,BusinessEvent,TriggeringRelationship,TriggeringRelationship,Create Lead ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Lead,DataObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Credit Check,ApplicationComponent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Credit Check,ApplicationComponent,AccessRelationship,AccessRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Credit Check,ApplicationComponent,AccessRelationship,AccessRelationship,Prospect,DataObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Complete Market to Leads ,BusinessEvent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,TriggeringRelationship,TriggeringRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,TriggeringRelationship,TriggeringRelationship,Complete Market to Leads ,BusinessEvent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Lead ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Tour ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Create Lead ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Create Lead ,BusinessProcess,FlowRelationship,FlowRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Create Lead ,BusinessProcess,FlowRelationship,FlowRelationship,Contact Leads ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Create Lead ,BusinessProcess,AccessRelationship,AccessRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Create Lead ,BusinessProcess,AccessRelationship,AccessRelationship,Lead ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Create Lead ,BusinessProcess,AccessRelationship,AccessRelationship,Do Not Sell ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Reserve Tour For Lead ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Reserve Tour For Lead ,BusinessProcess,AccessRelationship,AccessRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Reserve Tour For Lead ,BusinessProcess,AccessRelationship,AccessRelationship,Tour ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Reserve Tour For Lead ,BusinessProcess,FlowRelationship,FlowRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Reserve Tour For Lead ,BusinessProcess,FlowRelationship,FlowRelationship,Rate Lead Potential ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Do Not Market to Lead ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Do Not Market to Lead ,BusinessProcess,TriggeringRelationship,TriggeringRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Do Not Market to Lead ,BusinessProcess,TriggeringRelationship,TriggeringRelationship,Complete Market to Leads ,BusinessEvent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Do Not Market to Lead ,BusinessProcess,AccessRelationship,AccessRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Do Not Market to Lead ,BusinessProcess,AccessRelationship,AccessRelationship,Do Not Market ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Rating ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Do Not Sell ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Update Lead Contact Information ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Update Lead Contact Information ,BusinessProcess,FlowRelationship,FlowRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Update Lead Contact Information ,BusinessProcess,FlowRelationship,FlowRelationship,Reserve Tour For Lead ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Update Lead Contact Information ,BusinessProcess,AccessRelationship,AccessRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Update Lead Contact Information ,BusinessProcess,AccessRelationship,AccessRelationship,Lead ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Do Not Market ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Contact Leads ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Contact Leads ,BusinessProcess,FlowRelationship,FlowRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Contact Leads ,BusinessProcess,FlowRelationship,FlowRelationship,Update Lead Contact Information ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Contact Leads ,BusinessProcess,AccessRelationship,AccessRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Contact Leads ,BusinessProcess,AccessRelationship,AccessRelationship,Lead ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Rate Lead Potential ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Rate Lead Potential ,BusinessProcess,AccessRelationship,AccessRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Rate Lead Potential ,BusinessProcess,AccessRelationship,AccessRelationship,Rating ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Rate Lead Potential ,BusinessProcess,AccessRelationship,AccessRelationship,Lead ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Rate Lead Potential ,BusinessProcess,FlowRelationship,FlowRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Rate Lead Potential ,BusinessProcess,FlowRelationship,FlowRelationship,Do Not Market to Lead ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Request Lead Contact Info ,ApplicationService
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Request Lead Contact Info ,ApplicationService,UsedByRelationship,UsedByRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Request Lead Contact Info ,ApplicationService,UsedByRelationship,UsedByRelationship,SalesForce.com ,ApplicationComponent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Request Lead Contact Info ,ApplicationService,UsedByRelationship,UsedByRelationship,Contact Leads ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market No-List,ApplicationComponent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market No-List,ApplicationComponent,AccessRelationship,AccessRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market No-List,ApplicationComponent,AccessRelationship,AccessRelationship,Do-Not Market List,DataObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Update Do-Not Market List ,ApplicationService
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Update Do-Not Market List ,ApplicationService,UsedByRelationship,UsedByRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Update Do-Not Market List ,ApplicationService,UsedByRelationship,UsedByRelationship,Market No-List,ApplicationComponent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Update Do-Not Market List ,ApplicationService,UsedByRelationship,UsedByRelationship,Do Not Market to Lead ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Tour,DataObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Do-Not Market List,DataObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Book Tour for Lead,ApplicationService
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Book Tour for Lead,ApplicationService,UsedByRelationship,UsedByRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Book Tour for Lead,ApplicationService,UsedByRelationship,UsedByRelationship,SalesForce.com ,ApplicationComponent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Book Tour for Lead,ApplicationService,UsedByRelationship,UsedByRelationship,Rate Lead Potential ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Determine Prospect Eligibility,ApplicationService
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Determine Prospect Eligibility,ApplicationService,UsedByRelationship,UsedByRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Determine Prospect Eligibility,ApplicationService,UsedByRelationship,UsedByRelationship,Create Lead ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Determine Prospect Eligibility,ApplicationService,UsedByRelationship,UsedByRelationship,Credit Check,ApplicationComponent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,SalesForce.com ,ApplicationComponent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,SalesForce.com ,ApplicationComponent,AccessRelationship,AccessRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,SalesForce.com ,ApplicationComponent,AccessRelationship,AccessRelationship,Tour,DataObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,SalesForce.com ,ApplicationComponent,AccessRelationship,AccessRelationship,Tour Schedule,DataObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,SalesForce.com ,ApplicationComponent,AccessRelationship,AccessRelationship,Lead,DataObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Tour Schedule,DataObject

@@ -10,32 +10,29 @@ import sys
 import os
 import StringIO
 import time
-from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
+
+from Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
 
-from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib
+from Constants import *
+from ArchiLib import ArchiLib
+
+import pytest
 
 class ExportArchiModel(object):
     fileArchimate = None
     fileConceptsExport = None
 
-    def __init__(self, fa=None, fe=None):
+    def __init__(self, fileArchimate, fileConceptsExport):
 
-        if fa != None:
-            self.fileArchimate = fa
-        else:
-            self.fileArchimate = fileArchimate
+        self.fileArchimate = fileArchimate
+        self.fileConceptsExport = fileConceptsExport
 
-        if fe != None:
-            self.fileConceptsExport = fe
-        else:
-            self.fileConceptsExport = fileConceptsExport
-
-        self.al = ArchiLib(fa=self.fileArchimate, fe=self.fileConceptsExport)
+        self.al = ArchiLib(self.fileArchimate)
 
     def exportArchiModel(self, listMTE):
 
@@ -45,31 +42,23 @@ class ExportArchiModel(object):
         for ModelToExport in listMTE:
             self.al.recurseModel(ModelToExport, concepts)
 
-        Concepts.saveConcepts(concepts, fileEstimationConcepts)
+        Concepts.saveConcepts(concepts, fileConceptsEstimation)
 
-        self.al.outputCSVtoFile(concepts)
+        self.al.outputCSVtoFile(concepts, fileCSVExport)
 
-if __name__ == "__main__":
+def text_ExportModel():
 
     start_time = ArchiLib.startTimer()
 
-    eam = ExportArchiModel()
+    eam = ExportArchiModel(fileArchimateTest, fileConceptsExport)
 
     listMTE = list()
-    #listMTE.append("5. Contract Management")
-    #listMTE.append("4. Contract Prep")
-    #listMTE.append("1. Inventory Management")
-    #listMTE.append("1. Resort Setup")
-    #listMTE.append("4. Proposal Presentation")
-    #listMTE.append("5. Contract Presentation")
-    #listMTE.append("6. Contract Closing")
-
-    #listMTE.append("All Scenarios")
-    #listMTE.append("Business Concepts")
-    #listMTE.append("System of Record")
 
     listMTE.append("To-Be DAM Functional Reference Architecture")
 
     eam.exportArchiModel(listMTE)
 
     ArchiLib.stopTimer(start_time)
+
+if __name__ == "__main__":
+    text_ExportModel()

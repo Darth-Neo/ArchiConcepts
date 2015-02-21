@@ -3,24 +3,23 @@
 # Natural Language Processing of PMO Information
 #
 __author__ = 'morrj140'
-__VERSION__ = '0.1'
+__VERSION__ = '0.3'
 
-import os
-import logging
-from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
-logger.setLevel(logging.INFO)
+from al_ArchiLib.Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
-
 
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.Neo4JLib import Neo4JLib
 
 from al_Constants import *
 
-if __name__ == "__main__":
+import pytest
+
+def exportNeo4j(gdb):
 
     # measure process time, wall time
     start_time = ArchiLib.startTimer()
@@ -32,4 +31,7 @@ if __name__ == "__main__":
     nj.exportNeo4JToConcepts(concepts)
 
     ArchiLib.stopTimer(start_time)
+
+if __name__ == "__main__":
+    exportNeo4j(gdbTest)
 

@@ -5,16 +5,17 @@
 __author__ = 'morrj140'
 __VERSION__ = '0.1'
 
-import logging
 
-from py2neo.neo4j import Node
+from Constants import *
 
-from nl_lib import Logger
+from Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
+
 from nl_lib.Concepts import Concepts
-from nl_lib.ConceptGraph import Neo4JGraph
 
-logger = Logger.setupLogging(__name__)
-logger.setLevel(logging.INFO)
+from py2neo import neo4j, node, rel
+from py2neo.neo4j import Node
 
 from openpyxl import Workbook
 from openpyxl import load_workbook
@@ -22,25 +23,20 @@ from openpyxl.compat import range
 from openpyxl.cell import get_column_letter
 from openpyxl.worksheet import Worksheet as worksheet
 
-from al_ArchiLib.ArchiLib import ArchiLib
-from al_ArchiLib.Constants import *
+import pytest
 
 class Neo4JLib(object):
-
-    fileNeo4JNodes= None
-    csvFileExport = None
-    fileExcelIn   = None
-    fileExcelIn   = None
 
     def __init__(self, gdb):
         logger.debug("Neo4J instance : %s" % gdb)
 
-        self.graph = Neo4JGraph(gdb)
+        self.graph = neo4j.GraphDatabaseService(gdb)
 
-        self.fileNodes     = fileNeo4JNodes
-        self.csvFileExport = csvFileExport
-        self.fileExcelIn   = fileExcelIn
-        self.fileExcelOut  = fileExcelOut
+        self.fileCSVExport = fileCSVExport
+
+    def cypherQuery(self, qs):
+        query = neo4j.CypherQuery(self.graph, qs)
+        return query.execute().data
 
     def Traversal(self, ql):
 
@@ -62,7 +58,9 @@ class Neo4JLib(object):
 
     def cypherQuery(self, qs):
 
-        qd = self.graph.query(qs)
+        query = neo4j.CypherQuery(self.graph, qs)
+
+        qd = query.execute().data
 
         listQuery = list()
 
@@ -146,14 +144,14 @@ class Neo4JLib(object):
     def queryExport(self, lq):
 
         # csvExport defined in al_ArchiLib.Constants
-        f = open(self.csvFileExport,'w')
+        f = open(self.fileCSVExport,'w')
 
         self.logResults(lq, f)
 
         f.close()
 
         logger.info("Exported %d rows" % len(lq))
-        logger.info("Save Model : %s" % self.csvFileExport)
+        logger.info("Save Model : %s" % self.fileCSVExport)
 
     def Neo4JCounts(self):
         qs = "MATCH (n) RETURN n.typeName, count(n.typeName) order by count(n.typeName) DESC"
@@ -164,20 +162,11 @@ class Neo4JLib(object):
             logger.info("%4d : %s" % (x[2], x[0]))
 
 
-    def queryExportExcel(self, lq, fileIn=None, fileOut=None, wst=None):
-
-        if fileIn == None:
-            fileIn = self.fileExcelIn
-
-        if fileOut == None:
-            fileOut = self.fileExcelIn
+    def queryExportExcel(self, lq, fileIn=fileExcelIn, fileOut=fileExcelOut):
 
         wb = load_workbook(filename = fileIn)
 
-        if wst == None:
-            wsTitle = "Import Items" + time.strftime("%Y%d%m_%H%M%S")
-        else:
-            wsTitle = wst
+        wsTitle = "Import Items" + time.strftime("%Y%d%m_%H%M%S")
 
         ws = wb.create_sheet()
         ws.title = wsTitle
@@ -209,7 +198,7 @@ class Neo4JLib(object):
         logger.info("Saved file : %s" % fileOut)
 
 
-    def exportNeo4JToConcepts(self, concepts):
+    def exportNeo4JToConcepts(self, concepts, fileNodes="nodes.p"):
         # #et all nodes
         # Match n return n limit 25
 
@@ -235,8 +224,13 @@ class Neo4JLib(object):
             else:
                 logger.warn("Not a standard node : %s" % x)
 
-        Concepts.saveConcepts(concepts, self.fileNodes)
+        Concepts.saveConcepts(concepts, fileNodes)
+
+        return concepts
+
+def test_Neo4jLib():
+    nj = Neo4JLib(gdbTest)
+    nj.Neo4JCounts()
 
 if __name__ == "__main__":
-    nj = Neo4JLib()
-    nj.Neo4JCounts()
+    test_Neo4jLib()

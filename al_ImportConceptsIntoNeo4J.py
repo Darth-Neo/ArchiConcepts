@@ -3,26 +3,22 @@
 # Natural Language Processing of Concepts to Neo4J Information
 #
 __author__ = 'morrj140'
-__VERSION__ = '0.1'
+__VERSION__ = '0.3'
 
-import os
-from subprocess import call
-import time
-import logging
-from nl_lib import Logger
+from al_ArchiLib.Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
+
 from nl_lib.Concepts import Concepts
-from nl_lib.ConceptGraph import Neo4JGraph
-from nl_lib.Constants import *
-
-logger = Logger.setupLogging(__name__)
-logger.setLevel(logging.INFO)
 
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.ConceptsImportNeo4J import ConceptsImportNeo4J
 
 from al_Constants import *
 
-if __name__ == "__main__":
+import pytest
+
+def importConceptsIntoNeo4J():
 
     start_time = ArchiLib.startTimer()
 
@@ -34,6 +30,8 @@ if __name__ == "__main__":
 
     ArchiLib.stopTimer(start_time)
 
+if __name__ == "__main__":
+    importConceptsIntoNeo4J()
 
 
     

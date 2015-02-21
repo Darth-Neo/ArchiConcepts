@@ -3,25 +3,19 @@
 # Archimate to Dependancy Analysis
 #
 __author__ = 'morrj140'
-__VERSION__ = '0.1'
+__VERSION__ = '0.3'
 
-import sys
-import os
-import StringIO
-import time
-
-from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
-
-from nl_lib.Constants import *
-from nl_lib.Concepts import Concepts
+from al_ArchiLib.Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.DependencyAnalysis import *
 
 from al_Constants import *
 
-if __name__ == "__main__":
+def dependancyAnalysisFromArchi(fileArchimate):
+
     start_time = ArchiLib.startTimer()
 
     da = DependancyAnalysis(fileArchimate)
@@ -31,3 +25,6 @@ if __name__ == "__main__":
     concepts.logConcepts()
 
     ArchiLib.stopTimer(start_time)
+
+if __name__ == "__main__":
+    dependancyAnalysisFromArchi(fileArchimateTest)

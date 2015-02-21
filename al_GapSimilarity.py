@@ -3,20 +3,16 @@
 # Natural Language Processing of Concepts from Archimate Information
 #
 __author__ = 'morrj140'
-__VERSION__ = '0.1'
+__VERSION__ = '0.3'
 
-import os
-from subprocess import call
-import time
-import logging
-from nl_lib import Logger
+from al_ArchiLib.Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(DEBUG)
+
 from nl_lib.Concepts import Concepts
 from nl_lib.ConceptGraph import Neo4JGraph
 from nl_lib.TopicsModel import TopicsModel
 from nl_lib.Constants import *
-
-logger = Logger.setupLogging(__name__)
-logger.setLevel(logging.INFO)
 
 from lxml import etree
 
@@ -32,6 +28,8 @@ from nltk.stem import PorterStemmer, WordNetLemmatizer
 from al_ArchiLib.ArchiLib import ArchiLib
 
 from al_Constants import *
+
+import pytest
 
 class Collocations(object):
     concepts         = None
@@ -256,17 +254,13 @@ class DocumentsSimilarity(object):
         else:
             logger.debug("   similarity below threshold")
 
-
-if __name__ == "__main__":
-
-    start_time = ArchiLib.startTimer()
-
-    al = ArchiLib(fa="/Users/morrj140/Documents/SolutionEngineering/Archimate Models/FOS V4.archimate")
+def gapSimilarity(fileArchimate):
 
     lemmatizer = WordNetLemmatizer()
 
-    etree.QName(ArchiLib.ARCHIMATE_NS, 'model')
-    tree = etree.parse(fileArchimate)
+    logger.info("Using : %s" % fileArchimate)
+
+    al = ArchiLib(fileArchimate)
 
     searchTypes = list()
     searchTypes.append("archimate:Requirement")
@@ -274,6 +268,7 @@ if __name__ == "__main__":
 
     logger.info("Find Words...")
     concepts = Concepts("Requirement", "Requirements")
+
     n = 0
     for sentence in nl:
         n += 1
@@ -282,7 +277,7 @@ if __name__ == "__main__":
         c = concepts.addConceptKeyType("Document" + str(n), "Document")
         d = c.addConceptKeyType(sentence, "Sentence" + str(n))
 
-        if True and sentence != None:
+        if sentence != None:
             cleanSentence = ' '.join([word for word in sentence.split(" ") if word not in stop])
             for word, pos in nltk.pos_tag(nltk.wordpunct_tokenize(cleanSentence)):
                 if len(word) > 1 and pos[0] == "N":
@@ -290,12 +285,14 @@ if __name__ == "__main__":
                     e = d.addConceptKeyType(lemmaWord, "LemmaWord")
                     f = e.addConceptKeyType(pos, "POS")
 
-    if True:
+    concepts.logConcepts()
+
+    if False:
         logger.info("Find Collocations...")
         fc = Collocations()
         fc.find_collocations(concepts)
 
-    if True:
+    if False:
         npbt = DocumentsSimilarity()
 
         logger.info("Create Topics")
@@ -321,4 +318,5 @@ if __name__ == "__main__":
                 for x in sorted(listTopics, key=lambda c: abs(c[1]), reverse=False):
                     logger.info("Topic : %s[%d]" % (x[0], x[1]))
 
-    ArchiLib.stopTimer(start_time)
+if __name__ == "__main__":
+    gapSimilarity(fileArchimateTest)

@@ -3,24 +3,18 @@
 #  Concepts to Archimate Elements
 #
 __author__ = 'morrj140'
-__VERSION__ = '0.1'
+__VERSION__ = '0.3'
 
-import sys
-import os
-import StringIO
-import csv
-import random
-import time
-
-from nl_lib.Constants import *
-from nl_lib.Concepts import Concepts
-from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
+from al_ArchiLib.Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_Constants import *
 
 dictConcepts = dict()
+
+import pytest
 
 def insertConceptRelation(concepts, n=0):
     tag = "element"
@@ -83,11 +77,11 @@ def insertConceptNode(concepts, subfolder, n=0):
 
         insertConceptNode(concept, subfolder, n)
 
+def importConceptsIntoArchi():
 
-if __name__ == "__main__":
-    logger.info("Using : %s" % fileArchimate)
+    logger.info("Using : %s" % fileArchimateTest)
 
-    conceptFile = "batches.p"
+    conceptFile = fileConceptsBatches
     logger.info("Loading :" + conceptFile)
     concepts = Concepts.loadConcepts(conceptFile)
 
@@ -109,3 +103,6 @@ if __name__ == "__main__":
     insertConceptRelation(concepts)
 
     al.outputXMLtoFile(filename="import_concepts.archimate")
+
+if __name__ == "__main__":
+    importConceptsIntoArchi()

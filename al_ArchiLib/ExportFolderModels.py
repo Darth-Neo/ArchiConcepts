@@ -5,40 +5,30 @@
 __author__ = 'morrj140'
 __VERSION__ = '0.1'
 
-import sys
-import os
-import StringIO
-import time
+from Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
-from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
-
-from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
 
-from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib
+from Constants import *
+from ArchiLib import ArchiLib
+
+import pytest
 
 class ExportArchiFolderModels (object):
     fileArchimate      = None
     fileConceptsExport = None
     conceptsFile       = None
 
-    def __init__(self, fa=None, fe=None):
+    def __init__(self, fileArchimate, fileConceptsExport):
 
-        if fa != None:
-            self.fileArchimate = fa
-        else:
-            self.fileArchimate = fileArchimate
+        self.fileArchimate = fileArchimate
+        self.fileConceptsExport = fileConceptsExport
 
-        if fe != None:
-            self.fileConceptsExport = fe
-        else:
-            self.fileConceptsExport = fileConceptsExport
+        self.al = ArchiLib(self.fileArchimate)
 
-        self.al = ArchiLib(self.fileArchimate, self.fileConceptsExport)
-
-        self.conceptsFile = fileEstimationConcepts
+        self.conceptsFile = fileConceptsEstimation
 
     def exportArchiFolderModels(self, folder):
 
@@ -53,17 +43,19 @@ class ExportArchiFolderModels (object):
             d = concepts.addConceptKeyType(ModelToExport, "Model")
             self.al.recurseModel(ModelToExport, d)
 
-        self.al.outputCSVtoFile(concepts)
+        self.al.outputCSVtoFile(concepts, fileCSVExport)
 
         Concepts.saveConcepts(concepts, self.conceptsFile)
 
         logger.info("Save Concepts : %s" % self.conceptsFile)
 
+def test_ExportFolderModels(fileArchimate, fileConceptsExport):
 
-if __name__ == "__main__":
     start_time = ArchiLib.startTimer()
 
-    eafm = ExportArchiFolderModels()
+    logger.info("Using : %s" % fileArchimate)
+
+    eafm = ExportArchiFolderModels(fileArchimate, fileConceptsExport)
 
     folder = "Scenarios"
 
@@ -71,4 +63,6 @@ if __name__ == "__main__":
 
     ArchiLib.stopTimer(start_time)
 
+if __name__ == "__main__":
+    test_ExportFolderModels(fileArchimateTest, fileConceptsExport)
 

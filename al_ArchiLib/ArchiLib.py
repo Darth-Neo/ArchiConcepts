@@ -11,13 +11,12 @@ import StringIO
 import csv
 import random
 import time
-import logging
 
-from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
-logger.setLevel(logging.INFO)
+from Logger import *
 
-from nl_lib.Constants import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
+
 from nl_lib.Concepts import Concepts
 
 from lxml import etree
@@ -27,7 +26,9 @@ from openpyxl import load_workbook
 from openpyxl.compat import range
 from openpyxl.cell import get_column_letter
 
-from al_ArchiLib.Constants import *
+from Constants import *
+
+import pytest
 
 #
 # Main class to make life easier
@@ -39,17 +40,12 @@ class ArchiLib(object):
     dictBP    = dict()
     dictCount = dict()
 
-    def __init__(self, fa=None, fe=None):
+    def __init__(self, fileArchimate):
 
-        if fa != None:
-            self.fileArchimate = fa
+        if fileArchimate != None:
+            self.fileArchimate = fileArchimate
         else:
             self.fileArchimate = fileArchimate
-
-        if fe != None:
-            self.fileConceptsExport = fe
-        else:
-            self.fileConceptsExport = fileConceptsExport
 
         etree.QName(ARCHIMATE_NS, 'model')
 
@@ -58,7 +54,7 @@ class ArchiLib(object):
         # Populate Dictionaries for easier code
         self.parseAll()
 
-    def outputXMLtoFile(self, filename="import_artifacts.archimate"):#
+    def outputXMLtoFile(self, filename="import_artifacts.archimate"):
         output = StringIO.StringIO()
         self.tree.write(output, pretty_print=True)
 
@@ -72,13 +68,9 @@ class ArchiLib(object):
 
         output.close()
 
-    def outputCSVtoFile(self, concepts, fileExport=None):
+    def outputCSVtoFile(self, concepts, fileExport):
 
-        if fileExport != None:
-            self.fileExport = fileExport
-        else:
-            global csvFileExport
-            self.fileExport = csvFileExport
+        self.fileExport = fileExport
 
         listOutput = concepts.listCSVConcepts()
 
@@ -375,7 +367,8 @@ class ArchiLib(object):
         d = dict()
 
         for x in self.dictNodes.values():
-            if x.get(ARCHI_TYPE) in type:
+            xt = x.get(ARCHI_TYPE)
+            if xt in type:
                 d[x.get("name")] = x
         return d
 
@@ -499,16 +492,17 @@ class ArchiLib(object):
     #
     # Model functions via dictionaries
     #
-    def logTypeCounts(self, ListOnly = False):
+    def logTypeCounts(self):
         listCounts = list()
-        if not ListOnly:
-            logger.info("Type Counts")
-            listCounts = self.dictCount.items()
 
-            for x in sorted(listCounts, key=lambda c: abs(c[1]), reverse=True):
-                if x[1] > 1:
-                    logger.info(" %d - %s" % (x[1], x[0]))
-            logger.info(" ")
+        logger.info("Type Counts")
+        listCounts = self.dictCount.items()
+
+        for x in sorted(listCounts, key=lambda c: abs(c[1]), reverse=True):
+            if x[1] > 1:
+                logger.info(" %d - %s" % (x[1], x[0]))
+        logger.info(" ")
+
         return listCounts
 
     #
@@ -937,5 +931,8 @@ class ArchiLib(object):
         logger.info("Process Time = %4.2f seconds, %d Minutes, %d hours" % (timeTaken, minutes, hours))
 
 if __name__ == "__main__":
+    fileArchimate = "test" + os.sep + "Testing.archimate"
+
     al = ArchiLib()
+
     al.logTypeCounts()

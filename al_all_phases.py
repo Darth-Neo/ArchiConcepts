@@ -5,14 +5,9 @@
 __author__ = 'morrj140'
 __VERSION__ = '0.2'
 
-import sys
-import os
-import StringIO
-import time
-import logging
-from nl_lib import Logger
 
-logger = Logger.setupLogging(__name__)
+from al_ArchiLib.Logger import *
+logger = setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
 from al_ArchiLib.ArchiLib import ArchiLib

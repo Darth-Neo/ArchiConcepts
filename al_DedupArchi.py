@@ -3,25 +3,18 @@
 # Archimate Deduping
 #
 __author__ = 'morrj140'
-__VERSION__ = '0.1'
+__VERSION__ = '0.3'
 
-import sys
-import os
-import StringIO
-from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
+from al_ArchiLib.Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
-from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
-
-from lxml import etree
 
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_Constants import *
 
-if __name__ == "__main__":
-    fileArchiP = "archi.p"
-    fileArchiModel = 'archi.archimate'
+def dedupArchi(fileArchimate):
 
     al = ArchiLib(fileArchimate)
 
@@ -36,10 +29,12 @@ if __name__ == "__main__":
 
     #concepts.logConcepts()
 
-    #Concepts.saveConcepts(concepts, "dedup.p")
+    #Concepts.saveConcepts(concepts, fileConceptsDeDups)
 
     #
     # Generate Archimate from Concepts
     #
-    output = al.createArchimate(fileArchiModel, fileArchiP)
+    output = al.createArchimate(fileArchimateModel , fileConceptsArch)
 
+if __name__ == "__main__":
+    dedupArchi(fileArchimateTest)

@@ -3,38 +3,30 @@
 # PPTX Crawl
 #
 __author__ = 'morrj140'
-__VERSION__ = '0.1'
+__VERSION__ = '0.3'
 
-import logging
-from nl_lib import Logger
+from al_ArchiLib.Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
+
 from nl_lib.Concepts import Concepts
-from nl_lib.Constants import *
 
-logger = Logger.setupLogging(__name__)
-logger.setLevel(Logger.DEBUG)
-
-import math
-
-from pptx import Presentation
-from lxml import etree
-
-from traceback import format_exc
-
-
-from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.PPTXCreateArchi import PPTXCreateArchil
 
 from al_Constants import *
 
-if __name__ == "__main__":
-    logger.info("Using : %s" % filePPTX)
+def PPTXCrawl():
 
-    cpptx = PPTXCreateArchil(filePPTX)
+    logger.info("Using : %s" % filePPTXIn)
+
+    cpptx = PPTXCreateArchil(filePPTXIn)
 
     c = cpptx.crawlPPTX()
 
     c.logConcepts()
 
-    Concepts.saveConcepts(c, filePPTXConcepts )
+    Concepts.saveConcepts(c, fileConceptsPPTX)
 
+if __name__ == "__main__":
+    PPTXCrawl()
 

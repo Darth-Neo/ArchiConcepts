@@ -5,30 +5,20 @@
 __author__ = 'morrj140'
 __VERSION__ = '0.1'
 
-import sys
-import os
-import StringIO
-import time
-from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
 
-from nl_lib.Constants import *
+from Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
+
 from nl_lib.Concepts import Concepts
 
-from lxml import etree
-
 import nltk
-from nltk import tokenize, tag, chunk
-from nltk.corpus import webtext
-from nltk.collocations import BigramCollocationFinder, TrigramCollocationFinder
-from nltk.metrics import BigramAssocMeasures, TrigramAssocMeasures
-from nltk.corpus import stopwords
-from nltk.corpus import wordnet as wn
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-from al_ArchiLib.ArchiLib import ArchiLib
-from al_ArchiLib.ConceptsGraph import ConceptsGraph
-from al_ArchiLib.Constants import *
+from ArchiLib import ArchiLib
+from Constants import *
+
+import pytest
 
 # The graph nodes
 class Task(object):
@@ -46,16 +36,13 @@ class Task(object):
 
 class DependancyAnalysis(object):
 
-    def __init__(self, afileArchimate):
+    def __init__(self, fileArchimate):
 
-        if afileArchimate == None:
-            self.fileArchimate = fileArchimate
-        else:
-            self.fileArchimate = afileArchimate
+        self.fileArchimate = fileArchimate
 
         logger.info("Using : %s" % self.fileArchimate)
 
-        self.al = ArchiLib()
+        self.al = ArchiLib(fileArchimate)
 
         self.concepts = Concepts("BusinessProcess", "archimate:BusinessProcess")
 
@@ -261,14 +248,17 @@ class DependancyAnalysis(object):
 
         return conceptBatches
 
-if __name__ == "__main__":
+def test_DependencyAnalysis():
 
     start_time = ArchiLib.startTimer()
 
-    da = DependancyAnalysis(fileArchimate)
+    da = DependancyAnalysis(fileArchimateTest)
 
     concepts = da.dependancyAnalysis()
 
     concepts.logConcepts()
 
     ArchiLib.stopTimer(start_time)
+
+if __name__ == "__main__":
+    test_DependencyAnalysis()

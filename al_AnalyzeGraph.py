@@ -3,22 +3,11 @@
 # Natural Language Processing of Archimate Information
 #
 __author__ = 'morrj140'
-__VERSION__ = '0.1'
+__VERSION__ = '0.3'
 
-import os
-from subprocess import call
-import time
-
-import logging
-from nl_lib import Logger
-from nl_lib.Concepts import Concepts
-from nl_lib.ConceptGraph import PatternGraph, NetworkXGraph, GraphVizGraph, Neo4JGraph
-from nl_lib.Constants import *
-import networkx as nx
-
-logger = Logger.setupLogging(__name__)
-logger.setLevel(logging.INFO)
-
+from al_ArchiLib.Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.AnalyzeGraph import AnalyzeGraph
@@ -26,13 +15,19 @@ from al_ArchiLib.Neo4JLib import Neo4JLib
 
 from al_Constants import *
 
-if __name__ == "__main__":
+import pytest
+
+def analyzeGraph(gdb):
     start_time = ArchiLib.startTimer()
 
     ag = AnalyzeGraph(gdb)
+
     ag.analyzeNetworkX(fileConceptsExport)
 
     ArchiLib.stopTimer(start_time)
+
+if __name__ == "__main__":
+    analyzeGraph(gdbTest)
 
     
 

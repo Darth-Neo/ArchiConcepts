@@ -6,16 +6,17 @@ __author__ = 'morrj140'
 __VERSION__ = '0.1'
 
 import os
-from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
 
-import logging
-logger.setLevel(logging.INFO)
+from Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
 from nl_lib.Concepts import Concepts
 from nl_lib.ConceptGraph import PatternGraph, GraphVizGraph
 
 from Constants import *
+
+import pytest
 
 class ConceptsGraph(object):
 
@@ -95,29 +96,23 @@ class ConceptsGraph(object):
                 logger.info("%s [%d]" % (x, n))
 
 
+def test_ConceptsGraph():
+
+    conceptFile = fileConceptsNGramsSubject
+
+    if not os.path.exists(conceptFile):
+        logger.info("File does not exist : %s" % conceptFile)
+
+    else:
+        c = Concepts("GraphConcepts", "GRAPH")
+        concepts = Concepts.loadConcepts(conceptFile)
+
+        cg = ConceptsGraph(fileImage=fileImageExport)
+
+        cg.conceptsGraph(concepts)
+
 if __name__ == "__main__":
-    #conceptFile = "documents.p"
-    #conceptFile = "words.p"
-    #conceptFile = "NVPChunks.p"
-    #conceptFile = "chunks.p"
-    #conceptFile = "topicsDict.p"
-    #conceptFile = "TopicChunks.p"
-    #conceptFile = "ngrams.p"
-    #conceptFile = "ngramscore.p"
-    conceptFile = "ngramsubject.p"
-    #conceptFile = "archi.p"
-    #conceptFile = "batches.p"
-
-    c = Concepts("GraphConcepts", "GRAPH")
-    concepts = Concepts.loadConcepts(conceptFile)
-
-    # c.logConcepts()
-
-    cg = ConceptsGraph(fileImage="DVCBatches.png")
-
-    cg.conceptsGraph(concepts)
-
-
+    test_ConceptsGraph()
 
 
 

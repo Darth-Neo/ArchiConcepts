@@ -3,15 +3,13 @@
 # Concept Logging
 #
 __author__ = 'morrj140'
-__VERSION__ = '0.1'
+__VERSION__ = '0.3'
 
-import os
-from nl_lib.Constants import *
-from nl_lib import Logger
+from al_ArchiLib.Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
+
 from nl_lib.Concepts import Concepts
-import time
-
-logger = Logger.setupLogging(__name__)
 
 from al_ArchiLib.ArchiLib import ArchiLib
 

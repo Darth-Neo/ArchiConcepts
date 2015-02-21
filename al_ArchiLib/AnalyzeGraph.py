@@ -9,20 +9,21 @@ import os
 from subprocess import call
 import time
 
-import logging
-from nl_lib import Logger
+from Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
+
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
 from nl_lib.ConceptGraph import PatternGraph, NetworkXGraph, GraphVizGraph, Neo4JGraph
 
 import networkx as nx
 
-logger = Logger.setupLogging(__name__)
-logger.setLevel(logging.INFO)
+from Constants import *
+from ArchiLib import ArchiLib
+from Neo4JLib import Neo4JLib
 
-from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib
-from al_ArchiLib.Neo4JLib import Neo4JLib
+import pytest
 
 class AnalyzeGraph(object):
 
@@ -151,7 +152,7 @@ class AnalyzeGraph(object):
         #gl = nx.hits(graph.G)
         #analyzeGraph(graph.G, gl, "Hits")
 
-if __name__ == "__main__":
+def test_AnalyzeGraph():
 
     start_time = ArchiLib.startTimer()
 
@@ -161,7 +162,5 @@ if __name__ == "__main__":
 
     ArchiLib.stopTimer(start_time)
 
-
-
-
-
+if __name__ == "__main__":
+    test_AnalyzeGraph()

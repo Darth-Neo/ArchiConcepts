@@ -12,13 +12,17 @@ import csv
 import random
 import time
 
+from Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
+
 from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
-from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
 
-from al_ArchiLib.ArchiLib import ArchiLib
-from al_ArchiLib.Constants import *
+from ArchiLib import ArchiLib
+from Constants import *
+
+import pytest
 
 class ConceptsImportArchi(object):
     dictConcepts       = None
@@ -28,7 +32,10 @@ class ConceptsImportArchi(object):
 
     def __init__(self, fileArchimate, fileConceptsImport):
         self.dictConcepts = dict()
-        self.al = ArchiLib(fileArchimate)
+
+        self.fileArchimate      = fileArchimate
+        self.fileConceptsImport = fileConceptsImport
+        self.al = ArchiLib(self.fileArchimate)
 
     def insertConceptRelation(self, concepts, n=0):
         tag = "element"
@@ -96,7 +103,7 @@ class ConceptsImportArchi(object):
         attrib = dict()
         attrib["id"] = self.al.getID()
         attrib["name"] = subfolder
-        ic.al.insertNode("folder", folder, attrib)
+        self.al.insertNode("folder", folder, attrib)
 
         logger.info("--- Insert Nodes ---")
         self.insertConceptNode(concepts, subfolder)
@@ -106,24 +113,24 @@ class ConceptsImportArchi(object):
 
     def exportXML(self):
 
-         self.al.outputXMLtoFile(filename=fileImportConcepts)
+         self.al.outputXMLtoFile(filename=self.fileConceptsImport)
 
 
-if __name__ == "__main__":
+def test_ConceptsImportArchi():
 
     start_time = ArchiLib.startTimer()
 
-    logger.info("Using : %s" % fileArchimate)
-    logger.info("Loading :" + fileConceptsBatches)
+    logger.info("Using : %s" % fileArchimateTest)
 
-    ic = ConceptsImportArchi(fileArchimate, fileConceptsBatches)
+    logger.info("Loading :" + fileConceptsExport)
 
-    concepts = Concepts.loadConcepts(fileConceptsBatches)
+    ic = ConceptsImportArchi(fileArchimateTest, fileConceptsExport)
+
+    concepts = Concepts.loadConcepts(fileConceptsExport)
 
     # Create Subfolder
     folder = "Implementation & Migration"
     subfolder = "Dependancy Analysis - %s" % time.strftime("%Y%d%m_%H%M%S")
-
 
     ic.importConcepts(concepts, folder, subfolder)
 
@@ -131,5 +138,5 @@ if __name__ == "__main__":
 
     ArchiLib.stopTimer(start_time)
 
-
-
+if __name__ == "__main__":
+    test_ConceptsImportArchi()

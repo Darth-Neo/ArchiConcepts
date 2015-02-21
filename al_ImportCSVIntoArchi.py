@@ -3,22 +3,17 @@
 # Archimate to Concepts
 #
 __author__ = 'morrj140'
-__VERSION__ = '0.1'
+__VERSION__ = '0.3'
 
-import sys
-import os
-import StringIO
-import csv
-import random
-
-from nl_lib.Constants import *
-from nl_lib.Concepts import Concepts
-from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
+from al_ArchiLib.Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
 from al_ArchiLib.ArchiLib import ArchiLib
 
 from al_Constants import *
+
+import pytest
 
 # Properties
 # <element xsi:type="archimate:BusinessProcess" id="0ad0bac9" name="06.0 Activity Reports">
@@ -28,13 +23,14 @@ from al_Constants import *
 # child2 = etree.SubElement(root, "child2")
 #
 
+def ImportCSVIntoArchi():
 
-if __name__ == "__main__":
+
     start_time = ArchiLib.startTimer()
 
-    logger.info("Using : %s" % fileArchimate)
+    logger.info("Using : %s" % fileArchimateTest)
 
-    al = ArchiLib(fa="/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v26.archimate")
+    al = ArchiLib(fileArchimateTest)
 
     al.logTypeCounts()
 
@@ -45,3 +41,6 @@ if __name__ == "__main__":
     al.outputXMLtoFile()
 
     ArchiLib.stopTimer(start_time)
+
+if __name__ == "__main__":
+    ImportCSVIntoArchi()

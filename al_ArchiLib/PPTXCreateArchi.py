@@ -5,24 +5,25 @@
 __author__ = 'morrj140'
 __VERSION__ = '0.1'
 
-import logging
-from nl_lib import Logger
+import math
+
+from Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
+
 from nl_lib.Concepts import Concepts
 from nl_lib.ConceptGraph import PatternGraph, NetworkXGraph, Neo4JGraph, GraphVizGraph
 from nl_lib.Constants import *
-
-logger = Logger.setupLogging(__name__)
-logger.setLevel(Logger.DEBUG)
-
-import math
 
 from pptx import Presentation
 from lxml import etree
 
 from traceback import format_exc
 
-from al_ArchiLib.ArchiLib import ArchiLib
-from al_ArchiLib.Constants import *
+from ArchiLib import ArchiLib
+from Constants import *
+
+import pytest
 
 class PPTXCreateArchil(object):
 
@@ -35,9 +36,9 @@ class PPTXCreateArchil(object):
     dictNodeXY = None
     dictTextXY = None
 
-    def __init__(self, fileCrawl):
+    def __init__(self, fileCrawl, fileArchimate):
         self.EMU = 914400.0
-
+        self.fileArchimate = fileArchimate
 
         self.path_to_presentation = fileCrawl
 
@@ -48,7 +49,7 @@ class PPTXCreateArchil(object):
         self.dictNodeXY = dict()
         self.dictTextXY = dict()
 
-        self.al = ArchiLib()
+        self.al = ArchiLib(fileArchimate)
 
         self.graph = GraphVizGraph()
         #self.graph = NetworkXGraph()
@@ -517,18 +518,21 @@ class PPTXCreateArchil(object):
 
         return self.concepts
 
-if __name__ == "__main__":
+def PPTXCreateArchi():
+
     start_time = ArchiLib.startTimer()
 
-    logger.info("Using : %s" % filePPTXCrawl)
+    logger.info("Using : %s" % filePPTXIn)
 
-    cpptx = PPTXCreateArchil(filePPTXCrawl)
+    cpptx = PPTXCreateArchil(filePPTXIn, fileArchimateTest)
 
     c = cpptx.crawlPPTX()
 
     c.logConcepts()
 
-    Concepts.saveConcepts(c, "pptx.p")
+    Concepts.saveConcepts(c, fileConceptsPPTX)
 
     ArchiLib.stopTimer(start_time)
 
+if __name__ == "__main__":
+    PPTXCreateArchi()

@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archimate:model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:archimate="http://www.archimatetool.com/archimate" name="Baseline" id="b44cc15a" version="2.6.0">
+  <folder name="Business" id="81954ca9" type="business">
+    <folder name="Function" id="37d52893">
+      <element xsi:type="archimate:BusinessFunction" id="cfe70269" name="Accounting Configuration"/>
+      <element xsi:type="archimate:BusinessFunction" id="2f0399a8" name="Accounts Payable"/>
+      <element xsi:type="archimate:BusinessFunction" id="cc6b773f" name="Accounts Receivable"/>
+      <element xsi:type="archimate:BusinessFunction" id="85852fc1" name="Allergen Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="68d17b0c" name="Analytics"/>
+      <element xsi:type="archimate:BusinessFunction" id="6e3201cc" name="Animal Husbandry"/>
+      <element xsi:type="archimate:BusinessFunction" id="e6c3375f" name="Animal Nutrition"/>
+      <element xsi:type="archimate:BusinessFunction" id="3ed2f4ea" name="Animal Training"/>
+      <element xsi:type="archimate:BusinessFunction" id="e6bf8405" name="Application Design"/>
+      <element xsi:type="archimate:BusinessFunction" id="a4ce7ee6" name="Application Development"/>
+      <element xsi:type="archimate:BusinessFunction" id="bb827d38" name="Application Integration"/>
+      <element xsi:type="archimate:BusinessFunction" id="84c3b2db" name="Arboriculture"/>
+      <element xsi:type="archimate:BusinessFunction" id="1f3f3097" name="Architecture Assessment"/>
+      <element xsi:type="archimate:BusinessFunction" id="e19d5e16" name="Architecture Budgeting Estimation"/>
+      <element xsi:type="archimate:BusinessFunction" id="c6430ec7" name="Architecture Change Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="16f52e98" name="Architecture Definition"/>
+      <element xsi:type="archimate:BusinessFunction" id="fa8606ef" name="Architecture Meta-Model Governance"/>
+      <element xsi:type="archimate:BusinessFunction" id="90340c82" name="Architecture Planning"/>
+      <element xsi:type="archimate:BusinessFunction" id="206a74da" name="Architecture Procurement Analysis"/>
+      <element xsi:type="archimate:BusinessFunction" id="678a8c06" name="Architecture Repository Administration"/>
+      <element xsi:type="archimate:BusinessFunction" id="9c8b52a0" name="Architecture Risk Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="ebd43526" name="Artistic Layout"/>
+      <element xsi:type="archimate:BusinessFunction" id="1f6869c6" name="Asset Configuration"/>
+      <element xsi:type="archimate:BusinessFunction" id="7be1e055" name="Asset Delivery"/>
+      <element xsi:type="archimate:BusinessFunction" id="3de25f4a" name="Asset Distribution"/>
+      <element xsi:type="archimate:BusinessFunction" id="531c8618" name="Asset Management Planning"/>
+      <element xsi:type="archimate:BusinessFunction" id="16aed61a" name="Asset Scheduling"/>
+      <element xsi:type="archimate:BusinessFunction" id="a18d466c" name="Asset Tagging"/>
+      <element xsi:type="archimate:BusinessFunction" id="a9242a17" name="Asset Tracking"/>
+      <element xsi:type="archimate:BusinessFunction" id="6e51558b" name="Association Budgeting"/>
+      <element xsi:type="archimate:BusinessFunction" id="cea334d9" name="Association Planning"/>
+      <element xsi:type="archimate:BusinessFunction" id="eba339d7" name="Attraction Boarding Operations"/>
+      <element xsi:type="archimate:BusinessFunction" id="ee6faf8b" name="Attraction Maintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="342cb858" name="Attraction Queue Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="4d3010dc" name="Audio-Animatronic Animation"/>
+      <element xsi:type="archimate:BusinessFunction" id="39756c29" name="Audit Analysis"/>
+      <element xsi:type="archimate:BusinessFunction" id="a053b36e" name="Audit Development"/>
+      <element xsi:type="archimate:BusinessFunction" id="x312627c" name="Audit Execution"/>
+      <element xsi:type="archimate:BusinessFunction" id="xae08e61" name="Audit Planning"/>
+      <element xsi:type="archimate:BusinessFunction" id="6107569b" name="Auto Plaza Operations"/>
+      <element xsi:type="archimate:BusinessFunction" id="f516e1df" name="Bankruptcy Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="605e5903" name="Bankruptcy Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="d7c5ac4d" name="Bid Price Curve Administration"/>
+      <element xsi:type="archimate:BusinessFunction" id="be609a44" name="Bond Account Maintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="48a56910" name="Botany"/>
+      <element xsi:type="archimate:BusinessFunction" id="1dc826b6" name="Building Maintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="xf686c1e" name="Bus Equipment Tracking"/>
+      <element xsi:type="archimate:BusinessFunction" id="12d30a61" name="Business Analysis"/>
+      <element xsi:type="archimate:BusinessFunction" id="x672f501" name="Business Data Configuration"/>
+      <element xsi:type="archimate:BusinessFunction" id="3d139340" name="Business Development"/>
+      <element xsi:type="archimate:BusinessFunction" id="f73c3b68" name="Business Function"/>
+      <element xsi:type="archimate:BusinessFunction" id="f9a5f259" name="Business Modeling"/>
+      <element xsi:type="archimate:BusinessFunction" id="acb371ab" name="Business Process Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="2b0bcdd1" name="Business Rule Administration"/>
+      <element xsi:type="archimate:BusinessFunction" id="18277196" name="Call Handling"/>
+      <element xsi:type="archimate:BusinessFunction" id="2d684cdc" name="Call Planning"/>
+      <element xsi:type="archimate:BusinessFunction" id="c3f4a960" name="Call Queing"/>
+      <element xsi:type="archimate:BusinessFunction" id="e7800632" name="Call Routing"/>
+      <element xsi:type="archimate:BusinessFunction" id="862cd045" name="Call Transfer"/>
+      <element xsi:type="archimate:BusinessFunction" id="64f07c95" name="Campaign Administration"/>
+      <element xsi:type="archimate:BusinessFunction" id="2d961bfe" name="Campaign Execution"/>
+      <element xsi:type="archimate:BusinessFunction" id="f1930f2a" name="Campaign Planning"/>
+      <element xsi:type="archimate:BusinessFunction" id="20d545c8" name="Campaign Tracking"/>
+      <element xsi:type="archimate:BusinessFunction" id="19031dac" name="Capacity Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="1f8ab103" name="CAPEX Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="1d93aad5" name="Career Pathing"/>
+      <element xsi:type="archimate:BusinessFunction" id="d8c1535a" name="Cash Flow Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="8520c960" name="Cash Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="33691ad5" name="Cast Awards Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="f2a28ecf" name="Cast Deployment"/>
+      <element xsi:type="archimate:BusinessFunction" id="x397ff58" name="Cast Member Training"/>
+      <element xsi:type="archimate:BusinessFunction" id="x1ea2a5e" name="Cast Performance Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="d67c8008" name="Catering Operations"/>
+      <element xsi:type="archimate:BusinessFunction" id="d9ddba09" name="Character Appearances"/>
+      <element xsi:type="archimate:BusinessFunction" id="a8a2cca4" name="Character Planning"/>
+      <element xsi:type="archimate:BusinessFunction" id="xa143222" name="Choreography"/>
+      <element xsi:type="archimate:BusinessFunction" id="a564ae83" name="Cleaning"/>
+      <element xsi:type="archimate:BusinessFunction" id="13a6a134" name="Collateral Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="ba98d298" name="Complementary Ticket Tracking"/>
+      <element xsi:type="archimate:BusinessFunction" id="98fc3abb" name="Compliance Assessment"/>
+      <element xsi:type="archimate:BusinessFunction" id="de4f44d0" name="Compliance Regulation Maintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="c040f887" name="Concierge Services"/>
+      <element xsi:type="archimate:BusinessFunction" id="e005640b" name="Concierge Services v2.0"/>
+      <element xsi:type="archimate:BusinessFunction" id="27e46987" name="Condo Association Budgeting"/>
+      <element xsi:type="archimate:BusinessFunction" id="1d66c86e" name="Condo Association Financial Planning"/>
+      <element xsi:type="archimate:BusinessFunction" id="c3d76a1f" name="Condo Financial Accounting"/>
+      <element xsi:type="archimate:BusinessFunction" id="2fbb84cf" name="Condo Financial Accounting"/>
+      <element xsi:type="archimate:BusinessFunction" id="x3419803" name="Contact Interaction Logging"/>
+      <element xsi:type="archimate:BusinessFunction" id="2fc8dc29" name="Content Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="x4fbc0da" name="Content Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="4f93b08f" name="Contract Fee Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="5d64e326" name="Contract Resales Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="9aae3051" name="Contract Servicing"/>
+      <element xsi:type="archimate:BusinessFunction" id="c962afd3" name="Costume Design"/>
+      <element xsi:type="archimate:BusinessFunction" id="6cd9134d" name="Costume Maintaintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="1256a5d2" name="Costume Maintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="d599c6dd" name="Coupon Fulfillment"/>
+      <element xsi:type="archimate:BusinessFunction" id="cf7b7cec" name="Coupon Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="bcce9e10" name="Credit Origination"/>
+      <element xsi:type="archimate:BusinessFunction" id="89c994d0" name="Cruise Ship Engine Operations"/>
+      <element xsi:type="archimate:BusinessFunction" id="1a07a735" name="Cruise Ship Navigation"/>
+      <element xsi:type="archimate:BusinessFunction" id="fd411aef" name="Customer Billing"/>
+      <element xsi:type="archimate:BusinessFunction" id="50c6d1e0" name="Daily Attraction Operations"/>
+      <element xsi:type="archimate:BusinessFunction" id="34578e6a" name="Data Access"/>
+      <element xsi:type="archimate:BusinessFunction" id="cc362786" name="Data Archiving"/>
+      <element xsi:type="archimate:BusinessFunction" id="8b7b5ac8" name="Data Cleansing"/>
+      <element xsi:type="archimate:BusinessFunction" id="e849eea7" name="Data Extraction"/>
+      <element xsi:type="archimate:BusinessFunction" id="d8d04abf" name="Data Loading"/>
+      <element xsi:type="archimate:BusinessFunction" id="e56bf0e6" name="Data Mining"/>
+      <element xsi:type="archimate:BusinessFunction" id="b7250914" name="Data Storage"/>
+      <element xsi:type="archimate:BusinessFunction" id="b053789a" name="Data Store Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="5488534a" name="Data Transformation"/>
+      <element xsi:type="archimate:BusinessFunction" id="xfdb221c" name="Data Validation"/>
+      <element xsi:type="archimate:BusinessFunction" id="x751ee7e" name="Demand Tracking"/>
+      <element xsi:type="archimate:BusinessFunction" id="988c36c4" name="Dietary Awareness"/>
+      <element xsi:type="archimate:BusinessFunction" id="ca9b008c" name="Distribution Services"/>
+      <element xsi:type="archimate:BusinessFunction" id="810eac0b" name="Document Retention Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="849e44f3" name="Electrical Operations"/>
+      <element xsi:type="archimate:BusinessFunction" id="76a875ac" name="Electronic Debiting"/>
+      <element xsi:type="archimate:BusinessFunction" id="485b2c09" name="Emerging Technolgy Architecture Analysis"/>
+      <element xsi:type="archimate:BusinessFunction" id="11fa2cad" name="Engineering Job Estimation"/>
+      <element xsi:type="archimate:BusinessFunction" id="dd90ccd8" name="Entitlement Maintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="9c6dc13d" name="Entitlement Maintenance v2.0"/>
+      <element xsi:type="archimate:BusinessFunction" id="69164c31" name="Entymology"/>
+      <element xsi:type="archimate:BusinessFunction" id="f3ca5cd3" name="Escrow Accounting"/>
+      <element xsi:type="archimate:BusinessFunction" id="bc01a880" name="Escrow Account Maintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="1c3be4b0" name="Evacuation Plans"/>
+      <element xsi:type="archimate:BusinessFunction" id="2daaca92" name="Event Application Preparation"/>
+      <element xsi:type="archimate:BusinessFunction" id="abf686e2" name="Event Contract Negotiation"/>
+      <element xsi:type="archimate:BusinessFunction" id="631a03fc" name="Event Location Assignment"/>
+      <element xsi:type="archimate:BusinessFunction" id="2c542ae6" name="Event Marketing"/>
+      <element xsi:type="archimate:BusinessFunction" id="6c38bd47" name="Event Scheduling"/>
+      <element xsi:type="archimate:BusinessFunction" id="9cbc7dd4" name="Event Scoring"/>
+      <element xsi:type="archimate:BusinessFunction" id="58c5a7c3" name="Event Services Procurement"/>
+      <element xsi:type="archimate:BusinessFunction" id="c6bec4c4" name="External Affilate Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="7451c391" name="External Exchange Servicing"/>
+      <element xsi:type="archimate:BusinessFunction" id="cdc1e84a" name="External Marketing Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="b642ce45" name="External Member Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="b0e2bb35" name="External Product Purchasing"/>
+      <element xsi:type="archimate:BusinessFunction" id="aeb3d114" name="Facility Design"/>
+      <element xsi:type="archimate:BusinessFunction" id="24dbb7c0" name="Fast Pass Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="6f1f3113" name="Filming"/>
+      <element xsi:type="archimate:BusinessFunction" id="6aa959e8" name="Financial Budgeting"/>
+      <element xsi:type="archimate:BusinessFunction" id="x658e567" name="Financial Forecasting"/>
+      <element xsi:type="archimate:BusinessFunction" id="94be70db" name="Financial Reporting"/>
+      <element xsi:type="archimate:BusinessFunction" id="b2aafe2d" name="Fireworks Safety"/>
+      <element xsi:type="archimate:BusinessFunction" id="667ddd52" name="First Aid"/>
+      <element xsi:type="archimate:BusinessFunction" id="53a89bf2" name="Floriculture"/>
+      <element xsi:type="archimate:BusinessFunction" id="7eef036b" name="Folio Accounting"/>
+      <element xsi:type="archimate:BusinessFunction" id="c94bc6af" name="Folio Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="725c3556" name="Food Allergen Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="df3d8bb1" name="Food Handling"/>
+      <element xsi:type="archimate:BusinessFunction" id="807e5910" name="Food Preparation"/>
+      <element xsi:type="archimate:BusinessFunction" id="2cb77d50" name="Food Service"/>
+      <element xsi:type="archimate:BusinessFunction" id="2d31ef5a" name="Food Sourcing"/>
+      <element xsi:type="archimate:BusinessFunction" id="fd3c3672" name="Food Substitution"/>
+      <element xsi:type="archimate:BusinessFunction" id="71e702bb" name="Foreclosure Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="51f490c3" name="Fraud Controls"/>
+      <element xsi:type="archimate:BusinessFunction" id="85d12895" name="General Ledger Posting"/>
+      <element xsi:type="archimate:BusinessFunction" id="b2fc3337" name="Golf Course Operations"/>
+      <element xsi:type="archimate:BusinessFunction" id="b65e1ca4" name="Governance"/>
+      <element xsi:type="archimate:BusinessFunction" id="77e98a46" name="Guest Communication Delivery"/>
+      <element xsi:type="archimate:BusinessFunction" id="1181239d" name="Guest History Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="1438ea90" name="Guest Meal Service Provision"/>
+      <element xsi:type="archimate:BusinessFunction" id="5805828a" name="Guest Relations"/>
+      <element xsi:type="archimate:BusinessFunction" id="5fe597fb" name="Guest Research"/>
+      <element xsi:type="archimate:BusinessFunction" id="x96e3cec" name="Guest Service Recovery"/>
+      <element xsi:type="archimate:BusinessFunction" id="cb65cece" name="Hazard Cleaning"/>
+      <element xsi:type="archimate:BusinessFunction" id="fb10fcff" name="HOA Dues Collection"/>
+      <element xsi:type="archimate:BusinessFunction" id="b521abb6" name="Housekeeper Scheduling"/>
+      <element xsi:type="archimate:BusinessFunction" id="8b08de34" name="Housekeeping"/>
+      <element xsi:type="archimate:BusinessFunction" id="ab53289f" name="Industrial Engraving"/>
+      <element xsi:type="archimate:BusinessFunction" id="a2c1ab3b" name="Industrial Painting"/>
+      <element xsi:type="archimate:BusinessFunction" id="c2cdf91c" name="Industry Research"/>
+      <element xsi:type="archimate:BusinessFunction" id="857f94ba" name="Injury Claims"/>
+      <element xsi:type="archimate:BusinessFunction" id="72a065dc" name="Injury Recordkeeping"/>
+      <element xsi:type="archimate:BusinessFunction" id="8d123b39" name="Internal Marketing Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="1a87cf21" name="Internal Member Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="e3b5a63c" name="Inventory Analysis"/>
+      <element xsi:type="archimate:BusinessFunction" id="4f17aac8" name="Inventory Assignment"/>
+      <element xsi:type="archimate:BusinessFunction" id="5f9b6cec" name="Inventory Availability Control"/>
+      <element xsi:type="archimate:BusinessFunction" id="e452fbed" name="Inventory Block Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="be69bd82" name="Inventory Budgeting"/>
+      <element xsi:type="archimate:BusinessFunction" id="4476d7aa" name="Inventory Configuration"/>
+      <element xsi:type="archimate:BusinessFunction" id="b6099491" name="Inventory Control"/>
+      <element xsi:type="archimate:BusinessFunction" id="13926b6a" name="Inventory Forecasting"/>
+      <element xsi:type="archimate:BusinessFunction" id="6bcda8b3" name="Inventory Registration"/>
+      <element xsi:type="archimate:BusinessFunction" id="xf3e30c2" name="Inventory Revenue Control"/>
+      <element xsi:type="archimate:BusinessFunction" id="7cbf161f" name="Inventory Scheduling"/>
+      <element xsi:type="archimate:BusinessFunction" id="48df49d9" name="Itinerary Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="538e1be0" name="Journal Posting"/>
+      <element xsi:type="archimate:BusinessFunction" id="522a07ba" name="Landscape Horticulture"/>
+      <element xsi:type="archimate:BusinessFunction" id="64611fa3" name="Lead Assignment Administration"/>
+      <element xsi:type="archimate:BusinessFunction" id="61f546be" name="Lifegaurding"/>
+      <element xsi:type="archimate:BusinessFunction" id="6846478b" name="Lighting Design"/>
+      <element xsi:type="archimate:BusinessFunction" id="dfc18fc4" name="Loan Collections"/>
+      <element xsi:type="archimate:BusinessFunction" id="2b611a2f" name="Loan Default Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="eba69b50" name="Loan Origination"/>
+      <element xsi:type="archimate:BusinessFunction" id="x7a60050" name="Loan Securitization"/>
+      <element xsi:type="archimate:BusinessFunction" id="d83221cc" name="Loan Services"/>
+      <element xsi:type="archimate:BusinessFunction" id="fcb631b5" name="Loan Tax Processing"/>
+      <element xsi:type="archimate:BusinessFunction" id="2e3f179f" name="Logical Inventory Configuration"/>
+      <element xsi:type="archimate:BusinessFunction" id="5461f2e0" name="Loss Prevention"/>
+      <element xsi:type="archimate:BusinessFunction" id="4b807cca" name="Lost and Found Services"/>
+      <element xsi:type="archimate:BusinessFunction" id="df86e864" name="Luggage Services"/>
+      <element xsi:type="archimate:BusinessFunction" id="950dfc50" name="Marina Operations"/>
+      <element xsi:type="archimate:BusinessFunction" id="361d5e94" name="Marketing Analysis"/>
+      <element xsi:type="archimate:BusinessFunction" id="45df03ff" name="Master Data Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="7ddc6f8b" name="Meal Period Shift Operation"/>
+      <element xsi:type="archimate:BusinessFunction" id="76e998bf" name="Mechanical Assembly"/>
+      <element xsi:type="archimate:BusinessFunction" id="8ab48c79" name="Member Cruise Exchange"/>
+      <element xsi:type="archimate:BusinessFunction" id="bf3faac7" name="Member Dues Servicing"/>
+      <element xsi:type="archimate:BusinessFunction" id="594747ab" name="Member Marketing"/>
+      <element xsi:type="archimate:BusinessFunction" id="dc48d9a0" name="Member Referral Sales"/>
+      <element xsi:type="archimate:BusinessFunction" id="1cd95017" name="Membership Account Maintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="85199542" name="Membership Account Maintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="5b04ad9b" name="Membership Dues Servicing"/>
+      <element xsi:type="archimate:BusinessFunction" id="624f8514" name="Membership External Exchange"/>
+      <element xsi:type="archimate:BusinessFunction" id="74f3883b" name="Membership Points Accounting"/>
+      <element xsi:type="archimate:BusinessFunction" id="62f85259" name="Membership Points Monetization"/>
+      <element xsi:type="archimate:BusinessFunction" id="754340f5" name="Membership Profile Maintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="bc518a30" name="Merchandise Order Fulfillment"/>
+      <element xsi:type="archimate:BusinessFunction" id="1ed7a8fa" name="Merchandise Package Delivery"/>
+      <element xsi:type="archimate:BusinessFunction" id="70751362" name="Merchandise Personalization"/>
+      <element xsi:type="archimate:BusinessFunction" id="571b935a" name="Merchandise Placement"/>
+      <element xsi:type="archimate:BusinessFunction" id="xb5a4869" name="Merchandise Price Labeling"/>
+      <element xsi:type="archimate:BusinessFunction" id="5e72f4d6" name="Monorail Transportation Scheduling"/>
+      <element xsi:type="archimate:BusinessFunction" id="72cf5e9e" name="Mortgage Lending"/>
+      <element xsi:type="archimate:BusinessFunction" id="e401a663" name="Nutrition Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="72563ca5" name="Olericulture"/>
+      <element xsi:type="archimate:BusinessFunction" id="36961859" name="Operational Reporting"/>
+      <element xsi:type="archimate:BusinessFunction" id="9b0bbb55" name="Outbound Contact Interaction"/>
+      <element xsi:type="archimate:BusinessFunction" id="24d3414b" name="Ownership Interest Sales"/>
+      <element xsi:type="archimate:BusinessFunction" id="42d65449" name="Package Pickup- Merge into Merchandise Package Delivery"/>
+      <element xsi:type="archimate:BusinessFunction" id="c0aeccb4" name="Package Tracking"/>
+      <element xsi:type="archimate:BusinessFunction" id="4f2ed786" name="Park Entrance Operations"/>
+      <element xsi:type="archimate:BusinessFunction" id="a409e1d4" name="Parking Operations"/>
+      <element xsi:type="archimate:BusinessFunction" id="44d85975" name="Park Maintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="b56fefa6" name="Party Activity Tracking"/>
+      <element xsi:type="archimate:BusinessFunction" id="f51a84ff" name="Party Compliance"/>
+      <element xsi:type="archimate:BusinessFunction" id="6034a168" name="Party Compliance Tracking"/>
+      <element xsi:type="archimate:BusinessFunction" id="e37dd512" name="Party Contact Interactions"/>
+      <element xsi:type="archimate:BusinessFunction" id="xa729f0d" name="Party Contact Scripting"/>
+      <element xsi:type="archimate:BusinessFunction" id="15dc2d80" name="Party Correspondence"/>
+      <element xsi:type="archimate:BusinessFunction" id="ee28ac17" name="Party Profile Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="7d708217" name="Party Scoring"/>
+      <element xsi:type="archimate:BusinessFunction" id="9bb3fb89" name="Payment Method Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="363ddd8f" name="Payroll"/>
+      <element xsi:type="archimate:BusinessFunction" id="2ae6137d" name="Performance Safety"/>
+      <element xsi:type="archimate:BusinessFunction" id="a7dfd3da" name="Performer Conditioning"/>
+      <element xsi:type="archimate:BusinessFunction" id="2f175506" name="Personal Transport Device Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="186356ca" name="Photo Imaging"/>
+      <element xsi:type="archimate:BusinessFunction" id="6e91b85c" name="Physical Inventory Configuration"/>
+      <element xsi:type="archimate:BusinessFunction" id="a5fbecea" name="Physical Inventory Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="4c8883f9" name="Plate Design"/>
+      <element xsi:type="archimate:BusinessFunction" id="4f8ed3bb" name="Points Optimization"/>
+      <element xsi:type="archimate:BusinessFunction" id="e612892e" name="Points Rule Maintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="5e6e0dfe" name="Pool Operations"/>
+      <element xsi:type="archimate:BusinessFunction" id="ffc1916f" name="Portfolio Demand Tracking"/>
+      <element xsi:type="archimate:BusinessFunction" id="ccc11c3a" name="Portfolio Maintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="25b3f541" name="Product Configuration"/>
+      <element xsi:type="archimate:BusinessFunction" id="c6aa4941" name="Product Distribution"/>
+      <element xsi:type="archimate:BusinessFunction" id="f1cbb45c" name="Product Gifting"/>
+      <element xsi:type="archimate:BusinessFunction" id="d703ff87" name="Production Design"/>
+      <element xsi:type="archimate:BusinessFunction" id="f15311cf" name="Production Execution"/>
+      <element xsi:type="archimate:BusinessFunction" id="9f88ff51" name="Production Planning"/>
+      <element xsi:type="archimate:BusinessFunction" id="568022b8" name="Product Offering Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="aebff51a" name="Product Planning"/>
+      <element xsi:type="archimate:BusinessFunction" id="1117c99f" name="Product Price Configuration"/>
+      <element xsi:type="archimate:BusinessFunction" id="64960432" name="Product Price Planning"/>
+      <element xsi:type="archimate:BusinessFunction" id="defa3292" name="Product Sales Center Services"/>
+      <element xsi:type="archimate:BusinessFunction" id="x5cc0441" name="Product Sales Closing"/>
+      <element xsi:type="archimate:BusinessFunction" id="3fd3b493" name="Product Sales Exchanges"/>
+      <element xsi:type="archimate:BusinessFunction" id="xeaa9506" name="Product Sales Refunds"/>
+      <element xsi:type="archimate:BusinessFunction" id="af9e9439" name="Product Scheduling"/>
+      <element xsi:type="archimate:BusinessFunction" id="c1a4907c" name="Product Shopping"/>
+      <element xsi:type="archimate:BusinessFunction" id="ec783d12" name="Product Sourcing"/>
+      <element xsi:type="archimate:BusinessFunction" id="5227bc80" name="Product Structure Maintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="xa29c3d1" name="Profile Compliance"/>
+      <element xsi:type="archimate:BusinessFunction" id="3dd6ec91" name="Project Initiation"/>
+      <element xsi:type="archimate:BusinessFunction" id="a21042ef" name="Property Loss Claims"/>
+      <element xsi:type="archimate:BusinessFunction" id="xc4b96bf" name="Property Loss Investigation"/>
+      <element xsi:type="archimate:BusinessFunction" id="2d803d16" name="Quality Assurance Testing"/>
+      <element xsi:type="archimate:BusinessFunction" id="887709bb" name="Real Estate Closing Packet Preparation"/>
+      <element xsi:type="archimate:BusinessFunction" id="c2f917a2" name="Real Estate Waitlist Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="49d87a56" name="Recipe Costing"/>
+      <element xsi:type="archimate:BusinessFunction" id="fe1bfd25" name="Recipe Development"/>
+      <element xsi:type="archimate:BusinessFunction" id="e17e9166" name="Recycling"/>
+      <element xsi:type="archimate:BusinessFunction" id="9391231e" name="Requirements Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="ce4a2492" name="Reservation Maintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="18cac6ad" name="Reserve Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="6893a415" name="Reserve Planning"/>
+      <element xsi:type="archimate:BusinessFunction" id="356ca931" name="Resort Configuration"/>
+      <element xsi:type="archimate:BusinessFunction" id="ae3431f6" name="Resort Construction Planning"/>
+      <element xsi:type="archimate:BusinessFunction" id="de738a8f" name="Resort Construction Scheduling"/>
+      <element xsi:type="archimate:BusinessFunction" id="8504ff1a" name="Resort Development"/>
+      <element xsi:type="archimate:BusinessFunction" id="97611b02" name="Resort Labor Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="a1e8728d" name="Resort Maintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="c396dbaa" name="Resort Pre-Sales Planning"/>
+      <element xsi:type="archimate:BusinessFunction" id="ab3d4df9" name="Resort Sales Planning"/>
+      <element xsi:type="archimate:BusinessFunction" id="238fe653" name="Resort Utilization Monitoring"/>
+      <element xsi:type="archimate:BusinessFunction" id="e4991656" name="Restaurant Setup"/>
+      <element xsi:type="archimate:BusinessFunction" id="b75c82d1" name="Restaurant Table Operations"/>
+      <element xsi:type="archimate:BusinessFunction" id="900b12e5" name="Room Assignment"/>
+      <element xsi:type="archimate:BusinessFunction" id="14543c6d" name="Room Blocking"/>
+      <element xsi:type="archimate:BusinessFunction" id="2f9f68ef" name="Room Registration"/>
+      <element xsi:type="archimate:BusinessFunction" id="c7af44d0" name="Room Tax Tracking"/>
+      <element xsi:type="archimate:BusinessFunction" id="3a3aeab6" name="Safety Awareness"/>
+      <element xsi:type="archimate:BusinessFunction" id="f74a35c7" name="Safety Monitoring"/>
+      <element xsi:type="archimate:BusinessFunction" id="e038d57d" name="Sales Commission Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="1b30e615" name="Sales Compliance"/>
+      <element xsi:type="archimate:BusinessFunction" id="efb0751a" name="Sales Contract Administration"/>
+      <element xsi:type="archimate:BusinessFunction" id="dbcbaeaf" name="Sales Incentive Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="1b9fc883" name="Sales Lead Administration"/>
+      <element xsi:type="archimate:BusinessFunction" id="21f8bfa7" name="Sales Lead Execution"/>
+      <element xsi:type="archimate:BusinessFunction" id="a7e4184a" name="Sales Lead List Generation"/>
+      <element xsi:type="archimate:BusinessFunction" id="583444fc" name="Sales Payment Processing"/>
+      <element xsi:type="archimate:BusinessFunction" id="x987d7e1" name="Sales Supplies Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="b46bc894" name="Sales Transportation Services"/>
+      <element xsi:type="archimate:BusinessFunction" id="8e330db1" name="Seat Assignment"/>
+      <element xsi:type="archimate:BusinessFunction" id="7f2d9403" name="Security Awareness"/>
+      <element xsi:type="archimate:BusinessFunction" id="70b3c0b3" name="Security Patrols"/>
+      <element xsi:type="archimate:BusinessFunction" id="a3167b8f" name="Server Assignment"/>
+      <element xsi:type="archimate:BusinessFunction" id="57016389" name="Sign Manufacturing"/>
+      <element xsi:type="archimate:BusinessFunction" id="774e13dd" name="Skills Assessment"/>
+      <element xsi:type="archimate:BusinessFunction" id="671bd2ec" name="Social Media"/>
+      <element xsi:type="archimate:BusinessFunction" id="ae6c96d4" name="Software Development"/>
+      <element xsi:type="archimate:BusinessFunction" id="630411c4" name="Solution Planning"/>
+      <element xsi:type="archimate:BusinessFunction" id="xf0f8f30" name="Sound Design"/>
+      <element xsi:type="archimate:BusinessFunction" id="85010159" name="Sports Equipment Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="33d4aeb8" name="Sports Venue Configuration"/>
+      <element xsi:type="archimate:BusinessFunction" id="6411cb00" name="Statistical Modeling"/>
+      <element xsi:type="archimate:BusinessFunction" id="4fdbf544" name="Stock Control"/>
+      <element xsi:type="archimate:BusinessFunction" id="1f446bb3" name="Strategy Development"/>
+      <element xsi:type="archimate:BusinessFunction" id="cc5bbe2a" name="Survey Development"/>
+      <element xsi:type="archimate:BusinessFunction" id="5efb5443" name="Table Sectioning"/>
+      <element xsi:type="archimate:BusinessFunction" id="1c593475" name="Tax Accounting"/>
+      <element xsi:type="archimate:BusinessFunction" id="f440337e" name="Team Bracketing"/>
+      <element xsi:type="archimate:BusinessFunction" id="x50ad14b" name="Team Participant Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="d0ab1c15" name="Team Performance Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="e74eb5ad" name="Team Roster Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="91d715b0" name="Technical Support"/>
+      <element xsi:type="archimate:BusinessFunction" id="a436223f" name="Technology Assessment"/>
+      <element xsi:type="archimate:BusinessFunction" id="c2b60aa1" name="Technology Design"/>
+      <element xsi:type="archimate:BusinessFunction" id="60a065c5" name="Technology Lifecycle Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="5dba7d71" name="Technology Portfolio Assessment"/>
+      <element xsi:type="archimate:BusinessFunction" id="b561ca06" name="Telephone Accounting"/>
+      <element xsi:type="archimate:BusinessFunction" id="14b1a7b2" name="Telephone Operations"/>
+      <element xsi:type="archimate:BusinessFunction" id="b81bf41c" name="Telephonic Administration"/>
+      <element xsi:type="archimate:BusinessFunction" id="x369a906" name="Ticket Booth Operations"/>
+      <element xsi:type="archimate:BusinessFunction" id="ccde2784" name="Ticket Distribution"/>
+      <element xsi:type="archimate:BusinessFunction" id="b4d932e0" name="Title Insurance Issuance"/>
+      <element xsi:type="archimate:BusinessFunction" id="6443fe7f" name="Title Insurance Reservation Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="c91700ad" name="Title Services"/>
+      <element xsi:type="archimate:BusinessFunction" id="x5f2d95f" name="Tour Incentive Tracking"/>
+      <element xsi:type="archimate:BusinessFunction" id="5b123bf4" name="Tour Scheduling"/>
+      <element xsi:type="archimate:BusinessFunction" id="d0f9bf4a" name="Transaction Auditing"/>
+      <element xsi:type="archimate:BusinessFunction" id="ece8f9dd" name="Transportation Dispatch"/>
+      <element xsi:type="archimate:BusinessFunction" id="35e149c7" name="Transportation Guest Pickup"/>
+      <element xsi:type="archimate:BusinessFunction" id="a777a33b" name="Transportation Scheduling"/>
+      <element xsi:type="archimate:BusinessFunction" id="334cbcc4" name="Trash Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="xcf0a6d8" name="Turf Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="fa3da12c" name="User Security"/>
+      <element xsi:type="archimate:BusinessFunction" id="1c54f200" name="User Security"/>
+      <element xsi:type="archimate:BusinessFunction" id="8dca0683" name="Vehicle Leasing"/>
+      <element xsi:type="archimate:BusinessFunction" id="bbdbb9bc" name="Vehicle Maintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="x5bb3558" name="Vehicle Records Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="x34b4180" name="Veterinary Services"/>
+      <element xsi:type="archimate:BusinessFunction" id="a9a48f64" name="Video Editing"/>
+      <element xsi:type="archimate:BusinessFunction" id="bd0eda5c" name="Video Post Production"/>
+      <element xsi:type="archimate:BusinessFunction" id="ef274740" name="Volunteer Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="e389dbea" name="Wardrobe Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="x5235ba5" name="Warehouse Receiving"/>
+      <element xsi:type="archimate:BusinessFunction" id="a8400397" name="Warehouse Storage"/>
+      <element xsi:type="archimate:BusinessFunction" id="b0c36031" name="Waste Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="56f40247" name="Watercraft Rentals"/>
+      <element xsi:type="archimate:BusinessFunction" id="5e9be9da" name="Water Treatment"/>
+      <element xsi:type="archimate:BusinessFunction" id="x847bac5" name="Web Maintenance"/>
+      <element xsi:type="archimate:BusinessFunction" id="4cc79e21" name="Welding"/>
+      <element xsi:type="archimate:BusinessFunction" id="c90fbbdf" name="Workers Compensation"/>
+      <element xsi:type="archimate:BusinessFunction" id="x7634644" name="Workforce Forecasting"/>
+      <element xsi:type="archimate:BusinessFunction" id="b2ccca3d" name="Workforce Scheduling"/>
+      <element xsi:type="archimate:BusinessFunction" id="74d45cf6" name="Work Order Management"/>
+      <element xsi:type="archimate:BusinessFunction" id="x5aa5541" name="Work Queue Administration"/>
+    </folder>
+  </folder>
+  <folder name="Application" id="94345a88" type="application"/>
+  <folder name="Technology" id="0194b9b1" type="technology"/>
+  <folder name="Motivation" id="299069ae" type="motivation"/>
+  <folder name="Implementation &amp; Migration" id="451922fa" type="implementation_migration"/>
+  <folder name="Connectors" id="98d87cdf" type="connectors"/>
+  <folder name="Relations" id="e426cd4c" type="relations"/>
+  <folder name="Views" id="fdff95ae" type="diagrams">
+    <element xsi:type="archimate:ArchimateDiagramModel" id="fdccc597" name="Default View"/>
+  </folder>
+</archimate:model>

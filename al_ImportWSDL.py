@@ -5,30 +5,24 @@
 __author__ = 'morrj140'
 __VERSION__ = '0.1'
 
-import sys
-import os
-import StringIO
-import csv
-import random
+from al_ArchiLib.Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(INFO)
 
 from lxml import etree
-
-from nl_lib.Constants import *
-from nl_lib.Concepts import Concepts
-
-from nl_lib import Logger
-logger = Logger.setupLogging(__name__)
-
 
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_Constants import *
 
-if __name__ == "__main__":
+import pytest
+
+def importWSDL():
 
     start_time = ArchiLib.startTimer()
 
+
     etree.QName(ArchiLib.ARCHIMATE_NS, 'model')
-    treeArchi = etree.parse(fileArchimate)
+    treeArchi = etree.parse(fileArchimateTest)
 
     al = ArchiLib()
 
@@ -56,3 +50,6 @@ if __name__ == "__main__":
     al.outputXML(treeArchi)
 
     ArchiLib.stopTimer(start_time)
+
+if __name__ == "__main__":
+    importWSDL()
