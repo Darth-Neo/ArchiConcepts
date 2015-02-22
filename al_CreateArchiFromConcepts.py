@@ -18,14 +18,14 @@ from al_Constants import *
 
 import pytest
 
-def createArchiFromConcepts(fileArchimate, fileConceptsExport):
+def createArchiFromConcepts(fileArchimate, fileConceptsImport, fileArchimateImport):
 
     logger.info("Using : %s" % fileArchimate)
-    logger.info("Loading :" + fileConceptsExport)
+    logger.info("Loading :" + fileConceptsImport)
 
-    ic = ConceptsImportArchi(fileArchimate, fileConceptsExport)
+    ic = ConceptsImportArchi(fileArchimate, fileConceptsImport)
 
-    concepts = Concepts.loadConcepts(fileConceptsExport)
+    concepts = Concepts.loadConcepts(fileConceptsImport)
 
     # Create Subfolder
     folder = "Implementation & Migration"
@@ -33,12 +33,12 @@ def createArchiFromConcepts(fileArchimate, fileConceptsExport):
 
     ic.importConcepts(concepts, folder, subfolder)
 
-    ic.exportXML()
+    ic.exportXML(fileArchimateImport)
 
 if __name__ == "__main__":
     start_time = ArchiLib.startTimer()
 
-    createArchiFromConcepts(fileArchimateTest, fileConceptsExport)
+    createArchiFromConcepts(fileArchimateTest, fileConceptsExport, fileArchimateImport)
 
     ArchiLib.stopTimer(start_time)
 

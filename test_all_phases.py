@@ -44,33 +44,166 @@ def gdb():
     return gdbTest
 
 @pytest.fixture(scope="module")
-def graph():
-    return Neo4JLib(gdbTest)
-
-@pytest.fixture(scope="module")
 def fileArchimate():
     return fileArchimateTest
 
-def test_AnalyzeGraph(gdb):
-    start_time = ArchiLib.startTimer()
+@pytest.fixture(scope="module")
+def cleandir():
+    cwd = os.getcwd()
 
-    ag = AnalyzeGraph(gdb)
+    listFiles = list()
+    listFiles.append(fileCSVExport)
+    listFiles.append(fileImageExport)
 
-    ag.analyzeNetworkX(fileConceptsExport)
+    listFiles.append(fileConceptsEstimation)
+    listFiles.append(fileConceptsExport)
+    listFiles.append(fileConceptsRelations)
+    listFiles.append(fileConceptsRequirements)
+    listFiles.append(fileConceptsArch)
+    listFiles.append(fileConceptsBatches)
+    listFiles.append(fileConceptsChunks)
+    listFiles.append(fileConceptsPPTX)
 
-    ArchiLib.stopTimer(start_time)
+    listFiles.append(fileArchimateImport)
 
-def test_ArchiCounts(fileArchimate):
+    for lf in listFiles:
+        if os.path.exists(lf):
+            logger.info("remove : %s" % lf)
+            os.remove(lf)
+
+def neo4jCounts(gdb):
+
+    try:
+        logger.info("Neo4J instance : %s" % gdb)
+        nj = Neo4JLib(gdb)
+
+        qs = "MATCH (n) RETURN n.typeName, count(n.typeName) order by count(n.typeName) DESC"
+        lq, qd = nj.cypherQuery(qs)
+
+        logger.info("Neo4J Counts")
+        for x in sorted(lq[1:], key=lambda c: int(c[2]), reverse=True):
+            logger.info("%4d : %s" % (x[2], x[0]))
+
+        return True
+
+    except:
+        return False
+
+def test_importConceptsIntoNeo4J(fileArchimate, gdb):
+
+    assert (os.path.isfile(fileArchimate)  == True)
+    icnj = ConceptsImportNeo4J(fileArchimate, gdb, ClearNeo4J=True)
+
+    assert (os.path.isfile(fileConceptsExport)  == True)
+    importConcepts = Concepts.loadConcepts(fileConceptsExport)
+
+    icnj.importNeo4J(importConcepts)
+
+#
+# Counts
+#
+def test_ArchiCounts(cleandir, fileArchimate):
+    assert (os.path.isfile(fileArchimate)  == True)
+
     al = ArchiLib(fileArchimateTest)
 
-    al.logTypeCounts()
+    lc = al.logTypeCounts()
 
-def test_CreateArchiFromConcepts(fileArchimate):
+    assert (len(lc) > 0)
+
+#
+# Export Archimate XML
+#
+def test_ExportArchi(cleandir, fileArchimate):
+
+    assert (os.path.isfile(fileArchimate)  == True)
+
+    ea = ExportArchi(fileArchimate, fileConceptsExport)
+
+    ea.exportArchi()
+
+    assert (os.path.isfile(fileConceptsExport)  == True)
+
+
+def test_ExportArchiFolderModels(cleandir, fileArchimate):
+
+    assert (os.path.isfile(fileArchimate)  == True)
+
+    folder = "Scenarios"
+
+    eafm = ExportArchiFolderModels(fileArchimate, fileConceptsExport)
+
+    eafm.exportArchiFolderModels(folder)
+
+    assert (os.path.isfile(fileConceptsExport)  == True)
+
+
+def test_ArchimateConcepts(cleandir, fileArchimate):
 
     assert (os.path.isfile(fileArchimate)  == True)
 
     logger.info("Using : %s" % fileArchimate)
-    logger.info("Loading :" + fileConceptsImport)
+
+    concepts = Concepts(fileConceptsArch, "Archimate")
+
+    al = ArchiLib(fileArchimate)
+
+    lc = al.logTypeCounts()
+
+    assert (len(lc) > 0)
+
+    #
+    # Create Concepts from Archimate
+    #
+    al.folderConcepts(concepts)
+
+    Concepts.saveConcepts(concepts, fileConceptsArch)
+    logger.info("Saved concepts to : %s" % fileConceptsArch)
+
+    assert (os.path.isfile(fileConceptsArch)  == True)
+
+    #
+    # Generate Archimate from Concepts
+    #
+    #al.createArchimate(fileArchiModel, fileArchConcepts)
+
+
+def test_CreateArchimateConcepts(cleandir, fileArchimate):
+
+    assert (os.path.isfile(fileArchimate)  == True)
+
+    logger.info("Using : %s" % fileArchimate)
+
+    concepts = Concepts(fileArchimate, "Archimate")
+
+    al = ArchiLib(fileArchimate)
+
+    lc = al.logTypeCounts()
+
+    assert (len(lc) > 0)
+
+    #
+    # Create Concepts from Archimate
+    #
+    al.folderConcepts(concepts)
+    Concepts.saveConcepts(concepts, fileConceptsArch)
+    logger.info("Saved concepts to : %s" % fileConceptsArch)
+
+    assert (os.path.isfile(fileConceptsArch)  == True)
+
+    #
+    # Generate Archimate from Concepts
+    #
+    #al.createArchimate(fileArchimateModel, fileConceptsArch)
+
+
+def test_CreateArchiFromConcepts(cleandir, fileArchimate):
+
+    assert (os.path.isfile(fileArchimate)  == True)
+    assert (os.path.isfile(fileConceptsImport)  == True)
+
+    logger.info("Using : %s" % fileArchimate)
+    logger.info("Loading : %s" % fileConceptsImport)
 
     ic = ConceptsImportArchi(fileArchimate, fileConceptsImport)
 
@@ -82,94 +215,27 @@ def test_CreateArchiFromConcepts(fileArchimate):
 
     ic.importConcepts(concepts, folder, subfolder)
 
-    ic.exportXML()
+    ic.exportXML(fileArchimateImport)
 
+    assert (os.path.isfile(fileArchimateImport)  == True)
 
-def test_ArchimateConcepts(fileArchimate):
-
-    assert (os.path.isfile(fileArchimate)  == True)
-
-    logger.info("Using : %s" % fileArchimate)
-
-    concepts = Concepts(fileConceptsArch, "Archimate")
-
-    al = ArchiLib(fileArchimateTest)
-
-    al.logTypeCounts()
-
-    #
-    # Create Concepts from Archimate
-    #
-    al.folderConcepts(concepts)
-    Concepts.saveConcepts(concepts, fileConceptsArch)
-    logger.info("Saved concepts to : %s" % fileConceptsArch)
-
-    #
-    # Generate Archimate from Concepts
-    #
-    #al.createArchimate(fileArchiModel, fileArchConcepts)
-
-
-def test_CreateEstimate(gdb):
-    nj = Neo4JLib(gdb)
-
-    qs = "MATCH "
-    qs = qs +    "(n0:ApplicationFunction)-- (r0)"
-    qs = qs + "-- (n1:ApplicationComponent)--(r1)"
-    qs = qs + "-- (n2:ApplicationService)--  (r2)"
-    qs = qs + "-- (n3:BusinessProcess)--     (r3)"
-    qs = qs + "-- (n4:BusinessObject) "
-    qs = qs + "Return n0, r0, n1, r1, n2, r2, n3, r3, n4, n4.PageRank, n4.RequirementCount, n4.Degree"
-
-    lq, qd = nj.cypherQuery(qs)
-
-    nj.queryExportExcel(lq)
-
-    logger.info("%d rows returned" % len(lq))
-
-def test_CreatePPTXFromArchi(fileArchimate):
-
-    assert (os.path.isfile(fileArchimate)  == True)
-
-    cpfa = ArchiCreatePPTX(fileArchimate, filePPTXIn, filePPTXOut)
-
-    cpfa.buildPPTX()
-
-
-def test_CreateRelations(fileArchimate):
+#
+# Create Relations
+#
+def test_CreateRelations(cleandir, fileArchimate):
 
     assert (os.path.isfile(fileArchimate)  == True)
 
     cr = CreateRelationsInArchi(fileArchimate)
 
-    cr.createRelations()
+    cr.createRelations(fileArchimateImport)
 
-def test_CreateArchimateConcepts(fileArchimate):
+    assert (os.path.isfile(fileArchimateImport)  == True)
 
-    assert (os.path.isfile(fileArchimate)  == True)
-
-    logger.info("Using : %s" % fileArchimate)
-
-    concepts = Concepts(fileArchimate, "Archimate")
-
-    al = ArchiLib(fileArchimate)
-
-    al.logTypeCounts()
-
-    #
-    # Create Concepts from Archimate
-    #
-    al.folderConcepts(concepts)
-    Concepts.saveConcepts(concepts, fileConceptsArch)
-    logger.info("Saved concepts to : %s" % fileConceptsArch)
-
-    #
-    # Generate Archimate from Concepts
-    #
-    #al.createArchimate(fileArchimateModel, fileConceptsArch)
-
-
-def test_DependancyAnalysisFromArchi(fileArchimate):
+#
+# Analysis
+#
+def test_DependancyAnalysisFromArchi(cleandir, fileArchimate):
 
     assert (os.path.isfile(fileArchimate)  == True)
 
@@ -179,49 +245,11 @@ def test_DependancyAnalysisFromArchi(fileArchimate):
 
     concepts.logConcepts()
 
-def test_ExportArchi(fileArchimate):
+    assert (len(concepts.getConcepts())  > 0)
+    assert (os.path.isfile(fileConceptsTraversal)  == True)
+    assert (os.path.isfile(fileConceptsBatches)  == True)
 
-    assert (os.path.isfile(fileArchimate)  == True)
-
-    ea = ExportArchi(fileArchimate, fileConceptsExport)
-
-    ea.exportArchi()
-
-
-def test_ExportArchiFolderModels(fileArchimate):
-
-    assert (os.path.isfile(fileArchimate)  == True)
-
-    folder = "Scenarios"
-
-    eafm = ExportArchiFolderModels(fileArchimate, fileConceptsExport)
-
-    eafm.exportArchiFolderModels(folder)
-
-def ttest_ExportNeo4j(gdb):
-
-    concepts = Concepts("Neo4J", "Neo4J Graph DB")
-
-    nj = Neo4JLib(gdb)
-
-    nj.exportNeo4JToConcepts(concepts)
-
-def test_GraphConcepts():
-
-    c = Concepts("GraphConcepts", "GRAPH")
-    concepts = Concepts.loadConcepts(fileConceptsNGramsSubject)
-
-    # c.logConcepts()
-
-    #graph = PatternGraph()
-    graph = GraphVizGraph()
-
-    cg = ConceptsGraph(graph=graph, fileImage=fileImageExport)
-
-    cg.conceptsGraph(concepts)
-
-
-def test_NamedEntityAnalysis(fileArchimate):
+def test_NamedEntityAnalysis(cleandir, fileArchimate):
 
     assert (os.path.isfile(fileArchimate)  == True)
 
@@ -229,34 +257,9 @@ def test_NamedEntityAnalysis(fileArchimate):
 
     ane.analyzeNamedEntities()
 
+    assert (os.path.isfile(fileConceptsRelations)  == True)
 
-def test_Neo4jCounts(gdb):
-
-    logger.info("Neo4J instance : %s" % gdb)
-    nj = Neo4JLib(gdb)
-
-    qs = "MATCH (n) RETURN n.typeName, count(n.typeName) order by count(n.typeName) DESC"
-    lq, qd = nj.cypherQuery(qs)
-
-    logger.info("Neo4J Counts")
-    for x in sorted(lq[1:], key=lambda c: int(c[2]), reverse=True):
-        logger.info("%4d : %s" % (x[2], x[0]))
-
-def test_PPTXCrawl(fileArchimate):
-
-    assert (os.path.isfile(filePPTXIn)  == True)
-
-    logger.info("Using : %s" % filePPTXIn)
-
-    cpptx = PPTXCreateArchil(filePPTXIn, fileArchimateModel)
-
-    c = cpptx.crawlPPTX()
-
-    c.logConcepts()
-
-    Concepts.saveConcepts(c, fileConceptsPPTX)
-
-def test_RequirementAnalysis(fileArchimate):
+def test_RequirementAnalysis(cleandir, fileArchimate):
 
     assert (os.path.isfile(filePPTXIn)  == True)
 
@@ -288,16 +291,142 @@ def test_RequirementAnalysis(fileArchimate):
     Concepts.saveConcepts(concepts, conceptsFile)
     logger.info("Saved : %s" % conceptsFile)
 
+    assert (os.path.isfile(conceptsFile)  == True)
+
     chunks = Chunks(concepts)
     chunks.createChunks()
 
-def test_GapSimilarity(fileArchimate):
+    assert (os.path.isfile(fileConceptsChunks)  == True)
+
+#
+# Similarity
+#
+def test_GapSimilarity(cleandir, fileArchimate):
 
     assert (os.path.isfile(fileArchimate)  == True)
 
     gapSimilarity(fileArchimate)
 
-def test_QueryGraph(gdb):
+    assert (os.path.isfile(fileConceptsNGramFile)  == True)
+    assert (os.path.isfile(fileConceptsNGramScoreFile)  == True)
+    assert (os.path.isfile(fileConceptsNGramsSubject)  == True)
+
+#
+# PPTX
+#
+def test_CreatePPTXFromArchi(cleandir, fileArchimate):
+
+    assert (os.path.isfile(fileArchimate)  == True)
+
+    cpfa = ArchiCreatePPTX(fileArchimate, filePPTXIn, filePPTXOut)
+
+    cpfa.buildPPTX()
+
+    assert (os.path.isfile(filePPTXOut)  == True)
+
+
+def test_PPTXCrawl(fileArchimate):
+
+    assert (os.path.isfile(filePPTXIn)  == True)
+
+    logger.info("Using : %s" % filePPTXIn)
+
+    cpptx = PPTXCreateArchil(filePPTXIn, fileArchimate)
+
+    c = cpptx.crawlPPTX()
+
+    Concepts.saveConcepts(c, fileConceptsPPTX)
+
+    assert (os.path.isfile(fileConceptsPPTX)  == True)
+
+#
+# Neo4j Tests
+#
+
+
+
+def test_Neo4jCounts(gdb):
+
+    assert(neo4jCounts(gdb) == True)
+
+
+def test_ExportNeo4j(cleandir, gdb):
+
+    assert(neo4jCounts(gdb) == True)
+
+    concepts = Concepts("Neo4J", "Neo4J Graph DB")
+
+    nj = Neo4JLib(gdb)
+
+    nj.exportNeo4JToConcepts(concepts, fileNodes=fileConceptsNodes)
+
+    assert (os.path.isfile(fileConceptsNodes)  == True)
+
+
+#
+# Create Estimate
+#
+def test_CreateEstimate(cleandir, gdb):
+
+    assert(neo4jCounts(gdb) == True)
+
+    nj = Neo4JLib(gdb)
+
+    qs = "MATCH "
+    qs = qs +    "(n0:ApplicationFunction)-- (r0)"
+    qs = qs + "-- (n1:ApplicationComponent)--(r1)"
+    qs = qs + "-- (n2:ApplicationService)--  (r2)"
+    qs = qs + "-- (n3:BusinessProcess)--     (r3)"
+    qs = qs + "-- (n4:BusinessObject) "
+    qs = qs + "Return n0, r0, n1, r1, n2, r2, n3, r3, n4, n4.PageRank, n4.RequirementCount, n4.Degree"
+
+    lq, qd = nj.cypherQuery(qs)
+
+    assert (os.path.isfile(fileExcelIn)  == True)
+
+    nj.queryExportExcel(lq)
+
+    assert (os.path.isfile(fileExcelOut)  == True)
+
+    logger.info("%d rows returned" % len(lq))
+
+
+#
+# Graphics
+#
+def test_GraphConcepts(cleandir):
+
+    assert (os.path.isfile(fileConceptsNGramsSubject)  == True)
+
+    c = Concepts("GraphConcepts", "GRAPH")
+    concepts = Concepts.loadConcepts(fileConceptsNGramsSubject)
+
+    # c.logConcepts()
+
+    #graph = PatternGraph()
+    graph = GraphVizGraph()
+
+    cg = ConceptsGraph(graph=graph, fileImage=fileImageExport)
+
+    cg.conceptsGraph(concepts)
+
+    assert (os.path.isfile(fileImageExport)  == True)
+
+#
+# Analyze Graph
+#
+def test_AnalyzeGraph(cleandir, gdb):
+
+    assert(neo4jCounts(gdb) == True)
+
+    ag = AnalyzeGraph(gdb)
+
+    assert (os.path.isfile(fileConceptsExport)  == True)
+
+    ag.analyzeNetworkX(fileConceptsExport)
+
+
+def test_QueryGraph(cleandir, gdb):
     queryGraph(gdb)
 
 if __name__ == "__main__":

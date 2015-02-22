@@ -45,7 +45,10 @@
     </folder>
   </folder>
   <folder name="Technology" id="f1b679fa" type="technology"/>
-  <folder name="Motivation" id="cf324e74" type="motivation"/>
+  <folder name="Motivation" id="cf324e74" type="motivation">
+    <element xsi:type="archimate:Requirement" id="061dffd2" name="Here is a Requirement"/>
+    <element xsi:type="archimate:Requirement" id="1ee67ec0" name="The answer is 42"/>
+  </folder>
   <folder name="Implementation &amp; Migration" id="6a15ebfc" type="implementation_migration"/>
   <folder name="Connectors" id="3445509e" type="connectors"/>
   <folder name="Relations" id="f0f031a0" type="relations">

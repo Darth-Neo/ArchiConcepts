@@ -39,7 +39,7 @@ class CreateRelationsInArchi(object):
 
         self.tree = etree.parse(self.fileArchimate)
 
-    def createRelations(self):
+    def createRelations(self, fileArchimateImport):
 
         self.dictReq = self.al.dictName
 
@@ -82,7 +82,7 @@ class CreateRelationsInArchi(object):
                     attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
                     self.al.insertRel("element", "Relations", attrib)
 
-        self.al.outputXMLtoFile()
+        self.al.outputXMLtoFile(fileArchimateImport)
 
 def test_CreateRelationsInArchi():
 

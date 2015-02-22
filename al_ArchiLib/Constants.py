@@ -24,6 +24,11 @@ fileArchimateTest = dirTest + "Testing.archimate"
 gdbTest = "http://localhost:7474/db/data/"
 
 #
+# Script to reset Neo4J
+#
+resetNeo4J = "/Users/morrj140/Development/neo4j-community-2.1.2/bin/reset.sh"
+
+#
 # Concept Files Used
 #
 fileConceptsArch           = dirTest + "archi.p"

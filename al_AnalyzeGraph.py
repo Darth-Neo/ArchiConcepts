@@ -15,8 +15,6 @@ from al_ArchiLib.Neo4JLib import Neo4JLib
 
 from al_Constants import *
 
-import pytest
-
 def analyzeGraph(gdb):
     start_time = ArchiLib.startTimer()
 

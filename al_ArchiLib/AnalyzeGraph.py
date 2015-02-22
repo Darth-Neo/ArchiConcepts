@@ -30,6 +30,7 @@ class AnalyzeGraph(object):
     def __init__(self, gdb):
 
         self.nj = Neo4JLib(gdb)
+
         self.graph = NetworkXGraph()
 
         self.scale=1

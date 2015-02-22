@@ -10,7 +10,7 @@ from Constants import *
 
 from Logger import *
 logger = setupLogging(__name__)
-logger.setLevel(INFO)
+logger.setLevel(DEBUG)
 
 from nl_lib.Concepts import Concepts
 

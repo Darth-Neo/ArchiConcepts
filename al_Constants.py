@@ -28,9 +28,9 @@ ARCHI_TYPE = "{%s}type" % NS_MAP["xsi"]
 # Test Archimate File
 #
 dirTest = os.getcwd() + os.sep + "test" + os.sep
-fileArchimateTest = dirTest + "Testing.archimate"
-
-fileArchimateModel = dirTest + 'archi.archimate'
+fileArchimateTest   = dirTest + "Testing.archimate"
+fileArchimateModel  = dirTest + 'archi.archimate'
+fileArchimateImport = dirTest + "import_artifacts.archimate"
 
 #
 # Concept Files Used
@@ -49,6 +49,8 @@ fileConceptsDocuments      = dirTest + "documents.p"
 fileConceptsChunks         = dirTest + "chunks.p"
 fileConceptsNodes          = dirTest + "nodes.p"
 fileConceptsNGramsSubject  = dirTest + "ngramsubject.p"
+fileConceptsNGramFile      = dirTest + "ngrams.p"
+fileConceptsNGramScoreFile = dirTest + "ngramscore.p"
 
 #
 # Common Filenames
@@ -72,7 +74,3 @@ fileCSVQueryExportTime  = dirTest + "ExportQuery" + time.strftime("%Y%d%m_%H%M%S
 fileImageExport      = dirTest + "export.png"
 fileImageExportTime  = dirTest + "export" + time.strftime("%Y%d%m_%H%M%S") +".png"
 
-#
-# Script to reset Neo4J
-#
-resetNeo4J = "/Users/morrj140/Development/neo4j-community-2.1.2/bin/reset.sh"

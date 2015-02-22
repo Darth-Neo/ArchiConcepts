@@ -111,9 +111,9 @@ class ConceptsImportArchi(object):
         logger.info("--- Insert Relations ---")
         self.insertConceptRelation(concepts)
 
-    def exportXML(self):
+    def exportXML(self, fileArchimateImport):
 
-         self.al.outputXMLtoFile(filename=self.fileConceptsImport)
+         self.al.outputXMLtoFile(filename=fileArchimateImport)
 
 
 def test_ConceptsImportArchi():

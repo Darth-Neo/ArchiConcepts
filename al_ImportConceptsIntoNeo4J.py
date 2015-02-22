@@ -16,22 +16,21 @@ from al_ArchiLib.ConceptsImportNeo4J import ConceptsImportNeo4J
 
 from al_Constants import *
 
-import pytest
 
-def importConceptsIntoNeo4J():
+def importConceptsIntoNeo4J(fileArchimate, gdb, ClearNeo4J=True):
 
-    start_time = ArchiLib.startTimer()
-
-    icnj = ConceptsImportNeo4J()
+    icnj = ConceptsImportNeo4J(fileArchimate, gdb, ClearNeo4J=ClearNeo4J)
 
     importConcepts = Concepts.loadConcepts(fileConceptsExport)
 
-    icnj.importNeo4J(importConcepts, ClearNeo4J=True)
-
-    ArchiLib.stopTimer(start_time)
+    icnj.importNeo4J(importConcepts)
 
 if __name__ == "__main__":
-    importConceptsIntoNeo4J()
+    start_time = ArchiLib.startTimer()
+
+    importConceptsIntoNeo4J(fileArchimateTest, gdbTest, ClearNeo4J=True)
+
+    ArchiLib.stopTimer(start_time)
 
 
     

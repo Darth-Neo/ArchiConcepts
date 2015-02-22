@@ -24,9 +24,13 @@ from Constants import *
 import pytest
 
 class ConceptsImportNeo4J(object):
-    clearNeo4J = False
 
     def __init__(self, fileArchimate, gdb, ClearNeo4J=False):
+
+        self.ClearNeo4J = ClearNeo4J
+
+        self.al = ArchiLib(fileArchimate)
+        self.nj = Neo4JLib(gdb)
 
         if ClearNeo4J == True:
             self.clearNeo4J()
@@ -37,8 +41,7 @@ class ConceptsImportNeo4J(object):
         if ClearNeo4J == True:
             self.graph.clearGraphDB()
 
-        self.al = ArchiLib(fileArchimate)
-        self.nj = Neo4JLib(gdb)
+
 
     def addGraphNodes(self, concepts, n=0, threshold=1):
         n += 1
@@ -96,11 +99,12 @@ class ConceptsImportNeo4J(object):
         logger.info("Avg gl[x]=%3.4f" % (sum_pr / len_pr))
 
     def clearNeo4J(self):
-        if gdb == LocalGBD:
+        if not gdbTest == None:
             logger.info("Reset Neo4J Graph DB")
-            call([self.al.resetNeo4J])
 
-    def importNeo4J(self, concepts, ClearNeo4J=False):
+            call([resetNeo4J])
+
+    def importNeo4J(self, concepts):
 
         logger.info("Adding Neo4J nodes to the graph ...")
         self.addGraphNodes(concepts)
@@ -110,33 +114,30 @@ class ConceptsImportNeo4J(object):
 
         self.graph.setNodeLabels()
 
-        if ClearNeo4J:
+        if self.ClearNeo4J:
             DropNode = "MATCH (n { name: 'Node' })-[r]-() DELETE n, r"
             self.nj.cypherQuery(DropNode)
-
-            DropDuplicates = "match p=(n)--(r0:Relation), q=(m)--(r1:Relation) where n.name = m.name and n.typeName = m.typeName delete m, r1"
-            self.nj.cypherQuery(DropDuplicates)
 
         CountRequirements = "MATCH (n {typeName:'BusinessObject'}) -- m -- (o {typeName:'Requirement' }) with n, count(o) as rc  set n.RequirementCount=rc RETURN n.name, rc order by rc desc"
         self.nj.cypherQuery(CountRequirements)
 
-def test_ConceptsImportNeo4J():
-
-    start_time = ArchiLib.startTimer()
+def conceptsImportNeo4J():
 
     logger.info("Using : %s" % fileConceptsExport)
 
     importConcepts = Concepts.loadConcepts(fileConceptsExport)
 
-    in4j = ConceptsImportNeo4J(fileArchimateTest, gdbTest)
+    in4j = ConceptsImportNeo4J(fileArchimateTest, gdbTest, ClearNeo4J=True)
 
-    in4j.importNeo4J(importConcepts, ClearNeo4J=True)
+    in4j.importNeo4J(importConcepts)
 
-    ArchiLib.stopTimer(start_time)
 
 if __name__ == "__main__":
-    test_ConceptsImportNeo4J()
+    start_time = ArchiLib.startTimer()
 
+    conceptsImportNeo4J()
+
+    ArchiLib.stopTimer(start_time)
 
 
 

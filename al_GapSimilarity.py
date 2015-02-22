@@ -38,9 +38,9 @@ class Collocations(object):
     conceptNGramScore    = None
     conceptsNGramSubject = None
 
-    ngramFile        = "ngrams.p"
-    ngramScoreFile   = "ngramscore.p"
-    ngramSubjectFile = "ngramsubject.p"
+    ngramFile        = fileConceptsNGramFile
+    ngramScoreFile   = fileConceptsNGramScoreFile
+    ngramSubjectFile = fileConceptsNGramsSubject
 
     def __init__(self):
         self.conceptsNGram = Concepts("n-gram", "NGRAM")
@@ -285,14 +285,12 @@ def gapSimilarity(fileArchimate):
                     e = d.addConceptKeyType(lemmaWord, "LemmaWord")
                     f = e.addConceptKeyType(pos, "POS")
 
-    concepts.logConcepts()
-
-    if False:
+    if True:
         logger.info("Find Collocations...")
         fc = Collocations()
         fc.find_collocations(concepts)
 
-    if False:
+    if True:
         npbt = DocumentsSimilarity()
 
         logger.info("Create Topics")
@@ -302,8 +300,6 @@ def gapSimilarity(fileArchimate):
             logger.info("Find Similarities")
 
             nc = npbt.findSimilarties()
-
-            #nc.logConcepts()
 
             if True:
                 logger.debug("Topics")
