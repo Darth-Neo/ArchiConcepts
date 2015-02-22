@@ -2,6 +2,8 @@
 build/*
 dist/*
 tmp/*
+old/*
+import*.archimate
 *.pyc
 *.mm
 *.projection

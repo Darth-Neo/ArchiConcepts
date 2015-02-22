@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archimate:model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:archimate="http://www.archimatetool.com/archimate" name="Simple" id="998663c4" version="2.6.0">
+  <folder name="Business" id="d098e60e" type="business"/>
+  <folder name="Application" id="75221a2e" type="application">
+    <element xsi:type="archimate:ApplicationComponent" id="83cfa7d9" name="a"/>
+    <element xsi:type="archimate:ApplicationComponent" id="a220b850" name="b"/>
+    <element xsi:type="archimate:ApplicationComponent" id="518d6545" name="c"/>
+  </folder>
+  <folder name="Technology" id="b55eea57" type="technology"/>
+  <folder name="Motivation" id="7c2e21a1" type="motivation"/>
+  <folder name="Implementation &amp; Migration" id="2b343e17" type="implementation_migration"/>
+  <folder name="Connectors" id="d210aaff" type="connectors"/>
+  <folder name="Relations" id="0866216d" type="relations">
+    <element xsi:type="archimate:UsedByRelationship" id="253f3957" source="83cfa7d9" target="a220b850"/>
+    <element xsi:type="archimate:UsedByRelationship" id="055361de" source="83cfa7d9" target="518d6545"/>
+  </folder>
+  <folder name="Views" id="ce326103" type="diagrams">
+    <element xsi:type="archimate:ArchimateDiagramModel" id="05e61240" name="Default View">
+      <child xsi:type="archimate:DiagramObject" id="1a732068" textAlignment="2" archimateElement="83cfa7d9">
+        <bounds x="327" y="360"/>
+        <sourceConnection xsi:type="archimate:Connection" id="bc717756" source="1a732068" target="a43a3397" relationship="253f3957"/>
+        <sourceConnection xsi:type="archimate:Connection" id="9dcc67d7" source="1a732068" target="4cd4b52f" relationship="055361de"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="a43a3397" textAlignment="2" targetConnections="bc717756" archimateElement="a220b850">
+        <bounds x="698" y="341"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="4cd4b52f" textAlignment="2" targetConnections="9dcc67d7" archimateElement="518d6545">
+        <bounds x="582" y="513"/>
+      </child>
+    </element>
+  </folder>
+</archimate:model>
