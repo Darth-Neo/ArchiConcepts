@@ -1,98 +1,87 @@
- Function, Type1, Type, Type2, Component, Type3
- Contract Management, String, AssociationRelationship, String, eDocs (Hummingbird), String
- Contract Management, String, AssociationRelationship, String, RCI (Resort Condominiums International), String
- Contract Management, String, AssociationRelationship, String, RCI, String
- Contract Management, String, AssociationRelationship, String, SalesForce.com, String
- Contract Management, String, AssociationRelationship, String, eDocs, String
- Contract Management, String, AssociationRelationship, String, Payment Gateway, String
- Contract Management, String, AssociationRelationship, String, Electronic Payments Gateway, String
- Contract Management, String, AssociationRelationship, String, Points System, String
- Contract Management, String, AssociationRelationship, String, Bankruptcy Notification, String
- Contract Management, String, AssignmentRelationship, String, Contract Management Solution, String
- Contract Management, String, AssociationRelationship, String, Collections, String
- Contract Management, String, CompositionRelationship, String, Presentation UI, String
- Contract Management, String, CompositionRelationship, String, Business Rules Engine, String
- Contract Prep, String, AssociationRelationship, String, eDocs (Hummingbird), String
- Contract Prep, String, AssociationRelationship, String, Points System, String
- Contract Prep, String, AssociationRelationship, String, Electronic Payments Gateway, String
- Contract Prep, String, AssociationRelationship, String, IMS (Reporting), String
- Contract Prep, String, AssociationRelationship, String, IMS, String
- Contract Prep, String, AssociationRelationship, String, Loans, String
- Contract Prep, String, AssociationRelationship, String, eDocs, String
- Contract Prep, String, AssociationRelationship, String, FedEx, String
- Contract Prep, String, AssociationRelationship, String, Third Party Escrow, String
- Contract Prep, String, AssociationRelationship, String, BURT, String
- Contract Prep, String, AssociationRelationship, String, Compensation, String
- Contract Prep, String, AssociationRelationship, String, Orange County, String
- Contract Prep, String, AssociationRelationship, String, SalesForce.com, String
- Contract Prep, String, AssociationRelationship, String, Payment Gateway, String
- Contract Prep, String, AssociationRelationship, String, Contract Preperation, String
- Contract Prep, String, AssociationRelationship, String, Member Online Booking (MOB) WDPRO, String
- Contract Prep, String, AssociationRelationship, String, WDPRO, String
- Contract Prep, String, AssignmentRelationship, String, Contract Management Solution, String
- Cypher Queries, String, AssociationRelationship, String, Neo4J, String
- DME Automation, String, AssociationRelationship, String, Vacation Planning, String
- DVC Resort Modify-Cancel, String, AssociationRelationship, String, Member Online Booking (MOB) WDPRO, String
- Data Clensing, String, AssignmentRelationship, String, Bulk Load, String
- Data Clensing, String, AssignmentRelationship, String, Bulk Extract, String
- Dedup, String, AssignmentRelationship, String, App Exchange, String
- Disney Collecions Modify-Cancel, String, AssociationRelationship, String, Member Online Booking (MOB) WDPRO, String
- Disney Collections Online Booking, String, AssociationRelationship, String, Member Online Booking (MOB) WDPRO, String
- Domain Models, String, AssociationRelationship, String, Archimate, String
- Escrow Payments, String, AssociationRelationship, String, Party, String
- Escrow Payments, String, AssociationRelationship, String, Electronic Payments Gateway, String
- Escrow Servicing, String, AssociationRelationship, String, Electronic Payments Gateway, String
- Escrow Servicing, String, AssociationRelationship, String, Payment Gateway, String
- Estimation, String, AssociationRelationship, String, Excel, String
- Event Console, String, AssignmentRelationship, String, SalesForce SmartProxy, String
- Extract, String, AssignmentRelationship, String, IMS (Reporting), String
- Extract, String, AssignmentRelationship, String, IMS, String
- Extract, String, AssignmentRelationship, String, Bulk Extract, String
- FY15 Scope, String, AssociationRelationship, String, Vacation Planning, String
- File Record, String, AssignmentRelationship, String, Bulk Load, String
- File Record, String, AssignmentRelationship, String, DVC DCL Shoreside, String
- File Record, String, AssignmentRelationship, String, Bulk Extract, String
- Freeze Inventory for DVC Resort Reservation, String, AssociationRelationship, String, Member Online Booking (MOB) WDPRO, String
- Freeze Inventory for Disney Collections Reservation, String, AssociationRelationship, String, Member Online Booking (MOB) WDPRO, String
- Fulfillment Management, String, AssociationRelationship, String, Fulfillment Vendors, String
- Fulfillment Management, String, AssociationRelationship, String, Fulfillment Vendor Apps, String
- Guide Licensure & Registration, String, AssociationRelationship, String, Guide Compensations, String
- Guide Licensure & Registration, String, AssociationRelationship, String, SalesForce.com, String
- Knowledge Base, String, AssociationRelationship, String, Neo4J, String
- Lead Scoring, String, AssignmentRelationship, String, CMR, String
- Load, String, AssignmentRelationship, String, IMS (Reporting), String
- Load, String, AssignmentRelationship, String, Bulk Load, String
- Load, String, AssignmentRelationship, String, IMS, String
- Marketing Campaign, String, AssignmentRelationship, String, CMR, String
- Match, String, AssignmentRelationship, String, DVC DCL Shoreside, String
- Membership Purchasing, String, AssociationRelationship, String, Electronic Payments Gateway, String
- Mixed Cash-Point Reservations, String, AssociationRelationship, String, Member Online Booking (MOB) WDPRO, String
- One Time Use Points, String, AssociationRelationship, String, Member Online Booking (MOB) WDPRO, String
- Online DVC Lead Capture and Fuifillment Requests, String, AssociationRelationship, String, Electronic Payments Gateway, String
- Online Dues Recurring Payment Setup, String, AssociationRelationship, String, Electronic Payments Gateway, String
- Online Dues payment using a Credit Card, String, AssociationRelationship, String, Electronic Payments Gateway, String
- Online Dues payment using an EFT Bank Account, String, AssociationRelationship, String, Electronic Payments Gateway, String
- Online Loan Recurring Payment Setup, String, AssociationRelationship, String, Electronic Payments Gateway, String
- Online Loan payment using a Credit Card, String, AssociationRelationship, String, Electronic Payments Gateway, String
- Online Loan payment using an EFT Bank Account, String, AssociationRelationship, String, Electronic Payments Gateway, String
- Online Tour Availability and Scheduling, String, AssociationRelationship, String, Tour Scheduling, String
- Presentation, String, AssociationRelationship, String, PowerPoint, String
- Pricing, String, AssociationRelationship, String, iTracker, String
- Pricing, String, AssignmentRelationship, String, Contract Management Solution, String
- Prospect Management, String, AssignmentRelationship, String, CMR, String
- Reporting, String, AssignmentRelationship, String, IMS (Reporting), String
- Reporting, String, AssignmentRelationship, String, IMS, String
- Resort, String, AssociationRelationship, String, Resort Setup, String
- Resort, String, AssignmentRelationship, String, Contract Management Solution, String
- Revenue Accounting, String, AssociationRelationship, String, Revenue Management, String
- Revenue Accounting, String, AssociationRelationship, String, SAP, String
- Revenue Accounting, String, AssignmentRelationship, String, Contract Management Solution, String
- Sales Center Facilities, String, AssignmentRelationship, String, Sales Center Operations, String
- Schedule Management, String, AssignmentRelationship, String, Sales Center Operations, String
- Tour Management, String, AssignmentRelationship, String, Sales Center Operations, String
- Transform, String, AssignmentRelationship, String, Bulk Load, String
- Transform, String, AssignmentRelationship, String, DVC DCL Shoreside, String
- Transform, String, AssignmentRelationship, String, Bulk Extract, String
- Transportation Management, String, AssignmentRelationship, String, Sales Center Operations, String
- Using Stored MDX Credit Card post-DISID for online payments, String, AssociationRelationship, String, Electronic Payments Gateway, String
- Waitlist Availability, String, AssociationRelationship, String, Vacation Planning, String
+Export,Model
+Export,Model,01. Market to Leads,ArchimateDiagramModel
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Prospect,DataObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Update Lead Information ,ApplicationService
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Update Lead Information ,ApplicationService,UsedByRelationship,UsedByRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Update Lead Information ,ApplicationService,UsedByRelationship,UsedByRelationship,SalesForce.com ,ApplicationComponent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Update Lead Information ,ApplicationService,UsedByRelationship,UsedByRelationship,Update Lead Contact Information ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Request Tour Schedule ,ApplicationService
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Request Tour Schedule ,ApplicationService,UsedByRelationship,UsedByRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Request Tour Schedule ,ApplicationService,UsedByRelationship,UsedByRelationship,SalesForce.com ,ApplicationComponent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Request Tour Schedule ,ApplicationService,UsedByRelationship,UsedByRelationship,Reserve Tour For Lead ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,01. Market to Leads ,BusinessEvent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,01. Market to Leads ,BusinessEvent,TriggeringRelationship,TriggeringRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,01. Market to Leads ,BusinessEvent,TriggeringRelationship,TriggeringRelationship,Market to Leads ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,01. Market to Leads ,BusinessEvent,TriggeringRelationship,TriggeringRelationship,Create Lead ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Lead,DataObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Credit Check,ApplicationComponent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Credit Check,ApplicationComponent,AccessRelationship,AccessRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Credit Check,ApplicationComponent,AccessRelationship,AccessRelationship,Prospect,DataObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Complete Market to Leads ,BusinessEvent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,TriggeringRelationship,TriggeringRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,TriggeringRelationship,TriggeringRelationship,Complete Market to Leads ,BusinessEvent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Lead ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Tour ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Create Lead ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Create Lead ,BusinessProcess,FlowRelationship,FlowRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Create Lead ,BusinessProcess,FlowRelationship,FlowRelationship,Contact Leads ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Create Lead ,BusinessProcess,AccessRelationship,AccessRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Create Lead ,BusinessProcess,AccessRelationship,AccessRelationship,Lead ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Create Lead ,BusinessProcess,AccessRelationship,AccessRelationship,Do Not Sell ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Reserve Tour For Lead ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Reserve Tour For Lead ,BusinessProcess,AccessRelationship,AccessRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Reserve Tour For Lead ,BusinessProcess,AccessRelationship,AccessRelationship,Tour ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Reserve Tour For Lead ,BusinessProcess,FlowRelationship,FlowRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Reserve Tour For Lead ,BusinessProcess,FlowRelationship,FlowRelationship,Rate Lead Potential ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Do Not Market to Lead ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Do Not Market to Lead ,BusinessProcess,TriggeringRelationship,TriggeringRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Do Not Market to Lead ,BusinessProcess,TriggeringRelationship,TriggeringRelationship,Complete Market to Leads ,BusinessEvent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Do Not Market to Lead ,BusinessProcess,AccessRelationship,AccessRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Do Not Market to Lead ,BusinessProcess,AccessRelationship,AccessRelationship,Do Not Market ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Rating ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Do Not Sell ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Update Lead Contact Information ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Update Lead Contact Information ,BusinessProcess,FlowRelationship,FlowRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Update Lead Contact Information ,BusinessProcess,FlowRelationship,FlowRelationship,Reserve Tour For Lead ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Update Lead Contact Information ,BusinessProcess,AccessRelationship,AccessRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Update Lead Contact Information ,BusinessProcess,AccessRelationship,AccessRelationship,Lead ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Do Not Market ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Contact Leads ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Contact Leads ,BusinessProcess,FlowRelationship,FlowRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Contact Leads ,BusinessProcess,FlowRelationship,FlowRelationship,Update Lead Contact Information ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Contact Leads ,BusinessProcess,AccessRelationship,AccessRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Contact Leads ,BusinessProcess,AccessRelationship,AccessRelationship,Lead ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Rate Lead Potential ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Rate Lead Potential ,BusinessProcess,AccessRelationship,AccessRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Rate Lead Potential ,BusinessProcess,AccessRelationship,AccessRelationship,Rating ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Rate Lead Potential ,BusinessProcess,AccessRelationship,AccessRelationship,Lead ,BusinessObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Rate Lead Potential ,BusinessProcess,FlowRelationship,FlowRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market to Leads ,BusinessProcess,Rate Lead Potential ,BusinessProcess,FlowRelationship,FlowRelationship,Do Not Market to Lead ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Request Lead Contact Info ,ApplicationService
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Request Lead Contact Info ,ApplicationService,UsedByRelationship,UsedByRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Request Lead Contact Info ,ApplicationService,UsedByRelationship,UsedByRelationship,SalesForce.com ,ApplicationComponent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Request Lead Contact Info ,ApplicationService,UsedByRelationship,UsedByRelationship,Contact Leads ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market No-List,ApplicationComponent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market No-List,ApplicationComponent,AccessRelationship,AccessRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Market No-List,ApplicationComponent,AccessRelationship,AccessRelationship,Do-Not Market List,DataObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Update Do-Not Market List ,ApplicationService
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Update Do-Not Market List ,ApplicationService,UsedByRelationship,UsedByRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Update Do-Not Market List ,ApplicationService,UsedByRelationship,UsedByRelationship,Market No-List,ApplicationComponent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Update Do-Not Market List ,ApplicationService,UsedByRelationship,UsedByRelationship,Do Not Market to Lead ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Tour,DataObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Do-Not Market List,DataObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Book Tour for Lead,ApplicationService
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Book Tour for Lead,ApplicationService,UsedByRelationship,UsedByRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Book Tour for Lead,ApplicationService,UsedByRelationship,UsedByRelationship,SalesForce.com ,ApplicationComponent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Book Tour for Lead,ApplicationService,UsedByRelationship,UsedByRelationship,Rate Lead Potential ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Determine Prospect Eligibility,ApplicationService
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Determine Prospect Eligibility,ApplicationService,UsedByRelationship,UsedByRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Determine Prospect Eligibility,ApplicationService,UsedByRelationship,UsedByRelationship,Create Lead ,BusinessProcess
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Determine Prospect Eligibility,ApplicationService,UsedByRelationship,UsedByRelationship,Credit Check,ApplicationComponent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,SalesForce.com ,ApplicationComponent
+Export,Model,01. Market to Leads,ArchimateDiagramModel,SalesForce.com ,ApplicationComponent,AccessRelationship,AccessRelationship
+Export,Model,01. Market to Leads,ArchimateDiagramModel,SalesForce.com ,ApplicationComponent,AccessRelationship,AccessRelationship,Tour,DataObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,SalesForce.com ,ApplicationComponent,AccessRelationship,AccessRelationship,Tour Schedule,DataObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,SalesForce.com ,ApplicationComponent,AccessRelationship,AccessRelationship,Lead,DataObject
+Export,Model,01. Market to Leads,ArchimateDiagramModel,Tour Schedule,DataObject
