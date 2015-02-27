@@ -118,9 +118,10 @@ class AnalyzeGraph(object):
         logger.info("Max gl[x]=%3.4f" % pr)
         logger.info("Avg gl[x]=%3.4f" % (sum_pr / len_pr))
 
-    def analyzeNetworkX(self, fileConceptsExport):
+    def analyzeNetworkX(self, concepts, fileConceptsExport=None):
 
-        self.concepts = Concepts.loadConcepts(fileConceptsExport)
+        if concepts == None and fileConceptsExport != None:
+            self.concepts = Concepts.loadConcepts(fileConceptsExport)
 
         logger.info(" Concepts : %s[%d][%s]" % (self.concepts.name, len(self.concepts.getConcepts()), self.concepts.typeName))
 

@@ -23,24 +23,25 @@ import pytest
 # child2 = etree.SubElement(root, "child2")
 #
 
-def ImportCSVIntoArchi():
-
+def ImportCSVIntoArchi(fileArchimate, folder):
 
     start_time = ArchiLib.startTimer()
 
-    logger.info("Using : %s" % fileArchimateTest)
-
-    al = ArchiLib(fileArchimateTest)
+    logger.info("Using : %s" % fileArchimate)
+    al = ArchiLib(fileArchimate)
 
     al.logTypeCounts()
 
-    fileMetaEntity = "DVCEvolution.csv"
-
-    al.insertNColumns("Application", "Evolution", fileMetaEntity)
+    al.insertNColumns("Application", "Import", folder)
 
     al.outputXMLtoFile()
 
     ArchiLib.stopTimer(start_time)
 
 if __name__ == "__main__":
-    ImportCSVIntoArchi()
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/FOS V4.archimate"
+
+    fileMetaEntity = "import.csv"
+
+    logger.info("dir : %s" % os.getcwd())
+    ImportCSVIntoArchi(fileArchimate, fileMetaEntity)

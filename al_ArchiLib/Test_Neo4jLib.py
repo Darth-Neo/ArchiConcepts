@@ -19,12 +19,14 @@ import pytest
 def graph():
     return Neo4JLib(gdbTest)
 
+@pytest.mark.Neo4J
 def _executeQuery(qs, graph):
 
     lq = graph.cypherQuery(qs)
 
     return lq
 
+@pytest.mark.Neo4J
 def test_BusinessObjects(graph):
     qs = "MATCH (n:`BusinessObject` {name :'Inventory'}) RETURN n"
     lq = _executeQuery(qs, graph)
@@ -50,6 +52,7 @@ def test_BusinessObjects(graph):
     lq = _executeQuery(qs, graph)
     logger.info("%d : %s" % (len(lq), qs))
 
+@pytest.mark.Neo4J
 def test_ApplicationService(graph):
     qs = "MATCH (n:`ApplicationService`)-[r1]-m-[r2]-o RETURN n, r1, m, r2, o "
     lq = _executeQuery(qs, graph)
@@ -59,6 +62,7 @@ def test_ApplicationService(graph):
     lq = _executeQuery(qs, graph)
     logger.info("%d : %s" % (len(lq), qs))
 
+@pytest.mark.Neo4J
 def test_BusinessProcess(graph):
 
     qs = "MATCH (n {typeName:'BusinessProcess'}) -- (m {typeName : 'AccessRelationship'}) -- (o {typeName: 'BusinessObject'}) RETURN n, m, o"
@@ -69,16 +73,19 @@ def test_BusinessProcess(graph):
     lq = _executeQuery(qs, graph)
     logger.info("%d : %s" % (len(lq), qs))
 
+@pytest.mark.Neo4J
 def test_BusinessEvent(graph):
     qs = "MATCH (n {typeName:'BusinessEvent'}) -- (m {typeName : 'TriggeringRelationship'}) -- (o {typeName: 'BusinessProcess'}) RETURN n, m, o"
     lq = _executeQuery(qs, graph)
     logger.info("%d : %s" % (len(lq), qs))
 
+@pytest.mark.Neo4J
 def test_Requirement(graph):
     qs = "MATCH (n {typeName:'Requirement'}) -- (m {typeName : 'AssociationRelationship'}) -- (o {typeName: 'BusinessObject'}) RETURN n, m, o"
     lq = _executeQuery(qs, graph)
     logger.info("%d : %s" % (len(lq), qs))
 
+@pytest.mark.Neo4J
 def goQueryGraph(graph):
 
     qs = "MATCH n RETURN n LIMIT 5"

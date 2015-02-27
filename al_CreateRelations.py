@@ -27,4 +27,6 @@ def createRelations(fileArchimate):
     ArchiLib.stopTimer(start_time)
 
 if __name__ == "__main__":
+
+    # fileArchimate is defined in al_Constants
     createRelations(fileArchimateTest)

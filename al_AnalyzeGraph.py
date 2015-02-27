@@ -16,16 +16,19 @@ from al_ArchiLib.Neo4JLib import Neo4JLib
 from al_Constants import *
 
 def analyzeGraph(gdb):
+    concepts = None
+
     start_time = ArchiLib.startTimer()
 
     ag = AnalyzeGraph(gdb)
 
-    ag.analyzeNetworkX(fileConceptsExport)
+    ag.analyzeNetworkX(concepts, fileConceptsExport)
 
     ArchiLib.stopTimer(start_time)
 
 if __name__ == "__main__":
-    analyzeGraph(gdbTest)
+
+    analyzeGraph(gdb)
 
     
 

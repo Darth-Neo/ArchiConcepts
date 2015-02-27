@@ -89,6 +89,7 @@ def neo4jCounts(gdb):
     except:
         return False
 
+@pytest.mark.NeoJ
 def test_importConceptsIntoNeo4J(fileArchimate, gdb):
 
     assert (os.path.isfile(fileArchimate)  == True)
@@ -102,6 +103,7 @@ def test_importConceptsIntoNeo4J(fileArchimate, gdb):
 #
 # Counts
 #
+@pytest.mark.Archi
 def test_ArchiCounts(cleandir, fileArchimate):
     assert (os.path.isfile(fileArchimate)  == True)
 
@@ -114,6 +116,7 @@ def test_ArchiCounts(cleandir, fileArchimate):
 #
 # Export Archimate XML
 #
+@pytest.mark.Archi
 def test_ExportArchi(cleandir, fileArchimate):
 
     assert (os.path.isfile(fileArchimate)  == True)
@@ -124,7 +127,7 @@ def test_ExportArchi(cleandir, fileArchimate):
 
     assert (os.path.isfile(fileConceptsExport)  == True)
 
-
+@pytest.mark.Archi
 def test_ExportArchiFolderModels(cleandir, fileArchimate):
 
     assert (os.path.isfile(fileArchimate)  == True)
@@ -137,7 +140,7 @@ def test_ExportArchiFolderModels(cleandir, fileArchimate):
 
     assert (os.path.isfile(fileConceptsExport)  == True)
 
-
+@pytest.mark.Archi
 def test_ArchimateConcepts(cleandir, fileArchimate):
 
     assert (os.path.isfile(fileArchimate)  == True)
@@ -167,7 +170,7 @@ def test_ArchimateConcepts(cleandir, fileArchimate):
     #
     #al.createArchimate(fileArchiModel, fileArchConcepts)
 
-
+@pytest.mark.Archi
 def test_CreateArchimateConcepts(cleandir, fileArchimate):
 
     assert (os.path.isfile(fileArchimate)  == True)
@@ -196,7 +199,7 @@ def test_CreateArchimateConcepts(cleandir, fileArchimate):
     #
     #al.createArchimate(fileArchimateModel, fileConceptsArch)
 
-
+@pytest.mark.Archi
 def test_CreateArchiFromConcepts(cleandir, fileArchimate):
 
     assert (os.path.isfile(fileArchimate)  == True)
@@ -222,6 +225,7 @@ def test_CreateArchiFromConcepts(cleandir, fileArchimate):
 #
 # Create Relations
 #
+@pytest.mark.Archi
 def test_CreateRelations(cleandir, fileArchimate):
 
     assert (os.path.isfile(fileArchimate)  == True)
@@ -235,6 +239,7 @@ def test_CreateRelations(cleandir, fileArchimate):
 #
 # Analysis
 #
+@pytest.mark.Archi
 def test_DependancyAnalysisFromArchi(cleandir, fileArchimate):
 
     assert (os.path.isfile(fileArchimate)  == True)
@@ -249,6 +254,7 @@ def test_DependancyAnalysisFromArchi(cleandir, fileArchimate):
     assert (os.path.isfile(fileConceptsTraversal)  == True)
     assert (os.path.isfile(fileConceptsBatches)  == True)
 
+@pytest.mark.Archi
 def test_NamedEntityAnalysis(cleandir, fileArchimate):
 
     assert (os.path.isfile(fileArchimate)  == True)
@@ -259,6 +265,7 @@ def test_NamedEntityAnalysis(cleandir, fileArchimate):
 
     assert (os.path.isfile(fileConceptsRelations)  == True)
 
+@pytest.mark.Archi
 def test_RequirementAnalysis(cleandir, fileArchimate):
 
     assert (os.path.isfile(filePPTXIn)  == True)
@@ -301,6 +308,7 @@ def test_RequirementAnalysis(cleandir, fileArchimate):
 #
 # Similarity
 #
+@pytest.mark.Archi
 def test_GapSimilarity(cleandir, fileArchimate):
 
     assert (os.path.isfile(fileArchimate)  == True)
@@ -314,6 +322,7 @@ def test_GapSimilarity(cleandir, fileArchimate):
 #
 # PPTX
 #
+@pytest.mark.PPTX
 def test_CreatePPTXFromArchi(cleandir, fileArchimate):
 
     assert (os.path.isfile(fileArchimate)  == True)
@@ -324,7 +333,7 @@ def test_CreatePPTXFromArchi(cleandir, fileArchimate):
 
     assert (os.path.isfile(filePPTXOut)  == True)
 
-
+@pytest.mark.PPTX
 def test_PPTXCrawl(fileArchimate):
 
     assert (os.path.isfile(filePPTXIn)  == True)
@@ -342,14 +351,12 @@ def test_PPTXCrawl(fileArchimate):
 #
 # Neo4j Tests
 #
-
-
-
+@pytest.mark.Neo4J
 def test_Neo4jCounts(gdb):
 
     assert(neo4jCounts(gdb) == True)
 
-
+@pytest.mark.Neo4J
 def test_ExportNeo4j(cleandir, gdb):
 
     assert(neo4jCounts(gdb) == True)
@@ -366,6 +373,7 @@ def test_ExportNeo4j(cleandir, gdb):
 #
 # Create Estimate
 #
+@pytest.mark.Neo4J
 def test_CreateEstimate(cleandir, gdb):
 
     assert(neo4jCounts(gdb) == True)
@@ -394,6 +402,7 @@ def test_CreateEstimate(cleandir, gdb):
 #
 # Graphics
 #
+@pytest.mark.Graphics
 def test_GraphConcepts(cleandir):
 
     assert (os.path.isfile(fileConceptsNGramsSubject)  == True)
@@ -415,6 +424,7 @@ def test_GraphConcepts(cleandir):
 #
 # Analyze Graph
 #
+@pytest.mark.Neo4J
 def test_AnalyzeGraph(cleandir, gdb):
 
     assert(neo4jCounts(gdb) == True)

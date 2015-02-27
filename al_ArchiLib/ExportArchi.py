@@ -132,6 +132,7 @@ class ExportArchi(object):
 
         Concepts.saveConcepts(concepts, self.fileConceptsExport)
 
+        return concepts
 
 def test_ExportArchi():
 

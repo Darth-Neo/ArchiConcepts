@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
     #conceptFile = "topicsDict.p"
     #conceptFile = "GapsSimilarity.p"
-    conceptFile  = "chunks.p"
+    #conceptFile  = "chunks.p"
     #conceptFile = "NVPChunks.p"
     #conceptFile = "ngrams.p"
     #conceptFile = "ngramscore.p"
@@ -71,7 +71,9 @@ if __name__ == "__main__":
     #conceptFile = "batches.p"
     #conceptFile = "export.p"
     #conceptFile = "req.p"
+    conceptFile = "Estimation.p"
 
+    fileConceptsExport = "export.csv"
     directory = os.getcwd()
 
     filePath = directory + os.sep + conceptFile
@@ -79,14 +81,14 @@ if __name__ == "__main__":
     logger.info("Loading :" + filePath)
     concepts = Concepts.loadConcepts(filePath)
 
-    concepts.logConcepts()
+    #concepts.logConcepts()
     #concepts.printConcepts(list)
-    #Concepts.outputConceptsToCSV(concepts, fileExport)
+    Concepts.outputConceptsToCSV(concepts, fileConceptsExport)
 
-    logger.info("Distribution Analysis")
-    tc = Concepts.loadConcepts("topicsDict.p")
+    #logger.info("Distribution Analysis")
+    #tc = Concepts.loadConcepts("topicsDict.p")
     #distribution(concepts, tc)
-    distribution(concepts)
+    #distribution(concepts)
 
         
 

@@ -25,52 +25,59 @@ ARCHIMATE_NS   =  NS_MAP["archimate"]
 ARCHI_TYPE = "{%s}type" % NS_MAP["xsi"]
 
 #
-# Test Archimate File
+# Directory for Archimate File
 #
 dirTest = os.getcwd() + os.sep + "test" + os.sep
+dirRun = os.getcwd() + os.sep
+
+directory = dirRun
+
+
 fileArchimateTest   = dirTest + "Testing.archimate"
-fileArchimateModel  = dirTest + 'archi.archimate'
-fileArchimateImport = dirTest + "import_artifacts.archimate"
+fileArchimateModel  = directory + 'archi.archimate'
+fileArchimateImport = directory + "import_artifacts.archimate"
+
+fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v28.archimate"
 
 #
 # Concept Files Used
 #
-fileConceptsArch           = dirTest + "archi.p"
-fileConceptsPPTX           = dirTest + "pptx.p"
-fileConceptsExport         = dirTest + "export.p"
-fileConceptsImport         = dirTest + "export.p"
-fileConceptsBatches        = dirTest + "batches.p"
-fileConceptsTraversal      = dirTest + "traversal.p"
-fileConceptsEstimation     = dirTest + "Estimation.p"
-fileConceptsRequirements   = dirTest + "reqs.p"
-fileConceptsDeDups         = dirTest + "dedups.p"
-fileConceptsRelations      = dirTest + "rel.p"
-fileConceptsDocuments      = dirTest + "documents.p"
-fileConceptsChunks         = dirTest + "chunks.p"
-fileConceptsNodes          = dirTest + "nodes.p"
-fileConceptsNGramsSubject  = dirTest + "ngramsubject.p"
-fileConceptsNGramFile      = dirTest + "ngrams.p"
-fileConceptsNGramScoreFile = dirTest + "ngramscore.p"
+fileConceptsArch           = directory + "archi.p"
+fileConceptsPPTX           = directory + "pptx.p"
+fileConceptsExport         = directory + "export.p"
+fileConceptsImport         = directory + "export.p"
+fileConceptsBatches        = directory + "batches.p"
+fileConceptsTraversal      = directory + "traversal.p"
+fileConceptsEstimation     = directory + "Estimation.p"
+fileConceptsRequirements   = directory + "reqs.p"
+fileConceptsDeDups         = directory + "dedups.p"
+fileConceptsRelations      = directory + "rel.p"
+fileConceptsDocuments      = directory + "documents.p"
+fileConceptsChunks         = directory + "chunks.p"
+fileConceptsNodes          = directory + "nodes.p"
+fileConceptsNGramsSubject  = directory + "ngramsubject.p"
+fileConceptsNGramFile      = directory + "ngrams.p"
+fileConceptsNGramScoreFile = directory + "ngramscore.p"
 
 #
 # Common Filenames
 #
 
-filePPTXIn    = dirTest + "test_in.pptx"
-filePPTXOut   = dirTest + "test_out.pptx"
+filePPTXIn    = directory + "test_in.pptx"
+filePPTXOut   = directory + "test_out.pptx"
 
-fileExcelIn  = dirTest + 'Template_Estimate.xlsx'
-fileExcelOut = dirTest + 'Template_Estimate_new.xlsx'
+fileExcelIn  = directory + 'Template_Estimate.xlsx'
+fileExcelOut = directory + 'Template_Estimate_new.xlsx'
 
-fileCSVExport = dirTest + "export.csv"
-fileCSVExportTime = dirTest + "export" + time.strftime("%Y%d%m_%H%M%S") +".csv"
+fileCSVExport = directory + "export.csv"
+fileCSVExportTime = directory + "export" + time.strftime("%Y%d%m_%H%M%S") +".csv"
 
-fileReportExport     = dirTest + "report.csv"
-fileReportExportTime = dirTest + "report" + time.strftime("%Y%d%m_%H%M%S") +".csv"
+fileReportExport     = directory + "report.csv"
+fileReportExportTime = directory + "report" + time.strftime("%Y%d%m_%H%M%S") +".csv"
 
-fileCSVQueryExport      = dirTest + "ExportQuery.csv"
-fileCSVQueryExportTime  = dirTest + "ExportQuery" + time.strftime("%Y%d%m_%H%M%S") +".csv"
+fileCSVQueryExport      = directory + "ExportQuery.csv"
+fileCSVQueryExportTime  = directory + "ExportQuery" + time.strftime("%Y%d%m_%H%M%S") +".csv"
 
-fileImageExport      = dirTest + "export.png"
-fileImageExportTime  = dirTest + "export" + time.strftime("%Y%d%m_%H%M%S") +".png"
+fileImageExport      = directory + "export.png"
+fileImageExportTime  = directory + "export" + time.strftime("%Y%d%m_%H%M%S") +".png"
 

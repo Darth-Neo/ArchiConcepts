@@ -19,6 +19,8 @@ import pytest
 
 if __name__ == "__main__":
 
-    al = ArchiLib(fileArchimateTest)
+
+    # fileArchimate is defined in al_Constants
+    al = ArchiLib(fileArchimate)
 
     al.logTypeCounts()

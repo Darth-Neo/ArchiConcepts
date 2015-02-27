@@ -17,11 +17,11 @@ from al_Constants import *
 
 import pytest
 
-def exportArchiModel(fileArchimate, fileConceptsExport):
+def exportArchiModel(fileArchimate, fileConceptsExport, model, fileCSVExport):
 
     start_time = ArchiLib.startTimer()
 
-    eam = ExportArchiModel(fileArchimate, fileConceptsExport)
+    eam = ExportArchiModel(fileArchimate, fileConceptsExport, fileCSVExport)
 
     listMTE = list()
     #listMTE.append("5. Contract Management")
@@ -36,11 +36,15 @@ def exportArchiModel(fileArchimate, fileConceptsExport):
     #listMTE.append("Business Concepts")
     #listMTE.append("System of Record")
 
-    listMTE.append("System Interaction- ToBe")
+    listMTE.append(model)
 
     eam.exportArchiModel(listMTE)
 
     ArchiLib.stopTimer(start_time)
 
 if __name__ == "__main__":
-    exportArchiModel(fileArchimateTest, fileConceptsExport)
+
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v28.archimate"
+    model = "System Interaction- ToBe"
+
+    exportArchiModel(fileArchimate, fileConceptsExport, model, fileCSVExport)

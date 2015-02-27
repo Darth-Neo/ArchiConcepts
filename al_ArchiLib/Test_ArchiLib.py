@@ -52,6 +52,7 @@ def cleandir():
             logger.info("remove : %s" % ftr)
             os.remove(ftr)
 
+@pytest.mark.Archi
 def test_Archi_Counts(cleandir):
 
     if __name__ == "__main__":
@@ -96,6 +97,7 @@ def test_Archi_Counts(cleandir):
 
     assert (TestStatus == True)
 
+@pytest.mark.Archi
 def test_CheckForArchimateFile(cleandir):
 
     if __name__ == "__main__":
@@ -103,6 +105,7 @@ def test_CheckForArchimateFile(cleandir):
 
     assert (os.path.isfile(fileArchimate)  == True)
 
+@pytest.mark.Archi
 def test_ExportArchi(cleandir):
 
     if __name__ == "__main__":
@@ -159,6 +162,7 @@ def test_ExportArchi(cleandir):
 
     assert(concepts.typeName == "Nodes")
 
+@pytest.mark.Archi
 def test_ExportArchiFolderModels(cleandir):
 
     if __name__ == "__main__":
@@ -191,7 +195,7 @@ def test_ExportArchiFolderModels(cleandir):
 
     assert (os.path.isfile(conceptsExport)  == True)
 
-
+@pytest.mark.Archi
 def test_ArchimateConcepts(cleandir):
 
     if __name__ == "__main__":
@@ -215,6 +219,7 @@ def test_ArchimateConcepts(cleandir):
 
     assert (os.path.isfile(conceptsArchi)  == True)
 
+@pytest.mark.Archi
 def test_ExportArchiModel(cleandir):
 
     if __name__ == "__main__":

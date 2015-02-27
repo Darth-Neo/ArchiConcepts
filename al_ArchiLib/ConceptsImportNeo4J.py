@@ -42,7 +42,6 @@ class ConceptsImportNeo4J(object):
             self.graph.clearGraphDB()
 
 
-
     def addGraphNodes(self, concepts, n=0, threshold=1):
         n += 1
         for c in concepts.getConcepts().values():

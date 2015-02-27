@@ -585,8 +585,6 @@ class ArchiLib(object):
 
     def insertNColumns(self, folder, subfolder, fileMetaEntity):
 
-
-
         file = open(fileMetaEntity, "rU")
         reader = csv.reader(file)
 

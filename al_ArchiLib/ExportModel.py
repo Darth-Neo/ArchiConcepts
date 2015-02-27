@@ -27,10 +27,11 @@ class ExportArchiModel(object):
     fileArchimate = None
     fileConceptsExport = None
 
-    def __init__(self, fileArchimate, fileConceptsExport):
+    def __init__(self, fileArchimate, fileConceptsExport, fileCSVExport=None):
 
         self.fileArchimate = fileArchimate
         self.fileConceptsExport = fileConceptsExport
+        self.fileCSVExport = fileCSVExport
 
         self.al = ArchiLib(self.fileArchimate)
 
@@ -42,9 +43,11 @@ class ExportArchiModel(object):
         for ModelToExport in listMTE:
             self.al.recurseModel(ModelToExport, concepts)
 
-        Concepts.saveConcepts(concepts, fileConceptsEstimation)
+        Concepts.saveConcepts(concepts, self.fileConceptsExport)
 
-        self.al.outputCSVtoFile(concepts, fileCSVExport)
+        if self.fileCSVExport <> None:
+            self.al.outputCSVtoFile(concepts, self.fileCSVExport)
+
 
 def text_ExportModel():
 
