@@ -81,3 +81,29 @@ fileCSVQueryExportTime  = directory + "ExportQuery" + time.strftime("%Y%d%m_%H%M
 fileImageExport      = directory + "export.png"
 fileImageExportTime  = directory + "export" + time.strftime("%Y%d%m_%H%M%S") +".png"
 
+#
+# Archimate Edges
+#
+relations = {"TriggeringRelationship" : "archimate:TriggeringRelationship",
+                    "UsedByRelationship" : "archimate:UsedByRelationship",
+                    "AccessRelationship" : "archimate:AccessRelationship",
+                    "FlowRelationship" : "archimate:FlowRelationship",
+                    "AssignmentRelationship" : "archimate:AssignmentRelationship",
+                    "AssociationRelationship" : "archimate:AssociationRelationship",
+                    "RealisationRelationship" : "archimate:RealisationRelationship",
+                    "CompositionRelationship" : "archimate:CompositionRelationship"}
+
+#
+# Archimate Nodes
+#
+entities = {"BusinessEvent" : "archimate:BusinessEvent",
+            "BusinessObject" : "archimate:BusinessObject",
+            "BusinessProcess" : "archimate:BusinessProcess",
+            "ApplicationService" : "archimate:ApplicationService",
+            "ApplicationComponent" : "archimate:ApplicationComponent",
+            "DataObject" : "archimate:DataObject",
+            "Requirement" : "archimate:Requirement",
+            "Stakeholder" : "archimate:Stakeholder",
+            "WorkPackage"  : "archimate:WorkPackage"}
+
+DIAGRAM_MODEL = "archimate:ArchimateDiagramModel"
