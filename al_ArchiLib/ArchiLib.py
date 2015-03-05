@@ -138,7 +138,7 @@ class ArchiLib(object):
         xp = "//element[@name='" + name + "']"
         stp = self.tree.xpath(xp)
 
-        if stp[0].get(ARCHI_TYPE) == "archimate:ArchimateDiagramModel":
+        if stp[0].get(ARCHI_TYPE) == DIAGRAM_MODEL:
             r = stp[0]
 
         return r
@@ -162,6 +162,18 @@ class ArchiLib(object):
         stp = self.tree.xpath(xp)
         return stp
 
+    def findDiagramModelByName(self, name):
+        xp = "//element[@name='%s']" % (name)
+        logger.debug("xp : %s" % xp)
+        stp = self.tree.xpath(xp)
+
+        for x in stp:
+            if x.get(ARCHI_TYPE) == DIAGRAM_MODEL:
+                stp = x
+                break
+
+        return stp
+
     def findDiagramObject(self, id):
         xp = "//child[@id='%s']" % id
         stp = self.tree.xpath(xp)
@@ -174,6 +186,16 @@ class ArchiLib(object):
 
     def findElementByID(self, id):
         xp = "//element[@id='%s']" % id
+        stp = self.tree.xpath(xp)
+
+        if stp == None:
+            stp = list()
+            stp.append(" ")
+
+        return stp
+
+    def getDiagramModels(self):
+        xp = "//element[@%s='%s']" % (ARCHI_TYPE, DIAGRAM_MODEL)
         stp = self.tree.xpath(xp)
         return stp
 
@@ -272,7 +294,7 @@ class ArchiLib(object):
         # Iterate over the DiagramModel's DiagramObjects children
         #
         for m in se:
-            if m.get(ARCHI_TYPE) == "archimate:ArchimateDiagramModel":
+            if m.get(ARCHI_TYPE) == DIAGRAM_MODEL:
                 logger.debug("%s:%s:%s" % (m.get("name"), m.get(ARCHI_TYPE), m.tag))
 
                 r = m.getchildren()
@@ -333,7 +355,7 @@ class ArchiLib(object):
         se = self.tree.xpath("folder[@name='%s']" % (folder))
 
         if folder == "Views":
-            return
+            return se[0]
 
         if folder == "Relations":
             for x in se:
@@ -434,7 +456,7 @@ class ArchiLib(object):
         return models
 
     def getFolders(self):
-        se = self.tree.xpath('folder')
+        se = self.tree.xpath('//folder')
 
         l = list()
 

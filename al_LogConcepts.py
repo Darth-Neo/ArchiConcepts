@@ -71,7 +71,8 @@ if __name__ == "__main__":
     #conceptFile = "batches.p"
     #conceptFile = "export.p"
     #conceptFile = "req.p"
-    conceptFile = "Estimation.p"
+    #conceptFile = "Estimation.p"
+    conceptFile = "archi.p"
 
     fileConceptsExport = "export.csv"
     directory = os.getcwd()
@@ -81,9 +82,9 @@ if __name__ == "__main__":
     logger.info("Loading :" + filePath)
     concepts = Concepts.loadConcepts(filePath)
 
-    #concepts.logConcepts()
+    concepts.logConcepts()
     #concepts.printConcepts(list)
-    Concepts.outputConceptsToCSV(concepts, fileConceptsExport)
+    #Concepts.outputConceptsToCSV(concepts, fileConceptsExport)
 
     #logger.info("Distribution Analysis")
     #tc = Concepts.loadConcepts("topicsDict.p")

@@ -7,16 +7,12 @@ __VERSION__ = '0.1'
 
 
 from Constants import *
-
 from Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(DEBUG)
-
 from nl_lib.Concepts import Concepts
-
 from py2neo import neo4j, node, rel
 from py2neo.neo4j import Node
-
 from openpyxl import Workbook
 from openpyxl import load_workbook
 from openpyxl.compat import range

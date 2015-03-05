@@ -6,16 +6,12 @@ __author__ = 'morrj140'
 __VERSION__ = '0.1'
 
 import os
-
 from Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
-
 from nl_lib.Concepts import Concepts
 from nl_lib.ConceptGraph import PatternGraph, GraphVizGraph
-
 from Constants import *
-
 import pytest
 
 class ConceptsGraph(object):
