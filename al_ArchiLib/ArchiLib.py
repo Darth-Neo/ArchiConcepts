@@ -364,6 +364,8 @@ class ArchiLib(object):
             for x in se:
                 self.getNode(x, self.dictNodes)
 
+        return se
+
     def getNode(self, el, d):
         logger.debug("el.tag = %s" % (el.tag))
 
