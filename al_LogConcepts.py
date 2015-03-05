@@ -58,7 +58,7 @@ def distribution(concepts, tc=None):
                     logger.info("  Topic : %s[%d]" % (w, topicCount[0]))
 
 if __name__ == "__main__":
-
+    conceptFile = "documents.p"
     #conceptFile = "topicsDict.p"
     #conceptFile = "GapsSimilarity.p"
     #conceptFile  = "chunks.p"
@@ -66,13 +66,12 @@ if __name__ == "__main__":
     #conceptFile = "ngrams.p"
     #conceptFile = "ngramscore.p"
     #conceptFile = "ngramsubject.p"
-    #conceptFile = "archi.p"
     #conceptFile = "traversal.p"
     #conceptFile = "batches.p"
     #conceptFile = "export.p"
     #conceptFile = "req.p"
     #conceptFile = "Estimation.p"
-    conceptFile = "archi.p"
+    #conceptFile = "archi.p"
 
     fileConceptsExport = "export.csv"
     directory = os.getcwd()

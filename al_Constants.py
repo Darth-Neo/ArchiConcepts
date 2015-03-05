@@ -91,7 +91,10 @@ relations = {"TriggeringRelationship" : "archimate:TriggeringRelationship",
                     "AssignmentRelationship" : "archimate:AssignmentRelationship",
                     "AssociationRelationship" : "archimate:AssociationRelationship",
                     "RealisationRelationship" : "archimate:RealisationRelationship",
-                    "CompositionRelationship" : "archimate:CompositionRelationship"}
+                    "CompositionRelationship" : "archimate:CompositionRelationship",
+                    "AssignmentRelationship" : "archimate:AssignmentRelationship",
+                    "AggregationRelationship": "archimate:AggregationRelationship",
+                    "SpecialisationRelationship" : "archimate:SpecialisationRelationship"}
 
 #
 # Archimate Nodes
@@ -105,5 +108,7 @@ entities = {"BusinessEvent" : "archimate:BusinessEvent",
             "Requirement" : "archimate:Requirement",
             "Stakeholder" : "archimate:Stakeholder",
             "WorkPackage"  : "archimate:WorkPackage"}
+
+folders = {"Business", "Application", "Technology", "Motivation", "Implementation & Migration", "Connectors", "Relations" }
 
 DIAGRAM_MODEL = "archimate:ArchimateDiagramModel"
