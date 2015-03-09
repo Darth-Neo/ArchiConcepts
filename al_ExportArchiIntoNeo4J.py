@@ -112,8 +112,6 @@ class ExportArchimateIntoNeo4J (object):
 
         self.createRelations()
 
-
-
     #
     # Iterate through all DiagramObjects
     #
@@ -239,6 +237,8 @@ class ExportArchimateIntoNeo4J (object):
     def addElement(self, x):
         logger.debug("Adding %s[%s]" % (x.get("name"), x.get(ARCHI_TYPE)))
 
+        x.attrib["parentPath"] = self.getParentPath(x)
+
         ps = ""
         if x.get(ARCHI_TYPE) != None:
             typeName = x.get(ARCHI_TYPE)[10:]
@@ -345,7 +345,6 @@ class ExportArchimateIntoNeo4J (object):
     def neo4jCounts(self):
 
         logger.info("Neo4J instance : %s" % self.gdb)
-        #nj = Neo4JLib(self.gdb)
 
         qs = "MATCH (n) RETURN n.typeName, count(n.typeName) order by count(n.typeName) DESC"
         lq, qd = self.cypherQuery(qs)
@@ -439,7 +438,7 @@ if __name__ == "__main__":
     #model = "System Interaction- ToBe"
     #model = "01.1 Market to Leads"
 
-    eain = ExportArchimateIntoNeo4J(fileArchimate, gdb)
+    eain = ExportArchimateIntoNeo4J(fileArchimate, gdb, Reset=False)
 
     # Export just Archimate Elements
     eain.exportArchiElements()

@@ -26,7 +26,7 @@ import pytest
 
 def queryGraph(gdb):
 
-    nj = Neo4JLib(gdb)
+    nj = Neo4JLib(gdb, fileCSVExport)
 
     start_time = ArchiLib.startTimer()
 
@@ -43,10 +43,10 @@ def queryGraph(gdb):
 
     ql = list()
 
-    if True:
+    if False:
         qs = "MATCH (n:ApplicationFunction)--(r)--(m:ApplicationComponent) RETURN distinct(n.name) as Function, r.typeName as Type, m.name as Component order by n.name"
 
-    elif True:
+    elif False:
         # Determine order of service development based on the dependancy analysis done on Business Processes
         #qs="match (l:ApplicationService)--(r0:Relation)-- (n:BusinessProcess)--(r1:Relation)--(m:WorkPackage) return m,l,n order by m.name"
         # Try with Application Component as well
@@ -81,23 +81,26 @@ def queryGraph(gdb):
         ql.append("ApplicationFunction")
         ql.append("ApplicationComponent")
         ql.append("ApplicationService")
-        qs = nj.Traversal(ql)
+
+        qs = nj.Traversal(ql, directed=True)
 
     elif False:
-        ql.append("BusinessObject")
-        ql.append("BusinessProcess")
-        ql.append("ApplicationService")
-        ql.append("ApplicationComponent")
         ql.append("ApplicationFunction")
-        qs = nj.Traversal(ql)
+        ql.append("ApplicationComponent")
+        ql.append("ApplicationService")
+        ql.append("BusinessProcess")
+        ql.append("BusinessObject")
 
-    elif False:
+        qs = nj.Traversal(ql, directed=True)
+
+    elif True:
         ql.append("WorkPackage")
         ql.append("BusinessProcess")
         ql.append("ApplicationService")
         ql.append("ApplicationComponent")
         ql.append("ApplicationFunction")
-        qs = nj.Traversal(ql)
+
+        qs = nj.Traversal(ql, directed=False)
 
     elif False:
         qs1 = "MATCH (n0:BusinessEvent)-- (r0)-- (n1:BusinessProcess) -- (r1) -- (n2:BusinessObject)  RETURN n0, r0, n1, r1, n2"

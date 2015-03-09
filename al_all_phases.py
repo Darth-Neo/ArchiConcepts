@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     start_time = ArchiLib.startTimer()
 
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v28.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v30.archimate"
 
     al = ArchiLib(fileArchimate)
 
@@ -32,7 +32,7 @@ if __name__ == "__main__":
     concepts = ea.exportArchi()
 
     logger.info("...Import Neo4J...")
-    in4j = ConceptsImportNeo4J(fileArchimate, gdb, ClearNeo4J=True)
+    in4j = ConceptsImportNeo4J(fileArchimate, gdb, ClearNeo4J=False)
     in4j.importNeo4J(concepts)
 
     logger.info("...Analyze NetworkX...")

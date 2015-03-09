@@ -9,7 +9,8 @@ __VERSION__ = '0.1'
 from Constants import *
 from Logger import *
 logger = setupLogging(__name__)
-logger.setLevel(DEBUG)
+logger.setLevel(INFO)
+
 from nl_lib.Concepts import Concepts
 from py2neo import neo4j, node, rel
 from py2neo.neo4j import Node
@@ -23,7 +24,7 @@ import pytest
 
 class Neo4JLib(object):
 
-    def __init__(self, gdb):
+    def __init__(self, gdb, fileCSVExport):
         logger.debug("Neo4J instance : %s" % gdb)
 
         self.graph = neo4j.GraphDatabaseService(gdb)
@@ -34,19 +35,28 @@ class Neo4JLib(object):
         query = neo4j.CypherQuery(self.graph, qs)
         return query.execute().data
 
-    def Traversal(self, ql):
+    def Traversal(self, ql, directed=False):
 
         qs = "MATCH"
         n=0
+
+        if directed == True:
+            sRelation = "--[r%d]->"
+        else:
+            sRelation = "-[r%d]-"
+
+        lenRelation = len(sRelation % n)
+
         for x in ql:
-            qs = qs + " (n%d:%s)--(r%d:relation)--" % (n, x, n)
+            sAddRelation = sRelation % n
+            qs = qs + "(n%d:%s)%s" % (n, x, sAddRelation)
             n += 1
 
         qr = " Return"
         for m in range(0, n, 1):
             qr = qr + " n%s, r%d," % (m, m)
 
-        query = qs[:-11] + qr[:-5]
+        query = qs[:-lenRelation] + qr[:-5]
 
         logger.info("%s" % query)
 

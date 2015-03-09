@@ -13,7 +13,7 @@ import time
 #
 LocalGBD  = "http://localhost:7474/db/data/"
 RemoteGDB = "http://10.92.82.60:7574/db/data/"
-gdb = LocalGBD
+gdb = RemoteGDB
 gdbTest = LocalGBD
 
 #

@@ -17,7 +17,7 @@ import pytest
 def neo4jCounts():
 
     logger.info("Neo4J instance : %s" % gdb)
-    nj = Neo4JLib(gdb)
+    nj = Neo4JLib(gdb, fileCSVExport)
 
     qs = "MATCH (n) RETURN n.typeName, count(n.typeName) order by count(n.typeName) DESC"
     lq, qd = nj.cypherQuery(qs)
