@@ -13,7 +13,7 @@ import time
 #
 LocalGBD  = "http://localhost:7474/db/data/"
 RemoteGDB = "http://10.92.82.60:7574/db/data/"
-gdb = RemoteGDB
+gdb = LocalGBD
 gdbTest = LocalGBD
 
 #
@@ -112,3 +112,4 @@ entities = {"BusinessEvent" : "archimate:BusinessEvent",
 folders = {"Business", "Application", "Technology", "Motivation", "Implementation & Migration", "Connectors", "Relations" }
 
 DIAGRAM_MODEL = "archimate:ArchimateDiagramModel"
+DIAGRAM_OBJECT = "archimate:DiagramObject"

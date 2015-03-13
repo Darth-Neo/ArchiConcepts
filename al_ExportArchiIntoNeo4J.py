@@ -7,6 +7,7 @@ __author__ = 'morrj140'
 __VERSION__ = '0.3'
 import os
 import sys
+import time
 from traceback import format_exc
 from subprocess import call
 
@@ -31,6 +32,10 @@ class ExportArchimateIntoNeo4J (object):
     fileArchimate = None
     gdb = None
     textExport = None
+    errorNodes = None
+
+    nMax = 20
+    nSpaces = 0
 
     def __init__(self, fileArchimate, gdb, Reset=True):
 
@@ -53,6 +58,8 @@ class ExportArchimateIntoNeo4J (object):
 
         self.textExport = list()
 
+        self.errorNodes  = list()
+
     #
     # Get all DiagramModels from Archimate XML
     #
@@ -62,38 +69,42 @@ class ExportArchimateIntoNeo4J (object):
 
         for x in dm.iter():
             if x.attrib.has_key(ARCHI_TYPE) and x.attrib[ARCHI_TYPE] == DIAGRAM_MODEL:
-                logger.debug("DM : %s" % (x.tag))
+                logger.debug("Exporting model : %s" % (x.get("name")))
                 self.listModels.append(x)
 
         logger.info("Found %d Models" % len(self.listModels))
 
     def exportArchiElements(self):
 
-        logger.info("Export Archimate Elements")
+        logger.debug("Export Archimate Elements")
 
         n = 0
 
         for x in self.al.tree.getroot().iter():
-            n += 1
-            if x.attrib.has_key(ARCHI_TYPE) and x.attrib[ARCHI_TYPE] in entities.values():
-                logger.debug("EL : %s[%s]" % (x.get("name"), x.get(ARCHI_TYPE)))
-                parentPath = self.getParentPath(x)
-                x.attrib["parentPath"] = parentPath
-                self.addElement(x)
+            try:
+                n += 1
+                if x.attrib.has_key(ARCHI_TYPE) and x.attrib[ARCHI_TYPE] in entities.values():
+                    logger.debug("EL : %s[%s]" % (x.get("name"), x.get(ARCHI_TYPE)))
+                    parentPath = self.getParentPath(x)
+                    x.attrib["parentPath"] = parentPath
+                    self.addElement(x)
 
-            elif x.attrib.has_key(ARCHI_TYPE) and x.attrib[ARCHI_TYPE] in relations.values():
-                logger.debug("EL : %s[%s]" % (x.get("name"), x.get(ARCHI_TYPE)))
-                parentPath = self.getParentPath(x)
-                x.attrib["parentPath"] = parentPath
-                self.addElement(x)
+                elif x.attrib.has_key(ARCHI_TYPE) and x.attrib[ARCHI_TYPE] in relations.values():
+                    logger.debug("EL : %s[%s]" % (x.get("name"), x.get(ARCHI_TYPE)))
+                    parentPath = self.getParentPath(x)
+                    x.attrib["parentPath"] = parentPath
+                    self.addElement(x)
 
-                sid = x.get("source")
-                srcElm = self.al.findElementByID(sid)[0]
+                    sid = x.get("source")
+                    srcElm = self.al.findElementByID(sid)[0]
 
-                tid = x.get("target")
-                tgtElm  = self.al.findElementByID(tid)[0]
+                    tid = x.get("target")
+                    tgtElm  = self.al.findElementByID(tid)[0]
 
-                self.addRelation(srcElm, tgtElm, x.get(ARCHI_TYPE)[10:])
+                    self.addRelation(srcElm, tgtElm, x.get(ARCHI_TYPE)[10:])
+            except:
+                em = format_exc()
+                logger.warn("Something is not present : %s" % (em))
 
         logger.info("Exported %d Elements" % n)
     #
@@ -132,7 +143,7 @@ class ExportArchimateIntoNeo4J (object):
         # Iterate through DiagramObject's
         #
         for x in list(element):
-            logger.info("DO[%s] - %s[%s]" % (x.tag, x.get("id"), x.get("archimateElement")))
+            logger.debug("DO[%s] - %s[%s]" % (x.tag, x.get("id"), x.get("archimateElement")))
 
             if x.get(ARCHI_TYPE) != "archimate:Note":
                 try:
@@ -140,6 +151,7 @@ class ExportArchimateIntoNeo4J (object):
                 except:
                     em = format_exc()
                     logger.warn("Warning: %s" % (em))
+                    continue
 
                 self.addElement(x)
                 self.addRelation(element, x, "ModelObject")
@@ -179,63 +191,83 @@ class ExportArchimateIntoNeo4J (object):
             self.addRelation(x, y, "DiagramObject")
 
             for z in list(y):
-                logger.debug("    z.tag : %s" % z.tag)
+                try:
+                    logger.debug("    z.tag : %s" % z.tag)
 
-                if z.tag == "documentation" and len(z.text) > 0:
-                    x.attrib["documentation"] = z.text
+                    if z.tag == "documentation" and len(z.text) > 0:
+                        x.attrib["documentation"] = z.text
 
-                if z.tag == "content" and len(z.text) > 0:
-                    x.attrib["content"] = z.text.rtrim()
+                    if z.tag == "content" and len(z.text) > 0:
+                        x.attrib["content"] = z.text.rtrim()
 
-                elif z.tag == "property":
-                    key = z.get("key")
-                    value = z.get("value")
-                    x.attrib[key] = value
+                    elif z.tag == "property":
+                        key = z.get("key")
+                        value = z.get("value")
+                        x.attrib[key] = value
 
-                elif z.tag == "bounds":
-                    attrib = z.attrib
-                    zX = attrib["x"]
-                    zY  = attrib["y"]
-                    zH  = attrib["height"]
-                    zW  = attrib["width"]
+                    elif z.tag == "bounds":
+                        attrib = z.attrib
+                        zX = attrib["x"]
+                        zY  = attrib["y"]
+                        zH  = attrib["height"]
+                        zW  = attrib["width"]
 
-                    logger.debug("    B - %s : %s : %s : %s" % (zX, zY, zH, zW))
+                        logger.debug("    B - %s : %s : %s : %s" % (zX, zY, zH, zW))
 
-                    x.attrib["x"] = zX
-                    x.attrib["y"] = zY
-                    x.attrib["height"] = zH
-                    x.attrib["width"] = zW
+                        x.attrib["x"] = zX
+                        x.attrib["y"] = zY
+                        x.attrib["height"] = zH
+                        x.attrib["width"] = zW
 
-                elif z.tag == "sourceConnection":
-                    src = z.get("source")
-                    srcDO = self.al.findDiagramObject(src)[0].attrib
-                    sid = srcDO["archimateElement"]
-                    srcElm = self.al.findElementByID(sid)[0]
+                    elif z.tag == "sourceConnection":
+                        src = z.get("source")
+                        srcDO = self.al.findDiagramObject(src)[0].attrib
+                        sid = srcDO["archimateElement"]
+                        srcElm = self.al.findElementByID(sid)[0]
 
-                    trc = z.get("target")
-                    tgtDO = self.al.findDiagramObject(trc)[0].attrib
-                    tid = tgtDO["archimateElement"]
-                    tgtElm  = self.al.findElementByID(tid)[0]
+                        trc = z.get("target")
+                        tgtDO = self.al.findDiagramObject(trc)[0].attrib
+                        tid = tgtDO["archimateElement"]
+                        tgtElm  = self.al.findElementByID(tid)[0]
 
-                    rrc = z.get("relationship")
-                    relElm = self.al.findElementByID(rrc)[0]
+                        rrc = z.get("relationship")
+                        relElm = self.al.findElementByID(rrc)[0]
 
-                    rid = relElm.get(ARCHI_TYPE)[10:]
-                    logger.info("  S - %s -> [%s] -> %s" % ((srcElm.get("name"), relElm.get(ARCHI_TYPE)[10:], tgtElm.get("name"))))
+                        rid = relElm.get(ARCHI_TYPE)[10:]
+                        logger.info("  S - %s -> [%s] -> %s" % ((srcElm.get("name"), relElm.get(ARCHI_TYPE)[10:], tgtElm.get("name"))))
 
-                    self.textExport.append("%s,%s,%s,%s" % (model, srcElm.get("name"), relElm.get(ARCHI_TYPE)[10:], tgtElm.get("name")))
+                        self.textExport.append("%s,%s,%s,%s" % (model, srcElm.get("name"), relElm.get(ARCHI_TYPE)[10:], tgtElm.get("name")))
 
-                    self.addElement(srcElm)
-                    self.addElement(tgtElm)
-                    self.addElement(relElm)
+                        self.addElement(srcElm)
+                        self.addElement(tgtElm)
+                        self.addElement(relElm)
 
-                    self.addRelation(srcElm, tgtElm, rid)
+                        self.addRelation(srcElm, tgtElm, rid)
+                except:
+                    em = format_exc()
+                    logger.warn("Warning: %s" % (em))
+
+    def progress(self):
+        if self.nSpaces < self.nMax:
+            self.nSpaces += 1
+        elif self.nSpaces == self.nMax:
+            self.nSpaces += 0
+
+        space = " " * self.nSpaces
+
+        logger.info("%s." % spaces)
 
     #
     # Add an Archimate Element to Neo4J
     #
     def addElement(self, x):
-        logger.debug("Adding %s[%s]" % (x.get("name"), x.get(ARCHI_TYPE)))
+
+        self.progress()
+
+        if x.get(ARCHI_TYPE) in relations.values():
+            logger.debug("Adding Relationship - %s" % x.get(ARCHI_TYPE))
+        else:
+            logger.debug("Adding %s[%s]" % (x.get("name"), x.get(ARCHI_TYPE)))
 
         x.attrib["parentPath"] = self.getParentPath(x)
 
@@ -286,6 +318,11 @@ class ExportArchimateIntoNeo4J (object):
                     em = format_exc()
                     logger.warn("Warning: %s" % (em))
 
+
+        updateTime = time.time()
+        strUpdateTime = time.asctime(time.localtime(updateTime))
+        prop["LastUpdate"] = strUpdateTime
+
         #
         # Get the properties
         #
@@ -296,7 +333,13 @@ class ExportArchimateIntoNeo4J (object):
                 ps = ps + " a%s:\"%s\", " % (k, v)
                 continue
 
-            if k <> ARCHI_TYPE:
+            elif k == "name":
+                kk = self._cleanString(k)
+                logger.debug("k=%s\t V=%s" % (kk, v))
+                ps = ps + " a%s:\"%s\", " % (kk, v)
+                continue
+
+            elif k <> ARCHI_TYPE:
                 logger.debug("k=%s\t V=%s" % (k, v))
                 ps = ps + " %s:\"%s\", " % (k, v)
 
@@ -308,6 +351,8 @@ class ExportArchimateIntoNeo4J (object):
         qs = "MERGE (n:%s {%s, typeName:\"%s\"}) return n" % (typeName, ps, typeName)
 
         logger.debug("    Node Query : '%s'" % qs)
+
+        nodeReturn = self.cypherQuery(qs)
 
         return self.cypherQuery(qs)
     #
@@ -428,25 +473,45 @@ class ExportArchimateIntoNeo4J (object):
 
         return s.lstrip(" ").rstrip(" ")
 
-
 if __name__ == "__main__":
 
     start_time = ArchiLib.startTimer()
 
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v29.archimate"
+    subdirArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Library/"
 
     #model = "System Interaction- ToBe"
     #model = "01.1 Market to Leads"
 
-    eain = ExportArchimateIntoNeo4J(fileArchimate, gdb, Reset=False)
+    errors = list()
 
-    # Export just Archimate Elements
-    eain.exportArchiElements()
+    clearFlag = True
 
-    # Export Archimate Diagram Models
-    eain.exportArchiDMS()
+    numFilesParsed = 0
+    for root, dirs, files in os.walk(subdirArchimate, topdown=True):
+        logger.info("%s : %s : %s" % (root, dirs, files))
 
-    # Create an export of all model relationships
-    eain.exportCSV()
+        for name in files:
+
+            if name[-9:] == "archimate":
+                logger.debug("%s" % (name))
+
+                nameFile = os.path.join(root, name)
+
+                logger.info("Exporting : %s" % (nameFile))
+
+                if clearFlag == True:
+                    eain = ExportArchimateIntoNeo4J(nameFile, gdb, Reset=True)
+                    clearFlag = False
+                else:
+                    eain = ExportArchimateIntoNeo4J(nameFile, gdb, Reset=False)
+
+                # Export just Archimate Elements
+                eain.exportArchiElements()
+
+                # Export Archimate Diagram Models
+                eain.exportArchiDMS()
+
+                # Create an export of all model relationships
+                #eain.exportCSV()
 
     ArchiLib.stopTimer(start_time)
