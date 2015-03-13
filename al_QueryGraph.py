@@ -43,8 +43,11 @@ def queryGraph(gdb):
 
     ql = list()
 
+    if False:
+        qs = "MATCH (a)-[r]->(b) WHERE labels(a) <> [] AND labels(b) <> [] RETURN DISTINCT head(labels(a)) AS This, type(r) as To, head(labels(b)) AS That"
+
     if True:
-        qs = "MATCH (m:ApplicationComponent) - [r] -> (n:ApplicationFunction) RETURN distinct(n.aname) as Function, r.typeName as Type, m.aname as Component order by n.aname"
+        qs = "MATCH (m:ApplicationComponent) - [r] -> (n:ApplicationFunction) RETURN distinct(n.aname) as Function, n.parentPath, r.typeName as Type, m.aname as Component, m.parentPath order by n.aname"
 
     elif False:
         # Determine order of service development based on the dependancy analysis done on Business Processes
