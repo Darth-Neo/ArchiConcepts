@@ -1,18 +1,32 @@
 #!/usr/bin/env python
 from json import dumps
-
+8
 from flask import Flask, Response, request
 
 from neo4jrestclient.client import GraphDatabase, Node
 
 app = Flask(__name__, static_url_path='/static/')
-gdb = GraphDatabase("http://localhost:7474")
 
+gdb = GraphDatabase("http://localhost:7474")
 
 @app.route("/")
 def get_index():
     return app.send_static_file('index.html')
 
+@app.route("/add")
+def get_add():
+    try:
+        a = request.args["a"]
+        b = request.args["b"]
+
+        #print("a = %d \t b = %d" % (a, b))
+
+    except KeyError:
+        return []
+
+    result = int(a) + int(b)
+
+    return Response(dumps({"result": result}), mimetype="application/json")
 
 @app.route("/graph")
 def get_graph():
