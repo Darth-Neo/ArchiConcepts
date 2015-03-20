@@ -24,7 +24,7 @@ from py2neo import neo4j, node, rel
 #
 # Script to reset Neo4J
 #
-resetNeo4J = "/Users/morrj140/Development/neo4j-community-2.1.2/bin/reset.sh"
+resetNeo4J = "/home/james.morris/local/neo4j-community-2.1.6/bin/reset.sh"
 
 class ExportArchimateIntoNeo4J (object):
     listModels    = None
@@ -34,7 +34,8 @@ class ExportArchimateIntoNeo4J (object):
     textExport = None
     errorNodes = None
 
-    nMax = 20
+    nMin = 0
+    nMax = 76
     nSpaces = 0
 
     def __init__(self, fileArchimate, gdb, Reset=True):
@@ -247,22 +248,23 @@ class ExportArchimateIntoNeo4J (object):
                     em = format_exc()
                     logger.warn("Warning: %s" % (em))
 
-    def progress(self):
+    def _progress(self):
         if self.nSpaces < self.nMax:
             self.nSpaces += 1
-        elif self.nSpaces == self.nMax:
-            self.nSpaces += 0
+
+        else:
+            self.nSpaces = 0
 
         space = " " * self.nSpaces
 
-        logger.info("%s." % spaces)
+        logger.info("%s. :)" % space)
 
     #
     # Add an Archimate Element to Neo4J
     #
     def addElement(self, x):
 
-        self.progress()
+        #self.progress()
 
         if x.get(ARCHI_TYPE) in relations.values():
             logger.debug("Adding Relationship - %s" % x.get(ARCHI_TYPE))
@@ -477,7 +479,7 @@ if __name__ == "__main__":
 
     start_time = ArchiLib.startTimer()
 
-    subdirArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Library/"
+    subdirArchimate = "/home/james.morris/local/ArchimateModels"
 
     #model = "System Interaction- ToBe"
     #model = "01.1 Market to Leads"

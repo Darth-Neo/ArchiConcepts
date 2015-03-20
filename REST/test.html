@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    </head>
+    <body>
+        <script type=text/javascript>
+          $(function() {
+            $('a#calculate').bind('click', function() {
+              $.getJSON('http://localhost:8080/add?a=2&b=2',
+              function(data) {
+                console.log(data.result)
+                alert("Data: " + data.result);
+                $("#result").text(data.result);
+              });
+              return false;
+            });
+          });
+        </script>
+        <p>
+            <input type=text size=5 name=a> + <input type=text size=5 name=b> = <div id=result>?</div>
+        </p>
+        <p>
+            <a href=# id=calculate>calculate server side</a>
+        </p>
+
+    </body>
+</html>
