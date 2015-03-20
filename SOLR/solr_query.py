@@ -1,44 +1,77 @@
 #! python
 
 import solr
+import time
+import datetime
+import json
 
-# create a connection to a solr server
-s = solr.SolrConnection('http://localhost:8983/solr/gettingstarted')
+# http://localhost:8983/solr/gettingstarted/select?q=bond%0A&wt=json&indent=true
 
-sQuery = raw_input('Query : ')
+def postQuery(s, search="bond"):
 
-#sQuery = "bonds"
-#sQuery = "payment"
+    protocol = "http://"
+    server = "localhost:8983"
 
-response = s.query(sQuery)
+    query = "solr/gettingstarted/select?q=%s" % search
+    url = "%s%s/%s%0A&wt=json&indent=true" % (protocol, server, query)
 
-for hit in response.results:
-    #print("hit: %s" % hit)
+    return url
 
-    for k, v in hit.items():
-        #print("    %s%s" % (k, v))
+def jsonSave(data):
 
-        if k == u"Name":
-            s = 'n file://%s' % str(hit[k]).encode('utf-8',errors='ignore')
-            #s = 'file://%s' % s
-            print("a %s" % s)
+    with open('data.json', 'wb') as fp:
+        json.dump(data, fp)
 
-        elif k == u"Type":
-            s = 'n file://%s' % str(hit[k]).encode('utf-8',errors='ignore')
-            #s = 'file://%s' % s
-            print("a %s" % s)
+def jsonLoad(data):
 
-        elif k == u"author":
-            s = 'file://%s' % str(hit[k]).encode('utf-8',errors='ignore')
-            #s = 'file://%s' % s
-            print("a %s" % s)
+    with open('data.json', 'rb') as fp:
+        data = json.load(fp)
 
-        elif k == u"id":
-            s = 'file://%s' % str(hit[k]).encode('utf-8',errors='ignore')
-            #s = 'file://%s' % s
-            print("i %s" % s)
+    return data
 
-        elif k == u"resourcename":
-            s = 'file://%s' % str(hit[k]).encode('utf-8',errors='ignore')
-            #s = 'file://%s' % s
-            print("r %s" % s)
+if __name__ == "__main__":
+    n = 0
+
+    # create a connection to a solr server
+    s = solr.SolrConnection('http://localhost:8983/solr/gettingstarted')
+
+    if True:
+        sQuery = raw_input('Query : ')
+    else:
+        sQuery = "bonds"
+
+    response = s.query(sQuery)
+
+    for hit in response.results:
+        #print("hit: %s" % hit)
+
+        n += 1
+        print ""
+
+        for k, v in hit.items():
+            #print("    %s%s" % (k, v))
+
+
+            if k in (u"creator", u"dc_creator", u"Name", u"Type", u"author", u"meta_author"):
+                s = 'n %s' % str(hit[k]).encode('utf-8',errors='ignore')
+                #print("%d:a %s" % (n ,s))
+
+            elif k == u"creation_date":
+
+                format = '%m-%d-%Y %I:%M%p %Z'
+
+                s = v[0].strftime(format)
+
+                #s= v[0].isoformat(" ")[:-9]
+
+                #print("%d:a %s" % (n ,s))
+
+            elif k == u"id":
+                s = 'file://%s' % str(hit[k]).encode('utf-8',errors='ignore')
+                #s = 'file://%s' % s
+                print("%d:a %s" % (n ,s))
+
+            elif k == u"resourcename":
+                s = 'file://%s' % str(hit[k]).encode('utf-8',errors='ignore')
+                #s = 'file://%s' % s
+                #print("%d:a %s" % (n ,s))

@@ -27,10 +27,9 @@ def exportArchiFolderModels(fileArchimate, fileConceptsExport, folder):
     ArchiLib.stopTimer(start_time)
 
 if __name__ == "__main__":
-    folder = "3. Application"
+    folder = "AS400 Analysis"
 
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CastMemberCoupons.archimate"
-
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v32.archimate"
 
     exportArchiFolderModels(fileArchimate, fileConceptsExport, folder)
 
