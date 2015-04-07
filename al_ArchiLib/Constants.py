@@ -21,7 +21,13 @@ ARCHI_TYPE = "{%s}type" % NS_MAP["xsi"]
 dirTest = os.getcwd() + os.sep + "test" + os.sep
 fileArchimateTest = dirTest + "Testing.archimate"
 
-gdbTest = "http://localhost:7474/db/data/"
+#
+# IP of Neo4J Graph
+#
+LocalGBD  = "http://localhost:7474/db/data/"
+RemoteGDB = "http://10.92.82.60:7574/db/data/"
+gdb = LocalGBD
+gdbTest = LocalGBD
 
 #
 # Script to reset Neo4J

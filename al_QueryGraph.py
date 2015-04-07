@@ -30,7 +30,7 @@ def queryGraph(gdb):
 
     start_time = ArchiLib.startTimer()
 
-    nj.Neo4JCounts()
+    #nj.Neo4JCounts()
 
     #
     # Useful Cypher Queries
@@ -43,10 +43,34 @@ def queryGraph(gdb):
 
     ql = list()
 
+    # These first queries are used for CMS to ECM - Hopefully, they will open some doors
     if False:
+
+        qs1 = "MATCH (n:ApplicationComponent {aname : \"GoPublish Websites\"})-[r1]-(m)-[r2]-(o) return n.aname, n.parentPath, m.aname, m.parentPath, o.aname, o.parentPath"
+        qs2 = "MATCH (n:ApplicationComponent {aname : \"Hippo Websites\"})-[r1]->(m) return n.aname, n.parentPath, m.aname, m.parentPath"
+        qs3 = "MATCH (n:ApplicationComponent {aname : \"DLP Websites\"})-[r1]->(m) return n.aname, n.parentPath, m.aname, m.parentPath"
+        qs4 = "MATCH (n:ApplicationComponent {aname : \"OneSource Websites\"})-[r1]->(m) return n.aname, n.parentPath, m.aname, m.parentPath"
+
+        qs = qs4
+
+    elif True:
+        qs1 = "MATCH (n:DataObject)-[r*1..2]->(m:DataObject) where left(n.parentPath, 42) = \"/CMS INTO ECM V5/Application/Content Types\" RETURN n.aname, n.parentPath, m.aname, m.parentPath"
+        qs =qs1
+
+    elif False:
+        qs0 = "MATCH (n:ArchimateDiagramModel)-[r]->(m:DiagramObject)-[r1]->(o:ApplicationComponent)-[r2*1..2]->(p:ApplicationComponent) where left(n.parentPath, 46) = \"/CMS INTO ECM V5/Views/3. Application/Websites\" RETURN n.aname, n.parentPath, m.parentPath, o.aname, p.aname"
+        qs1 = "MATCH (n:ArchimateDiagramModel)-[r]->(m:DiagramObject)-[r1]->(o:ApplicationComponent)-[r2*1..3]->(p:DataObject) where left(n.parentPath, 46) = \"/CMS INTO ECM V5/Views/3. Application/Websites\" RETURN n.aname, o.aname, p.aname"
+        qs2 = "MATCH (n:ArchimateDiagramModel)-[r]->(m:DiagramObject)-[r1]->(o:ApplicationComponent)-[r2*1..3]->(p:ApplicationComponent)-[r3*0..3]->(q:DataObject) where left(n.parentPath, 46) = \"/CMS INTO ECM V5/Views/3. Application/Websites\" RETURN n.aname, o.aname, p.aname, q.aname"
+        qs3 = "MATCH (n:ArchimateDiagramModel)-[r]->(m:DiagramObject)-[r1]->(o:ApplicationComponent)-[r2*0..1]->(p:ApplicationComponent) where left(n.parentPath, 46) = \"/CMS INTO ECM V5/Views/3. Application/Websites\" RETURN n.aname, m.typeName, o.aname, p.aname"
+        qs = qs3
+
+    elif False:
+        qs = "match (n:BusinessObject)-[r]->(m:Requirement) return n.aname, count(m) order by count(m) desc"
+
+    elif False:
         qs = "MATCH (a)-[r]->(b) WHERE labels(a) <> [] AND labels(b) <> [] RETURN DISTINCT head(labels(a)) AS This, type(r) as To, head(labels(b)) AS That"
 
-    if True:
+    elif False:
         qs = "MATCH (m:ApplicationComponent) - [r] -> (n:ApplicationFunction) RETURN distinct(n.aname) as Function, n.parentPath, r.typeName as Type, m.aname as Component, m.parentPath order by n.aname"
 
     elif False:
@@ -144,6 +168,7 @@ def queryGraph(gdb):
     else:
         qs = "match (n0:WorkPackage) --(r0)--(n1:BusinessProcess)--(r1)--(n2:ApplicationService) where n0.aname='Batch %d'  return n0, r0, n1,r1, n2" % (1)
 
+    logger.info("QS: %s" % qs)
     lq, qd = nj.cypherQuery(qs)
 
     nj.queryExport(lq)
@@ -151,4 +176,5 @@ def queryGraph(gdb):
     ArchiLib.stopTimer(start_time)
 
 if __name__ == "__main__":
+    logger.info("Using : %s" % gdb)
     queryGraph(gdb)

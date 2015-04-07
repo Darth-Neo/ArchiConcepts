@@ -36,8 +36,9 @@ directory = dirRun
 fileArchimateTest   = dirTest + "Testing.archimate"
 fileArchimateModel  = directory + 'archi.archimate'
 fileArchimateImport = directory + "import_artifacts.archimate"
-
-fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v28.archimate"
+fileArchimateReal = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v28.archimate"
+fileArchimateReal = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CMS into ECM V4.archimate"
+fileArchimate = fileArchimateTest
 
 #
 # Concept Files Used

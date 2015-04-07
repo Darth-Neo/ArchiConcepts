@@ -24,12 +24,35 @@ import pytest
 
 class Neo4JLib(object):
 
-    def __init__(self, gdb, fileCSVExport):
+    delchars = ''.join(c for c in map(chr, range(255)) if (not c.isalnum() and c != ' '))
+
+    def __init__(self, gdb, fileCSVExport=fileCSVExport):
         logger.debug("Neo4J instance : %s" % gdb)
 
         self.graph = neo4j.GraphDatabaseService(gdb)
 
         self.fileCSVExport = fileCSVExport
+
+    def cleanString(self, name):
+            '''
+            :param name: name
+            :return: string
+            Note: Encode a string to UTF-8
+            Note: Decode a string to Unicode
+            '''
+            name = name.replace(",", "-")
+            name = name.replace(")", " ")
+            name = name.replace("(", "-")
+
+            try:
+                if isinstance(name, (str, unicode)):
+                    return name.encode('utf-8',errors='ignore')
+                else:
+                    n = name.translate(None, self.delchars).strip()
+                u = unicode(n, "utf-8", errors='ignore' )
+                return u.encode( "utf-8", errors="ignore" )
+            except:
+                return " "
 
     def cypherQuery(self, qs):
         query = neo4j.CypherQuery(self.graph, qs)
@@ -70,17 +93,58 @@ class Neo4JLib(object):
 
         listQuery = list()
 
+        for x in qd:
+
+            xl = list()
+
+            for v in x.values:
+
+                logger.debug("Type : %s" % type(v))
+
+                if isinstance(v, Node):
+                    name = v["name"]
+                    typeName =v["typeName"]
+
+                    xl.append(name)
+                    #xl.append(typeName)
+
+                elif isinstance(v, int) or isinstance(v, float):
+                    count = v
+                    typeName ="Number"
+
+                    xl.append(count)
+                    #xl.append(typeName)
+
+                elif isinstance(v, str) or isinstance(v, unicode):
+                    st = v
+                    typeName ="String"
+
+                    xl.append(st)
+                    #xl.append(typeName)
+
+            listQuery.append(xl)
+
+        return listQuery, qd
+
+    def _cypherQuery(self, qs):
+
+        query = neo4j.CypherQuery(self.graph, qs)
+
+        qd = query.execute().data
+
+        listQuery = list()
+
         n = 0
 
         ColHdr = True
 
         for x in qd:
 
-            n += 1
+            if n == 0:
+                n += 1
 
-            logger.debug("%s[%d]" % (x, n))
+                logger.debug("%s[%d]" % (x, n))
 
-            if n == 1:
                 cl = list()
                 m = 0
                 for y in x.columns:
@@ -90,8 +154,6 @@ class Neo4JLib(object):
                     cl.append("Type%d" % m)
 
                 listQuery.append(cl)
-
-                continue
 
             xl = list()
 
@@ -139,15 +201,28 @@ class Neo4JLib(object):
                 if x == "Nodes" or x is None or len(x) == 0:
                     continue
                 logger.debug("%s %s" % (spaces, x))
-                rs += ", %s" % (x)
+                x = self.cleanString(x)
+                rs += ", \"%s\"" % (x)
 
             elif isinstance(x, float) or isinstance(x, int):
                 logger.debug("%s %s" % (spaces, x))
                 rs += ", %s" % (x)
 
         if len(rs) != 0:
-            logger.info("%s" % (rs[1:]))
-            f.write("%s\n" % (rs[1:]))
+            rs1 = rs[1:]
+
+            '''
+            :param name: name
+            :return: string
+            Note: Encode a string to UTF-8
+            Note: Decode a string to Unicode
+            '''
+            #rsClean = self.cleanString(rs1)
+            #unicode(n, "utf-8", errors='ignore' )
+
+            logger.debug("%s" % (rs1))
+
+            f.write("%s\n" % (rs1))
 
     def queryExport(self, lq):
 

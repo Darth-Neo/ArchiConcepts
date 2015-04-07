@@ -24,7 +24,7 @@ from py2neo import neo4j, node, rel
 #
 # Script to reset Neo4J
 #
-resetNeo4J = "/home/james.morris/local/neo4j-community-2.1.6/bin/reset.sh"
+resetNeo4J = "/Users/morrj140/Development/neo4j/bin/reset.sh"
 
 class ExportArchimateIntoNeo4J (object):
     listModels    = None
@@ -38,10 +38,20 @@ class ExportArchimateIntoNeo4J (object):
     nMax = 76
     nSpaces = 0
 
-    def __init__(self, fileArchimate, gdb, Reset=True):
+    def __init__(self, gdb, fileArchimate=None, subdirArchimate=None, Reset=True):
+
+        if fileArchimate <> None:
+            self.fileArchimate = fileArchimate
+        else:
+            if subdirArchimate <> None:
+                self.subdirArchimate = subdirArchimate
+            else:
+                self.subdirArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/ExportIntoNeo4J"
+                self.fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CMS into ECM V4.archimate"
 
         logger.info("Using : %s" % fileArchimate)
         self.fileArchimate = fileArchimate
+
 
         self.gdb = gdb
         logger.info("Neo4J instance : %s" % self.gdb)
@@ -321,9 +331,11 @@ class ExportArchimateIntoNeo4J (object):
                     logger.warn("Warning: %s" % (em))
 
 
-        updateTime = time.time()
-        strUpdateTime = time.asctime(time.localtime(updateTime))
-        prop["LastUpdate"] = strUpdateTime
+        # updateTime = time.time()
+        # strUpdateTime = time.asctime(time.localtime(updateTime))
+        #
+        # This would be nice, but you loose the ability to merge nodes
+        # prop["LastUpdate"] = strUpdateTime
 
         #
         # Get the properties
@@ -351,9 +363,7 @@ class ExportArchimateIntoNeo4J (object):
         logger.debug("properties : .%s." % ps)
 
         qs = "MERGE (n:%s {%s, typeName:\"%s\"}) return n" % (typeName, ps, typeName)
-
         logger.debug("    Node Query : '%s'" % qs)
-
         nodeReturn = self.cypherQuery(qs)
 
         return self.cypherQuery(qs)
@@ -475,45 +485,63 @@ class ExportArchimateIntoNeo4J (object):
 
         return s.lstrip(" ").rstrip(" ")
 
+    def doDirectoryOfModels(self):
+
+        if self.subdirArchimate == None:
+            return
+
+        errors = list()
+
+        clearFlag = True
+
+        numFilesParsed = 0
+        for root, dirs, files in os.walk(self.subdirArchimate, topdown=True):
+            logger.info("%s : %s : %s" % (root, dirs, files))
+
+            for name in files:
+
+                if name[-9:] == "archimate":
+                    logger.debug("%s" % (name))
+
+                    nameFile = os.path.join(root, name)
+
+                    logger.info("Exporting : %s" % (nameFile))
+
+                    if clearFlag == True:
+                        eain = ExportArchimateIntoNeo4J(gdb, fileArchimate=nameFile, Reset=True)
+                        clearFlag = False
+                    else:
+                        eain = ExportArchimateIntoNeo4J(gdb, fileArchimate=nameFile, Reset=False)
+
+                    # Export just Archimate Elements
+                    eain.exportArchiElements()
+
+                    # Export Archimate Diagram Models
+                    eain.exportArchiDMS()
+
+                    # Create an export of all model relationships
+                    #eain.exportCSV()
+
+
 if __name__ == "__main__":
 
     start_time = ArchiLib.startTimer()
 
-    subdirArchimate = "/home/james.morris/local/ArchimateModels"
+    #subdirArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/ExportIntoNeo4J"
 
-    #model = "System Interaction- ToBe"
-    #model = "01.1 Market to Leads"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CMS into ECM V6.archimate"
 
-    errors = list()
+    logger.info("Exporting : %s" % (fileArchimate))
 
-    clearFlag = True
+    eain = ExportArchimateIntoNeo4J(gdb, fileArchimate=fileArchimate, Reset=True)
 
-    numFilesParsed = 0
-    for root, dirs, files in os.walk(subdirArchimate, topdown=True):
-        logger.info("%s : %s : %s" % (root, dirs, files))
+    # Export just Archimate Elements
+    eain.exportArchiElements()
 
-        for name in files:
+    # Export Archimate Diagram Models
+    eain.exportArchiDMS()
 
-            if name[-9:] == "archimate":
-                logger.debug("%s" % (name))
-
-                nameFile = os.path.join(root, name)
-
-                logger.info("Exporting : %s" % (nameFile))
-
-                if clearFlag == True:
-                    eain = ExportArchimateIntoNeo4J(nameFile, gdb, Reset=True)
-                    clearFlag = False
-                else:
-                    eain = ExportArchimateIntoNeo4J(nameFile, gdb, Reset=False)
-
-                # Export just Archimate Elements
-                eain.exportArchiElements()
-
-                # Export Archimate Diagram Models
-                eain.exportArchiDMS()
-
-                # Create an export of all model relationships
-                #eain.exportCSV()
+    # Create an export of all model relationships
+    #eain.exportCSV()
 
     ArchiLib.stopTimer(start_time)

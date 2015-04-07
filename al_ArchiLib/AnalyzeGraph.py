@@ -18,8 +18,8 @@ from nl_lib.Concepts import Concepts
 from nl_lib.ConceptGraph import PatternGraph, NetworkXGraph, GraphVizGraph, Neo4JGraph
 
 import networkx as nx
-
 from Constants import *
+
 from ArchiLib import ArchiLib
 from Neo4JLib import Neo4JLib
 
@@ -29,7 +29,7 @@ class AnalyzeGraph(object):
 
     def __init__(self, gdb):
 
-        self.nj = Neo4JLib(gdb)
+        self.nj = Neo4JLib(gdb, fileCSVExport)
 
         self.graph = NetworkXGraph()
 
@@ -101,7 +101,7 @@ class AnalyzeGraph(object):
             if isinstance(nodeKey, dict) and nodeKey.has_key("typeName"):
                 typeName = nodeKey['typeName']
 
-                if typeName in relations.keys():
+                if typeName in ArchiLib.relations.keys():
                     logger.debug("Skip : %s" % typeName)
                     continue
 
@@ -122,6 +122,8 @@ class AnalyzeGraph(object):
 
         if concepts == None and fileConceptsExport != None:
             self.concepts = Concepts.loadConcepts(fileConceptsExport)
+        else:
+            self.concepts = concepts
 
         logger.info(" Concepts : %s[%d][%s]" % (self.concepts.name, len(self.concepts.getConcepts()), self.concepts.typeName))
 
@@ -165,4 +167,15 @@ def test_AnalyzeGraph():
     ArchiLib.stopTimer(start_time)
 
 if __name__ == "__main__":
-    test_AnalyzeGraph()
+    if False:
+        test_AnalyzeGraph()
+    else:
+        fileConceptsExport
+
+        start_time = ArchiLib.startTimer()
+
+        ag = AnalyzeGraph(gdb)
+
+        ag.analyzeNetworkX(fileConceptsExport)
+
+        ArchiLib.stopTimer(start_time)

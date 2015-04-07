@@ -1,5 +1,5 @@
 #! python
-
+import sys, getopt
 import solr
 import time
 import datetime
@@ -30,15 +30,18 @@ def jsonLoad(data):
     return data
 
 if __name__ == "__main__":
+
+    if len(sys.argv) != 2:
+        print("Usage: %s search_term" % (sys.arv[0]))
+        sQuery = raw_input('Query : ')
+    else:
+        print("Using: %s" % str(sys.argv[1]))
+        sQuery = unicode(sys.argv[1])
+
     n = 0
 
     # create a connection to a solr server
     s = solr.SolrConnection('http://localhost:8983/solr/gettingstarted')
-
-    if True:
-        sQuery = raw_input('Query : ')
-    else:
-        sQuery = "bonds"
 
     response = s.query(sQuery)
 
@@ -51,10 +54,9 @@ if __name__ == "__main__":
         for k, v in hit.items():
             #print("    %s%s" % (k, v))
 
-
             if k in (u"creator", u"dc_creator", u"Name", u"Type", u"author", u"meta_author"):
                 s = 'n %s' % str(hit[k]).encode('utf-8',errors='ignore')
-                #print("%d:a %s" % (n ,s))
+                print("%d:a %s" % (n ,s))
 
             elif k == u"creation_date":
 
@@ -67,11 +69,11 @@ if __name__ == "__main__":
                 #print("%d:a %s" % (n ,s))
 
             elif k == u"id":
-                s = 'file://%s' % str(hit[k]).encode('utf-8',errors='ignore')
-                #s = 'file://%s' % s
+                # s = 'file://%s' % str(hit[k]).encode(encoding='utf-8',errors='ignore')
+                s = 'file://%s' % hit[k]
                 print("%d:a %s" % (n ,s))
 
             elif k == u"resourcename":
-                s = 'file://%s' % str(hit[k]).encode('utf-8',errors='ignore')
-                #s = 'file://%s' % s
-                #print("%d:a %s" % (n ,s))
+                s = 'file://%s' % hit[k]
+                print("%d:a %s" % (n ,s))
+

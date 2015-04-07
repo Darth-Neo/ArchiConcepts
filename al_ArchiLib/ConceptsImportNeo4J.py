@@ -11,7 +11,7 @@ import time
 
 from Logger import *
 logger = setupLogging(__name__)
-logger.setLevel(DEBUG)
+logger.setLevel(INFO)
 
 from nl_lib.Concepts import Concepts
 from nl_lib.ConceptGraph import Neo4JGraph
@@ -30,7 +30,7 @@ class ConceptsImportNeo4J(object):
         self.ClearNeo4J = ClearNeo4J
 
         self.al = ArchiLib(fileArchimate)
-        self.nj = Neo4JLib(gdb)
+        self.nj = Neo4JLib(gdb, fileCSVExport)
 
         if ClearNeo4J == True:
             self.clearNeo4J()
