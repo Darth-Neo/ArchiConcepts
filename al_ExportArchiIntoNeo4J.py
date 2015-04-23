@@ -529,7 +529,7 @@ if __name__ == "__main__":
 
     #subdirArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/ExportIntoNeo4J"
 
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CMS into ECM V6.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v37.archimate"
 
     logger.info("Exporting : %s" % (fileArchimate))
 

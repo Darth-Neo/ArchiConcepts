@@ -60,7 +60,7 @@ class ArchiLib(object):
 
         logger.debug("%s" % (output.getvalue()))
 
-        logger.info("Saved to : %s" % filename)
+        logger.info("====> Saved to : %s" % filename)
 
         f = open(filename,'w')
         f.write(output.getvalue())
@@ -594,12 +594,14 @@ class ArchiLib(object):
     # </element>
     def addProperties(self, properties):
 
+        # To Do - stop duplicating properties
+
         idd = properties["ID"]
         node = self.findElementByID(idd)
 
         n = 0
         for key, value in properties.items():
-            if key != "ID":
+            if key != "ID"and node.get(key) == None:
                 prop = dict()
                 prop["key"] = key
                 prop["value"] = value
@@ -660,7 +662,7 @@ class ArchiLib(object):
                 CM = self._cleanString(col.decode(encoding='ASCII',errors='ignore').lstrip())
 
                 if listColumnHeaders[colnum][:8] == "Property":
-                    logger.info("Properties : %s - %s" % (listColumnHeaders[colnum][9:], CM))
+                    logger.debug("Properties : %s - %s" % (listColumnHeaders[colnum][9:], CM))
 
                     if not properties.has_key("ID"):
                         properties["ID"] = p
@@ -671,7 +673,7 @@ class ArchiLib(object):
                     continue
 
                 if len(properties) > 0:
-                    logger.info("Add %d Properties" % (len(properties)))
+                    logger.debug("Add %d Properties" % (len(properties)))
                     self.addProperties(properties)
                     properties = dict()
 
@@ -680,11 +682,11 @@ class ArchiLib(object):
                 # from a previous column
                 #
                 if CM == "" or CM == None:
-                    logger.info("Using %d[%s]" % (colnum, previous[colnum]))
+                    logger.debug("Using %d[%s]" % (colnum, previous[colnum]))
                     CM = previous[colnum]
                 else:
                     previous[colnum] = CM
-                    logger.info("CM  %d[%s]" % (colnum, CM))
+                    logger.debug("CM  %d[%s]" % (colnum, CM))
 
                 #
                 # Create the attributes

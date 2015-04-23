@@ -9,20 +9,10 @@ from al_ArchiLib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
-from py2neo.neo4j import GraphDatabaseService, CypherQuery, Node, Relationship
-
-from openpyxl import Workbook
-from openpyxl import load_workbook
-from openpyxl.compat import range
-from openpyxl.cell import get_column_letter
-from openpyxl.worksheet import Worksheet
-
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.Neo4JLib import Neo4JLib
 
 from al_Constants import *
-
-import pytest
 
 def queryGraph(gdb):
 
@@ -43,8 +33,12 @@ def queryGraph(gdb):
 
     ql = list()
 
+    if True:
+        qs1 ="MATCH (n:BusinessObject)-[r*1..2]->(m:DataObject) where left(m.parentPath, 46) = \"/DVC V34/Application/Data Objects/AS400 Tables\" RETURN n.aname, n.typeName, m.aname, m.typeName"
+        qs = qs1
+        
     # These first queries are used for CMS to ECM - Hopefully, they will open some doors
-    if False:
+    elif False:
 
         qs1 = "MATCH (n:ApplicationComponent {aname : \"GoPublish Websites\"})-[r1]-(m)-[r2]-(o) return n.aname, n.parentPath, m.aname, m.parentPath, o.aname, o.parentPath"
         qs2 = "MATCH (n:ApplicationComponent {aname : \"Hippo Websites\"})-[r1]->(m) return n.aname, n.parentPath, m.aname, m.parentPath"
@@ -53,7 +47,7 @@ def queryGraph(gdb):
 
         qs = qs4
 
-    elif True:
+    elif False:
         qs1 = "MATCH (n:DataObject)-[r*1..2]->(m:DataObject) where left(n.parentPath, 42) = \"/CMS INTO ECM V5/Application/Content Types\" RETURN n.aname, n.parentPath, m.aname, m.parentPath"
         qs =qs1
 

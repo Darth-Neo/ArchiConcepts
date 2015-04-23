@@ -13,6 +13,9 @@ from al_ArchiLib.ArchiLib import ArchiLib
 
 from al_Constants import *
 
+# Note : all columns should have a header with an Archimate Object
+# Can also use Property.<whatever>
+
 import pytest
 
 # Properties
@@ -23,7 +26,7 @@ import pytest
 # child2 = etree.SubElement(root, "child2")
 #
 
-def ImportCSVIntoArchi(fileArchimate, folder):
+def ImportCSVIntoArchi(fileArchimate, folder, fileMetaEntity):
 
     start_time = ArchiLib.startTimer()
 
@@ -32,16 +35,18 @@ def ImportCSVIntoArchi(fileArchimate, folder):
 
     al.logTypeCounts()
 
-    al.insertNColumns("Application", "Import", folder)
+    # insertNColumns(self, folder, subfolder, fileMetaEntity):
+    al.insertNColumns("Application", folder, fileMetaEntity)
 
     al.outputXMLtoFile()
 
     ArchiLib.stopTimer(start_time)
 
 if __name__ == "__main__":
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/FOS V4.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v36.archimate"
 
-    fileMetaEntity = "import.csv"
+    fileMetaEntity = "export_sections.csv"
+    folder = "AT+LN Data Analysis"
 
     logger.info("dir : %s" % os.getcwd())
-    ImportCSVIntoArchi(fileArchimate, fileMetaEntity)
+    ImportCSVIntoArchi(fileArchimate, folder, fileMetaEntity)
