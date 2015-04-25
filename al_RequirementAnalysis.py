@@ -171,7 +171,7 @@ class Chunks(object):
 
 def requirementAnalysis():
 
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/FOS V4.archimate"
+    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v38.archimate"
 
     al = ArchiLib(fileArchimate)
 

@@ -2,8 +2,8 @@
 #
 # Named Entity Analysis
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.3'
+__author__  = u'morrj140'
+__VERSION__ = u'0.3'
 
 from al_ArchiLib.Logger import *
 logger = setupLogging(__name__)
@@ -16,15 +16,15 @@ from al_Constants import *
 
 import pytest
 
-def namedEntityAnalysis():
+def namedEntityAnalysis(fileArchimate=fileArchimateTest, fileConceptsRequirements=fileConceptsRequirements):
 
     start_time = ArchiLib.startTimer()
 
-    ane = AnalyzeNamedEntities(fileArchimateTest, fileConceptsRequirements)
+    ane = AnalyzeNamedEntities(fileArchimate, fileConceptsRequirements)
 
     ane.analyzeNamedEntities()
 
     ArchiLib.stopTimer(start_time)
 
-if __name__ == "__main__":
-    namedEntityAnalysis()
+if __name__ == u"__main__":
+    namedEntityAnalysis(fileArchimate=fileArchimate, fileConceptsRequirements=fileConceptsRequirements)

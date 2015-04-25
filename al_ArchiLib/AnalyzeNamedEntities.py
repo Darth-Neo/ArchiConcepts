@@ -26,42 +26,42 @@ class AnalyzeNamedEntities(object):
         self.fileArchimate = fileArchimate
         self.fileConceptsRelations = fileConceptsRelations
 
-        logger.info("Archimate File : %s" % self.fileArchimate)
-        logger.info("Export File    : %s" % self.fileConceptsRelations)
+        logger.info(u"Archimate File : %s" % self.fileArchimate)
+        logger.info(u"Export File    : %s" % self.fileConceptsRelations)
 
         self.al = ArchiLib(self.fileArchimate)
 
     def analyzeNamedEntities(self):
-        rels = ("archimate:AccessRelationship", "archimate:SpecialisationRelationship",
-                        "archimate:CompositionRelationship", "archimate:AggregationRelationship")
+        rels = (u"archimate:AccessRelationship", u"archimate:SpecialisationRelationship",
+                        u"archimate:CompositionRelationship", u"archimate:AggregationRelationship")
 
-        listType = ("archimate:Requirement",)
+        listType = (u"archimate:Requirement",)
 
         dictEntities = self.al.getTypeNodes(listType)
 
-        concepts = Concepts("Entities", "BusinessObject")
+        concepts = Concepts(u"Entities", u"BusinessObject")
 
         for x in self.al.dictEdges.keys():
             try:
-                logger.debug("[%s]=%s" % (x, self.al.dictEdges[x][ARCHI_TYPE]))
+                logger.debug(u"[%s]=%s" % (x, self.al.dictEdges[x][ARCHI_TYPE]))
 
-                source = self.al.dictEdges[x]["source"]
-                target = self.al.dictEdges[x]["target"]
+                source = self.al.dictEdges[x][u"source"]
+                target = self.al.dictEdges[x][u"target"]
 
-                logger.debug("  Source : %s" % source)
-                logger.debug("  Target : %s" % target)
+                logger.debug(u"  Source : %s" % source)
+                logger.debug(u"  Target : %s" % target)
             except:
-                logger.warn("[%s] ARCH_TYPE Exception" % (x))
+                logger.warn(u"[%s] ARCH_TYPE Exception" % (x))
                 continue
 
             if self.al.dictEdges[x][ARCHI_TYPE] in rels:
-                logger.info("%s   ->  [ %s ]  ->   %s" % (self.al.dictNodes[source]["name"][:20],
+                logger.info(u"%s   ->  [ %s ]  ->   %s" % (self.al.dictNodes[source][u"name"][:20],
                                                           self.al.dictEdges[x][ARCHI_TYPE],
-                                                          self.al.dictNodes[target]["name"][:20]))
+                                                          self.al.dictNodes[target][u"name"][:20]))
 
                 listNodes = self.al.getEdgesForNode(source, rels)
                 for x in listNodes:
-                    logger.debug("    %s" % (x))
+                    logger.debug(u"    %s" % (x))
 
 
         Concepts.saveConcepts(concepts, fileConceptsRelations)
@@ -77,5 +77,5 @@ def test_AnalyzeNamedEntities():
 
     ArchiLib.stopTimer(start_time)
 
-if __name__ == "__main__":
+if __name__ == u"__main__":
     test_AnalyzeNamedEntities()

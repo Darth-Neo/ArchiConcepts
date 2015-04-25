@@ -34,6 +34,11 @@ def queryGraph(gdb):
     ql = list()
 
     if True:
+        qs = "MATCH (a:ApplicationComponent)-[r*1..2]-(b:ApplicationComponent)-[r1*1..2]-(c:BusinessObject)-[r2*1..2]-(d:Requirement) RETURN distinct a.aname as Application, b.aname, b.typeName, c.aname, c.typeName, d.aname"
+        qs1 = "MATCH (a:BusinessObject)-[r0]-(c:Requirement), (b:BusinessObject)-[r1]-(d:DataObject), (f:DataObject)-[]-(g:ApplicationComponent) where a = b and d=f RETURN a.aname as BusinessObject, c.aname as Requirement, d.aname as DataObject, g.aname as Application"
+        qs2 = "MATCH (n:BusinessObject)-[r]-(m) where m.typeName = \"BusinessObject\" or m.typeName = \"DataObject\" or m.typeName = \"Requirement\" RETURN n.aname, n.typeName, m.aname, m.typeName"
+
+    elif False:
         qs1 ="MATCH (n:BusinessObject)-[r*1..2]->(m:DataObject) where left(m.parentPath, 46) = \"/DVC V34/Application/Data Objects/AS400 Tables\" RETURN n.aname, n.typeName, m.aname, m.typeName"
         qs = qs1
         

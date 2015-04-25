@@ -2,8 +2,8 @@
 #
 # Natural Language Processing of Information
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.3'
+__author__ = u'morrj140'
+__VERSION__ = u'0.4'
 
 from al_ArchiLib.Logger import *
 logger = setupLogging(__name__)
@@ -13,83 +13,30 @@ from nl_lib.Constants import *
 from nl_lib.Concepts import Concepts
 from nl_lib.TopicCloud import TopicCloud
 
-import nltk
-from nltk import tokenize, tag, chunk
-from nltk.corpus import webtext
-from nltk.collocations import BigramCollocationFinder, TrigramCollocationFinder
-from nltk.metrics import BigramAssocMeasures, TrigramAssocMeasures
-from nltk.corpus import stopwords
-from nltk.corpus import wordnet as wn
-from nltk.stem import PorterStemmer, WordNetLemmatizer
-
 from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
-
-import pytest
-
-def createTopicsCloud(concepts, topic, numWords=50, scale=0.25):
-    logger.info("Starting Tag Cloud...")
-
-    tc = TopicCloud(concepts, os.getcwd() + os.sep)
-
-    logger.info("Create Tag Cloud")
-
-    # Note: the first parameter must match for a topic cloud image to be created!
-    tc.createCloudImage(topic, size_x=1500, size_y=1200, numWords=numWords, scale=scale)
-
-    logger.info("Complete createTopicsCloud")
-
-def getLemma(concept, lemmatizer):
-
-    cl = list()
-
-    for x in concept.name.split(" "):
-        lemmaWord = lemmatizer.lemmatize(x.lower())
-        cl.append(lemmaWord)
-
-    return cl
-
-def updateConceptLemma(concepts, lemmatizer):
-
-    cl = getLemma(concepts, lemmatizer)
-
-    for concept in concepts.getConcepts().values():
-       logger.info("Word %s" % concept.name)
-
-       for word, pos in nltk.pos_tag(nltk.wordpunct_tokenize(concept.name)):
-            logger.debug("Word: " + word + " POS: " + pos)
-            lemmaWord = lemmatizer.lemmatize(word.lower())
 
 
 def createTagCloud(conceptFile, topic):
 
     start_time = ArchiLib.startTimer()
 
-    lemmatizer = WordNetLemmatizer()
+    concepts = Concepts.loadConcepts(conceptFile)
 
-    directory = os.getcwd()
+    tc = TopicCloud(concepts, font_path=u"/Users/morrj140/Fonts/DroidSans.ttf", imageFile=u"Requirements.png")
 
-    os.chdir(directory)
-
-    concepts = Concepts("GraphConcepts", "GRAPH")
-
-    updateConceptLemma(concepts, lemmatizer)
-
-    filePath = directory + os.sep + conceptFile
-    logger.info("Loading Topics from : " + filePath)
-
-    concepts = Concepts.loadConcepts(filePath)
-
-    createTopicsCloud(concepts, topic)
+    tc.createTagCloud(topic)
 
     ArchiLib.stopTimer(start_time)
 
-if __name__ == "__main__":
+if __name__ == u"__main__":
+    logger.debug(u"CWD : %s" % os.getcwd())
+
     #conceptFile = "TopicChunks.p"
     #topic = "Chunk"
 
-    conceptFile = "topicsDict.p"
-    topic="Topic"
+    #conceptFile = u"topicsDict.p"
+    #topic = u"Topic"
 
     #conceptFile = "archi.p"
     #topic="name"
@@ -97,11 +44,11 @@ if __name__ == "__main__":
     #conceptFile = "ngramsubject.p"
     #topic="NGRAM"
 
-    #conceptFile = "req.p"
-    #topic = "Word"
+    conceptFile = u"reqs.p"
+    topic = u"Word"
 
-    #conceptFile = "chunks.p"
-    #topic = "Lemma"
+    conceptFile = u"chunks.p"
+    topic = u"Lemma"
     #topic = "SBJ"
     #topic = "OBJ"
     #topic = "VP"
@@ -112,4 +59,3 @@ if __name__ == "__main__":
     #topic = "NGRAM"
 
     createTagCloud(conceptFile, topic)
-

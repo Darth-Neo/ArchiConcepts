@@ -2,8 +2,8 @@
 #
 # Create PPTX from Archimate XML
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.3'
+__author__ = u'morrj140'
+__VERSION__ = u'0.3'
 
 from al_ArchiLib.Logger import *
 logger = setupLogging(__name__)
@@ -20,7 +20,7 @@ def createPPTXFromArchi():
 
     cpfa.buildPPTX()
 
-if __name__ == "__main__":
+if __name__ == u"__main__":
     createPPTXFromArchi()
 
 

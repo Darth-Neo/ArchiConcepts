@@ -2,8 +2,8 @@
 #
 # Archimate to Concepts
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.3'
+__author__ = u'morrj140'
+__VERSION__ = u'0.3'
 
 from al_ArchiLib.Logger import *
 logger = setupLogging(__name__)
@@ -18,9 +18,9 @@ import pytest
 
 def createArchimateConcepts(fileArchimate, fileConceptsArch):
 
-    logger.info("Using : %s" % fileArchimate)
+    logger.info(u"Using : %s" % fileArchimate)
 
-    concepts = Concepts(fileArchimateModel, "Archimate")
+    concepts = Concepts(fileArchimateModel, u"Archimate")
 
     al = ArchiLib(fileArchimate)
 
@@ -31,12 +31,12 @@ def createArchimateConcepts(fileArchimate, fileConceptsArch):
     #
     al.folderConcepts(concepts)
     Concepts.saveConcepts(concepts, fileConceptsArch)
-    logger.info("Saved concepts to : %s" % fileConceptsArch)
+    logger.info(u"Saved concepts to : %s" % fileConceptsArch)
 
     #
     # Generate Archimate from Concepts
     #
     #al.createArchimate(fileArchimate, fileConceptsArch)
 
-if __name__ == "__main__":
+if __name__ == u"__main__":
     createArchimateConcepts(fileArchimateTest, fileConceptsArch)

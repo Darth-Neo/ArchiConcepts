@@ -102,7 +102,7 @@ class Neo4JLib(object):
                 logger.debug("Type : %s" % type(v))
 
                 if isinstance(v, Node):
-                    name = v["name"]
+                    name = v["aname"]
                     typeName =v["typeName"]
 
                     xl.append(name)

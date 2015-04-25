@@ -2,8 +2,8 @@
 #
 # Export Archimate into Neo4J
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.2'
+__author__ = u'morrj140'
+__VERSION__ = u'0.2'
 
 
 from al_ArchiLib.Logger import *
@@ -18,23 +18,23 @@ from al_ArchiLib.Neo4JLib import Neo4JLib
 
 from al_Constants import *
 
-if __name__ == "__main__":
+if __name__ == u"__main__":
 
     start_time = ArchiLib.startTimer()
 
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CMS into ECM V5.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CMS into ECM V5.archimate"
 
     al = ArchiLib(fileArchimate)
     ea = ExportArchi(fileArchimate, fileConceptsExport)
 
-    logger.info("...Export Archi...")
+    logger.info(u"...Export Archi...")
     concepts = ea.exportArchi()
 
-    logger.info("...Import Neo4J...")
+    logger.info(u"...Import Neo4J...")
     in4j = ConceptsImportNeo4J(fileArchimate, gdb, ClearNeo4J=True)
     in4j.importNeo4J(concepts)
 
-    logger.info("...Analyze NetworkX...")
+    logger.info(u"...Analyze NetworkX...")
     ag = AnalyzeGraph(gdb)
     ag.analyzeNetworkX(concepts, fileConceptsExport)
 

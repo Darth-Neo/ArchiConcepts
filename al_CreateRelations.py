@@ -2,8 +2,8 @@
 #
 # Archimate Relations
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.3'
+__author__ = u'morrj140'
+__VERSION__ = u'0.3'
 
 from al_ArchiLib.Logger import *
 logger = setupLogging(__name__)
@@ -16,7 +16,7 @@ from al_Constants import *
 
 import pytest
 
-def createRelations(fileArchimate):
+def createRelations(fileArchimate=fileArchimateTest):
 
     start_time = ArchiLib.startTimer()
 
@@ -26,7 +26,9 @@ def createRelations(fileArchimate):
 
     ArchiLib.stopTimer(start_time)
 
-if __name__ == "__main__":
+if __name__ == u"__main__":
 
-    # fileArchimate is defined in al_Constants
-    createRelations(fileArchimateTest)
+    # fileArchimate is also defined in al_Constants
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v38.archimate"
+
+    createRelations(fileArchimate)
