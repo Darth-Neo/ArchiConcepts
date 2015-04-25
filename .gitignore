@@ -1,5 +1,6 @@
 *.p
 build/*
+build/lib/al_ArchiLib/*
 dist/*
 tmp/*
 old/*
