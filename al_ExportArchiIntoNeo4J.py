@@ -21,10 +21,13 @@ from al_Constants import *
 
 from py2neo import neo4j, node, rel
 
-#
-# Script to reset Neo4J
-#
-resetNeo4J = u"/Users/morrj140/Development/neo4j/bin/reset.sh"
+from sys import platform as _platform
+if _platform == "linux" or _platform == "linux2":
+    resetNeo4J = u"/home/james.morris/bin/reset.sh"
+elif _platform == "darwin":
+    resetNeo4J = u"/Users/morrj140/Development/neo4j/bin/reset.sh"
+elif _platform == "win32":
+    resetNeo4J = "n/a"
 
 class ExportArchimateIntoNeo4J (object):
     listModels    = None

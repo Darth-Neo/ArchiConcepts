@@ -39,19 +39,6 @@ from al_QueryGraph import queryGraph
 
 import pytest
 
-
-dirTest = u"test" + os.sep
-
-fileArchimate      = dirTest + u"Testing.archimate"
-
-conceptsExport     = dirTest  + u"export.p"
-conceptsEstimation = dirTest  + u"estimation.p"
-conceptsArchi      = dirTest  + u"archi.p"
-
-exportCSV          = dirTest  + u"export.csv"
-exportReportCSV    = dirTest  + u"report.csv"
-
-
 @pytest.fixture(scope="module")
 def gdb():
     return gdbTest

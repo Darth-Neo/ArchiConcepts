@@ -61,9 +61,8 @@ class ArchiLib(object):
 
         logger.info(u"====> Saved to : %s" % filename)
 
-        f = open(filename, u'w')
-        f.write(output.getvalue())
-        f.close()
+        with open(filename, u'w') as f:
+            f.write(output.getvalue())
 
         output.close()
 

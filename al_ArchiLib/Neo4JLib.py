@@ -24,8 +24,6 @@ import pytest
 
 class Neo4JLib(object):
 
-    _delchars = ''.join(c for c in map(chr, range(255)) if (not c.isalnum() and c != ' '))
-
     def __init__(self, gdb, fileCSVExport=fileCSVExport):
         logger.debug(u"Neo4J instance : %s" % gdb)
 
@@ -33,7 +31,7 @@ class Neo4JLib(object):
 
         self.fileCSVExport = fileCSVExport
 
-    def _cleanString(self, name):
+    def cleanString(self, name):
             '''
             :param name: name
             :return: string
@@ -44,19 +42,11 @@ class Neo4JLib(object):
             name = name.replace(u")", u" ")
             name = name.replace(u"(", u"-")
 
-            try:
-                if isinstance(name, (str, unicode)):
-                    return unicode(name)
-                else:
-                    n = unicode(name).strip()
-                    return n
-            except:
-                return u" "
+            return unicode(name.strip())
 
     def cypherQuery(self, qs):
         query = neo4j.CypherQuery(self.graph, qs)
         return query.execute().data
-
 
     def traversal(self, ql, directed=False):
 
@@ -103,24 +93,16 @@ class Neo4JLib(object):
 
                 if isinstance(v, Node):
                     name = v[u"aname"]
-                    typeName =v[u"typeName"]
-
                     xl.append(name)
-                    # xl.append(typeName)
 
                 elif isinstance(v, int) or isinstance(v, float):
                     count = v
-                    typeName = u"Number"
-
                     xl.append(count)
-                    #xl.append(typeName)
 
                 elif isinstance(v, str) or isinstance(v, unicode):
                     st = v
-                    typeName = u"String"
 
                     xl.append(st)
-                    # xl.append(typeName)
 
             listQuery.append(xl)
 
@@ -208,16 +190,7 @@ class Neo4JLib(object):
                 rs += u", %s" % (x)
 
         if len(rs) != 0:
-            rs1 = rs[1:]
-
-            u'''
-            :param name: name
-            :return: string
-            Note: Encode a string to UTF-8
-            Note: Decode a string to Unicode
-            '''
-            # rsClean = self.cleanString(rs1)
-            # unicode(n, "utf-8", errors='ignore' )
+            rs1 = unicode(rs[1:])
 
             logger.debug(u"%s" % (rs1))
 
@@ -226,11 +199,8 @@ class Neo4JLib(object):
     def queryExport(self, lq):
 
         # csvExport defined in al_ArchiLib.Constants
-        f = open(self.fileCSVExport, u'w')
-
-        self.logResults(lq, f)
-
-        f.close()
+        with open(self.fileCSVExport, u'w') as f:
+            self.logResults(lq, f)
 
         logger.info(u"Exported %d rows" % len(lq))
         logger.info(u"Save Model : %s" % self.fileCSVExport)
@@ -291,8 +261,6 @@ class Neo4JLib(object):
         logger.info(u"Saved file : %s" % fileOut)
 
     def exportNeo4JToConcepts(self, concepts, fileNodes=u"nodes.p"):
-        # #et all nodes
-        # Match n return n limit 25
 
         qs = u"Match n return n"
 
