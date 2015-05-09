@@ -2,8 +2,8 @@
 #
 # Archimate Deduping
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.3'
+__author__ = u'morrj140'
+__VERSION__ = u'0.3'
 
 from al_ArchiLib.Logger import *
 logger = setupLogging(__name__)
@@ -21,20 +21,23 @@ def dedupArchi(fileArchimate):
     al.logTypeCounts()
 
     p, fname = os.path.split(fileArchimate)
-    logger.info("Using : %s" % fileArchimate)
+    logger.info(u"Using : %s" % fileArchimate)
 
-    concepts = Concepts(fname, "Archimate")
+    concepts = Concepts(fname, u"Archimate")
 
     al.folderConcepts(concepts)
 
-    #concepts.logConcepts()
+    # concepts.logConcepts()
 
-    #Concepts.saveConcepts(concepts, fileConceptsDeDups)
+    # Concepts.saveConcepts(concepts, fileConceptsDeDups)
 
     #
     # Generate Archimate from Concepts
     #
-    output = al.createArchimate(fileArchimateModel , fileConceptsArch)
+    output = al.createArchimate(fileArchimateModel, fileConceptsArch)
 
-if __name__ == "__main__":
-    dedupArchi(fileArchimateTest)
+if __name__ == u"__main__":
+
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CMS into ECM V5.archimate"
+
+    dedupArchi(fileArchimate)

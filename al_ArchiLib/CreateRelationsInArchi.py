@@ -19,7 +19,6 @@ brown_ic = wordnet_ic.ic(u'ic-brown.dat')
 from ArchiLib import ArchiLib
 from Constants import *
 
-import pytest
 
 class CreateRelationsInArchi(object):
 
@@ -52,19 +51,19 @@ class CreateRelationsInArchi(object):
 
             nameEntity = x.get(u"name")
 
-            if nameEntity == None:
+            if nameEntity is None:
                 continue
 
             logger.info(u"----Checking Entity : %s----" % nameEntity)
 
             for z in self.dictReq.keys():
 
-                if z == None:
+                if z is None:
                     continue
 
                 logger.info(u"%s -- %s" % (x.get(u"name"), z))
 
-                nxp = u"//element[@id='" + self.dictReq[z] + "']"
+                nxp = u"//element[@id='" + self.dictReq[z] + u"']"
                 logger.info(u"nxp : %s" % nxp)
                 ntxp = self.al.tree.xpath(nxp)
 
@@ -72,7 +71,7 @@ class CreateRelationsInArchi(object):
                     wv = ntxp[0].get(u"name")
                     wy = self.al._cleanCapital(wv)
 
-                    if wy == None:
+                    if wy is None:
                         continue
                     logger.info(u"%s ==> %s" % (x.get(u"name"), wy))
 

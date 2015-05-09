@@ -40,26 +40,26 @@ class DependancyAnalysis(object):
 
         self.fileArchimate = fileArchimate
 
-        logger.info("Using : %s" % self.fileArchimate)
+        logger.info(u"Using : %s" % self.fileArchimate)
 
         self.al = ArchiLib(fileArchimate)
 
-        self.concepts = Concepts("BusinessProcess", "archimate:BusinessProcess")
+        self.concepts = Concepts(u"BusinessProcess", u"archimate:BusinessProcess")
 
     # "Batches" are sets of tasks that can be run together
     def get_task_batches(self, nodes):
 
         # Build a map of node names to node instances
-        name_to_instance = dict( (n.name, n) for n in nodes )
+        name_to_instance = dict((n.name, n) for n in nodes )
 
         for x in name_to_instance.keys():
-            logger.debug("name_to_instance[%s]=%s : %s" % (x, name_to_instance[x].name, name_to_instance[x].depends))
+            logger.debug(u"name_to_instance[%s]=%s : %s" % (x, name_to_instance[x].name, name_to_instance[x].depends))
 
         # Build a map of node names to dependency names
         name_to_deps = dict( (n.name, set(n.depends)) for n in nodes )
 
         for x in name_to_deps.keys():
-            logger.debug("name_to_deps[%s]=%s" % (x, name_to_deps[x]))
+            logger.debug(u"name_to_deps[%s]=%s" % (x, name_to_deps[x]))
 
         # This is where we'll store the batches
         batches = []
@@ -67,19 +67,19 @@ class DependancyAnalysis(object):
         n = 0
         # While there are dependencies to solve...
         while name_to_deps:
-            logger.info("length %d" % len(name_to_deps))
+            logger.info(u"length %d" % len(name_to_deps))
 
             # Get all nodes with no dependencies
             ready = {name for name, deps in name_to_deps.iteritems() if not deps}
 
             n += 1
-            logger.info("iteration : %d" % n)
+            logger.info(u"iteration : %d" % n)
             for x in ready:
-                logger.info("No Dep  %s" % (x))
+                logger.info(u"No Dep  %s" % (x))
 
             # If there aren't any, we have a loop in the graph
             if not ready:
-                msg  = "Circular dependencies found!\n"
+                msg  = u"Circular dependencies found!\n"
                 msg += self.format_dependencies(name_to_deps)
                 raise ValueError(msg)
 
@@ -100,7 +100,7 @@ class DependancyAnalysis(object):
         msg = []
         for name, deps in name_to_deps.iteritems():
             for parent in deps:
-                msg.append("%s -> %s" % (name, parent))
+                msg.append(u"%s -> %s" % (name, parent))
         return "\n".join(msg)
 
     # Create and format a dependency graph for printing
@@ -126,32 +126,32 @@ class DependancyAnalysis(object):
         lemmatizer = WordNetLemmatizer()
 
         for word, pos in nltk.pos_tag(nltk.wordpunct_tokenize(s)):
-            if len(word) > 1 and pos[0] == "N":
+            if len(word) > 1 and pos[0] == u"N":
                 lemmaWord = lemmatizer.lemmatize(word.lower())
-                e = concepts.addConceptKeyType(lemmaWord, "Word")
-                f = e.addConceptKeyType(pos, "POS")
+                e = concepts.addConceptKeyType(lemmaWord, u"Word")
+                f = e.addConceptKeyType(pos, u"POS")
 
     def dependancyAnalysis(self):
 
         count = 0
         listTSort = list()
         for x in self.al.dictEdges.keys():
-            logger.debug("[%s]=%s" % (self.al.dictEdges[x]["id"], x))
+            logger.debug(u"[%s]=%s" % (self.al.dictEdges[x][u"id"], x))
 
-            if self.al.dictEdges[x].has_key("source"):
-                source = self.al.dictEdges[x]["source"]
-                target = self.al.dictEdges[x]["target"]
+            if u"source" in self.al.dictEdges[x]:
+                source = self.al.dictEdges[x][u"source"]
+                target = self.al.dictEdges[x][u"target"]
 
-                logger.debug("  Rel    : %s" % (self.al.dictEdges[x][ARCHI_TYPE]))
+                logger.debug(u"  Rel    : %s" % (self.al.dictEdges[x][ARCHI_TYPE]))
 
-                if self.al.dictEdges[x][ARCHI_TYPE] in ("archimate:FlowRelationship"):
+                if self.al.dictEdges[x][ARCHI_TYPE] in (u"archimate:FlowRelationship"):
 
-                    #al.countNodeType(al.dictNodes[source][ARCHI_TYPE])
-                    #al.countNodeType(al.dictNodes[target][ARCHI_TYPE])
-                    #al.countNodeType(al.dictEdges[x][ARCHI_TYPE])
+                    # al.countNodeType(al.dictNodes[source][ARCHI_TYPE])
+                    # al.countNodeType(al.dictNodes[target][ARCHI_TYPE])
+                    # al.countNodeType(al.dictEdges[x][ARCHI_TYPE])
 
-                    if (self.al.dictNodes[source][ARCHI_TYPE] == "archimate:BusinessProcess") and \
-                            self.al.dictNodes[target][ARCHI_TYPE] == "archimate:BusinessProcess":
+                    if (self.al.dictNodes[source][ARCHI_TYPE] == u"archimate:BusinessProcess") and \
+                            self.al.dictNodes[target][ARCHI_TYPE] == u"archimate:BusinessProcess":
 
                         sourceName = self.al.getNodeName(source)
                         targetName = self.al.getNodeName(target)
@@ -159,56 +159,56 @@ class DependancyAnalysis(object):
                         if sourceName[0].isdigit() or targetName[0].isdigit():
                             continue
 
-                        logger.debug(" %s:%s" % (sourceName, targetName))
+                        logger.debug(u" %s:%s" % (sourceName, targetName))
 
                         l = list()
 
                         sc = self.findConcept(self.concepts, sourceName)
-                        if sc == None:
-                            logger.debug("New Target - %s" % sourceName)
-                            sc = self.concepts.addConceptKeyType(self.al.getNodeName(source), "Source")
+                        if sc is None:
+                            logger.debug(u"New Target - %s" % sourceName)
+                            sc = self.concepts.addConceptKeyType(self.al.getNodeName(source), u"Source")
                             self.getWords(sourceName, sc)
                         else:
-                            logger.debug("Prior Target %s" % sourceName)
+                            logger.debug(u"Prior Target %s" % sourceName)
 
                         tc = self.findConcept(self.concepts, targetName)
-                        if tc == None:
-                            logger.debug("New Target %s" % targetName)
-                            tc = sc.addConceptKeyType(self.al.getNodeName(target), "Target")
+                        if tc is None:
+                            logger.debug(u"New Target %s" % targetName)
+                            tc = sc.addConceptKeyType(self.al.getNodeName(target), u"Target")
                             self.getWords(sourceName, tc)
                         else:
-                            logger.debug("Prior Target %s" % targetName)
+                            logger.debug(u"Prior Target %s" % targetName)
                             sc.addConcept(tc)
 
                         l.append(target)
                         l.append(source)
                         listTSort.append(l)
 
-        logger.debug("Edges = %s" % listTSort)
+        logger.debug(u"Edges = %s" % listTSort)
 
         Concepts.saveConcepts(self.concepts, fileConceptsTraversal)
 
         index = 0
         for x in listTSort:
-            logger.debug("%d %s[%s] -%s-> %s[%s]" % (index, self.al.dictNodes[x[0]]["name"], self.al.dictNodes[x[0]][ARCHI_TYPE], "UsedBy",
-                                                    self.al.dictNodes[x[1]]["name"], self.al.dictNodes[x[1]][ARCHI_TYPE]))
-            index = index + 1
+            logger.debug(u"%d %s[%s] -%s-> %s[%s]" % (index, self.al.dictNodes[x[0]][u"name"], self.al.dictNodes[x[0]][ARCHI_TYPE], u"UsedBy",
+                                                    self.al.dictNodes[x[1]][u"name"], self.al.dictNodes[x[1]][ARCHI_TYPE]))
+            index += 1
 
-            self.al.addToNodeDict(self.al.dictNodes[x[0]]["name"], self.al.dictBP)
-            self.al.addToNodeDict(self.al.dictNodes[x[1]]["name"], self.al.dictBP)
+            self.al.addToNodeDict(self.al.dictNodes[x[0]][u"name"], self.al.dictBP)
+            self.al.addToNodeDict(self.al.dictNodes[x[1]][u"name"], self.al.dictBP)
 
-        logger.info("Topic Sort Candidates : %d" % (len(listTSort)))
+        logger.info(u"Topic Sort Candidates : %d" % (len(listTSort)))
 
         nodes = list()
         index = 0
         dictTasks = dict()
         for x in listTSort:
-            sname = self.al.dictNodes[x[0]]["name"]
-            tname = self.al.dictNodes[x[1]]["name"]
+            sname = self.al.dictNodes[x[0]][u"name"]
+            tname = self.al.dictNodes[x[1]][u"name"]
             index += 1
-            logger.debug("%d %s -%s-> %s" % (index, sname, "UsedBy", tname))
+            logger.debug(u"%d %s -%s-> %s" % (index, sname, u"UsedBy", tname))
 
-            if dictTasks.has_key(sname):
+            if sname in dictTasks:
                 ln = dictTasks[sname]
                 ln.append(tname)
             else:
@@ -217,32 +217,32 @@ class DependancyAnalysis(object):
                 dictTasks[sname] = ln
 
         for x in dictTasks.keys():
-            logger.debug("dictTasks[%s]=%s" % (x, dictTasks[x]))
+            logger.debug(u"dictTasks[%s]=%s" % (x, dictTasks[x]))
             a = Task(x, dictTasks[x])
             nodes.append(a)
 
         for x in self.al.dictBP.keys():
-            #for x in listBP:
-            if not dictTasks.has_key(x):
-                logger.debug("Add %s" % (x))
+            # for x in listBP:
+            if x not in dictTasks:
+                logger.debug(u"Add %s" % (x))
                 a = Task(x, list())
                 nodes.append(a)
 
         self.format_nodes(nodes)
 
-        conceptBatches = Concepts("Batch", "archimate:WorkPackage")
+        conceptBatches = Concepts(u"Batch", u"archimate:WorkPackage")
 
         n = 0
-        logger.info("Batches:")
+        logger.info(u"Batches:")
         batches = self.get_task_batches(nodes)
         for bundle in batches:
             n += 1
-            name = "Batch %d" % n
-            c = conceptBatches.addConceptKeyType(name, "archimate:WorkPackage")
+            name = u"Batch %d" % n
+            c = conceptBatches.addConceptKeyType(name, u"archimate:WorkPackage")
             for node in bundle:
-                c.addConceptKeyType(node.name, "archimate:BusinessProcess")
+                c.addConceptKeyType(node.name, u"archimate:BusinessProcess")
 
-            logger.info("%d : %s" % (n, ", ".join(node.name.lstrip() for node in bundle)))
+            logger.info(u"%d : %s" % (n, ", ".join(node.name.lstrip() for node in bundle)))
 
         Concepts.saveConcepts(conceptBatches, fileConceptsBatches)
 
@@ -260,5 +260,5 @@ def test_DependencyAnalysis():
 
     ArchiLib.stopTimer(start_time)
 
-if __name__ == "__main__":
+if __name__ == u"__main__":
     test_DependencyAnalysis()

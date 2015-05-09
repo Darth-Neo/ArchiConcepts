@@ -2,8 +2,8 @@
 #
 # Archimate Libray
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.1'
+__author__ = u'morrj140'
+__VERSION__ = u'0.1'
 
 import sys
 import os
@@ -28,7 +28,6 @@ from openpyxl.cell import get_column_letter
 
 from Constants import *
 
-import pytest
 
 #
 # Main class to make life easier
@@ -47,22 +46,22 @@ class ArchiLib(object):
         else:
             self.fileArchimate = fileArchimate
 
-        etree.QName(ARCHIMATE_NS, 'model')
+        etree.QName(ARCHIMATE_NS, u'model')
 
         self.tree = etree.parse(self.fileArchimate)
 
         # Populate Dictionaries for easier code
         self.parseAll()
 
-    def outputXMLtoFile(self, filename="import_artifacts.archimate"):
+    def outputXMLtoFile(self, filename=u"import_artifacts.archimate"):
         output = StringIO.StringIO()
         self.tree.write(output, pretty_print=True)
 
-        logger.debug("%s" % (output.getvalue()))
+        logger.debug(u"%s" % (output.getvalue()))
 
-        logger.info("====> Saved to : %s" % filename)
+        logger.info(u"====> Saved to : %s" % filename)
 
-        f = open(filename,'w')
+        f = open(filename, u'w')
         f.write(output.getvalue())
         f.close()
 
@@ -76,19 +75,19 @@ class ArchiLib(object):
 
         colDict = dict()
 
-        f = open(self.fileExport,'w')
+        f = open(self.fileExport, u'w')
 
         m = 0
         for x in listOutput:
             m += 1
             n = 0
-            strLine = ""
-            logger.debug("listOutput[%d] = %s" % (n, x))
+            strLine = u""
+            logger.debug(u"listOutput[%d] = %s" % (n, x))
 
-            for y in x.split(","):
+            for y in x.split(u","):
                 n += 1
 
-                logger.debug("y : %s[%d]" % (y, len(y)))
+                logger.debug(u"y : %s[%d]" % (y, len(y)))
 
                 if len(y) == 0:
                     if colDict.has_key(n):
@@ -96,22 +95,22 @@ class ArchiLib(object):
                 else:
                     colDict[n] = y
 
-                strLine = "%s%s," % (strLine, y)
+                strLine = u"%s%s," % (strLine, y)
 
             nl = strLine[:-1]
 
-            logger.debug("%s" % nl)
-            f.write(nl + "\n")
+            logger.debug(u"%s" % nl)
+            f.write(nl + u"\n")
 
         f.close()
-        logger.info("Save Model : %s" % self.fileExport)
+        logger.info(u"Save Model : %s" % self.fileExport)
 
     def outputXMLtoLog(self):
         output = StringIO.StringIO()
         self.tree.write(output, pretty_print=True)
-        logger.info("%s" % (output.getvalue()))
+        logger.info(u"%s" % (output.getvalue()))
 
-    def exportExcel(fileIn, fileOut, workSheetTitle="Scope Items"):
+    def exportExcel(fileIn, fileOut, workSheetTitle=u"Scope Items"):
 
         wb = load_workbook(filename = fileIn)
 
@@ -119,12 +118,12 @@ class ArchiLib(object):
 
         ws.title = workSheetTitle
 
-        ws['F5'] = 3.14
+        ws[u'F5'] = 3.14
 
         for col_idx in range(1, 40):
             col = get_column_letter(col_idx)
             for row in range(1, 600):
-                ws.cell('%s%s'%(col, row)).value = '%s%s' % (col, row)
+                ws.cell(u'%s%s'%(col, row)).value = u'%s%s' % (col, row)
 
         wb.save(filename = fileOut)
 
@@ -135,7 +134,7 @@ class ArchiLib(object):
     def findDiagramModelByName(self, name):
         r = None
 
-        xp = "//element[@name='" + name + "']"
+        xp = u"//element[@name='" + name + u"']"
         stp = self.tree.xpath(xp)
 
         if stp[0].get(ARCHI_TYPE) == DIAGRAM_MODEL:
@@ -144,27 +143,27 @@ class ArchiLib(object):
         return r
 
     def findRelationsByID(self, id, Target=False):
-        if Target == False:
-            xp = "//element[@source='%s']" % (id)
+        if Target is False:
+            xp = u"//element[@source='%s']" % (id)
         else:
-            xp = "//element[@source='%s' or @target='%s']" % (id, id)
-        logger.debug("%s" % xp)
+            xp = u"//element[@source='%s' or @target='%s']" % (id, id)
+        logger.debug(u"%s" % xp)
         stp = self.tree.xpath(xp)
         return stp
 
     def findRelationsByTargetID(self, id):
-        xp = "//element[@target='%s']" % id
+        xp = u"//element[@target='%s']" % id
         stp = self.tree.xpath(xp)
         return stp
 
     def findDiagramModel(self, id):
-        xp = "//element[@id='" + id + "']"
+        xp = u"//element[@id='" + id + "']"
         stp = self.tree.xpath(xp)
         return stp
 
     def findDiagramModelByName(self, name):
-        xp = "//element[@name='%s']" % (name)
-        logger.debug("xp : %s" % xp)
+        xp = u"//element[@name='%s']" % (name)
+        logger.debug(u"xp : %s" % xp)
         stp = self.tree.xpath(xp)
 
         for x in stp:
@@ -175,27 +174,27 @@ class ArchiLib(object):
         return stp
 
     def findDiagramObject(self, id):
-        xp = "//child[@id='%s']" % id
+        xp = u"//child[@id='%s']" % id
         stp = self.tree.xpath(xp)
         return stp
 
     def findElement(self, name):
-        xp = "//element[@name='%s']" % name.rstrip(" ").lstrip(" ")
+        xp = u"//element[@name='%s']" % name.rstrip(u" ").lstrip(u" ")
         stp = self.tree.xpath(xp)
         return stp
 
     def findElementByID(self, id):
-        xp = "//element[@id='%s']" % id
+        xp = u"//element[@id='%s']" % id
         stp = self.tree.xpath(xp)
 
-        if stp == None:
+        if stp is None:
             stp = list()
-            stp.append(" ")
+            stp.append(u" ")
 
         return stp
 
     def getDiagramModels(self):
-        xp = "//element[@%s='%s']" % (ARCHI_TYPE, DIAGRAM_MODEL)
+        xp = u"//element[@%s='%s']" % (ARCHI_TYPE, DIAGRAM_MODEL)
         stp = self.tree.xpath(xp)
         return stp
 
@@ -206,14 +205,14 @@ class ArchiLib(object):
         try:
             attributes = e.attrib
         except:
-            logger.warn("Ops...")
+            logger.warn(u"Ops...")
             return concepts
 
-        logger.debug("recurseElement %s: %s:%s:%s:%s" % (n, e.tag, e.get("name"), e.get("id"), attributes.get(ARCHI_TYPE)))
+        logger.debug(u"recurseElement %s: %s:%s:%s:%s" % (n, e.tag, e.get(u"name"), e.get(u"id"), attributes.get(ARCHI_TYPE)))
 
-        if attributes.get("id") != None:
-            id = attributes["id"]
-            name = e.get("name")
+        if attributes.get(u"id") is not None:
+            id = attributes[u"id"]
+            name = e.get(u"name")
             type = e.get(ARCHI_TYPE)[10:]
 
             d = concepts.addConceptKeyType(name, type)
@@ -221,7 +220,7 @@ class ArchiLib(object):
             next = self.findRelationsByID(id)
 
             for x in next:
-                nid = x.get("target")
+                nid = x.get(u"target")
                 en = self.findElementByID(id)
                 self.recurseElement(en, d, n)
 
@@ -231,11 +230,11 @@ class ArchiLib(object):
     def recurseChildren(self, concepts, x, n=0):
         n += 1
 
-        xid = x.get("id")
+        xid = x.get(u"id")
         xi = x.items()
-        xc, xname = self.getElementName(x.get("archimateElement"))
+        xc, xname = self.getElementName(x.get(u"archimateElement"))
 
-        ce = self.tree.xpath("//child[@id='%s']" % (xid))
+        ce = self.tree.xpath(u"//child[@id='%s']" % (xid))
         nc  = ce[0].getchildren()
 
         #
@@ -247,73 +246,73 @@ class ArchiLib(object):
         # for each RelationShip, find the Source and Target
         #
         for y in nc:
-            if y.tag == "child":
-                logger.debug("%d.%s" % (n, y.tag))
-                yc, yname = self.getElementName(y.get("archimateElement"))
+            if y.tag == u"child":
+                logger.debug(u"%d.%s" % (n, y.tag))
+                yc, yname = self.getElementName(y.get(u"archimateElement"))
                 d = concepts.addConceptKeyType(yname, yc.get(ARCHI_TYPE)[10:])
                 self.recurseChildren(d, y)
 
-            if y.tag == "sourceConnection":
-                logger.debug("skip - %s" % y.tag)
+            if y.tag == u"sourceConnection":
+                logger.debug(u"skip - %s" % y.tag)
 
-                yid = y.get("id")
+                yid = y.get(u"id")
                 yi = y.items()
 
-                sid = y.get("source")
+                sid = y.get(u"source")
                 s, sname = self.getChildName(sid)
 
-                tid = y.get("target")
+                tid = y.get(u"target")
                 t, tname = self.getChildName(tid)
 
-                relid = y.get("relationship")
+                relid = y.get(u"relationship")
                 rel, rname = self.getElementName(relid)
 
-                if rname == None:
-                    rname = "Target"
+                if rname is None:
+                    rname = u"Target"
 
                 d = concepts.addConceptKeyType(rname, rel.get(ARCHI_TYPE)[10:])
                 e = d.addConceptKeyType(tname, t.get(ARCHI_TYPE)[10:])
 
-                logger.debug("    %s" % yi)
-                logger.debug("%s,%s,%s,%s,%s,%s\n" % (sname, s.get(ARCHI_TYPE), rel.get(ARCHI_TYPE), rname, tname, t.get(ARCHI_TYPE)))
+                logger.debug(u"    %s" % yi)
+                logger.debug(u"%s,%s,%s,%s,%s,%s\n" % (sname, s.get(ARCHI_TYPE), rel.get(ARCHI_TYPE), rname, tname, t.get(ARCHI_TYPE)))
 
-            #recurseElement(t, e, tree)
+            # recurseElement(t, e, tree)
 
     def recurseModel(self, ModelToExport, concepts):
         #
         # Find DiagramModel Element to Export
         #
-        xp = "//element[@name='%s']" % (ModelToExport)
-        logger.debug("XP : %s" % xp)
+        xp = u"//element[@name='%s']" % (ModelToExport)
+        logger.debug(u"XP : %s" % xp)
 
         se = self.tree.xpath(xp)
 
         nse = len(se)
-        logger.debug("num se : %d" % nse)
+        logger.debug(u"num se : %d" % nse)
         #
         # Iterate over the DiagramModel's DiagramObjects children
         #
         for m in se:
             if m.get(ARCHI_TYPE) == DIAGRAM_MODEL:
-                logger.debug("%s:%s:%s" % (m.get("name"), m.get(ARCHI_TYPE), m.tag))
+                logger.debug(u"%s:%s:%s" % (m.get(u"name"), m.get(ARCHI_TYPE), m.tag))
 
                 r = m.getchildren()
 
-                c = concepts.addConceptKeyType(m.get("name"), m.get(ARCHI_TYPE)[10:])
+                c = concepts.addConceptKeyType(m.get(u"name"), m.get(ARCHI_TYPE)[10:])
 
                 #
                 # for each DiagramObject, Find the ArchimateElement
                 #
                 for x in r:
 
-                    if x.get(ARCHI_TYPE) != "archimate:DiagramObject":
+                    if x.get(ARCHI_TYPE) is not u"archimate:DiagramObject":
                         continue
 
-                    xid = x.get("id")
+                    xid = x.get(u"id")
 
-                    xc, xname = self.getElementName(x.get("archimateElement"))
+                    xc, xname = self.getElementName(x.get(u"archimateElement"))
 
-                    logger.info("  %s[%s]" % (xname, x.get(ARCHI_TYPE)))
+                    logger.info(u"  %s[%s]" % (xname, x.get(ARCHI_TYPE)))
 
                     d = c.addConceptKeyType(xname, xc.get(ARCHI_TYPE)[10:])
 
@@ -324,18 +323,18 @@ class ArchiLib(object):
     #
     # Model functions via dictionaries
     #
-    def logTypeCounts(self, ListOnly = False):
+    def logTypeCounts(self, ListOnly=False):
         if not ListOnly:
-            logger.info("Type Counts")
+            logger.info(u"Type Counts")
 
         listCounts = self.dictCount.items()
 
         if not ListOnly:
             for x in sorted(listCounts, key=lambda c: abs(c[1]), reverse=True):
                 if x[1] > 1:
-                    logger.info("  %d - %s" % (x[1], x[0]))
+                    logger.info(u"  %d - %s" % (x[1], x[0]))
 
-            logger.info(" ")
+            logger.info(u" ")
 
         return listCounts
 
@@ -347,17 +346,17 @@ class ArchiLib(object):
 
     def parseAll(self):
         for x in self.tree.getroot():
-            logger.debug("Folder : %s" % x.get("name"))
-            self.getElementsFromFolder(x.get("name"))
+            logger.debug(u"Folder : %s" % x.get(u"name"))
+            self.getElementsFromFolder(x.get(u"name"))
 
     def getElementsFromFolder(self, folder):
 
-        se = self.tree.xpath("folder[@name='%s']" % (folder))
+        se = self.tree.xpath(u"folder[@name='%s']" % (folder))
 
-        if folder == "Views":
+        if folder == u"Views":
             return se[0]
 
-        if folder == "Relations":
+        if folder == u"Relations":
             for x in se:
                 self.getNode(x, self.dictEdges)
         else:
@@ -367,22 +366,22 @@ class ArchiLib(object):
         return se
 
     def getNode(self, el, d):
-        logger.debug("el.tag = %s" % (el.tag))
+        logger.debug(u"el.tag = %s" % (el.tag))
 
         attributes = el.attrib
 
          # Not every node will have a type
-        if el.tag in ("element", "child"):
+        if el.tag in (u"element", u"child"):
             self.countNodeType(attributes[ARCHI_TYPE])
 
         nl = dict()
         for atr in attributes:
             nl[atr] = attributes[atr]
-            logger.debug("%s = %s" % (atr, attributes[atr]))
+            logger.debug(u"%s = %s" % (atr, attributes[atr]))
 
-        if nl.has_key("id"):
-            d[nl["id"]] = nl
-            self.dictName[el.get("name")] = el.get("id")
+        if nl.has_key(u"id"):
+            d[nl[u"id"]] = nl
+            self.dictName[el.get(u"name")] = el.get(u"id")
 
         for elm in el:
             self.getNode(elm, d)
@@ -393,17 +392,17 @@ class ArchiLib(object):
         for x in self.dictNodes.values():
             xt = x.get(ARCHI_TYPE)
             if xt in type:
-                d[x.get("name")] = x
+                d[x.get(u"name")] = x
         return d
 
     def getNodeName(self, node):
-        name = " "
+        name = u" "
 
         try:
-            logger.debug("  Node : %s" % (self.dictNodes[node]["name"]))
-            name = self.dictNodes[node]["name"]
+            logger.debug(u"  Node : %s" % (self.dictNodes[node][u"name"]))
+            name = self.dictNodes[node][u"name"]
         except:
-            logger.debug("Node not Found")
+            logger.debug(u"Node not Found")
 
         return name
 
@@ -417,22 +416,22 @@ class ArchiLib(object):
 
         m += 1
 
-        xp = "//element[@source='%s']" % source
+        xp = u"//element[@source='%s']" % source
         stp = self.tree.xpath(xp)
 
         for x in stp:
-            logger.debug("Index %d:%d Depth" % (m, n))
+            logger.debug(u"Index %d:%d Depth" % (m, n))
 
-            sourceNE = x.get("source")
-            targetNE = x.get("target")
+            sourceNE = x.get(u"source")
+            targetNE = x.get(u"target")
 
             dns = x.get(ARCHI_TYPE)
 
             if  dns in searchType:
-                spaces = " " * n
+                spaces = u" " * n
                 nodeName = self.getNodeName(targetNE)
-                if nodeName != "NA":
-                    nn = "%s%s" % (spaces, nodeName)
+                if nodeName != u"NA":
+                    nn = u"%s%s" % (spaces, nodeName)
                     listNodes.append(nn)
 
                     ln = self.getEdgesForNode(targetNE, searchType, n, m)
@@ -443,7 +442,7 @@ class ArchiLib(object):
 
 
     def getModelsInFolder(self, folder):
-        xp = "//folder[@name='%s']" % (folder)
+        xp = u"//folder[@name='%s']" % (folder)
 
         se = self.tree.xpath(xp)
 
@@ -452,64 +451,64 @@ class ArchiLib(object):
         models = list()
 
         for x in modelList:
-            modelName = str(x.get("name"))
+            modelName = str(x.get(u"name"))
             models.append(modelName)
 
         return models
 
     def getFolders(self):
-        se = self.tree.xpath('//folder')
+        se = self.tree.xpath(u'//folder')
 
         l = list()
 
         for x in se:
-            l.append(x.get("name"))
-            logger.debug("%s" % (x.get("name")))
+            l.append(x.get(u"name"))
+            logger.debug(u"%s" % (x.get(u"name")))
 
         return l
 
     def getChildName(self, id):
 
-        xp = "//child[@id='%s']" % str(id)
+        xp = u"//child[@id='%s']" % str(id)
 
-        logger.debug("xp : %s" % xp)
+        logger.debug(u"xp : %s" % xp)
 
         se = self.tree.xpath(xp)
 
         if len(se) > 0:
-            ae = se[0].get("archimateElement")
+            ae = se[0].get(u"archimateElement")
             return self.getElementName(ae)
 
     def getElementName(self, id):
 
-        xp = "//element[@id='%s']" % str(id)
+        xp = u"//element[@id='%s']" % str(id)
 
-        logger.debug("xp : %s" % xp)
+        logger.debug(u"xp : %s" % xp)
 
         se = self.tree.xpath(xp)
 
         if len(se) > 0:
             element = se[0]
-            name = se[0].get("name")
-            if name == None:
+            name = se[0].get(u"name")
+            if name is None:
                 name = element.get(ARCHI_TYPE)[10:]
 
-            logger.debug("getElementName - %s:%s" % (element.get(ARCHI_TYPE), name))
+            logger.debug(u"getElementName - %s:%s" % (element.get(ARCHI_TYPE), name))
             return element, name
         else:
             return None, None
 
     def getNameID(self, value):
-        logger.info("    Search for : %s" % value)
+        logger.info(u"    Search for : %s" % value)
         if self.dictName.has_key(value):
             idd = self.dictName[value]
-            logger.debug("    Found! : %s" % idd)
+            logger.debug(u"    Found! : %s" % idd)
         else:
-            idd =  self._getID()
+            idd = self._getID()
             self.dictName[value] = idd
-            logger.debug(    "New I  : %s" % idd)
+            logger.debug(u"New I  : %s" % idd)
 
-        logger.debug("%s" % self.dictName)
+        logger.debug(u"%s" % self.dictName)
 
         return idd
 
@@ -519,13 +518,14 @@ class ArchiLib(object):
     def logTypeCounts(self):
         listCounts = list()
 
-        logger.info("Type Counts")
+        logger.info(u"Type Counts")
         listCounts = self.dictCount.items()
 
         for x in sorted(listCounts, key=lambda c: abs(c[1]), reverse=True):
             if x[1] > 1:
-                logger.info(" %d - %s" % (x[1], x[0]))
-        logger.info(" ")
+                logger.info(u" %d - %s" % (x[1], x[0]))
+
+        logger.info(u" ")
 
         return listCounts
 
@@ -536,55 +536,55 @@ class ArchiLib(object):
         idd = None
 
         try:
-            logger.debug("attrib: %s" % (attrib))
+            logger.debug(u"attrib: %s" % (attrib))
 
-            value = attrib["name"].rstrip(" ").lstrip(" ")
+            value = attrib[u"name"].rstrip(u" ").lstrip(u" ")
 
-            if value != attrib["name"]:
-                logger.debug("diff value .%s:%s." % (value, attrib["name"]))
+            if value != attrib[u"name"]:
+                logger.debug(u"diff value .%s:%s." % (value, attrib[u"name"]))
 
             if self.dictName.has_key(value):
                 idd = self.dictName[value]
-                attrib["id"] = idd
+                attrib[u"id"] = idd
 
-                logger.debug("inFound! : %s" % idd)
+                logger.debug(u"inFound! : %s" % idd)
             else:
-                idd =  self._getID()
+                idd = self._getID()
                 self.dictName[value] = idd
-                attrib["id"] = idd
+                attrib[u"id"] = idd
 
                 elm = etree.Element(tag, attrib, nsmap=NS_MAP)
 
-                xp = "//folder[@name='" + folder + "']"
+                xp = u"//folder[@name='" + folder + u"']"
                 txp = self.tree.xpath(xp)
                 txp[0].insert(0, elm)
-                logger.debug("inNew!   : %s" % idd)
+                logger.debug(u"uinNew!   : %s" % idd)
 
         except:
-            logger.warn("attrib: %s" % (attrib))
+            logger.warn(u"attrib: %s" % (attrib))
 
         return idd
 
     def insertRel(self, tag, folder, attrib):
 
-        logger.debug("attrib: %s" % (attrib))
+        logger.debug(u"attrib: %s" % (attrib))
 
-        value = "%s--%s" % (attrib["source"], attrib["target"])
+        value = u"%s--%s" % (attrib[u"source"], attrib[u"target"])
 
         if self.dictName.has_key(value):
             idd = self.dictName[value]
-            attrib["id"] = idd
+            attrib[u"id"] = idd
 
-            logger.debug("inFound! : %s" % idd)
+            logger.debug(u"inFound! : %s" % idd)
         else:
-            idd =  self._getID()
+            idd = self._getID()
             self.dictName[value] = idd
-            attrib["id"] = idd
+            attrib[u"id"] = idd
 
-            xp = "//folder[@name='" + folder + "']"
+            xp = u"//folder[@name='" + folder + u"']"
             elm = etree.Element(tag, attrib, nsmap=NS_MAP)
             self.tree.xpath(xp)[0].insert(0, elm)
-            logger.debug("inNew!   : %s" % idd)
+            logger.debug(u"inNew!   : %s" % idd)
 
         return idd
 
@@ -596,33 +596,33 @@ class ArchiLib(object):
 
         # To Do - stop duplicating properties
 
-        idd = properties["ID"]
+        idd = properties[u"ID"]
         node = self.findElementByID(idd)
 
         n = 0
         for key, value in properties.items():
-            if key != "ID"and node.get(key) == None:
+            if key != u"ID"and node.get(key) is None:
                 prop = dict()
-                prop["key"] = key
-                prop["value"] = value
-                elm = etree.Element("property", prop, nsmap=NS_MAP)
+                prop[u"key"] = key
+                prop[u"value"] = value
+                elm = etree.Element(u"property", prop, nsmap=NS_MAP)
                 node[0].insert(n, elm)
                 n += 1
 
     def insertNColumns(self, folder, subfolder, fileMetaEntity):
 
-        file = open(fileMetaEntity, "rU")
+        file = open(fileMetaEntity, u"rU")
         reader = csv.reader(file)
 
-        xp = "folder[@name='" + folder + "']"
-        tag = "element"
+        xp = u"folder[@name='" + folder + u"']"
+        tag = u"element"
 
         # <folder name="Process" id="e23b1e50">
 
         attrib = dict()
-        attrib["id"] = self._getID()
-        attrib["name"] = subfolder
-        self.insertNode("folder", folder, attrib)
+        attrib[u"id"] = self._getID()
+        attrib[u"name"] = subfolder
+        self.insertNode(u"folder", folder, attrib)
 
         folder = subfolder
 
@@ -641,31 +641,31 @@ class ArchiLib(object):
             if rownum == 0:
                 rownum += 1
                 for col in row:
-                    if col[:8] == "Property":
+                    if col[:8] == u"Property":
                         colType = col
                         listColumnHeaders.append(colType)
                     else:
-                        colType = "archimate:%s" % col
+                        colType = u"archimate:%s" % col
                         listColumnHeaders.append(colType)
                 continue
 
-            logger.info("----------------------------------------------------------------------------------------")
-            logger.debug("rownum : %d" % rownum)
-            logger.debug("row    : %s" % row)
+            logger.info(u"----------------------------------------------------------------------------------------")
+            logger.debugu(u"rownum : %d" % rownum)
+            logger.debug(u"row    : %s" % row)
 
             p = None
             colnum = 0
 
             for col in row:
-                logger.info("    %d   [%s] %s" % (colnum, listColumnHeaders[colnum], col))
+                logger.info(u"    %d   [%s] %s" % (colnum, listColumnHeaders[colnum], col))
 
-                CM = self._cleanString(col.decode(encoding='ASCII',errors='ignore').lstrip())
+                CM = unicode(col).lstrip()
 
-                if listColumnHeaders[colnum][:8] == "Property":
-                    logger.debug("Properties : %s - %s" % (listColumnHeaders[colnum][9:], CM))
+                if listColumnHeaders[colnum][:8] == u"Property":
+                    logger.debug(u"Properties : %s - %s" % (listColumnHeaders[colnum][9:], CM))
 
-                    if not properties.has_key("ID"):
-                        properties["ID"] = p
+                    if u"ID" not in properties:
+                        properties[u"ID"] = p
 
                     properties[listColumnHeaders[colnum][9:]] = CM
 
@@ -673,7 +673,7 @@ class ArchiLib(object):
                     continue
 
                 if len(properties) > 0:
-                    logger.debug("Add %d Properties" % (len(properties)))
+                    logger.debug(u"Add %d Properties" % (len(properties)))
                     self.addProperties(properties)
                     properties = dict()
 
@@ -681,28 +681,28 @@ class ArchiLib(object):
                 # This is for a cvs which assumes value in column
                 # from a previous column
                 #
-                if CM == "" or CM == None:
-                    logger.debug("Using %d[%s]" % (colnum, previous[colnum]))
+                if CM == u"" or CM is None:
+                    logger.debug(u"Using %d[%s]" % (colnum, previous[colnum]))
                     CM = previous[colnum]
                 else:
                     previous[colnum] = CM
-                    logger.debug("CM  %d[%s]" % (colnum, CM))
+                    logger.debug(u"CM  %d[%s]" % (colnum, CM))
 
                 #
                 # Create the attributes
                 #
                 attrib = dict()
-                attrib["name"] = CM
+                attrib[u"name"] = CM
                 attrib[ARCHI_TYPE] = listColumnHeaders[colnum]
                 self.insertNode(tag, folder, attrib)
-                CM_ID = attrib["id"]
+                CM_ID = attrib[u"id"]
 
-                if p != None:
+                if p is not None:
                     attrib = dict()
-                    attrib["source"] = CM_ID
-                    attrib["target"] = p
-                    attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-                    self.insertRel(tag, "Relations", attrib)
+                    attrib[u"source"] = CM_ID
+                    attrib[u"target"] = p
+                    attrib[ARCHI_TYPE] = u"archimate:AssociationRelationship"
+                    self.insertRel(tag, u"Relations", attrib)
 
                     p = CM_ID
                 else:
@@ -711,88 +711,87 @@ class ArchiLib(object):
                 colnum += 1
 
         if len(properties) > 0:
-            logger.info("Add %d Properties" % (len(properties)))
+            logger.info(u"Add %d Properties" % (len(properties)))
             self.addProperties(properties)
             properties = dict()
-
 
     def insertConcepts(self, tree, concepts, n=0):
 
         for x in concepts.getConcepts().values():
-            logger.info("x : %s" % x.name)
+            logger.info(u"x : %s" % x.name)
             for y in x.getConcepts().values():
-                logger.info("  y : %s" % y.name)
+                logger.info(u"  y : %s" % y.name)
                 attrib = dict()
-                attrib["name"] = x.name
-                attrib[ARCHI_TYPE] = "archimate:WorkPackage"
-                self.insertNode("element", "Implementation & Migration", attrib)
-                wp1 = attrib["id"]
+                attrib[u"name"] = x.name
+                attrib[ARCHI_TYPE] = u"archimate:WorkPackage"
+                self.insertNode(u"element", u"Implementation & Migration", attrib)
+                wp1 = attrib[u"id"]
 
                 attrib = dict()
-                attrib["name"] = y.name
-                attrib[ARCHI_TYPE] = "archimate:BusinessProcess"
-                self.insertNode("element", "Process", attrib)
-                wp2 = attrib["id"]
+                attrib[u"name"] = y.name
+                attrib[ARCHI_TYPE] = u"archimate:BusinessProcess"
+                self.insertNode(u"element", u"Process", attrib)
+                wp2 = attrib[u"id"]
 
                 attrib = dict()
-                attrib["source"] = wp1
-                attrib["target"] = wp2
-                attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-                self.insertRel("element", "Relations", attrib)
-
+                attrib[u"source"] = wp1
+                attrib[u"target"] = wp2
+                attrib[ARCHI_TYPE] = u"archimate:AssociationRelationship"
+                self.insertRel(u"element", u"Relations", attrib)
 
     #
     # These functions interact with nl_lib
     #
 
     def folderConcepts(self, concepts):
-        r = self.tree.xpath('folder')
+        r = self.tree.xpath(u'folder')
 
         for x in r:
 
-            folder = str(x.get("name")).strip()
+            folder = str(x.get(u"name")).strip()
 
-            logger.debug("folder : %s" % (folder))
+            logger.debug(u"folder : %s" % (folder))
 
-            se = self.tree.xpath("folder[@name='%s']" % (folder))
+            se = self.tree.xpath(u"folder[@name='%s']" % (folder))
 
             for element in se:
                 self.createConcepts(concepts, element)
 
-        #concepts.logConcepts()
+        # concepts.logConcepts()
+
 
     def conceptAttributes(self, c, el, n):
-        n = n + 1
+        n += 1
         spaces = " " * n
 
         attrib = el.attrib
 
-        d = c.addConceptKeyType("Attributes", "Attribute")
+        d = c.addConceptKeyType(u"Attributes", u"Attribute")
 
         attributes = el.attrib
         for atr in attributes.keys():
-            logger.info("%sAttributes[%s]=%s" % (spaces, atr, attributes[atr] ))
+            logger.info(u"%sAttributes[%s]=%s" % (spaces, atr, attributes[atr]))
             d.addConceptKeyType(atr, attributes[atr])
 
-        if el.tag == 'Documentation':
-            d.addConceptKeyType(el.text, "Text")
+        if el.tag == u'Documentation':
+            d.addConceptKeyType(el.text, u"Text")
 
     def createConcepts(self, concept, el, i=10, n=1):
         if i == 0:
             return
 
-        spaces = " " * n
-        i = i - 1
+        spaces = u" " * n
+        i -= 1
 
-        id = el.get("id")
+        id = el.get(u"id")
         tag = el.tag
 
-        if id != None:
+        if id is not None:
             c = concept.addConceptKeyType(id, tag)
         else:
             c = concept.addConceptKeyType(tag, tag)
 
-        logger.info("%s%s[%s]" % (spaces, c.name, c.typeName))
+        logger.info(u"%s%s[%s]" % (spaces, c.name, c.typeName))
 
         self.conceptAttributes(c, el, n+1)
 
@@ -802,8 +801,8 @@ class ArchiLib(object):
     def createArchimate(self, fileArchiModel, fileArchiP):
         archi = Concepts.loadConcepts(fileArchiP)
 
-        rootName = etree.QName(ARCHIMATE_NS, 'model')
-        root = etree.Element(rootName, version="2.6.0", name=fileArchiP ,id="02cec69f", nsmap=NS_MAP)
+        rootName = etree.QName(ARCHIMATE_NS, u'model')
+        root = etree.Element(rootName, version=u"2.6.0", name=fileArchiP, id=u"02cec69f", nsmap=NS_MAP)
         xmlSheet = etree.ElementTree(root)
 
         self.createArchimateElements(xmlSheet, archi, root)
@@ -811,9 +810,9 @@ class ArchiLib(object):
         output = StringIO.StringIO()
         xmlSheet.write(output, pretty_print=True)
 
-        logger.info("%s" % (output.getvalue()))
+        logger.info(u"%s" % (output.getvalue()))
 
-        f = open(fileArchiModel,'w')
+        f = open(fileArchiModel, u'w')
         f.write(output.getvalue())
         f.close()
 
@@ -821,23 +820,23 @@ class ArchiLib(object):
 
     def createArchimateElements(self, xmlSheet, archi, root, n=1):
 
-        spaces = " " * n
+        spaces = u" " * n
 
         cd = archi.getConcepts().values()
 
         for x in cd:
-            logger.debug("%s%s:%s" % (spaces, x.typeName, x.name))
+            logger.debug(u"%s%s:%s" % (spaces, x.typeName, x.name))
 
-            if x.typeName != "Attribute":
+            if x.typeName != u"Attribute":
 
                 tag = x.typeName
                 id = x.name
-                attrib = x.getConcepts()["Attributes"]
+                attrib = x.getConcepts()[u"Attributes"]
 
                 ad = dict()
                 for y in attrib.getConcepts().values():
                     for z in attrib.getConcepts().values():
-                        ad[z.name]  = z.typeName
+                        ad[z.name] = z.typeName
 
                 element = etree.SubElement(root, tag, ad)
 
@@ -846,27 +845,27 @@ class ArchiLib(object):
 
 
     def _checkDuplicate(self, dmID, x):
-        xp = "//element[@id='" + dmID + "']"
+        xp = u"//element[@id='" + dmID + u"']"
         dm = self.tree.xpath(xp)[0]
 
         dml = dm.getchildren()
 
         Duplicate = False
         for xdml in dml:
-            logger.info("%s" % (xdml.get("name")))
-            xdml_name = xdml.get("name")
+            logger.info(u"%s" % (xdml.get(u"name")))
+            xdml_name = xdml.get(u"name")
             if xdml_name == x.name:
-                logger.debug("%s Duplicate!" % xdml.get("id"))
-                return xdml.get("id")
+                logger.debug(u"%s Duplicate!" % xdml.get(u"id"))
+                return xdml.get(u"id")
 
-        logger.debug("dml[%d]" % (len(dml)))
+        logger.debug(u"dml[%d]" % (len(dml)))
 
         return None
 
     def _getID(self):
         r = str(hex(random.randint(0, 16777215)))[-6:] + str(hex(random.randint(0, 16777215))[-2:])
 
-        if r[0] == "x":
+        if r[0] == u"x":
             return self.getID()
         return r
 
@@ -874,14 +873,14 @@ class ArchiLib(object):
         return self._getID()
 
     def _cleanString(self, s):
-        r = ""
+        r = u""
         if s == None:
             return r
 
-        for x in s.lstrip(" "):
-            if x.isalnum() or x in (" ", "-", "."):
+        for x in s.lstrip(u" "):
+            if x.isalnum() or x in (u" ", u"-", u"."):
                 r = r + x
-        return r.lstrip(" ").rstrip(" ")
+        return r.lstrip(u" ").rstrip(u" ")
 
     def cleanString(self, s):
         return  self._cleanString(s)
@@ -893,36 +892,36 @@ class ArchiLib(object):
         if s == None:
             return None
 
-        v = s.replace(":"," ")
-        v = v.replace("|"," ")
-        v = v.replace(" "," ")
-        v = v.replace("_"," ")
-        v = v.replace("-"," ")
-        v = v.replace("/"," ")
+        v = s.replace(u":", u" ")
+        v = v.replace(u"|", u" ")
+        v = v.replace(u" ", u" ")
+        v = v.replace(u"_", u" ")
+        v = v.replace(u"-", u" ")
+        v = v.replace(u"/", u" ")
 
         n = 0
         for x in v:
             if x == x.upper() and n != 0:
-                r = r + " " + x
+                r = r + u" " + x
             else:
                 r =r + x
 
             n += 1
 
-        logger.debug("cleanCapital : %s" % r)
+        logger.debug(u"cleanCapital : %s" % r)
         return r
 
     def addToNodeDict(self, type, d):
-        if d.has_key(type):
+        if type in d:
             d[type] += 1
         else:
             d[type] = 1
 
     def cleanConcept(self, concept):
-        if concept.typeName[:10] == "archimate:" :
+        if concept.typeName[:10] == u"archimate:" :
             concept.typeName = concept.typeName[10:]
 
-        concept.name = concept.name.replace("\"", "'")
+        concept.name = concept.name.replace(u"\"", u"'")
 
         return concept
 
@@ -932,7 +931,7 @@ class ArchiLib(object):
         t0 = time.clock()
         start_time = time.time()
         strStartTime = time.asctime(time.localtime(start_time))
-        logger.info("Start time : %s" % strStartTime)
+        logger.info(u"Start time : %s" % strStartTime)
 
         return start_time
 
@@ -940,23 +939,23 @@ class ArchiLib(object):
     def stopTimer(start_time):
         #measure wall time
         strStartTime = time.asctime(time.localtime(start_time))
-        logger.info("Start time : %s" % strStartTime)
+        logger.info(u"Start time : %s" % strStartTime)
 
         end_time = time.time()
 
         strEndTime = time.asctime(time.localtime(end_time))
-        logger.info("End   time : %s" % strEndTime)
+        logger.info(u"End   time : %s" % strEndTime)
 
         # measure process time
         timeTaken = end_time - start_time
 
-        minutes = timeTaken / 60
+        minutes = timeTaken % 60
         hours = minutes / 60
         seconds = timeTaken - (minutes * 60.0)
-        logger.info("Process Time = %4.2f seconds, %d Minute(s), %d hours" % (timeTaken, minutes, hours))
+        logger.info(u"Process Time = %4.2f seconds, %d Minute(s), %d hours" % (timeTaken, minutes, hours))
 
-if __name__ == "__main__":
-    fileArchimate = "test" + os.sep + "Testing.archimate"
+if __name__ == u"__main__":
+    fileArchimate = u"test" + os.sep + u"Testing.archimate"
 
     al = ArchiLib()
 

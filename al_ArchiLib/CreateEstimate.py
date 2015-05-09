@@ -2,8 +2,8 @@
 #
 # Estimate Scope_Items Export
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.1'
+__author__ = u'morrj140'
+__VERSION__ = u'0.1'
 
 import datetime
 import time
@@ -34,19 +34,19 @@ class CreateEstimate(object):
         self.nj = Neo4JLib(gdb)
 
     def query(self):
-        qs = "MATCH "
-        qs = qs +    "(n0:ApplicationFunction)-- (r0)"
-        qs = qs + "-- (n1:ApplicationComponent)--(r1)"
-        qs = qs + "-- (n2:ApplicationService)--  (r2)"
-        qs = qs + "-- (n3:BusinessProcess)--     (r3)"
-        qs = qs + "-- (n4:BusinessObject) "
-        qs = qs + "Return n0, r0, n1, r1, n2, r2, n3, r3, n4, n4.PageRank, n4.RequirementCount, n4.Degree"
+        qs = u"MATCH "
+        qs = qs +    u"(n0:ApplicationFunction)-- (r0)"
+        qs = qs + u"-- (n1:ApplicationComponent)--(r1)"
+        qs = qs + u"-- (n2:ApplicationService)--  (r2)"
+        qs = qs + u"-- (n3:BusinessProcess)--     (r3)"
+        qs = qs + u"-- (n4:BusinessObject) "
+        qs = qs + u"Return n0, r0, n1, r1, n2, r2, n3, r3, n4, n4.PageRank, n4.RequirementCount, n4.Degree"
 
         self.lq, self.qd = self.nj.cypherQuery(qs)
 
         self.queryExportExcel(self.lq)
 
-        logger.info("%d rows returned" % len(self.lq))
+        logger.info(u"%d rows returned" % len(self.lq))
 
     def exportExcel(self):
 
@@ -54,36 +54,36 @@ class CreateEstimate(object):
 
         wb = load_workbook(filename = self.fileExcelIn)
 
-        wsTitle = "Import Items" + time.strftime("%Y%d%m_%H%M%S")
+        wsTitle = u"Import Items" + time.strftime(u"%Y%d%m_%H%M%S")
 
         ws = wb.create_sheet()
         ws.title = wsTitle
 
-        logger.info("Created Worksheet %s" % wsTitle)
+        logger.info(u"Created Worksheet %s" % wsTitle)
 
         n = 0
         for x in self.lq:
             n += 1
 
-            logger.debug("x in lq : %s" % x)
+            logger.debug(u"x in lq : %s" % x)
 
             m = 0
             for y in x:
                 m += 1
 
                 col = get_column_letter(m)
-                logger.debug("col : %s" % col)
+                logger.debug(u"col : %s" % col)
 
-                logger.debug("y : %s" % y)
+                logger.debug(u"y : %s" % y)
 
-                rs = "%s%s" % (col, n)
-                logger.debug("%s : %s" % (rs, y))
+                rs = u"%s%s" % (col, n)
+                logger.debug(u"%s : %s" % (rs, y))
 
-                ws.cell(rs).value = ("%s" % (y))
+                ws.cell(rs).value = (u"%s" % (y))
 
-        wb.save(filename = fileExcelOut)
+        wb.save(filename=fileExcelOut)
 
-        logger.info("Saved file : %s" % fileExcelOut)
+        logger.info(u"Saved file : %s" % fileExcelOut)
 
 def CreateEstimate():
     start_time = ArchiLib.startTimer()
@@ -94,5 +94,5 @@ def CreateEstimate():
 
     ArchiLib.stopTimer(start_time)
 
-if __name__ == "__main__":
+if __name__ == u"__main__":
     CreateEstimate()

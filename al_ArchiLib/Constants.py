@@ -2,99 +2,118 @@
 #
 # Archimate Libray Constants
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.1'
+__author__ = u'morrj140'
+__VERSION__ = u'0.1'
 
 import os
 import time
-#
-# Archimate XML
-#
-NS_MAP={'xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'archimate': 'http://www.archimatetool.com/archimate'}
-XML_NS         =  NS_MAP["xsi"]
-ARCHIMATE_NS   =  NS_MAP["archimate"]
-ARCHI_TYPE = "{%s}type" % NS_MAP["xsi"]
-
-#
-# Test Archimate File
-#
-dirTest = os.getcwd() + os.sep + "test" + os.sep
-fileArchimateTest = dirTest + "Testing.archimate"
-
-#
-# IP of Neo4J Graph
-#
-LocalGBD  = "http://localhost:7474/db/data/"
-RemoteGDB = "http://10.92.82.60:7574/db/data/"
-gdb = LocalGBD
-gdbTest = LocalGBD
 
 #
 # Script to reset Neo4J
 #
-resetNeo4J = "/Users/morrj140/Development/neo4j-community-2.1.2/bin/reset.sh"
+#resetNeo4J = u"/Users/morrj140/Development/neo4j/bin/reset.sh"
+resetNeo4J = u"/home/james.morris/bin/reset.sh"
+
+#
+# IP of Neo4J Graph
+#
+LocalGBD  = u"http://localhost:7474/db/data/"
+RemoteGDB = u"http://10.92.82.60:7574/db/data/"
+gdb = LocalGBD
+gdbTest = LocalGBD
+
+#
+# Archimate XML
+#
+NS_MAP={u'xsi': u'http://www.w3.org/2001/XMLSchema-instance', u'archimate': u'http://www.archimatetool.com/archimate'}
+XML_NS         =  NS_MAP[u"xsi"]
+ARCHIMATE_NS   =  NS_MAP[u"archimate"]
+ARCHI_TYPE = u"{%s}type" % NS_MAP[u"xsi"]
+
+#
+# Directory for Archimate File
+#
+dirTest = os.getcwd() + os.sep + u"test" + os.sep
+dirRun = os.getcwd() + os.sep
+directory = dirTest
+
+
+fileArchimateTest   = dirTest + u"Testing.archimate"
+fileArchimateModel  = directory + u'archi.archimate'
+fileArchimateImport = directory + u"import_artifacts.archimate"
 
 #
 # Concept Files Used
 #
-fileConceptsArch           = dirTest + "archi.p"
-fileConceptsPPTX           = dirTest + "pptx.p"
-fileConceptsExport         = dirTest + "export.p"
-fileConceptsBatches        = dirTest + "batches.p"
-fileConceptsTraversal      = dirTest + "traversal.p"
-fileConceptsEstimation     = dirTest + "Estimation.p"
-fileConceptsRequirements   = dirTest + "req.p"
-fileConceptsRelations      = dirTest + "rel.p"
-fileConceptsDocuments      = dirTest + "documents.p"
-fileConceptsChunks         = dirTest + "chunks.p"
-fileConceptsNodes          = dirTest + "nodes.p"
-fileConceptsNGramsSubject  = dirTest + "ngramsubject.p"
+fileConceptsArch           = directory + u"archi.p"
+fileConceptsPPTX           = directory + u"pptx.p"
+fileConceptsExport         = directory + u"export.p"
+fileConceptsImport         = directory + u"export.p"
+fileConceptsBatches        = directory + u"batches.p"
+fileConceptsTraversal      = directory + u"traversal.p"
+fileConceptsEstimation     = directory + u"Estimation.p"
+fileConceptsRequirements   = directory + u"reqs.p"
+fileConceptsDeDups         = directory + u"dedups.p"
+fileConceptsRelations      = directory + u"rel.p"
+fileConceptsDocuments      = directory + u"documents.p"
+fileConceptsChunks         = directory + u"chunks.p"
+fileConceptsNodes          = directory + u"nodes.p"
+fileConceptsNGramsSubject  = directory + u"ngramsubject.p"
+fileConceptsNGramFile      = directory + u"ngrams.p"
+fileConceptsNGramScoreFile = directory + u"ngramscore.p"
 
 #
 # Common Filenames
 #
 
-filePPTXIn    = dirTest + "test_in.pptx"
-filePPTXOut   = dirTest + "test_out.pptx"
+filePPTXIn    = directory + u"test_in.pptx"
+filePPTXOut   = directory + u"test_out.pptx"
 
-fileExcelIn  = dirTest + 'Template_Estimate.xlsx'
-fileExcelOut = dirTest + 'Template_Estimate_new.xlsx'
+fileExcelIn  = directory + u'Template_Estimate.xlsx'
+fileExcelOut = directory + u'Template_Estimate_new.xlsx'
 
-fileCSVExport = dirTest + "export.csv"
-fileCSVExportTime = dirTest + "export" + time.strftime("%Y%d%m_%H%M%S") +".csv"
+fileCSVExport = directory + u"export.csv"
+fileCSVExportTime = directory + u"export" + time.strftime(u"%Y%d%m_%H%M%S") + u".csv"
 
-fileReportExport     = dirTest + "report.csv"
-fileReportExportTime = dirTest + "report" + time.strftime("%Y%d%m_%H%M%S") +".csv"
+fileReportExport     = directory + u"report.csv"
+fileReportExportTime = directory + u"report" + time.strftime(u"%Y%d%m_%H%M%S") + u".csv"
 
-fileCSVQueryExport      = dirTest + "ExportQuery.csv"
-fileCSVQueryExportTime  = dirTest + "ExportQuery" + time.strftime("%Y%d%m_%H%M%S") +".csv"
+fileCSVQueryExport      = directory + u"ExportQuery.csv"
+fileCSVQueryExportTime  = directory + u"ExportQuery" + time.strftime(u"%Y%d%m_%H%M%S") + u".csv"
 
-fileImageExport      = dirTest + "export.png"
-fileImageExportTime  = dirTest + "export" + time.strftime("%Y%d%m_%H%M%S") +".png"
+fileImageExport      = directory + u"export.png"
+fileImageExportTime  = directory + u"export" + time.strftime(u"%Y%d%m_%H%M%S") + u".png"
 
 #
 # Archimate Edges
 #
-relations = {"TriggeringRelationship" : "archimate:TriggeringRelationship",
-                    "UsedByRelationship" : "archimate:UsedByRelationship",
-                    "AccessRelationship" : "archimate:AccessRelationship",
-                    "FlowRelationship" : "archimate:FlowRelationship",
-                    "AssignmentRelationship" : "archimate:AssignmentRelationship",
-                    "AssociationRelationship" : "archimate:AssociationRelationship",
-                    "RealisationRelationship" : "archimate:RealisationRelationship",
-                    "CompositionRelationship" : "archimate:CompositionRelationship"}
+relations = {u"TriggeringRelationship" : u"archimate:TriggeringRelationship",
+                    u"UsedByRelationship" : u"archimate:UsedByRelationship",
+                    u"AccessRelationship" : u"archimate:AccessRelationship",
+                    u"FlowRelationship" : u"archimate:FlowRelationship",
+                    u"AssignmentRelationship" : u"archimate:AssignmentRelationship",
+                    u"AssociationRelationship" : u"archimate:AssociationRelationship",
+                    u"RealisationRelationship" : u"archimate:RealisationRelationship",
+                    u"CompositionRelationship" : u"archimate:CompositionRelationship",
+                    u"AssignmentRelationship" : u"archimate:AssignmentRelationship",
+                    u"AggregationRelationship": u"archimate:AggregationRelationship",
+                    u"SpecialisationRelationship" : u"archimate:SpecialisationRelationship"}
 
 #
 # Archimate Nodes
 #
-entities = {"BusinessEvent" : "archimate:BusinessEvent",
-            "BusinessObject" : "archimate:BusinessObject",
-            "BusinessProcess" : "archimate:BusinessProcess",
-            "ApplicationService" : "archimate:ApplicationService",
-            "ApplicationComponent" : "archimate:ApplicationComponent",
-            "DataObject" : "archimate:DataObject",
-            "Requirement" : "archimate:Requirement",
-            "Stakeholder" : "archimate:Stakeholder",
-            "WorkPackage"  : "archimate:WorkPackage"}
+entities = {u"BusinessEvent" : u"archimate:BusinessEvent",
+            u"BusinessObject" : u"archimate:BusinessObject",
+            u"BusinessProcess" : u"archimate:BusinessProcess",
+            u"ApplicationService" : u"archimate:ApplicationService",
+            u"ApplicationComponent" : u"archimate:ApplicationComponent",
+            u"ApplicationFunction" : u"archimate:ApplicationFunction",
+            u"DataObject" : u"archimate:DataObject",
+            u"Requirement" : u"archimate:Requirement",
+            u"Stakeholder" : u"archimate:Stakeholder",
+            u"WorkPackage"  : u"archimate:WorkPackage"}
 
-DIAGRAM_MODEL = "archimate:ArchimateDiagramModel"
+folders = {u"Business", u"Application", u"Technology", u"Motivation", u"Implementation & Migration", u"Connectors", u"Relations" }
+
+DIAGRAM_MODEL = u"archimate:ArchimateDiagramModel"
+DIAGRAM_OBJECT = u"archimate:DiagramObject"

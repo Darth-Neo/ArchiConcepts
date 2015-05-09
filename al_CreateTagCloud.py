@@ -9,7 +9,7 @@ from al_ArchiLib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
-from nl_lib.Constants import *
+
 from nl_lib.Concepts import Concepts
 from nl_lib.TopicCloud import TopicCloud
 
@@ -32,30 +32,30 @@ def createTagCloud(conceptFile, topic):
 if __name__ == u"__main__":
     logger.debug(u"CWD : %s" % os.getcwd())
 
-    #conceptFile = "TopicChunks.p"
-    #topic = "Chunk"
+    # conceptFile = "TopicChunks.p"
+    # topic = "Chunk"
 
-    #conceptFile = u"topicsDict.p"
-    #topic = u"Topic"
+    # conceptFile = u"topicsDict.p"
+    # topic = u"Topic"
 
-    #conceptFile = "archi.p"
-    #topic="name"
+    # conceptFile = "archi.p"
+    # topic="name"
 
-    #conceptFile = "ngramsubject.p"
-    #topic="NGRAM"
+    # conceptFile = "ngramsubject.p"
+    # topic="NGRAM"
 
     conceptFile = u"reqs.p"
     topic = u"Word"
 
     conceptFile = u"chunks.p"
     topic = u"Lemma"
-    #topic = "SBJ"
-    #topic = "OBJ"
-    #topic = "VP"
-    #topic = "NN"
-    #topic = "NNP"
+    # topic = "SBJ"
+    # topic = "OBJ"
+    # topic = "VP"
+    # topic = "NN"
+    # topic = "NNP"
 
-    #conceptFile = "ngrams.p"
-    #topic = "NGRAM"
+    # conceptFile = "ngrams.p"
+    # topic = "NGRAM"
 
     createTagCloud(conceptFile, topic)

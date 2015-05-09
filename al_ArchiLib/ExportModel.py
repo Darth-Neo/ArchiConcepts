@@ -1,10 +1,9 @@
-
 #!/usr/bin/python
 #
 # Archimate to export a model
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.1'
+__author__ = u'morrj140'
+__VERSION__= u'0.1'
 
 import sys
 import os
@@ -21,7 +20,6 @@ from nl_lib.Concepts import Concepts
 from Constants import *
 from ArchiLib import ArchiLib
 
-import pytest
 
 class ExportArchiModel(object):
     fileArchimate = None
@@ -37,8 +35,8 @@ class ExportArchiModel(object):
 
     def exportArchiModel(self, listMTE):
 
-        logger.info("Using : %s" % self.fileArchimate)
-        concepts = Concepts("Export", "Model")
+        logger.info(u"Using : %s" % self.fileArchimate)
+        concepts = Concepts(u"Export", u"Model")
 
         for ModelToExport in listMTE:
             self.al.recurseModel(ModelToExport, concepts)
@@ -57,11 +55,11 @@ def text_ExportModel():
 
     listMTE = list()
 
-    listMTE.append("To-Be DAM Functional Reference Architecture")
+    listMTE.append(u"To-Be DAM Functional Reference Architecture")
 
     eam.exportArchiModel(listMTE)
 
     ArchiLib.stopTimer(start_time)
 
-if __name__ == "__main__":
+if __name__ == u"__main__":
     text_ExportModel()

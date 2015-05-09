@@ -11,10 +11,9 @@ logger.setLevel(INFO)
 
 from nl_lib.Concepts import Concepts
 
+from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.ConceptsImportNeo4J import ConceptsImportNeo4J
-
-from al_Constants import *
 
 
 def importConceptsIntoNeo4J(fileArchimate, gdb, ClearNeo4J=True):
@@ -25,7 +24,7 @@ def importConceptsIntoNeo4J(fileArchimate, gdb, ClearNeo4J=True):
 
     icnj.importNeo4J(importConcepts)
 
-if __name__ == "__main__":
+if __name__ == u"__main__":
     start_time = ArchiLib.startTimer()
 
     importConceptsIntoNeo4J(fileArchimateTest, gdbTest, ClearNeo4J=True)

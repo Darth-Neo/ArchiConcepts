@@ -38,16 +38,16 @@ class ConceptsImportArchi(object):
         self.al = ArchiLib(self.fileArchimate)
 
     def insertConceptRelation(self, concepts, n=0):
-        tag = "element"
+        tag = u"element"
 
         n += 1
-        spaces = " " * n
+        spaces = u" " * n
 
-        logger.info("%sParent:%s" % (spaces, concepts.name))
+        logger.info(u"%sParent:%s" % (spaces, concepts.name))
 
         for concept in concepts.getConcepts().values():
 
-            logger.info("%sChild:%s" % (spaces, concepts.name))
+            logger.info(u"%sChild:%s" % (spaces, concepts.name))
 
             if not self.dictConcepts.has_key(concepts.name):
                 continue
@@ -57,58 +57,58 @@ class ConceptsImportArchi(object):
             sourceID = self.dictConcepts[concepts.name]
             targetID = self.dictConcepts[concept.name]
 
-            logger.info("%s%s[%s]->%s[%s]" % (spaces, concepts.name, sourceID, concept.name, targetID))
+            logger.info(u"%s%s[%s]->%s[%s]" % (spaces, concepts.name, sourceID, concept.name, targetID))
 
             attrib = dict()
-            attrib["source"] = sourceID
-            attrib["target"] = targetID
-            attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-            self.al.insertRel(tag, "Relations", attrib)
+            attrib[u"source"] = sourceID
+            attrib[u"target"] = targetID
+            attrib[ARCHI_TYPE] = u"archimate:AssociationRelationship"
+            self.al.insertRel(tag, u"Relations", attrib)
 
             self.insertConceptRelation(concept, n)
 
     def insertConceptNode(self, concepts, subfolder, n=0):
-        tag = "element"
+        tag = u"element"
         folder = subfolder
 
         if n == 0:
             attrib = dict()
-            attrib["name"] = concepts.name
+            attrib[u"name"] = concepts.name
             attrib[ARCHI_TYPE] = concepts.typeName
             self.al.insertNode(tag, folder, attrib)
-            C_ID = attrib["id"]
+            C_ID = attrib[u"id"]
 
             if not self.dictConcepts.has_key(concepts.name):
                 self.dictConcepts[concepts.name] = C_ID
 
         n += 1
-        spaces = " " * n
+        spaces = u" " * n
 
         for concept in concepts.getConcepts().values():
             attrib = dict()
-            attrib["name"] = concept.name
+            attrib[u"name"] = concept.name
             attrib[ARCHI_TYPE] = concept.typeName
             self.al.insertNode(tag, folder, attrib)
-            C_ID = attrib["id"]
+            C_ID = attrib[u"id"]
 
             if not self.dictConcepts.has_key(concept.name):
                 self.dictConcepts[concept.name] = C_ID
 
-            logger.info("%s%s[%s].id[%s]" % (spaces, concept.name, concept.typeName, C_ID))
+            logger.info(u"%s%s[%s].id[%s]" % (spaces, concept.name, concept.typeName, C_ID))
 
             self.insertConceptNode(concept, subfolder, n)
 
     def importConcepts(self, concepts, folder, subfolder):
 
         attrib = dict()
-        attrib["id"] = self.al.getID()
-        attrib["name"] = subfolder
-        self.al.insertNode("folder", folder, attrib)
+        attrib[u"id"] = self.al.getID()
+        attrib[u"name"] = subfolder
+        self.al.insertNode(u"folder", folder, attrib)
 
-        logger.info("--- Insert Nodes ---")
+        logger.info(u"--- Insert Nodes ---")
         self.insertConceptNode(concepts, subfolder)
 
-        logger.info("--- Insert Relations ---")
+        logger.info(u"--- Insert Relations ---")
         self.insertConceptRelation(concepts)
 
     def exportXML(self, fileArchimateImport):
@@ -120,17 +120,17 @@ def test_ConceptsImportArchi():
 
     start_time = ArchiLib.startTimer()
 
-    logger.info("Using : %s" % fileArchimateTest)
+    logger.info(u"Using : %s" % fileArchimateTest)
 
-    logger.info("Loading :" + fileConceptsExport)
+    logger.info(u"Loading :" + fileConceptsExport)
 
     ic = ConceptsImportArchi(fileArchimateTest, fileConceptsExport)
 
     concepts = Concepts.loadConcepts(fileConceptsExport)
 
     # Create Subfolder
-    folder = "Implementation & Migration"
-    subfolder = "Dependancy Analysis - %s" % time.strftime("%Y%d%m_%H%M%S")
+    folder = u"Implementation & Migration"
+    subfolder = u"Dependancy Analysis - %s" % time.strftime(u"%Y%d%m_%H%M%S")
 
     ic.importConcepts(concepts, folder, subfolder)
 
@@ -138,5 +138,5 @@ def test_ConceptsImportArchi():
 
     ArchiLib.stopTimer(start_time)
 
-if __name__ == "__main__":
+if __name__ == u"__main__":
     test_ConceptsImportArchi()

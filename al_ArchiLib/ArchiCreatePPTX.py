@@ -2,8 +2,8 @@
 #
 # Create PPTX from Archimate XML
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.1'
+__author__ = u'morrj140'
+__VERSION__ = u'0.1'
 
 import sys
 import os
@@ -34,11 +34,11 @@ class ArchiCreatePPTX(object):
     filePPTXOut = None
 
     def __init__(self, fileArchimate, filePPTXIn, filePPTXOut):
-        self.A_NS           =  "http://schemas.openxmlformats.org/drawingml/2006/main"
-        self.P_NS           =  "http://schemas.openxmlformats.org/presentationml/2006/main"
-        self.R_NS           =  "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+        self.A_NS           =  u"http://schemas.openxmlformats.org/drawingml/2006/main"
+        self.P_NS           =  u"http://schemas.openxmlformats.org/presentationml/2006/main"
+        self.R_NS           =  u"http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 
-        self.namespacesPPTX = {"p" : self.P_NS, "a" : self.A_NS, "r" : self.R_NS}
+        self.namespacesPPTX = {u"p" : self.P_NS, u"a" : self.A_NS, u"r" : self.R_NS}
 
         self.SLD_LAYOUT_TITLE_AND_CONTENT = 1
         self.TITLE_ONLY_SLIDE_LAYOUT = 5
@@ -51,16 +51,16 @@ class ArchiCreatePPTX(object):
         self.fileArchimate  = fileArchimate
 
         if os.path.isfile(self.fileArchimate) <> True:
-            logger.error("File does not exist : %s" % self.fileArchimate)
+            logger.error(u"File does not exist : %s" % self.fileArchimate)
 
-        etree.QName(ARCHIMATE_NS, 'model')
+        etree.QName(ARCHIMATE_NS, u'model')
         self.tree = etree.parse(self.fileArchimate)
 
         self.prs = Presentation()
 
     # Example of what the xml for a connector looks like
     def addXMLConnector(self, shape):
-        name = "Straight Arrow Connector 43"
+        name = u"Straight Arrow Connector 43"
         id = 34
         sourceID = 21
         targetID = 9
@@ -71,17 +71,17 @@ class ArchiCreatePPTX(object):
         w = shape.width / self.EMU
 
         nid = shape.id
-        shape.name = "Straight Arrow Connector 43"
+        shape.name = u"Straight Arrow Connector 43"
 
-        logger.debug("shape.top     : %3.2f" % (t))
-        logger.debug("shape.left    : %3.2f" % (l))
-        logger.debug("shape.height  : %3.2f" % (h))
-        logger.debug("shape.width   : %3.2f" % (w))
-        logger.debug("shape.shape_type    : %s" % shape.shape_type)
-        xmlConnector = " \
+        logger.debug(u"shape.top     : %3.2f" % (t))
+        logger.debug(u"shape.left    : %3.2f" % (l))
+        logger.debug(u"shape.height  : %3.2f" % (h))
+        logger.debug(u"shape.width   : %3.2f" % (w))
+        logger.debug(u"shape.shape_type    : %s" % shape.shape_type)
+        xmlConnector = u" \
              <p:cxnSp xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" " \
-                "xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" " \
-                "xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"> \
+                u"xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" " \
+                u"xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\"> \
               <p:nvCxnSpPr> \
                 <p:cNvPr id=\"34\" name=\"Straight Arrow Connector 43\"/> \
                 <p:cNvCxnSpPr> \
@@ -115,10 +115,10 @@ class ArchiCreatePPTX(object):
         attributes = n.attrib
 
         if attributes.get(ARCHI_TYPE) == type:
-            if attributes.get("id") != None:
+            if attributes.get(u"id") is not None:
                 listModels.append((n, attributes))
 
-                logger.debug("%s : %s:%s:%s:%s" % (DIAGRAM_MODEL, n.tag, n.get("name"), n.get("id"), attributes.get(ARCHI_TYPE)))
+                logger.debug(u"%s : %s:%s:%s:%s" % (DIAGRAM_MODEL, n.tag, n.get(u"name"), n.get(u"id"), attributes.get(ARCHI_TYPE)))
 
         for y in n:
             self.getNode(y, listModels, type)
@@ -127,9 +127,9 @@ class ArchiCreatePPTX(object):
         for x in self.tree.getroot():
             self.getNode(x, listModels, type)
 
-    def findNode(self, id, tag="element"):
-        logger.debug("id = %s" % id)
-        xp = "//%s[@id='%s']" % (tag, id)
+    def findNode(self, id, tag=u"element"):
+        logger.debug(u"id = %s" % id)
+        xp = u"//%s[@id='%s']" % (tag, id)
         stp = self.tree.xpath(xp)
 
         if len(stp) > 0:
@@ -139,17 +139,17 @@ class ArchiCreatePPTX(object):
 
     def findDiagramObject(self, listDO, value):
         for x in listDO:
-            if x[0] == "archimate:DiagramObject":
-                logger.debug("value : %s[%s] x : %s[%s]" % (value, type(value), x[3], type(x[3])))
+            if x[0] == u"archimate:DiagramObject":
+                logger.debug(u"value : %s[%s] x : %s[%s]" % (value, type(value), x[3], type(x[3])))
                 if x[3] == value:
-                    logger.debug("Found!")
+                    logger.debug(u"Found!")
                     return x
 
         return None
 
     def project(self, x, y, scale=None):
 
-        if scale == None:
+        if scale is None:
             scale = self.SCALE
         try:
             x = (((float(x) / 100.0)) * scale)
@@ -163,37 +163,36 @@ class ArchiCreatePPTX(object):
         for model in listDO:
             if model == sm:
                 return model[6]
-
         return None
 
     def fixSlides(self, listSlides):
 
         # unzip .pptx to temporary space and remove file
-        timestamp = str(time.time()).replace(".", "")
-        zip_file = zipfile.ZipFile(self.PPTXFilename, "r")
-        zip_file.extractall(os.path.join("./tmp", timestamp))
+        timestamp = unicode(time.time()).replace(u".", u"")
+        zip_file = zipfile.ZipFile(self.PPTXFilename, u"r")
+        zip_file.extractall(os.path.join(u"./tmp", timestamp))
         zip_file.close
 
         os.remove(self.PPTXFilename)
 
         # register necessary namespaces
-        etree.register_namespace("a", "http://schemas.openxmlformats.org/drawingml/2006/main")
-        etree.register_namespace("p", "http://schemas.openxmlformats.org/presentationml/2006/main")
-        etree.register_namespace("r", "http://schemas.openxmlformats.org/officeDocument/2006/relationships")
+        etree.register_namespace(u"a", u"http://schemas.openxmlformats.org/drawingml/2006/main")
+        etree.register_namespace(u"p", u"http://schemas.openxmlformats.org/presentationml/2006/main")
+        etree.register_namespace(u"r", u"http://schemas.openxmlformats.org/officeDocument/2006/relationships")
 
         # parse xml document and find shape tree
         slideNum = 1
-        slideFilename = "slide%d.xml" % slideNum
-        tree = etree.parse(os.path.join("./tmp", timestamp, "ppt", "slides", slideFilename))
+        slideFilename = u"slide%d.xml" % slideNum
+        tree = etree.parse(os.path.join(u"./tmp", timestamp, u"ppt", u"slides", slideFilename))
 
         root = tree.getroot()
 
         max_sp = 0
-        xp = "//@id"
+        xp = u"//@id"
         for sp in tree.xpath(xp):
             if int(sp) > max_sp:
                 max_sp = int(sp)
-            logger.debug("sp : %s" % (sp))
+            logger.debug(u"sp : %s" % (sp))
 
         n = 1
         for connector in self.listConnectors:
@@ -207,8 +206,8 @@ class ArchiCreatePPTX(object):
             start_width  = connector[0][9]
             start_height = connector[0][10]
 
-            logger.debug("StartID : %s[%s]" % (start, connector[0][2]))
-            logger.debug("    l:%d,t:%d,w:%d,h:%d)" %(start_left, start_top, start_width, start_height))
+            logger.debug(u"StartID : %s[%s]" % (start, connector[0][2]))
+            logger.debug(u"    l:%d,t:%d,w:%d,h:%d)" %(start_left, start_top, start_width, start_height))
 
             end = connector[1][6]
             end_left   = connector[1][7]
@@ -216,8 +215,8 @@ class ArchiCreatePPTX(object):
             end_width  = connector[1][9]
             end_height = connector[1][10]
 
-            logger.debug("EndID : %s[%s]" % (end, connector[1][2]))
-            logger.debug("    l:%d,t:%d,w:%d,h:%d)" %(end_left, end_top, end_width, end_height))
+            logger.debug(u"EndID : %s[%s]" % (end, connector[1][2]))
+            logger.debug(u"    l:%d,t:%d,w:%d,h:%d)" %(end_left, end_top, end_width, end_height))
 
             sxml_id = int(start)
             start_idx = int(start) + 1
@@ -230,73 +229,73 @@ class ArchiCreatePPTX(object):
             cxn_cx = end_left
             cxn_cy = end_top
 
-            connectionShape = etree.SubElement(root, "{http://schemas.openxmlformats.org/presentationml/2006/main}cxnSp", nsmap=self.namespacesPPTX)
+            connectionShape = etree.SubElement(root, u"{http://schemas.openxmlformats.org/presentationml/2006/main}cxnSp", nsmap=self.namespacesPPTX)
 
-            nonVisualConnectorShapeDrawingProperties = etree.Element("{http://schemas.openxmlformats.org/presentationml/2006/main}nvCxnSpPr")
-            cNonVisualProperties = etree.SubElement(nonVisualConnectorShapeDrawingProperties, "{http://schemas.openxmlformats.org/presentationml/2006/main}cNvPr")
-            cNonVisualProperties.set("id", str(connectorID + 1))
-            cNonVisualProperties.set("name", "Straight Arrow Connector "  + str(connectorID))
-            cNonVisualConnectorShapeDrawingProperties = etree.SubElement(nonVisualConnectorShapeDrawingProperties, "{http://schemas.openxmlformats.org/presentationml/2006/main}cNvCxnSpPr")
-            etree.SubElement(nonVisualConnectorShapeDrawingProperties, "{http://schemas.openxmlformats.org/presentationml/2006/main}nvPr")
+            nonVisualConnectorShapeDrawingProperties = etree.Element(u"{http://schemas.openxmlformats.org/presentationml/2006/main}nvCxnSpPr")
+            cNonVisualProperties = etree.SubElement(nonVisualConnectorShapeDrawingProperties, u"{http://schemas.openxmlformats.org/presentationml/2006/main}cNvPr")
+            cNonVisualProperties.set(u"id", unicode(connectorID + 1))
+            cNonVisualProperties.set(u"name", u"Straight Arrow Connector " + unicode(connectorID))
+            cNonVisualConnectorShapeDrawingProperties = etree.SubElement(nonVisualConnectorShapeDrawingProperties, u"{http://schemas.openxmlformats.org/presentationml/2006/main}cNvCxnSpPr")
+            etree.SubElement(nonVisualConnectorShapeDrawingProperties, u"{http://schemas.openxmlformats.org/presentationml/2006/main}nvPr")
 
-            connectionStart = etree.SubElement(cNonVisualConnectorShapeDrawingProperties, "{http://schemas.openxmlformats.org/drawingml/2006/main}stCxn")
-            connectionStart.set("id", str(sxml_id))    # shape index from which connector starts (param)
-            connectionStart.set("idx", str(start_idx)) # connector spawn point index
-            connectionEnd = etree.SubElement(cNonVisualConnectorShapeDrawingProperties, "{http://schemas.openxmlformats.org/drawingml/2006/main}endCxn")
-            connectionEnd.set("id", str(exml_id))      # shape index at which connector ends (param)
-            connectionEnd.set("idx", str(end_idx))     # connector termination point index
+            connectionStart = etree.SubElement(cNonVisualConnectorShapeDrawingProperties, u"{http://schemas.openxmlformats.org/drawingml/2006/main}stCxn")
+            connectionStart.set(u"id", unicode(sxml_id))     # shape index from which connector starts (param)
+            connectionStart.set(u"idx", unicode(start_idx))  # connector spawn point index
+            connectionEnd = etree.SubElement(cNonVisualConnectorShapeDrawingProperties, u"{http://schemas.openxmlformats.org/drawingml/2006/main}endCxn")
+            connectionEnd.set(u"id", unicode(exml_id))       # shape index at which connector ends (param)
+            connectionEnd.set(u"idx", unicode(end_idx))      # connector termination point index
 
-            shapeProperties = etree.SubElement(connectionShape, "{http://schemas.openxmlformats.org/presentationml/2006/main}spPr")
-            twodTransform = etree.SubElement(shapeProperties, "{http://schemas.openxmlformats.org/drawingml/2006/main}xfrm")
+            shapeProperties = etree.SubElement(connectionShape, u"{http://schemas.openxmlformats.org/presentationml/2006/main}spPr")
+            twodTransform = etree.SubElement(shapeProperties, u"{http://schemas.openxmlformats.org/drawingml/2006/main}xfrm")
 
-            twodTransform.set("flipH", "1")
+            twodTransform.set(u"flipH", u"1")
 
             # location of bounding box (params)
-            offset = etree.SubElement(twodTransform, "{http://schemas.openxmlformats.org/drawingml/2006/main}off")
-            offset.set("x", str(cxn_x).replace(".0", ""))
-            offset.set("y", str(cxn_y).replace(".0", ""))
+            offset = etree.SubElement(twodTransform, u"{http://schemas.openxmlformats.org/drawingml/2006/main}off")
+            offset.set(u"x", unicode(cxn_x).replace(u".0", u""))
+            offset.set(u"y", unicode(cxn_y).replace(u".0", u""))
 
             # height and width of bounding box (params)
-            extents = etree.SubElement(twodTransform, "{http://schemas.openxmlformats.org/drawingml/2006/main}ext")
-            extents.set("cx", str(cxn_cx).replace(".0", ""))
-            extents.set("cy", str(cxn_cy).replace(".0", ""))
+            extents = etree.SubElement(twodTransform, u"{http://schemas.openxmlformats.org/drawingml/2006/main}ext")
+            extents.set(u"cx", unicode(cxn_cx).replace(u".0", u""))
+            extents.set(u"cy", unicode(cxn_cy).replace(u".0", u""))
 
-            presetGeometry = etree.SubElement(shapeProperties, "{http://schemas.openxmlformats.org/drawingml/2006/main}prstGeom")
-            presetGeometry.set("prst", "line")
-            etree.SubElement(presetGeometry, "{http://schemas.openxmlformats.org/drawingml/2006/main}avLst")
+            presetGeometry = etree.SubElement(shapeProperties, u"{http://schemas.openxmlformats.org/drawingml/2006/main}prstGeom")
+            presetGeometry.set(u"prst", u"line")
+            etree.SubElement(presetGeometry, u"{http://schemas.openxmlformats.org/drawingml/2006/main}avLst")
 
-            style = etree.SubElement(connectionShape, "{http://schemas.openxmlformats.org/presentationml/2006/main}style")
+            style = etree.SubElement(connectionShape, u"{http://schemas.openxmlformats.org/presentationml/2006/main}style")
 
-            lineReference = etree.SubElement(style, "{http://schemas.openxmlformats.org/drawingml/2006/main}lnRef")
-            lineReference.set("idx", "1")
-            schemeColor = etree.SubElement(lineReference, "{http://schemas.openxmlformats.org/drawingml/2006/main}schemeClr")
-            schemeColor.set("val", "dk1")
+            lineReference = etree.SubElement(style, u"{http://schemas.openxmlformats.org/drawingml/2006/main}lnRef")
+            lineReference.set(u"idx", u"1")
+            schemeColor = etree.SubElement(lineReference, u"{http://schemas.openxmlformats.org/drawingml/2006/main}schemeClr")
+            schemeColor.set(u"val", u"dk1")
 
-            fillReference = etree.SubElement(style, "{http://schemas.openxmlformats.org/drawingml/2006/main}fillRef")
-            fillReference.set("idx", "0")
-            schemeColor = etree.SubElement(fillReference, "{http://schemas.openxmlformats.org/drawingml/2006/main}schemeClr")
-            schemeColor.set("val", "dk1")
+            fillReference = etree.SubElement(style, u"{http://schemas.openxmlformats.org/drawingml/2006/main}fillRef")
+            fillReference.set(u"idx", u"0")
+            schemeColor = etree.SubElement(fillReference, u"{http://schemas.openxmlformats.org/drawingml/2006/main}schemeClr")
+            schemeColor.set(u"val", u"dk1")
 
-            effectReference = etree.SubElement(style, "{http://schemas.openxmlformats.org/drawingml/2006/main}effectRef")
-            effectReference.set("idx", "0")
-            schemeColor = etree.SubElement(effectReference, "{http://schemas.openxmlformats.org/drawingml/2006/main}schemeClr")
-            schemeColor.set("val", "dk1")
+            effectReference = etree.SubElement(style, u"{http://schemas.openxmlformats.org/drawingml/2006/main}effectRef")
+            effectReference.set(u"idx", u"0")
+            schemeColor = etree.SubElement(effectReference, u"{http://schemas.openxmlformats.org/drawingml/2006/main}schemeClr")
+            schemeColor.set(u"val", u"dk1")
 
-            fontReference = etree.SubElement(style, "{http://schemas.openxmlformats.org/drawingml/2006/main}fontRef")
-            fontReference.set("idx", "minor")
-            schemeColor = etree.SubElement(fontReference, "{http://schemas.openxmlformats.org/drawingml/2006/main}schemeClr")
-            schemeColor.set("val", "tx1")
+            fontReference = etree.SubElement(style, u"{http://schemas.openxmlformats.org/drawingml/2006/main}fontRef")
+            fontReference.set(u"idx", u"minor")
+            schemeColor = etree.SubElement(fontReference, u"{http://schemas.openxmlformats.org/drawingml/2006/main}schemeClr")
+            schemeColor.set(u"val", u"tx1")
 
 
         # write out the final tree
-        f = open(os.path.join("./tmp", timestamp, "ppt", "slides", "slide1.xml"), "w")
-        tree.write(f, encoding="UTF-8", xml_declaration=True)
+        f = open(os.path.join(u"./tmp", timestamp, u"ppt", u"slides", u"slide1.xml"), u"w")
+        tree.write(f, encoding=u"UTF-8", xml_declaration=True)
         f.close()
 
         # zip the file
-        zip_file = zipfile.ZipFile(self.PPTXFilename, "w", zipfile.ZIP_DEFLATED)
-        os.chdir(os.path.join("./tmp", timestamp))
-        for root, dirs, files in os.walk("."):
+        zip_file = zipfile.ZipFile(self.PPTXFilename, u"w", zipfile.ZIP_DEFLATED)
+        os.chdir(os.path.join(u"./tmp", timestamp))
+        for root, dirs, files in os.walk(u"."):
             for file in files:
                 zip_file.write(os.path.join(root, file))
         zip_file.close
@@ -308,8 +307,8 @@ class ArchiCreatePPTX(object):
         slide = self.prs.slides.add_slide(title_only_slide_layout)
         shapes = slide.shapes
 
-        timeTxt = time.strftime("%Y%d%m_%H%M%S")
-        shapes.title.text = "Built on %s" % (timeTxt)
+        timeTxt = time.strftime(u"%Y%d%m_%H%M%S")
+        shapes.title.text = u"Built on %s" % (timeTxt)
 
         listModels = list()
         listConnectors = list()
@@ -320,7 +319,7 @@ class ArchiCreatePPTX(object):
         #
         # Iterate through all Archimate Diagrams
         #
-        logger.info("====Add Archimate Diagrams====")
+        logger.info(u"====Add Archimate Diagrams====")
         max_sp = 0
 
         for x in listModels:
@@ -328,74 +327,74 @@ class ArchiCreatePPTX(object):
             # Since you must know the shape_id for each corresponding Diagram Object, make them first
             #
             listDO = list()
-            logger.info("%s[%s]" % (x[0].get("name"), x[0].get("id")))
+            logger.info(u"%s[%s]" % (x[0].get(u"name"), x[0].get(u"id")))
 
-            slideName = str(x[0].get("name"))
+            slideName = unicode(x[0].get(u"name"))
             ls = list()
-            ls.append("Slide Title")
+            ls.append(u"Slide Title")
             ls.append(slideName)
             listDO.append(ls)
 
-            p = "//element[@id=\"%s\"]" % (x[0].get("id"))
+            p = u"//element[@id=\"%s\"]" % (x[0].get(u"id"))
             r = self.tree.xpath(p, namespaces=NS_MAP)
             xc = r[0].getchildren()
 
             for y in xc:
-                child = str(y.get("archimateElement"))
-                logger.debug("  %s[%s]: entity:%s" % (y.get(ARCHI_TYPE), y.get("id"), child))
+                child = unicode(y.get(u"archimateElement"))
+                logger.debug(u"  %s[%s]: entity:%s" % (y.get(ARCHI_TYPE), y.get(u"id"), child))
 
                 n = self.findNode(child)
 
                 if n == None or isinstance(n, list):
                     continue
 
-                shapeName = n.get("name").encode('ascii',errors='ignore')
-                logger.debug("  DO = %s" % (shapeName))
+                shapeName = unicode(n.get(u"name"))
+                logger.debug(u"  DO = %s" % (shapeName))
 
                 z = y.getchildren()
                 for w in z:
-                    logger.debug("    %s[%s]" % (w.get(ARCHI_TYPE), w.get("id")))
+                    logger.debug(u"    %s[%s]" % (w.get(ARCHI_TYPE), w.get(u"id")))
 
-                    if w.get(ARCHI_TYPE) == "archimate:Connection":
-                        logger.debug("      source=%s, target=%s, relationship=%s" % (w.get("source"), w.get("target"), w.get("relationship")))
+                    if w.get(ARCHI_TYPE) == u"archimate:Connection":
+                        logger.debug(u"      source=%s, target=%s, relationship=%s" % (w.get(u"source"), w.get(u"target"), w.get(u"relationship")))
 
                         ls = list()
-                        ls.append("Connector")
-                        ls.append(str(w.get("source")))
-                        ls.append(str(w.get("target")))
+                        ls.append(u"Connector")
+                        ls.append(unicode(w.get(u"source")))
+                        ls.append(unicode(w.get(u"target")))
 
-                        relation = w.get("relationship")
+                        relation = w.get(u"relationship")
                         rn = self.findNode(relation)
-                        logger.debug("      relation : %s[%s]" % (rn.get("name"), rn.get(ARCHI_TYPE)))
-                        if rn.get("name") != None:
-                            ls.append(str(rn.get("name")))
+                        logger.debug(u"      relation : %s[%s]" % (rn.get(u"name"), rn.get(ARCHI_TYPE)))
+                        if rn.get(u"name") is not None:
+                            ls.append(unicode(rn.get(u"name")))
 
                         listDO.append(ls)
 
-                        sn = self.findNode(w.get("source"), tag="child")
-                        logger.debug("  SO = %s" % sn.get("name"))
+                        sn = self.findNode(w.get(u"source"), tag=u"child")
+                        logger.debug(u"  SO = %s" % sn.get(u"name"))
 
-                        st = self.findNode(w.get("target"), tag="child")
-                        logger.debug("  TO = %s" % st.get("name"))
+                        st = self.findNode(w.get(u"target"), tag=u"child")
+                        logger.debug(u"  TO = %s" % st.get(u"name"))
 
-                    elif w.get("x") != None:
-                        logger.debug("    x=%s, y=%s" % (w.get("x"), w.get("y")))
+                    elif w.get(u"x") is not None:
+                        logger.debug(u"    x=%s, y=%s" % (w.get(u"x"), w.get(u"y")))
                         ls = list()
-                        ls.append(str(y.get(ARCHI_TYPE)))
-                        ls.append(str(n.get(ARCHI_TYPE)))
+                        ls.append(unicode(y.get(ARCHI_TYPE)))
+                        ls.append(unicode(n.get(ARCHI_TYPE)))
                         ls.append(shapeName)
-                        ls.append(str(y.get("id")))
-                        ls.append(str(w.get("x")))
-                        ls.append(str(w.get("y")))
+                        ls.append(unicode(y.get(u"id")))
+                        ls.append(unicode(w.get(u"x")))
+                        ls.append(unicode(w.get(u"y")))
                         listDO.append(ls)
 
             #
             # Now iterate the the diagram objects and add shapes to Slide
             # plus grab the shape_id!
             #
-            logger.debug("====Add Slide====")
+            logger.debug(u"====Add Slide====")
             for model in listDO:
-                if model[0] == "Slide Title":
+                if model[0] == u"Slide Title":
                     #
                     # New Slide
                     #
@@ -403,16 +402,16 @@ class ArchiCreatePPTX(object):
                     slide = self.prs.slides.add_slide(slide_layout)
                     shapes = slide.shapes
 
-                    shapes.title.text = "%s" % (model[1])
+                    shapes.title.text = u"%s" % (model[1])
 
-                    logger.debug("model : %s" % model[1])
+                    logger.debug(u"model : %s" % model[1])
 
-                elif model[0] == "archimate:DiagramObject":
-                    logger.debug("%s" % model)
+                elif model[0] == u"archimate:DiagramObject":
+                    logger.debug(u"%s" % model)
                     name = model[2]
                     x, y = self.project(model[4], model[5])
 
-                    if x == None or y == None:
+                    if x is None or y is None:
                         continue
 
                     left   = Inches(x)
@@ -421,9 +420,9 @@ class ArchiCreatePPTX(object):
                     width  = Inches(1.0 * self.SCALE)
                     height = Inches(0.75 * self.SCALE)
 
-                    logger.debug("DiagramObject : %s(%s,%s)" % (model[2], model[4], model[5]))
-                    logger.debug("    l:%d,t:%d,w:%d,h:%d)" %(left, top, width, height))
-                    logger.debug("    Point (%d:%d)" % (left, top))
+                    logger.debug(u"DiagramObject : %s(%s,%s)" % (model[2], model[4], model[5]))
+                    logger.debug(u"    l:%d,t:%d,w:%d,h:%d)" %(left, top, width, height))
+                    logger.debug(u"    Point (%d:%d)" % (left, top))
 
                     shape = shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
 
@@ -434,7 +433,7 @@ class ArchiCreatePPTX(object):
                     model.append(width)
                     model.append(height)
 
-                    logger.debug("shape.id : %s" % shape.id)
+                    logger.debug(u"shape.id : %s" % shape.id)
 
                     text_frame = shape.text_frame
                     text_frame.clear()
@@ -443,7 +442,7 @@ class ArchiCreatePPTX(object):
                     run.text = name
 
                     font = run.font
-                    font.name = "Calibri"
+                    font.name = u"Calibri"
                     font.size = Pt(10 * self.SCALE)
                     font.color.rgb = RGBColor(50, 50, 50) # grey
 
@@ -452,14 +451,14 @@ class ArchiCreatePPTX(object):
                     fill.solid()
                     fill.fore_color.rgb = RGBColor(204, 224, 255)
 
-                elif model[0] == "Connector":
-                    logger.debug("  model[0] %s, model[1] %s" % (model[1], model[2]))
+                elif model[0] == u"Connector":
+                    logger.debug(u"  model[0] %s, model[1] %s" % (model[1], model[2]))
 
                     source = self.findDiagramObject(listDO, model[1])
                     target = self.findDiagramObject(listDO, model[2])
 
-                    logger.debug("  source %s" % (source))
-                    logger.debug("  target %s" % (target))
+                    logger.debug(u"  source %s" % (source))
+                    logger.debug(u"  target %s" % (target))
 
                     ll = list()
                     ll.append(source)
@@ -467,7 +466,7 @@ class ArchiCreatePPTX(object):
                     listConnectors.append(ll)
 
         # save file
-        logger.info("\n Saved %s" % self.filePPTXOut)
+        logger.info(u"\n Saved %s" % self.filePPTXOut)
         self.prs.save(self.filePPTXOut)
 
         return self.prs
@@ -488,5 +487,5 @@ def test_ArchiCreatePPTX():
 
     ArchiLib.stopTimer(start_time)
 
-if __name__ == "__main__":
+if __name__ == u"__main__":
     test_ArchiCreatePPTX()

@@ -2,19 +2,17 @@
 #
 # Archimate Export All Models in a Folder
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.3'
+__author__ = u'morrj140'
+__VERSION__ = u'0.3'
 
 from al_ArchiLib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
+from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.ExportFolderModels import ExportArchiFolderModels
 
-from al_Constants import *
-
-import pytest
 
 def exportArchiFolderModels(fileArchimate, fileConceptsExport, folder):
 
@@ -26,10 +24,10 @@ def exportArchiFolderModels(fileArchimate, fileConceptsExport, folder):
 
     ArchiLib.stopTimer(start_time)
 
-if __name__ == "__main__":
-    folder = "AS400 Analysis"
+if __name__ == u"__main__":
+    folder = u"AS400 Analysis"
 
-    fileArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v32.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v32.archimate"
 
     exportArchiFolderModels(fileArchimate, fileConceptsExport, folder)
 

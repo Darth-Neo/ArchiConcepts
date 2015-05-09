@@ -2,8 +2,8 @@
 #
 # Natural Language Processing of Archimate Information
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.1'
+__author__ = u'morrj140'
+__VERSION__ = u'0.1'
 
 from Logger import *
 logger = setupLogging(__name__)
@@ -14,9 +14,9 @@ from nl_lib.Concepts import Concepts
 from Constants import *
 from ArchiLib import ArchiLib
 
-import pytest
 
 class AnalyzeNamedEntities(object):
+
     fileArchimate           = None
     ffileRelationsConcepts  = None
     al                      = None

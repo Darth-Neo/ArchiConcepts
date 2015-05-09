@@ -527,9 +527,7 @@ if __name__ == u"__main__":
 
     start_time = ArchiLib.startTimer()
 
-    #subdirArchimate = "/Users/morrj140/Documents/SolutionEngineering/Archimate Models/ExportIntoNeo4J"
-
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v37.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v40.archimate"
 
     logger.info(u"Exporting : %s" % (fileArchimate))
 

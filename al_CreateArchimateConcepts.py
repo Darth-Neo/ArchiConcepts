@@ -11,10 +11,8 @@ logger.setLevel(INFO)
 
 from nl_lib.Concepts import Concepts
 
+from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
-from al_Constants import *
-
-import pytest
 
 def createArchimateConcepts(fileArchimate, fileConceptsArch):
 
@@ -39,4 +37,7 @@ def createArchimateConcepts(fileArchimate, fileConceptsArch):
     #al.createArchimate(fileArchimate, fileConceptsArch)
 
 if __name__ == u"__main__":
-    createArchimateConcepts(fileArchimateTest, fileConceptsArch)
+
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v40.archimate"
+
+    createArchimateConcepts(fileArchimate, fileConceptsArch)

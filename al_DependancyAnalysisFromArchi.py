@@ -2,17 +2,16 @@
 #
 # Archimate to Dependancy Analysis
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.3'
+__author__ = u'morrj140'
+__VERSION__ = u'0.3'
 
 from al_ArchiLib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
+from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.DependencyAnalysis import *
-
-from al_Constants import *
 
 def dependancyAnalysisFromArchi(fileArchimate):
 
@@ -27,4 +26,7 @@ def dependancyAnalysisFromArchi(fileArchimate):
     ArchiLib.stopTimer(start_time)
 
 if __name__ == "__main__":
-    dependancyAnalysisFromArchi(fileArchimateTest)
+
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CMS into ECM V5.archimate"
+
+    dependancyAnalysisFromArchi(fileArchimate)

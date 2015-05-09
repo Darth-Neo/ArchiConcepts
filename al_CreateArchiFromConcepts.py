@@ -11,12 +11,10 @@ logger.setLevel(INFO)
 
 from nl_lib.Concepts import Concepts
 
+from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.ConceptsImportArchi import ConceptsImportArchi
 
-from al_Constants import *
-
-import pytest
 
 def createArchiFromConcepts(fileArchimate, fileConceptsImport, fileArchimateImport):
 

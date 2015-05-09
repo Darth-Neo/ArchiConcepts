@@ -9,12 +9,10 @@ from al_ArchiLib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
+from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.CreateRelationsInArchi import CreateRelationsInArchi
 
-from al_Constants import *
-
-import pytest
 
 def createRelations(fileArchimate=fileArchimateTest):
 

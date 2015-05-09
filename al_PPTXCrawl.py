@@ -2,8 +2,8 @@
 #
 # PPTX Crawl
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.3'
+__author__ = u'morrj140'
+__VERSION__ = u'0.3'
 
 from al_ArchiLib.Logger import *
 logger = setupLogging(__name__)
@@ -11,13 +11,13 @@ logger.setLevel(INFO)
 
 from nl_lib.Concepts import Concepts
 
+from al_ArchiLib.Constants import *
 from al_ArchiLib.PPTXCreateArchi import PPTXCreateArchil
 
-from al_Constants import *
 
 def PPTXCrawl():
 
-    logger.info("Using : %s" % filePPTXIn)
+    logger.info(u"Using : %s" % filePPTXIn)
 
     cpptx = PPTXCreateArchil(filePPTXIn)
 
@@ -27,6 +27,6 @@ def PPTXCrawl():
 
     Concepts.saveConcepts(c, fileConceptsPPTX)
 
-if __name__ == "__main__":
+if __name__ == u"__main__":
     PPTXCrawl()
 

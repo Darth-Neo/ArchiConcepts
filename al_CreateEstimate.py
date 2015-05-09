@@ -9,17 +9,15 @@ from al_ArchiLib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
+from al_ArchiLib.Constants import *
 from al_ArchiLib.Neo4JLib import Neo4JLib
 
-from al_Constants import *
-
-import pytest
 
 def createEstimate(gdb):
     nj = Neo4JLib(gdb)
 
     qs = u"MATCH "
-    qs = qs +    u"(n0:ApplicationFunction)-- (r0)"
+    qs = qs + u"(n0:ApplicationFunction)-- (r0)"
     qs = qs + u"-- (n1:ApplicationComponent)--(r1)"
     qs = qs + u"-- (n2:ApplicationService)--  (r2)"
     qs = qs + u"-- (n3:BusinessProcess)--     (r3)"

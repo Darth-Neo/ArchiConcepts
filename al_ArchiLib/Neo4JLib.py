@@ -2,9 +2,8 @@
 #
 # Neo4J Counts
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.1'
-
+__author__  = u'morrj140'
+__VERSION__ = u'0.1'
 
 from Constants import *
 from Logger import *
@@ -22,66 +21,67 @@ from openpyxl.worksheet import Worksheet as worksheet
 
 import pytest
 
+
 class Neo4JLib(object):
 
-    delchars = ''.join(c for c in map(chr, range(255)) if (not c.isalnum() and c != ' '))
+    _delchars = ''.join(c for c in map(chr, range(255)) if (not c.isalnum() and c != ' '))
 
     def __init__(self, gdb, fileCSVExport=fileCSVExport):
-        logger.debug("Neo4J instance : %s" % gdb)
+        logger.debug(u"Neo4J instance : %s" % gdb)
 
         self.graph = neo4j.GraphDatabaseService(gdb)
 
         self.fileCSVExport = fileCSVExport
 
-    def cleanString(self, name):
+    def _cleanString(self, name):
             '''
             :param name: name
             :return: string
             Note: Encode a string to UTF-8
             Note: Decode a string to Unicode
             '''
-            name = name.replace(",", "-")
-            name = name.replace(")", " ")
-            name = name.replace("(", "-")
+            name = name.replace(u",", u"-")
+            name = name.replace(u")", u" ")
+            name = name.replace(u"(", u"-")
 
             try:
                 if isinstance(name, (str, unicode)):
-                    return name.encode('utf-8',errors='ignore')
+                    return unicode(name)
                 else:
-                    n = name.translate(None, self.delchars).strip()
-                u = unicode(n, "utf-8", errors='ignore' )
-                return u.encode( "utf-8", errors="ignore" )
+                    n = unicode(name).strip()
+                    return n
             except:
-                return " "
+                return u" "
 
     def cypherQuery(self, qs):
         query = neo4j.CypherQuery(self.graph, qs)
         return query.execute().data
 
-    def Traversal(self, ql, directed=False):
 
-        qs = "MATCH"
+    def traversal(self, ql, directed=False):
+
+        qs = u"MATCH"
         n=0
 
-        if directed == True:
-            sRelation = "--[r%d]->"
+        if directed is True:
+            sRelation = u"--[r%d]->"
         else:
-            sRelation = "-[r%d]-"
+            sRelation = u"-[r%d]-"
 
         lenRelation = len(sRelation % n)
 
         for x in ql:
             sAddRelation = sRelation % n
-            qs = qs + "(n%d:%s)%s" % (n, x, sAddRelation)
+            qs = u"%s(n%d:%s)%s" % (qs, n, x, sAddRelation)
             n += 1
 
-        qr = " Return"
+        qr = u" Return"
         for m in range(0, n, 1):
-            qr = qr + " n%s, r%d," % (m, m)
+            qr = u"%s n%s, r%d," % (qr, m, m)
 
         query = qs[:-lenRelation] + qr[:-5]
 
-        logger.info("%s" % query)
+        logger.info(u"%s" % query)
 
         return query
 
@@ -99,28 +99,28 @@ class Neo4JLib(object):
 
             for v in x.values:
 
-                logger.debug("Type : %s" % type(v))
+                logger.debug(u"Type : %s" % type(v))
 
                 if isinstance(v, Node):
-                    name = v["aname"]
-                    typeName =v["typeName"]
+                    name = v[u"aname"]
+                    typeName =v[u"typeName"]
 
                     xl.append(name)
-                    #xl.append(typeName)
+                    # xl.append(typeName)
 
                 elif isinstance(v, int) or isinstance(v, float):
                     count = v
-                    typeName ="Number"
+                    typeName = u"Number"
 
                     xl.append(count)
                     #xl.append(typeName)
 
                 elif isinstance(v, str) or isinstance(v, unicode):
                     st = v
-                    typeName ="String"
+                    typeName = u"String"
 
                     xl.append(st)
-                    #xl.append(typeName)
+                    # xl.append(typeName)
 
             listQuery.append(xl)
 
@@ -143,15 +143,15 @@ class Neo4JLib(object):
             if n == 0:
                 n += 1
 
-                logger.debug("%s[%d]" % (x, n))
+                logger.debug(u"%s[%d]" % (x, n))
 
                 cl = list()
                 m = 0
                 for y in x.columns:
                     m += 1
-                    logger.debug("  %s[%d]" % (y, m))
+                    logger.debug(u"  %s[%d]" % (y, m))
                     cl.append(y)
-                    cl.append("Type%d" % m)
+                    cl.append(u"Type%d" % m)
 
                 listQuery.append(cl)
 
@@ -159,25 +159,25 @@ class Neo4JLib(object):
 
             for v in x.values:
 
-                logger.debug("Type : %s" % type(v))
+                logger.debug(u"Type : %s" % type(v))
 
                 if isinstance(v, Node):
-                    name = v["name"]
-                    typeName =v["typeName"]
+                    name = v[u"name"]
+                    typeName = v[u"typeName"]
 
                     xl.append(name)
                     xl.append(typeName)
 
                 elif isinstance(v, int) or isinstance(v, float):
                     count = v
-                    typeName ="Number"
+                    typeName = u"Number"
 
                     xl.append(count)
                     xl.append(typeName)
 
                 elif isinstance(v, str) or isinstance(v, unicode):
                     st = v
-                    typeName ="String"
+                    typeName = u"String"
 
                     xl.append(st)
                     xl.append(typeName)
@@ -186,134 +186,155 @@ class Neo4JLib(object):
 
         return listQuery, qd
 
-
     def logResults(self, lq, f=None, n=0):
         n += 1
 
-        spaces = " " * n
+        spaces = u" " * n
 
-        rs = ""
+        rs = u""
         for x in lq:
             if isinstance(x, tuple) or isinstance(x, list):
                 self.logResults(x, f, n)
 
             elif isinstance(x, str) or isinstance(x, unicode):
-                if x == "Nodes" or x is None or len(x) == 0:
+                if x == u"Nodes" or x is None or len(x) == 0:
                     continue
-                logger.debug("%s %s" % (spaces, x))
+                logger.debug(u"%s %s" % (spaces, x))
                 x = self.cleanString(x)
-                rs += ", \"%s\"" % (x)
+                rs += u", \"%s\"" % (x)
 
             elif isinstance(x, float) or isinstance(x, int):
-                logger.debug("%s %s" % (spaces, x))
-                rs += ", %s" % (x)
+                logger.debug(u"%s %s" % (spaces, x))
+                rs += u", %s" % (x)
 
         if len(rs) != 0:
             rs1 = rs[1:]
 
-            '''
+            u'''
             :param name: name
             :return: string
             Note: Encode a string to UTF-8
             Note: Decode a string to Unicode
             '''
-            #rsClean = self.cleanString(rs1)
-            #unicode(n, "utf-8", errors='ignore' )
+            # rsClean = self.cleanString(rs1)
+            # unicode(n, "utf-8", errors='ignore' )
 
-            logger.debug("%s" % (rs1))
+            logger.debug(u"%s" % (rs1))
 
-            f.write("%s\n" % (rs1))
+            f.write(u"%s\n" % (rs1))
 
     def queryExport(self, lq):
 
         # csvExport defined in al_ArchiLib.Constants
-        f = open(self.fileCSVExport,'w')
+        f = open(self.fileCSVExport, u'w')
 
         self.logResults(lq, f)
 
         f.close()
 
-        logger.info("Exported %d rows" % len(lq))
-        logger.info("Save Model : %s" % self.fileCSVExport)
+        logger.info(u"Exported %d rows" % len(lq))
+        logger.info(u"Save Model : %s" % self.fileCSVExport)
 
-    def Neo4JCounts(self):
-        qs = "MATCH (n) RETURN n.typeName, count(n.typeName) order by count(n.typeName) DESC"
+    def neo4jCounts(self):
+
+        qs = u"MATCH (n) RETURN n.typeName, count(n.typeName) as Count order by Count DESC"
         lq, qd = self.cypherQuery(qs)
 
-        logger.info("Neo4J Counts")
-        for x in sorted(lq[1:], key=lambda c: int(c[2]), reverse=True):
-            logger.info("%4d : %s" % (x[2], x[0]))
+        logger.info(u"Neo4J Counts")
 
+        sl = sorted(lq[1:], key=lambda c: int(c[1]), reverse=True)
+        for x in sl:
+            if len(x) == 2:
+                logger.debug(u"%4d : %s" % (x[1], x[0]))
+            else:
+                logger.error(u"List of wrong length : %d" % len(x))
+
+        return sl
 
     def queryExportExcel(self, lq, fileIn=fileExcelIn, fileOut=fileExcelOut):
 
-        wb = load_workbook(filename = fileIn)
+        wb = load_workbook(filename=fileIn)
 
-        wsTitle = "Import Items" + time.strftime("%Y%d%m_%H%M%S")
+        wsTitle = u"Import Items" + time.strftime(u"%Y%d%m_%H%M%S")
 
         ws = wb.create_sheet()
         ws.title = wsTitle
 
-        logger.info("Created Worksheet %s" % wsTitle)
+        logger.info(u"Created Worksheet %s" % wsTitle)
 
         n = 0
         for x in lq:
             n += 1
 
-            logger.debug("x in lq : %s" % x)
+            logger.debug(u"x in lq : %s" % x)
 
             m = 0
             for y in x:
                 m += 1
 
                 col = get_column_letter(m)
-                logger.debug("col : %s" % col)
+                logger.debug(u"col : %s" % col)
 
-                logger.debug("y : %s" % y)
+                logger.debug(u"y : %s" % y)
 
-                rs = "%s%s" % (col, n)
-                logger.debug("%s : %s" % (rs, y))
+                rs = u"%s%s" % (col, n)
+                logger.debug(u"%s : %s" % (rs, y))
 
-                ws.cell(rs).value = ("%s" % (y))
+                ws.cell(rs).value = (u"%s" % (y))
 
-        wb.save(filename = fileOut)
+        try:
+            wb.save(fileOut)
 
-        logger.info("Saved file : %s" % fileOut)
+        except:
+            pass
 
+        logger.info(u"Saved file : %s" % fileOut)
 
-    def exportNeo4JToConcepts(self, concepts, fileNodes="nodes.p"):
+    def exportNeo4JToConcepts(self, concepts, fileNodes=u"nodes.p"):
         # #et all nodes
         # Match n return n limit 25
 
-        qs = "Match n return n"
+        qs = u"Match n return n"
 
         lq, qd = self.cypherQuery(qs)
 
         for x in lq:
             if len(x) == 2:
-                logger.info("%s[%s]" % (x[0], x[1]))
+                logger.info(u"%s[%s]" % (x[0], x[1]))
                 concepts.addConceptKeyType(x[0], x[1])
             else:
-                logger.warn("Not a standard node : %s" % x)
+                logger.warn(u"Not a standard node : %s" % x)
 
         # Match r relations
-        qs = "match n-[r]-m return n, r, m"
+        qs = u"match n-[r]-m return n, r, m"
         lq, qd = self.cypherQuery(qs)
 
         for x in lq:
             if len(x) == 6:
-                logger.info("%s[%s]" % (x[0], x[1]))
+                logger.info(u"%s[%s]" % (x[0], x[1]))
                 concepts.addConceptKeyType(x[0], x[1])
             else:
-                logger.warn("Not a standard node : %s" % x)
+                logger.warn(u"Not a standard node : %s" % x)
 
         Concepts.saveConcepts(concepts, fileNodes)
 
         return concepts
 
-def test_Neo4jLib():
-    nj = Neo4JLib(gdbTest)
-    nj.Neo4JCounts()
+@pytest.fixture(scope="module")
+def gdb():
+    return gdbTest
 
-if __name__ == "__main__":
+@pytest.fixture(scope="module")
+def nj(gdb):
+    return Neo4JLib(gdb)
+
+@pytest.mark.NeoJ
+def test_Neo4jLib(nj):
+
+    sl = nj.neo4jCounts()
+
+    assert(sl is not None)
+
+
+if __name__ == u"__main__":
     test_Neo4jLib()

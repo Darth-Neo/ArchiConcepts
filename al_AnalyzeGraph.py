@@ -2,18 +2,17 @@
 #
 # Natural Language Processing of Archimate Information
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.3'
+__author__ = u'morrj140'
+__VERSION__ = u'0.3'
 
 from al_ArchiLib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
+from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
 from al_ArchiLib.AnalyzeGraph import AnalyzeGraph
-from al_ArchiLib.Neo4JLib import Neo4JLib
 
-from al_Constants import *
 
 def analyzeGraph(gdb):
     concepts = None
@@ -26,7 +25,10 @@ def analyzeGraph(gdb):
 
     ArchiLib.stopTimer(start_time)
 
-if __name__ == "__main__":
+
+if __name__ == u"__main__":
+
+    gdb = u"http://localhost:7474/db/data/"
 
     analyzeGraph(gdb)
 

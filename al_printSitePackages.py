@@ -2,13 +2,13 @@
 #
 # Print python site-packages information
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.3'
+__author__ = u'morrj140'
+__VERSION__ = u'0.3'
 
 import site
 
-if __name__ == "__main__":
+if __name__ == u"__main__":
 
-    print("User Site Packages : %s" % site.getusersitepackages())
+    print(u"User Site Packages : %s" % site.getusersitepackages())
     for x in site.getsitepackages():
-        print("Site Packages      : %s" % x)
+        print(u"Site Packages      : %s" % x)

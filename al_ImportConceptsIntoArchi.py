@@ -2,31 +2,32 @@
 #
 #  Concepts to Archimate Elements
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.3'
+__author__ = u'morrj140'
+__VERSION__ = u'0.3'
 
 from al_ArchiLib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
+from al_ArchiLib.Constants import *
 from al_ArchiLib.ArchiLib import ArchiLib
-from al_Constants import *
+
+from nl_lib.Concepts import Concepts
 
 dictConcepts = dict()
 
-import pytest
 
-def insertConceptRelation(concepts, n=0):
-    tag = "element"
+def insertConceptRelation(al, concepts, n=0):
+    tag = u"element"
 
     n += 1
-    spaces = " " * n
+    spaces = u" " * n
 
-    logger.info("%sParent:%s" % (spaces, concepts.name))
+    logger.info(u"%sParent:%s" % (spaces, concepts.name))
 
     for concept in concepts.getConcepts().values():
 
-        logger.info("%sChild:%s" % (spaces, concepts.name))
+        logger.info(u"%sChild:%s" % (spaces, concepts.name))
 
         if not dictConcepts.has_key(concepts.name):
             continue
@@ -36,73 +37,74 @@ def insertConceptRelation(concepts, n=0):
         sourceID = dictConcepts[concepts.name]
         targetID = dictConcepts[concept.name]
 
-        logger.info("%s%s[%s]->%s[%s]" % (spaces, concepts.name, sourceID, concept.name, targetID))
+        logger.info(u"%s%s[%s]->%s[%s]" % (spaces, concepts.name, sourceID, concept.name, targetID))
 
         attrib = dict()
-        attrib["source"] = sourceID
-        attrib["target"] = targetID
-        attrib[ARCHI_TYPE] = "archimate:AssociationRelationship"
-        al.insertRel(tag, "Relations", attrib)
+        attrib[u"source"] = sourceID
+        attrib[u"target"] = targetID
+        attrib[ARCHI_TYPE] = u"archimate:AssociationRelationship"
+        al.insertRel(tag, u"Relations", attrib)
 
         insertConceptRelation(concept, n)
 
-def insertConceptNode(concepts, subfolder, n=0):
-    tag = "element"
+
+def insertConceptNode(al, concepts, subfolder, n=0):
+    tag = u"element"
     folder = subfolder
 
     if n == 0:
         attrib = dict()
-        attrib["name"] = concepts.name
+        attrib[u"name"] = concepts.name
         attrib[ARCHI_TYPE] = concepts.typeName
         al.insertNode(tag, folder, attrib)
-        C_ID = attrib["id"]
+        C_ID = attrib[u"id"]
 
         if not dictConcepts.has_key(concepts.name):
             dictConcepts[concepts.name] = C_ID
 
     n += 1
-    spaces = " " * n
+    spaces = u" " * n
 
     for concept in concepts.getConcepts().values():
         attrib = dict()
-        attrib["name"] = concept.name
+        attrib[u"name"] = concept.name
         attrib[ARCHI_TYPE] = concept.typeName
         al.insertNode(tag, folder, attrib)
-        C_ID = attrib["id"]
+        C_ID = attrib[u"id"]
 
-        if not dictConcepts.has_key(concept.name):
+        if concept.name not in dictConcepts:
             dictConcepts[concept.name] = C_ID
 
-        logger.info("%s%s[%s].id[%s]" % (spaces, concept.name, concept.typeName, C_ID))
+        logger.info(u"%s%s[%s].id[%s]" % (spaces, concept.name, concept.typeName, C_ID))
 
         insertConceptNode(concept, subfolder, n)
 
 def importConceptsIntoArchi():
 
-    logger.info("Using : %s" % fileArchimateTest)
+    logger.info(u"Using : %s" % fileArchimateTest)
 
     conceptFile = fileConceptsBatches
-    logger.info("Loading :" + conceptFile)
+    logger.info(u"Loading :" + conceptFile)
     concepts = Concepts.loadConcepts(conceptFile)
 
     al = ArchiLib()
 
     # Create Subfolder
-    folder = "Implementation & Migration"
-    subfolder = "Dependancy Analysis - %s" % time.strftime("%Y%d%m_%H%M%S")
+    folder = u"Implementation & Migration"
+    subfolder = u"Dependancy Analysis - %s" % time.strftime(u"%Y%d%m_%H%M%S")
 
     attrib = dict()
-    attrib["id"] = al.getID()
-    attrib["name"] = subfolder
-    al.insertNode("folder", folder, attrib)
+    attrib[u"id"] = al.getID()
+    attrib[u"name"] = subfolder
+    al.insertNode(u"folder", folder, attrib)
 
-    logger.info("--- Insert Nodes ---")
-    insertConceptNode(concepts, subfolder)
+    logger.info(u"--- Insert Nodes ---")
+    insertConceptNode(al, concepts, subfolder)
 
-    logger.info("--- Insert Relations ---")
-    insertConceptRelation(concepts)
+    logger.info(u"--- Insert Relations ---")
+    insertConceptRelation(al, concepts)
 
-    al.outputXMLtoFile(filename="import_concepts.archimate")
+    al.outputXMLtoFile(filename=u"import_concepts.archimate")
 
-if __name__ == "__main__":
+if __name__ == u"__main__":
     importConceptsIntoArchi()
