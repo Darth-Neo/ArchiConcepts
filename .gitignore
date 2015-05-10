@@ -1,4 +1,5 @@
 *.p
+al_Examples/*
 build/*
 build/lib/al_ArchiLib/*
 dist/*
