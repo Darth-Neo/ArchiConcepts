@@ -11,13 +11,13 @@ import time
 from traceback import format_exc
 from subprocess import call
 
-from al_ArchiLib.Logger import *
+from al_lib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
-from al_ArchiLib.ArchiLib import ArchiLib
-from al_ArchiLib.Neo4JLib import Neo4JLib
-from al_Constants import *
+from al_lib.ArchiLib import ArchiLib
+from al_lib.Neo4JLib import Neo4JLib
+from al_lib.Constants import *
 
 from py2neo import neo4j, node, rel
 

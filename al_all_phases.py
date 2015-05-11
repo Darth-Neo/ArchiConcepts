@@ -5,15 +5,15 @@
 __author__ = u'morrj140'
 __VERSION__ = u'0.2'
 
-from al_ArchiLib.Logger import *
+from al_lib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
-from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib
-from al_ArchiLib.ExportArchi import ExportArchi
-from al_ArchiLib.ConceptsImportNeo4J import ConceptsImportNeo4J
-from al_ArchiLib.AnalyzeGraph import AnalyzeGraph
+from al_lib.Constants import *
+from al_lib.ArchiLib import ArchiLib
+from al_lib.ExportArchi import ExportArchi
+from al_lib.ConceptsImportNeo4J import ConceptsImportNeo4J
+from al_lib.AnalyzeGraph import AnalyzeGraph
 
 
 if __name__ == u"__main__":

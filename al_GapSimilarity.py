@@ -18,8 +18,8 @@ from nltk.collocations import BigramCollocationFinder, TrigramCollocationFinder
 from nltk.metrics import BigramAssocMeasures, TrigramAssocMeasures
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
-from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib
+from al_lib.Constants import *
+from al_lib.ArchiLib import ArchiLib
 
 
 class Collocations(object):

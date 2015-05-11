@@ -1,4 +1,3 @@
-__author__ = 'morrj140'
 #!/usr/bin/python
 #
 # Export Archimate to Concepts
@@ -6,12 +5,12 @@ __author__ = 'morrj140'
 __author__ = 'morrj140'
 __VERSION__ = '0.3'
 
-from al_ArchiLib.Logger import *
+from al_lib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
-from al_ArchiLib.ArchiLib import ArchiLib
-from al_ArchiLib.ExportArchi import ExportArchi
+from al_lib.ArchiLib import ArchiLib
+from al_lib.ExportArchi import ExportArchi
 
 from al_Constants import *
 

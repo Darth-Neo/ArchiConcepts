@@ -5,7 +5,7 @@
 __author__ = u'morrj140'
 __VERSION__ = u'0.4'
 
-from al_ArchiLib.Logger import *
+from al_lib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
@@ -13,8 +13,8 @@ logger.setLevel(INFO)
 from nl_lib.Concepts import Concepts
 from nl_lib.TopicCloud import TopicCloud
 
-from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib
+from al_lib.Constants import *
+from al_lib.ArchiLib import ArchiLib
 
 
 def createTagCloud(conceptFile, topic):

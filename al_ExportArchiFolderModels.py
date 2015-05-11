@@ -5,13 +5,13 @@
 __author__ = u'morrj140'
 __VERSION__ = u'0.3'
 
-from al_ArchiLib.Logger import *
+from al_lib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
-from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib
-from al_ArchiLib.ExportFolderModels import ExportArchiFolderModels
+from al_lib.Constants import *
+from al_lib.ArchiLib import ArchiLib
+from al_lib.ExportFolderModels import ExportArchiFolderModels
 
 
 def exportArchiFolderModels(fileArchimate, fileConceptsExport, folder):

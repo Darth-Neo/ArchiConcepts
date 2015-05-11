@@ -5,12 +5,12 @@
 __author__ = 'morrj140'
 __VERSION__ = '0.3'
 
-from al_ArchiLib.Logger import *
+from al_lib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
-from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib
+from al_lib.Constants import *
+from al_lib.ArchiLib import ArchiLib
 
 
 def cleanArchimateRelationships(fileArchimate):

@@ -5,14 +5,14 @@
 __author__ = 'morrj140'
 __VERSION__ = '0.1'
 
-from al_ArchiLib.Logger import *
+from al_lib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
 from lxml import etree
 
-from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib
+from al_lib.Constants import *
+from al_lib.ArchiLib import ArchiLib
 
 
 def importWSDL():

@@ -12,9 +12,9 @@ logger.setLevel(INFO)
 from nl_lib.Concepts import Concepts
 from nl_lib.ConceptGraph import PatternGraph, GraphVizGraph
 
-from al_ArchiLib.Constants import *
-from al_ArchiLib.ArchiLib import ArchiLib
-from al_ArchiLib.ConceptsGraph import ConceptsGraph
+from al_lib.Constants import *
+from al_lib.ArchiLib import ArchiLib
+from al_lib.ConceptsGraph import ConceptsGraph
 
 
 def graphConcepts(conceptFile, fileImageExport):

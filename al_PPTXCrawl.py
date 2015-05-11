@@ -5,14 +5,14 @@
 __author__ = u'morrj140'
 __VERSION__ = u'0.3'
 
-from al_ArchiLib.Logger import *
+from al_lib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
 from nl_lib.Concepts import Concepts
 
-from al_ArchiLib.Constants import *
-from al_ArchiLib.PPTXCreateArchi import PPTXCreateArchil
+from al_lib.Constants import *
+from al_lib.PPTXCreateArchi import PPTXCreateArchil
 
 
 def PPTXCrawl():

@@ -11,8 +11,8 @@ logger.setLevel(INFO)
 
 from nl_lib.Concepts import Concepts
 
-from al_ArchiLib.ArchiLib import ArchiLib
-from al_Constants import *
+from al_lib.ArchiLib import ArchiLib
+from al_lib.Constants import *
 
 def dedupArchi(fileArchimate):
 

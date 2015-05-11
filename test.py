@@ -1,6 +1,6 @@
 import os
 import pytest
-from nl_lib.Logger import *
+from al_lib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 

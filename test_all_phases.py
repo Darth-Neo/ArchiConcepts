@@ -5,9 +5,7 @@
 __author__ = u'morrj140'
 __VERSION__ = u'0.2'
 
-from nl_lib.Concepts import Concepts
-
-from al_ArchiLib.Logger import *
+from al_lib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(logging.INFO)
 
@@ -20,19 +18,19 @@ from nl_lib.ConceptGraph import PatternGraph, GraphVizGraph
 
 from al_Constants import *
 
-from al_ArchiLib.ArchiLib import ArchiLib
-from al_ArchiLib.ExportArchi import ExportArchi
-from al_ArchiLib.ConceptsImportNeo4J import ConceptsImportNeo4J
-from al_ArchiLib.AnalyzeGraph import AnalyzeGraph
-from al_ArchiLib.Neo4JLib import Neo4JLib
-from al_ArchiLib.ConceptsImportArchi import ConceptsImportArchi
-from al_ArchiLib.ArchiCreatePPTX import ArchiCreatePPTX
-from al_ArchiLib.CreateRelationsInArchi import CreateRelationsInArchi
-from al_ArchiLib.DependencyAnalysis import DependancyAnalysis
-from al_ArchiLib.ExportFolderModels import ExportArchiFolderModels
-from al_ArchiLib.ConceptsGraph import ConceptsGraph
-from al_ArchiLib.AnalyzeNamedEntities import AnalyzeNamedEntities
-from al_ArchiLib.PPTXCreateArchi import PPTXCreateArchil
+from al_lib.ArchiLib import ArchiLib
+from al_lib.ExportArchi import ExportArchi
+from al_lib.ConceptsImportNeo4J import ConceptsImportNeo4J
+from al_lib.AnalyzeGraph import AnalyzeGraph
+from al_lib.Neo4JLib import Neo4JLib
+from al_lib.ConceptsImportArchi import ConceptsImportArchi
+from al_lib.ArchiCreatePPTX import ArchiCreatePPTX
+from al_lib.CreateRelationsInArchi import CreateRelationsInArchi
+from al_lib.DependencyAnalysis import DependancyAnalysis
+from al_lib.ExportFolderModels import ExportArchiFolderModels
+from al_lib.ConceptsGraph import ConceptsGraph
+from al_lib.AnalyzeNamedEntities import AnalyzeNamedEntities
+from al_lib.PPTXCreateArchi import PPTXCreateArchil
 from al_RequirementAnalysis import Chunks
 from al_GapSimilarity import gapSimilarity
 from al_QueryGraph import queryGraph
