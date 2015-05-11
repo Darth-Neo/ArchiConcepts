@@ -1,6 +1,7 @@
 *.p
 al_Examples/*
 build/*
+test/*.p
 build/lib/al_ArchiLib/*
 dist/*
 tmp/*
