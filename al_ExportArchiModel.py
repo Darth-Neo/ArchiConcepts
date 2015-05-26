@@ -41,7 +41,7 @@ def exportArchiModel(fileArchimate, fileConceptsExport, model, fileCSVExport):
 
 if __name__ == u"__main__":
 
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CMS into ECM V4.archimate"
-    model = u"As-Is - BP Grouping"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v42.archimate"
+    model = u"AS400 Load"
 
     exportArchiModel(fileArchimate, fileConceptsExport, model, fileCSVExport)

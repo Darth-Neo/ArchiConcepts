@@ -34,6 +34,7 @@ from al_lib.PPTXCreateArchi import PPTXCreateArchil
 from al_RequirementAnalysis import Chunks
 from al_GapSimilarity import gapSimilarity
 from al_QueryGraph import queryGraph
+from al_ExportArchiIntoNeo4J import ExportArchimateIntoNeo4J
 
 import pytest
 
@@ -442,8 +443,45 @@ def test_AnalyzeGraph(cleandir, gdb):
 
     ag.analyzeNetworkX(None, fileConceptsExport)
 
+#
+# Export Archimate into Neo4j
+#
+@pytest.mark.Neo4J
+def test_ExportArchimateIntoNeo4J_DIR(cleandir, gdb):
+
+        subdirArchimate = "." + os.sep + u"test"
+
+        eain = ExportArchimateIntoNeo4J(gdb, fileArchimate=None, subdirArchimate=subdirArchimate, Reset=False)
+
+        eain.doDirectoryOfModels()
+
+        assert (os.path.isfile(fileConceptsExport) is True)
+
+
+#
+# Export Archimate into Neo4j
+#
+@pytest.mark.Neo4J
+def test_ExportArchimateIntoNeo4J_FILE(cleandir, gdb):
+
+        fileArchimate = "." + os.sep + u"test" + os.sep + u"Testing.archimate"
+
+        logger.info(u"Exporting : %s" % (fileArchimate))
+
+        eain = ExportArchimateIntoNeo4J(gdb, fileArchimate=fileArchimate, Reset=False)
+
+        # Export just Archimate Elements
+        eain.exportArchiElements()
+
+        # Export Archimate Diagram Models
+        eain.exportArchiDMS()
+
+        assert (os.path.isfile(fileConceptsExport) is True)
+
 def test_QueryGraph(cleandir, gdb):
     queryGraph(gdb)
+
+
 
 if __name__ == u"__main__":
     pass

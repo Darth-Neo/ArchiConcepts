@@ -43,36 +43,36 @@ class ExportArchimateIntoNeo4J (object):
 
     def __init__(self, gdb, fileArchimate=None, subdirArchimate=None, Reset=True):
 
-        if fileArchimate <> None:
-            self.fileArchimate = fileArchimate
-        else:
-            if subdirArchimate <> None:
-                self.subdirArchimate = subdirArchimate
-            else:
-                self.subdirArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/ExportIntoNeo4J"
-                self.fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CMS into ECM V4.archimate"
-
-        logger.info(u"Using : %s" % fileArchimate)
-        self.fileArchimate = fileArchimate
-
+        self.listRelations = list()
+        self.listModels    = list()
+        self.textExport = list()
+        self.errorNodes  = list()
 
         self.gdb = gdb
+
         logger.info(u"Neo4J instance : %s" % self.gdb)
         self.graph = neo4j.GraphDatabaseService(self.gdb)
 
-        self.al = ArchiLib(fileArchimate)
+        if fileArchimate <> None:
+            self.fileArchimate = fileArchimate
 
-        if Reset == True:
-            self.clearNeo4J()
+            logger.info(u"Using : %s" % fileArchimate)
+            self.fileArchimate = fileArchimate
+            self.al = ArchiLib(fileArchimate)
 
-        self.listRelations = list()
-        self.listModels    = list()
+            if Reset:
+                self.clearNeo4J()
 
-        self.listDiagramModels()
+            self.listDiagramModels()
 
-        self.textExport = list()
+        elif subdirArchimate <> None:
+            self.fileArchimate = None
+            self.subdirArchimate = subdirArchimate
 
-        self.errorNodes  = list()
+        else:
+            raise Exception
+
+
 
     #
     # Get all DiagramModels from Archimate XML
@@ -315,7 +315,7 @@ class ExportArchimateIntoNeo4J (object):
 
             if y.tag == u"content":
                 logger.debug(u"content : %s" % y.tag)
-                propu[u"content"] = self._cleanString(y.text)
+                prop[u"content"] = self._cleanString(y.text)
 
             #
             #  <property key="Comments " value="Align to complete after the Contact and Lead Management project
@@ -491,11 +491,11 @@ class ExportArchimateIntoNeo4J (object):
     def doDirectoryOfModels(self):
 
         if self.subdirArchimate == None:
-            return
+            raise Exception
 
         errors = list()
 
-        clearFlag = True
+        clearFlag = False
 
         numFilesParsed = 0
         for root, dirs, files in os.walk(self.subdirArchimate, topdown=True):
@@ -510,17 +510,23 @@ class ExportArchimateIntoNeo4J (object):
 
                     logger.info(u"Exporting : %s" % (nameFile))
 
-                    if clearFlag == True:
-                        eain = ExportArchimateIntoNeo4J(gdb, fileArchimate=nameFile, Reset=True)
-                        clearFlag = False
-                    else:
-                        eain = ExportArchimateIntoNeo4J(gdb, fileArchimate=nameFile, Reset=False)
+                    global fileArchimate
+
+                    fileArchimate=nameFile
+
+                    self.al = ArchiLib(fileArchimate)
+
+                    #if clearFlag == True:
+                    #    eain = ExportArchimateIntoNeo4J(self.gdb, fileArchimate=nameFile, Reset=True)
+                    #    clearFlag = False
+                    #else:
+                    #    eain = ExportArchimateIntoNeo4J(self.gdb, fileArchimate=nameFile, Reset=False)
 
                     # Export just Archimate Elements
-                    eain.exportArchiElements()
+                    self.exportArchiElements()
 
                     # Export Archimate Diagram Models
-                    eain.exportArchiDMS()
+                    self.exportArchiDMS()
 
                     # Create an export of all model relationships
                     #eain.exportCSV()
@@ -530,19 +536,34 @@ if __name__ == u"__main__":
 
     start_time = ArchiLib.startTimer()
 
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v40.archimate"
+    File_Only = True
 
-    logger.info(u"Exporting : %s" % (fileArchimate))
+    if File_Only:
+        LocalGBD  = u"http://localhost:7574/db/data/"
 
-    eain = ExportArchimateIntoNeo4J(gdb, fileArchimate=fileArchimate, Reset=True)
+        fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v43.archimate"
 
-    # Export just Archimate Elements
-    eain.exportArchiElements()
+        logger.info(u"Exporting : %s" % (fileArchimate))
 
-    # Export Archimate Diagram Models
-    eain.exportArchiDMS()
+        eain = ExportArchimateIntoNeo4J(LocalGBD, fileArchimate=fileArchimate, Reset=True)
 
-    # Create an export of all model relationships
-    #eain.exportCSV()
+        # Export just Archimate Elements
+        eain.exportArchiElements()
+
+        # Export Archimate Diagram Models
+        eain.exportArchiDMS()
+
+        # Create an export of all model relationships
+        #eain.exportCSV()
+    else:
+        global gdb
+
+        gdb = u"http://10.92.82.60:7574/db/data/"
+        subdirArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Library"
+
+        eain = ExportArchimateIntoNeo4J(gdb, fileArchimate=None, subdirArchimate=subdirArchimate, Reset=False)
+
+        eain.doDirectoryOfModels()
+
 
     ArchiLib.stopTimer(start_time)
