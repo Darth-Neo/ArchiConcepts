@@ -27,6 +27,6 @@ def dependancyAnalysisFromArchi(fileArchimate):
 
 if __name__ == "__main__":
 
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CMS into ECM V5.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v45.archimate"
 
     dependancyAnalysisFromArchi(fileArchimate)

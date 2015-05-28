@@ -13,7 +13,7 @@ from subprocess import call
 
 from al_lib.Logger import *
 logger = setupLogging(__name__)
-logger.setLevel(INFO)
+logger.setLevel(DEBUG)
 
 from al_lib.ArchiLib import ArchiLib
 from al_lib.Neo4JLib import Neo4JLib
@@ -270,7 +270,7 @@ class ExportArchimateIntoNeo4J (object):
 
         space = " " * self.nSpaces
 
-        logger.info("%s. :)" % space)
+        logger.info(u"%s. :)" % space)
 
     #
     # Add an Archimate Element to Neo4J
@@ -345,20 +345,30 @@ class ExportArchimateIntoNeo4J (object):
         #
         for k, v in prop.items():
 
+            if k is None or v is None:
+                continue
+
             if k == u"id":
                 logger.debug(u"k=%s\t V=%s" % (k, v))
                 ps = ps + u" a%s:\"%s\", " % (k, v)
-                continue
 
             elif k == u"name":
                 kk = self._cleanString(k)
-                logger.debug(u"k=%s\t V=%s" % (kk, v))
-                ps = ps + u" a%s:\"%s\", " % (kk, v)
-                continue
+                if len(kk) > 0 and len(v) > 0:
+                    logger.debug(u"k=%s\t V=%s" % (kk, v))
+                    ps = ps + u" a%s:\"%s\", " % (kk, v)
 
-            elif k <> ARCHI_TYPE:
-                logger.debug(u"k=%s\t V=%s" % (k, v))
-                ps = ps + u" %s:\"%s\", " % (k, v)
+            elif k == u"aname":
+                kk = self._cleanString(k)
+                if len(kk) > 0 and len(v) > 0:
+                    logger.debug(u"k=%s\t V=%s" % (kk, v))
+                    ps = ps + u" a%s:\"%s\", " % (kk, v)
+
+            elif k is not None and k <> ARCHI_TYPE:
+                kk = self._cleanString(k)
+                if len(kk) > 0 and len(v) > 0:
+                    logger.debug(u"k=%s\t V=%s" % (k, v))
+                    ps = ps + u" %s:\"%s\", " % (k, v)
 
         # remove the last comma
         ps = ps[:-2]
@@ -477,9 +487,10 @@ class ExportArchimateIntoNeo4J (object):
 
     def _cleanString(self, s):
 
-        if s == None:
+        if s is None:
             return ""
 
+        s = s.replace(os.linesep, " ")
         s = s.replace(u".", u"_")
         s = s.replace(u"-", u"_")
         s = s.replace(u"&", u"and")
@@ -541,7 +552,8 @@ if __name__ == u"__main__":
     if File_Only:
         LocalGBD  = u"http://localhost:7574/db/data/"
 
-        fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v43.archimate"
+        #fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v46.archimate"
+        fileArchimate = os.getcwd() + os.sep + u"import_artifacts.archimate"
 
         logger.info(u"Exporting : %s" % (fileArchimate))
 

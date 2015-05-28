@@ -44,10 +44,10 @@ def ImportCSVIntoArchi(fileArchimate, folder, fileMetaEntity):
     ArchiLib.stopTimer(start_time)
 
 if __name__ == u"__main__":
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v44.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v47.archimate"
 
-    fileMetaEntity = u"LANSA.csv"
-    folder = u"All Processes Data Analysis"
+    fileMetaEntity = u"LAT_export_sections.csv" # LANSA.csv"
+    folder = u"V3 All Processes Data Analysis"
 
     logger.info(u"dir : %s" % os.getcwd())
     ImportCSVIntoArchi(fileArchimate, folder, fileMetaEntity)
