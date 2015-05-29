@@ -3,8 +3,8 @@
 #
 # Export Archimate into Neo4J
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.3'
+__author__ = u'morrj140'
+__VERSION__ = u'0.3'
 import os
 import sys
 import time
@@ -13,7 +13,7 @@ from subprocess import call
 
 from al_lib.Logger import *
 logger = setupLogging(__name__)
-logger.setLevel(DEBUG)
+logger.setLevel(INFO)
 
 from al_lib.ArchiLib import ArchiLib
 from al_lib.Neo4JLib import Neo4JLib
@@ -22,12 +22,12 @@ from al_lib.Constants import *
 from py2neo import neo4j, node, rel
 
 from sys import platform as _platform
-if _platform == "linux" or _platform == "linux2":
+if _platform == u"linux" or _platform == u"linux2":
     resetNeo4J = u"/home/james.morris/bin/reset.sh"
-elif _platform == "darwin":
+elif _platform == u"darwin":
     resetNeo4J = u"/Users/morrj140/Development/neo4j/bin/reset.sh"
-elif _platform == "win32":
-    resetNeo4J = "n/a"
+elif _platform == u"win32":
+    resetNeo4J = u"n/a"
 
 class ExportArchimateIntoNeo4J (object):
     listModels    = None
@@ -481,7 +481,7 @@ class ExportArchimateIntoNeo4J (object):
 
         m = 0
         for x in self.textExport:
-            f.write(u"%s\n" % x)
+            f.write("%s%s" % (x, os.linesep))
 
         f.close()
 
@@ -552,8 +552,8 @@ if __name__ == u"__main__":
     if File_Only:
         LocalGBD  = u"http://localhost:7574/db/data/"
 
-        #fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v46.archimate"
-        fileArchimate = os.getcwd() + os.sep + u"import_artifacts.archimate"
+        fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v47.archimate"
+        #fileArchimate = os.getcwd() + os.sep + u"import_artifacts.archimate"
 
         logger.info(u"Exporting : %s" % (fileArchimate))
 

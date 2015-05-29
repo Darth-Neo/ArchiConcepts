@@ -47,7 +47,7 @@ if __name__ == u"__main__":
     fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v47.archimate"
 
     fileMetaEntity = u"LAT_export_sections.csv" # LANSA.csv"
-    folder = u"V3 All Processes Data Analysis"
+    folder = u"V4 All Processes Data Analysis"
 
     logger.info(u"dir : %s" % os.getcwd())
     ImportCSVIntoArchi(fileArchimate, folder, fileMetaEntity)
