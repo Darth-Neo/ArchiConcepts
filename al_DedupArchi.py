@@ -5,39 +5,36 @@
 __author__ = u'morrj140'
 __VERSION__ = u'0.3'
 
-from al_ArchiLib.Logger import *
+from al_lib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
-from nl_lib.Concepts import Concepts
-
+from al_lib.DedupArchimateXML import *
 from al_lib.ArchiLib import ArchiLib
 from al_lib.Constants import *
 
-def dedupArchi(fileArchimate):
+def dedupArchi(fileArchimate, fileOutput=u"deduped.archimate"):
 
     al = ArchiLib(fileArchimate)
 
-    al.logTypeCounts()
+    ae = al.findElements()
 
-    p, fname = os.path.split(fileArchimate)
-    logger.info(u"Using : %s" % fileArchimate)
+    logger.info(u"Length : %d" % len(ae))
 
-    concepts = Concepts(fname, u"Archimate")
+    dupElements = findDups(ae)
 
-    al.folderConcepts(concepts)
+    tde = logDupElements(dupElements)
 
-    # concepts.logConcepts()
+    replaceDuplicateElements(al, tde)
 
-    # Concepts.saveConcepts(concepts, fileConceptsDeDups)
+    replaceDuplicateProperties(al)
 
-    #
-    # Generate Archimate from Concepts
-    #
-    output = al.createArchimate(fileArchimateModel, fileConceptsArch)
+    al.outputXMLtoFile(fileOutput)
 
 if __name__ == u"__main__":
 
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/CMS into ECM V5.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v50.archimate"
 
-    dedupArchi(fileArchimate)
+    fileOutput = u"deduped.archimate"
+
+    dedupArchi(fileArchimate, fileOutput=u"deduped.archimate")
