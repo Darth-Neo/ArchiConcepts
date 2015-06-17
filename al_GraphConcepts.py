@@ -5,50 +5,51 @@
 __author__ = u'morrj140'
 __VERSION__ = u'0.3'
 
+import os
 from al_lib.Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
 from nl_lib.Concepts import Concepts
-from nl_lib.ConceptGraph import PatternGraph, GraphVizGraph
+from nl_lib.ConceptGraph import PatternGraph, GraphVizGraph, NetworkXGraph
 
 from al_lib.Constants import *
 from al_lib.ArchiLib import ArchiLib
-from al_lib.ConceptsGraph import ConceptsGraph
 
-
-def graphConcepts(conceptFile, fileImageExport):
+def graphConcepts(conceptFile):
 
     start_time = ArchiLib.startTimer()
 
-    c = Concepts(u"GraphConcepts", u"GRAPH")
     concepts = Concepts.loadConcepts(conceptFile)
-
-    # c.logConcepts()
+    # concepts.logConcepts()
 
     # graph = PatternGraph()
     graph = GraphVizGraph()
+    # graph = NetworkXGraph(conceptFile[:-2]+u".png")
 
-    cg = ConceptsGraph(graph=graph, fileImage=fileImageExport)
+    graph.addGraphNodes(concepts)
+    graph.addGraphEdges(concepts)
 
-    cg.conceptsGraph(concepts)
+    if isinstance(graph, NetworkXGraph):
+        graph.saveJSON(concepts)
+
+    if isinstance(graph, GraphVizGraph):
+        graph.exportGraph()
+
+    if isinstance(graph, PatternGraph):
+        graph.exportGraph()
 
     ArchiLib.stopTimer(start_time)
 
 if __name__ == u"__main__":
-    # conceptFile = u"documents.p"
-    # conceptFile = u"words.p"
-    # conceptFile = u"NVPChunks.p"
-    # conceptFile = u"chunks.p"
-    # conceptFile = u"topicsDict.p"
-    # conceptFile = u"TopicChunks.p"
-    # conceptFile = u"ngrams.p"
-    # conceptFile = u"ngramscore.p"
-    conceptFile = u"ngramsubject.p"
-    # conceptFile = u"archi.p"
-    # conceptFile = u"batches.p"
 
-    graphConcepts(conceptFile, fileImageExport)
+    logger.info(u"%s" % os.getcwd())
+    # os.chdir(u"." + os.sep + u"run")
+
+    conceptFile = os.getcwd() + os.sep + u"archi.p"
+
+    graphConcepts(conceptFile)
+
 
 
 
