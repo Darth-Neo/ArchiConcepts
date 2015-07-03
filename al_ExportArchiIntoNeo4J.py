@@ -1,5 +1,4 @@
-
-#!/usr/bin/python
+#! /usr/bin/python
 #
 # Export Archimate into Neo4J
 #
@@ -8,7 +7,6 @@ __VERSION__ = u'0.3'
 import os
 import sys
 import time
-from traceback import format_exc
 from subprocess import call
 
 from al_lib.Logger import *
@@ -19,15 +17,10 @@ from al_lib.ArchiLib import ArchiLib
 from al_lib.Neo4JLib import Neo4JLib
 from al_lib.Constants import *
 
+from al_Constants import *
+
 from py2neo import neo4j, node, rel
 
-from sys import platform as _platform
-if _platform == u"linux" or _platform == u"linux2":
-    resetNeo4J = u"/home/james.morris/bin/reset.sh"
-elif _platform == u"darwin":
-    resetNeo4J = u"/Users/morrj140/Development/neo4j/bin/reset.sh"
-elif _platform == u"win32":
-    resetNeo4J = u"n/a"
 
 class ExportArchimateIntoNeo4J (object):
     listModels    = None
@@ -53,7 +46,7 @@ class ExportArchimateIntoNeo4J (object):
         logger.info(u"Neo4J instance : %s" % self.gdb)
         self.graph = neo4j.GraphDatabaseService(self.gdb)
 
-        if fileArchimate <> None:
+        if fileArchimate is not None:
             self.fileArchimate = fileArchimate
 
             logger.info(u"Using : %s" % fileArchimate)
@@ -65,13 +58,12 @@ class ExportArchimateIntoNeo4J (object):
 
             self.listDiagramModels()
 
-        elif subdirArchimate <> None:
+        elif subdirArchimate is not None:
             self.fileArchimate = None
             self.subdirArchimate = subdirArchimate
 
         else:
             raise Exception
-
 
 
     #
@@ -90,7 +82,7 @@ class ExportArchimateIntoNeo4J (object):
 
     def exportArchiElements(self):
 
-        logger.debug(u"Export Archimate Elements")
+        logger.info(u"Export Archimate Elements")
 
         n = 0
 
@@ -116,9 +108,8 @@ class ExportArchimateIntoNeo4J (object):
                     tgtElm  = self.al.findElementByID(tid)[0]
 
                     self.addRelation(srcElm, tgtElm, x.get(ARCHI_TYPE)[10:])
-            except:
-                em = format_exc()
-                logger.warn(u"Something is not present : %s" % (em))
+            except Exception, msg:
+                logger.warn(u"Something is not present : %s" % (msg))
 
         logger.info(u"Exported %d Elements" % n)
     #
@@ -146,7 +137,11 @@ class ExportArchimateIntoNeo4J (object):
         # Find DiagramModel and add to Neo4j
         #
         element = self.al.findDiagramModelByName(model)
-        logger.debug(u"Model : %s[%s]" % (model, element.get(u"id")))
+
+        if element is None:
+            return
+
+        logger.info(u"Model : %s[%s]" % (model, element.get(u"id")))
         self.addElement(element)
         parentPath = self.getParentPath(element)
         model = u"%s/%s" % (parentPath, model)
@@ -157,14 +152,13 @@ class ExportArchimateIntoNeo4J (object):
         # Iterate through DiagramObject's
         #
         for x in list(element):
-            logger.debug(u"DO[%s] - %s[%s]" % (x.tag, x.get(u"id"), x.get(u"archimateElement")))
+            logger.info(u"DO[%s] - %s[%s]" % (x.tag, x.get(u"id"), x.get(u"archimateElement")))
 
             if x.get(ARCHI_TYPE) != u"archimate:Note":
                 try:
                     self.textExport.append(u"%s,%s,%s,%s" % (nmodel, x.get(u"name"), x.get(ARCHI_TYPE)[10:], u"ModelObject"))
-                except:
-                    em = format_exc()
-                    logger.warn(u"Warning: %s" % (em))
+                except Exception, msg:
+                    logger.warn(u"Something is not present : %s" % (msg))
                     continue
 
                 self.addElement(x)
@@ -175,9 +169,8 @@ class ExportArchimateIntoNeo4J (object):
 
                 try:
                     aeid = self.al.findElementByID(xid)[0]
-                except:
-                    em = format_exc()
-                    logger.warn(u"aeid[0] not present : %s" % (em))
+                except Exception, msg:
+                    logger.warn(u"Something is not present : %s" % (msg))
                     continue
 
                 logger.debug(u"  AE - %s : %s[%s]" % (aeid.get(u"name"), aeid.tag, aeid.get(ARCHI_TYPE)))
@@ -257,9 +250,9 @@ class ExportArchimateIntoNeo4J (object):
                         self.addElement(relElm)
 
                         self.addRelation(srcElm, tgtElm, rid)
-                except:
-                    em = format_exc()
-                    logger.warn(u"Warning: %s" % (em))
+                except Exception, msg:
+                    logger.warn(u"Something is not present : %s" % (msg))
+
 
     def _progress(self):
         if self.nSpaces < self.nMax:
@@ -287,20 +280,20 @@ class ExportArchimateIntoNeo4J (object):
         x.attrib[u"parentPath"] = self.getParentPath(x)
 
         ps = ""
-        if x.get(ARCHI_TYPE) != None:
+        if x.get(ARCHI_TYPE) is not None:
             typeName = x.get(ARCHI_TYPE)[10:]
         else:
             typeName = x.tag
 
-        if x.attrib == None:
+        if x.attrib is None:
             prop = dict()
         else:
             prop = x.attrib
 
-        if x.text != None:
+        if x.text is not None:
             prop[u"text"] = self._cleanString(x.text)
 
-        if x.tag != None:
+        if x.tag is not None:
             prop[u"tag"] = x.tag
 
         #
@@ -329,9 +322,9 @@ class ExportArchimateIntoNeo4J (object):
                     logger.debug(u"k[v] : %s[%s]" % (key, value))
                     prop[key] = value
 
-                except:
-                    em = format_exc()
-                    logger.warn(u"Warning: %s" % (em))
+                except Exception, msg:
+                    logger.warn(u"Something is not present : %s" % (msg))
+
 
 
         # updateTime = time.time()
@@ -435,9 +428,8 @@ class ExportArchimateIntoNeo4J (object):
             qs = u"CREATE INDEX ON :%s (aid)" % (typeName)
             logger.debug(u"Index :" + qs)
             query = self.cypherQuery(qs)
-        except:
-            em = format_exc()
-            logger.warn(u"Warning: %s" % (em))
+        except Exception, msg:
+                logger.warn(u"Something is not present : %s" % (msg))
 
     def dropAllIndexes(self):
         for t in entities:
@@ -448,17 +440,15 @@ class ExportArchimateIntoNeo4J (object):
             qs = u"DROP INDEX ON :%s (name)" % (typeName)
             logger.debug(u"Index :" + qs)
             query = self.cypherQuery(qs)
-        except:
-            em = format_exc()
-            logger.warn(u"Warning: %s" % (em))
+        except Exception, msg:
+            logger.warn(u"Warning: %s" % (msg))
 
     def cypherQuery(self, qs):
         try:
             query = neo4j.CypherQuery(self.graph, qs)
             return query.execute().data
-        except:
-            em = format_exc()
-            logger.warn(u"Warning: %s" % (em))
+        except Exception, msg:
+            logger.warn(u"Warning: %s" % (msg))
             return None
 
     #
@@ -469,7 +459,7 @@ class ExportArchimateIntoNeo4J (object):
 
         parent = element.getparent()
 
-        while parent != None:
+        while parent is not None:
             ps = u"/%s" % parent.get(u"name") + ps
             parent = parent.getparent()
 
@@ -496,7 +486,7 @@ class ExportArchimateIntoNeo4J (object):
         s = s.replace(u"&", u"and")
         s = s.replace(u"/", u"_")
         s = s.replace(u"\"", u"'")
-
+        s = s.replace(u"\"\"", u" ")
         return s.lstrip(" ").rstrip(" ")
 
     def doDirectoryOfModels(self):
@@ -550,10 +540,9 @@ if __name__ == u"__main__":
     File_Only = True
 
     if File_Only:
-        LocalGBD  = u"http://localhost:7574/db/data/"
-
-        fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v47.archimate"
-        #fileArchimate = os.getcwd() + os.sep + u"import_artifacts.archimate"
+        LocalGBD  = u"http://localhost:7474/db/data/"
+        fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC V2.8.archimate"
+        # fileArchimate = os.getcwd() + os.sep + u"import_artifacts.archimate"
 
         logger.info(u"Exporting : %s" % (fileArchimate))
 
