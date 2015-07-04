@@ -7,9 +7,9 @@ __VERSION__ = u'0.3'
 
 from al_lib.Logger import *
 logger = setupLogging(__name__)
-logger.setLevel(INFO)
+logger.setLevel(DEBUG)
 
-from al_lib.Constants import *
+from al_Constants import *
 from al_lib.ArchiLib import ArchiLib
 from al_lib.ExportModel import ExportArchiModel
 
@@ -21,18 +21,6 @@ def exportArchiModel(fileArchimate, fileConceptsExport, model, fileCSVExport):
     eam = ExportArchiModel(fileArchimate, fileConceptsExport, fileCSVExport)
 
     listMTE = list()
-    #listMTE.append("5. Contract Management")
-    #listMTE.append("4. Contract Prep")
-    #listMTE.append("1. Inventory Management")
-    #listMTE.append("1. Resort Setup")
-    #listMTE.append("4. Proposal Presentation")
-    #listMTE.append("5. Contract Presentation")
-    #listMTE.append("6. Contract Closing")
-
-    #listMTE.append("All Scenarios")
-    #listMTE.append("Business Concepts")
-    #listMTE.append("System of Record")
-
     listMTE.append(model)
 
     eam.exportArchiModel(listMTE)
@@ -41,7 +29,8 @@ def exportArchiModel(fileArchimate, fileConceptsExport, model, fileCSVExport):
 
 if __name__ == u"__main__":
 
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v42.archimate"
-    model = u"AS400 Load"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v2.12.archimate"
+
+    model = u"As-Is Financial Transactions"
 
     exportArchiModel(fileArchimate, fileConceptsExport, model, fileCSVExport)

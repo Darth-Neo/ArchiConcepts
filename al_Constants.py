@@ -16,6 +16,14 @@ RemoteGDB = u"http://10.92.82.60:7574/db/data/"
 gdb = LocalGBD
 gdbTest = LocalGBD
 
+from sys import platform as _platform
+if _platform == u"linux" or _platform == u"linux2":
+    resetNeo4J = u"/home/james.morris/bin/reset.sh"
+elif _platform == u"darwin":
+    resetNeo4J = u"/Users/morrj140/Development/neo4j1/bin/reset.sh"
+elif _platform == u"win32":
+    resetNeo4J = u"n/a"
+
 #
 # Archimate XML
 #
@@ -29,7 +37,7 @@ ARCHI_TYPE = u"{%s}type" % NS_MAP[u"xsi"]
 #
 dirTest = os.getcwd() + os.sep + u"test" + os.sep
 dirRun = os.getcwd() + os.sep
-directory = dirTest
+directory = dirRun
 
 
 fileArchimateTest   = dirTest + u"Testing.archimate"

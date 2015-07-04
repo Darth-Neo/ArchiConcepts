@@ -2,8 +2,8 @@
 #
 # Archimate to Concepts
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.3'
+__author__ = u'morrj140'
+__VERSION__ = u'0.3'
 
 from al_lib.Logger import *
 logger = setupLogging(__name__)
@@ -27,7 +27,7 @@ import pytest
 #
 
 
-def ImportCSVIntoArchi(fileArchimate, folder, fileMetaEntity):
+def ImportCSVIntoArchi(fileArchimate, folder, subfolder, fileMetaEntity):
 
     start_time = ArchiLib.startTimer()
 
@@ -37,17 +37,18 @@ def ImportCSVIntoArchi(fileArchimate, folder, fileMetaEntity):
     al.logTypeCounts()
 
     # insertNColumns(self, folder, subfolder, fileMetaEntity):
-    al.insertNColumns(u"Application", folder, fileMetaEntity)
+    al.insertNColumns(folder, subfolder, fileMetaEntity)
 
     al.outputXMLtoFile()
 
     ArchiLib.stopTimer(start_time)
 
 if __name__ == u"__main__":
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v47.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v54.archimate"
 
-    fileMetaEntity = u"LAT_export_sections.csv" # LANSA.csv"
-    folder = u"V4 All Processes Data Analysis"
+    fileMetaEntity = u"MasterUseCaseListingforVendorEvaluation_6-4-15.csv"
+    folder = u"Business"
+    subfolder = u"V4 All Use Cases"
 
     logger.info(u"dir : %s" % os.getcwd())
-    ImportCSVIntoArchi(fileArchimate, folder, fileMetaEntity)
+    ImportCSVIntoArchi(fileArchimate, folder, subfolder, fileMetaEntity)
