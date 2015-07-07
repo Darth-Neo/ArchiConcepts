@@ -541,7 +541,7 @@ if __name__ == u"__main__":
 
     if File_Only:
         LocalGBD  = u"http://localhost:7474/db/data/"
-        fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC V2.8.archimate"
+        fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC V2.15.archimate"
         # fileArchimate = os.getcwd() + os.sep + u"import_artifacts.archimate"
 
         logger.info(u"Exporting : %s" % (fileArchimate))
