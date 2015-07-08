@@ -12,7 +12,7 @@ Rp4
 (dp5
 S'count'
 p6
-I1
+I0
 sS'typeName'
 p7
 S'Subjects'

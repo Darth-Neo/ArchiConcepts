@@ -2,8 +2,8 @@
 #
 # Query Neo4J Via REST Calls
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.3'
+__author__ = u'morrj140'
+__VERSION__ = u'0.3'
 
 import urllib2
 import time
@@ -18,66 +18,61 @@ logger.setLevel(INFO)
 
 # Example : http://localhost:7474/db/data/node/1
 
+# Connection Info
+server = u"localhost:7474"
+
 NEO4J_REST = {
-  "extensions": {},
-  "node": "http://localhost:7474/db/data/node",
-  "node_index": "http://localhost:7474/db/data/index/node",
-  "relationship_index": "http://localhost:7474/db/data/index/relationship",
-  "extensions_info": "http://localhost:7474/db/data/ext",
-  "relationship_types": "http://localhost:7474/db/data/relationship/types",
-  "batch": "http://localhost:7474/db/data/batch",
-  "cypher": "http://localhost:7474/db/data/cypher",
-  "indexes": "http://localhost:7474/db/data/schema/index",
-  "constraints": "http://localhost:7474/db/data/schema/constraint",
-  "transaction": "http://localhost:7474/db/data/transaction",
-  "node_labels": "http://localhost:7474/db/data/labels",
-  "neo4j_version": "2.1.2"
+  u"extensions": {},
+  u"node": server + u"/db/data/node",
+  u"node_index": server + u"/db/data/index/node",
+  u"relationship_index": server + u"/db/data/index/relationship",
+  u"extensions_info": server + u"/db/data/ext",
+  u"relationship_types": server + u"/db/data/relationship/types",
+  u"batch": server + u"/db/data/batch",
+  u"cypher": server + u"/db/data/cypher",
+  u"indexes": server + u"/db/data/schema/index",
+  u"constraints": server + u"/db/data/schema/constraint",
+  u"transaction": server + u"/db/data/transaction",
+  u"node_labels": server + u"/db/data/labels",
+  u"neo4j_version": u"2.1.2"
 }
 
-if __name__ == "__main__":
-
-    # Connection Info
-    server = "localhost:7474"
-
+if __name__ == u"__main__":
     # node
     nodeID = 1
 
-    actionGet = "GET"
-    actionPost = "POST"
-    actionPut = "PUT"
+    actionGet = u"GET"
+    actionPost = u"POST"
+    actionPut = u"PUT"
     action = actionGet
 
-    headers = {"Content-type": "application/json;", "Accept" : "application/json; charset=UTF-8"}
+    headers = {u"Content-type": u"application/json;", u"Accept": u"application/json; charset=UTF-8"}
 
     # Queries
-    serviceRoot = "/db/data"
-    nodeQuery = "%s/node/%d" % (serviceRoot, nodeID)
-    nodeInstance = "%s/node" % (serviceRoot)
-    nodeProperties = nodeQuery + "/properties/aname"
-    nodePropKeys = "%s/propertykeys" % serviceRoot
-    nodeDegree = "%s/node/%d/degree/all" % (serviceRoot, nodeID)
+    serviceRoot = u"/db/data"
+    nodeQuery = u"%s/node/%d" % (serviceRoot, nodeID)
+    nodeInstance = u"%s/node" % (serviceRoot)
+    nodeProperties = u"%s%s" % (nodeQuery,  u"/properties/typeName")
+    nodePropKeys = u"%s/propertykeys" % serviceRoot
+    nodeDegree = u"%s/node/%d/degree/all" % (serviceRoot, nodeID)
 
-    if False:
-        params = urllib.urlencode({ 'query' : 'MATCH n:BusinessProcess return n.aname', 'params' : {}})
-        cypherQuery = "%s/cypher" % serviceRoot
+    params = urllib.urlencode({ u'query': u'MATCH (n) return n.typeName limit 50', u'params': {}})
+    cypherQuery = u"%s/cypher" % serviceRoot
 
-    params = urllib.urlencode({ "typeName" : "BusinessProcess"})
+    params = urllib.urlencode({u"typeName": u"Library"})
 
     uri = nodeDegree
 
-    logger.info("Using : http://%s" % server)
-    logger.info("      params : %s" % params)
-
+    logger.info(u"Using : http://%s" % server)
+    logger.info(u"      params : %s" % params)
     connection = httplib.HTTPConnection(server)
-
     connection.request(action, uri, params, headers)
-
     response = connection.getresponse()
 
-    logger.info("Result %s : %s" % (response.status, response.reason))
+    logger.info(U"Result Status %s : %s" % (response.status, response.reason))
 
     result = response.read()
 
-    logger.info("response: %s" % result)
+    logger.info(u"response: %s" % result)
 
     connection.close()

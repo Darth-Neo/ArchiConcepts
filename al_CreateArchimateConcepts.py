@@ -34,10 +34,10 @@ def createArchimateConcepts(fileArchimate, fileConceptsArch):
     #
     # Generate Archimate from Concepts
     #
-    #al.createArchimate(fileArchimate, fileConceptsArch)
+    # al.createArchimate(fileArchimate, fileConceptsArch)
 
 if __name__ == u"__main__":
 
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v40.archimate"
+    fileArchimate = u"/home/james.morris/local/Archi/examples/Archisurance.archimate"
 
     createArchimateConcepts(fileArchimate, fileConceptsArch)
