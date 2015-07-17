@@ -29,8 +29,8 @@ def exportArchiModel(fileArchimate, fileConceptsExport, model, fileCSVExport):
 
 if __name__ == u"__main__":
 
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v2.15.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v2.17.archimate"
 
-    model = u"To-Be - Revenue Recognition - Application Context"
+    model = u"To-Be - Decision Points"
 
     exportArchiModel(fileArchimate, fileConceptsExport, model, fileCSVExport)

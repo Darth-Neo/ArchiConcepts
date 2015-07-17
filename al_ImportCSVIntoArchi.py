@@ -26,7 +26,6 @@ import pytest
 # child2 = etree.SubElement(root, "child2")
 #
 
-
 def ImportCSVIntoArchi(fileArchimate, folder, subfolder, fileMetaEntity):
 
     start_time = ArchiLib.startTimer()
@@ -44,11 +43,11 @@ def ImportCSVIntoArchi(fileArchimate, folder, subfolder, fileMetaEntity):
     ArchiLib.stopTimer(start_time)
 
 if __name__ == u"__main__":
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v54.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v2.17.archimate"
 
-    fileMetaEntity = u"MasterUseCaseListingforVendorEvaluation_6-4-15.csv"
-    folder = u"Business"
-    subfolder = u"V4 All Use Cases"
+    fileMetaEntity = u"%s%sjournalEntries.csv" % (os.getcwd(), os.sep)
+    folder = u"Application"
+    subfolder = u"Journal Entries"
 
     logger.info(u"dir : %s" % os.getcwd())
     ImportCSVIntoArchi(fileArchimate, folder, subfolder, fileMetaEntity)
