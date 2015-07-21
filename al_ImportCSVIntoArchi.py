@@ -33,21 +33,32 @@ def ImportCSVIntoArchi(fileArchimate, folder, subfolder, fileMetaEntity):
     logger.info(u"Using : %s" % fileArchimate)
     al = ArchiLib(fileArchimate)
 
-    al.logTypeCounts()
+    listCounts = al.logTypeCounts(ListOnly=True)
 
     # insertNColumns(self, folder, subfolder, fileMetaEntity):
     al.insertNColumns(folder, subfolder, fileMetaEntity)
 
     al.outputXMLtoFile()
 
+    logger.info(u"Encountered %d errors" % len(al.listError))
+
+    fileArchimate = u"import_artifacts.archimate"
+    nal = ArchiLib(fileArchimate)
+    newListCounts = nal.logTypeCounts(ListOnly=True)
+
+    for a, b in zip(listCounts, newListCounts):
+        if a[1] == b[1]:
+            continue
+        logger.info(u"%3d-%3d-%3d Added %s" % (b[1], a[1], (b[1] - a[1]), b[0]))
+
     ArchiLib.stopTimer(start_time)
 
 if __name__ == u"__main__":
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v2.17.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/WDW Cast v1.1.archimate"
 
-    fileMetaEntity = u"%s%sjournalEntries.csv" % (os.getcwd(), os.sep)
-    folder = u"Application"
-    subfolder = u"Journal Entries"
+    fileMetaEntity = u"%s%sCast Experience Prioritized User Stories(1).csv" % (os.getcwd(), os.sep)
+    folder = u"Business"
+    subfolder = u"WDW Cast User Stories"
 
     logger.info(u"dir : %s" % os.getcwd())
     ImportCSVIntoArchi(fileArchimate, folder, subfolder, fileMetaEntity)

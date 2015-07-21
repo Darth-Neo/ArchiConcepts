@@ -97,7 +97,6 @@ relations = {u"TriggeringRelationship" : u"archimate:TriggeringRelationship",
                     u"AssociationRelationship" : u"archimate:AssociationRelationship",
                     u"RealisationRelationship" : u"archimate:RealisationRelationship",
                     u"CompositionRelationship" : u"archimate:CompositionRelationship",
-                    u"AssignmentRelationship" : u"archimate:AssignmentRelationship",
                     u"AggregationRelationship": u"archimate:AggregationRelationship",
                     u"SpecialisationRelationship" : u"archimate:SpecialisationRelationship"}
 
@@ -114,6 +113,17 @@ entities = {u"BusinessEvent" : u"archimate:BusinessEvent",
             u"Requirement" : u"archimate:Requirement",
             u"Stakeholder" : u"archimate:Stakeholder",
             u"WorkPackage"  : u"archimate:WorkPackage"}
+
+entityFolders = {u"BusinessEvent" : u"Business",
+            u"BusinessObject" : u"Business",
+            u"BusinessProcess" : u"Business",
+            u"ApplicationService" : u"Application",
+            u"ApplicationComponent" : u"Application",
+            u"ApplicationFunction" : u"Application",
+            u"DataObject" : u"Application",
+            u"Requirement" : u"Motivation",
+            u"Stakeholder" : u"Motivation",
+            u"WorkPackage" : u"Motivation"}
 
 folders = {u"Business", u"Application", u"Technology", u"Motivation", u"Implementation & Migration", u"Connectors", u"Relations" }
 

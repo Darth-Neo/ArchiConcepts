@@ -13,7 +13,7 @@ def outputSoup(soup, filename=u"index.html"):
 
 if __name__ == u"__main__":
 
-    dirHTML = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC2.17/"
+    dirHTML = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC2.18/"
     fileHTML = u"model.html"
     indexHTML = dirHTML + u"index.html"
 
