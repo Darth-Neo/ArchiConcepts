@@ -43,13 +43,26 @@ if __name__ == u"__main__":
     attrib[ARCHI_TYPE] = u"archimate:AssociationRelationship"
     R_ID = dm.createArchimateRelations(tag, folder, attrib)
 
+    #
+    # Bounds
+    #
     nl = list()
     nl.append(AE_ID_1)
+    bounds = dict()
+    bounds[u"x"] = u"181"
+    bounds[u"y"] = u"129"
+    nl.append(bounds)
+
     nl.append(AE_ID_2)
+    bounds = dict()
+    bounds[u"x"] = u"62"
+    bounds[u"y"] = u"75"
+    nl.append(bounds)
     nl.append(R_ID)
+
     elements.append(nl)
 
     dm.drawModel(elements)
 
-    dm.outputXMLtoFile()
+    dm.outputXMLtoFile(filename=u"dm.archimate")
 

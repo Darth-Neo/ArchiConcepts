@@ -25,6 +25,9 @@ class DrawModels(object):
     n = None
     al = None
 
+    width = u"120"
+    height = u"55"
+
     def __init__(self, fileArchimate):
         self.fileAchimate = fileArchimate
         self.n = 0
@@ -82,15 +85,15 @@ class DrawModels(object):
                 raise LookupError(u"Ops")
 
     # <child
-    #   xsi:type="archimate:DiagramObject"
-    #   id="ffc36ce0"
-    #   lineColor="#000000"
-    #   textAlignment="2"
-    #   fillColor="#00ffff"
-    #   archimateElement="4b326945">
+    #     xsi:type="archimate:DiagramObject"
+    #     id="ffc36ce0"
+    #     lineColor="#000000"
+    #     textAlignment="2"
+    #     fillColor="#00ffff"
+    #     archimateElement="4b326945">
     #  </child>
 
-    def createDiagramObject(self, DMO, AE_ID):
+    def createDiagramObject(self, DMO, AE_ID, Bounds):
 
         tag = u"child"
         attrib = dict()
@@ -112,14 +115,16 @@ class DrawModels(object):
             logger.error(u"Diagram Object Not Found")
             raise LookupError(u"Ops")
 
+        self.createBounds(DOE, Bounds)
+
         return DOE
 
     #
     # Create Bounds in DiagramObject
     # Example:
-    # <bounds
-    # x="162" y="175"
-    # width="120" height="55"
+    #     <bounds
+    #     x="162" y="175"
+    #     width="120" height="55"
     # />
     def createBounds(self, DOE, attrib):
 
@@ -130,13 +135,13 @@ class DrawModels(object):
     #
     # Create SourceConnections
     # Example:
-    # <sourceConnection
-    # xsi:type="archimate:Connection"
-    # id="592e8439"
-    # lineColor="#b1b1b1"
-    # source="4b59249d"
-    # target="c3fd7d30"
-    # relationship="27d1a38d"/>
+    #     <sourceConnection
+    #     xsi:type="archimate:Connection"
+    #     id="592e8439"
+    #     lineColor="#b1b1b1"
+    #     source="4b59249d"
+    #     target="c3fd7d30"
+    #     relationship="27d1a38d"/>
 
     def createConnection(self, DOE1, DOE2, R_ID):
 
@@ -177,7 +182,7 @@ class DrawModels(object):
     #
     def drawModel(self, elements):
 
-        for AE_ID_1, AE_ID_2, R_ID in elements:
+        for AE_ID_1, b1, AE_ID_2, b2, R_ID in elements:
             #
             # Diagram Model
             #
@@ -188,27 +193,30 @@ class DrawModels(object):
             #
 
             # <bounds x="181" y="129" width="120" height="55"/>
-            DOE1 = self.createDiagramObject(DMO, AE_ID_1)
-            attrib = dict()
-            attrib[u"x"] = u"181"
-            attrib[u"y"] = u"129"
-            attrib[u"width"] = u"120"
-            attrib[u"height"] = u"55"
-            self.createBounds(DOE1, attrib)
+            bounds = dict()
+            bounds[u"x"] = b1[u"x"]
+            bounds[u"y"] = b1[u"y"]
+            bounds[u"width"] = self.width
+            bounds[u"height"] = self.height
+
+            DOE1 = self.createDiagramObject(DMO, AE_ID_1, bounds)
+            #self.createBounds(DOE1, bounds)
 
             # <bounds x="62" y="75" width="120" height="55"/>
-            DOE2 = self.createDiagramObject(DMO, AE_ID_2)
-            attrib = dict()
-            attrib[u"x"] = u"62"
-            attrib[u"y"] = u"75"
-            attrib[u"width"] = u"120"
-            attrib[u"height"] = u"55"
-            self.createBounds(DOE2, attrib)
+            bounds = dict()
+            bounds[u"x"] = b2[u"x"]
+            bounds[u"y"] = b2[u"y"]
+            bounds[u"width"] = self.width
+            bounds[u"height"] = self.height
+
+            DOE2 = self.createDiagramObject(DMO, AE_ID_2, bounds)
+            # self.createBounds(DOE2, bounds)
 
             self.createConnection(DOE1, DOE2, R_ID)
 
+
     def outputXMLtoFile(self, filename=u"DiagramModeling.archimate"):
-        self.al.outputXMLtoFile()
+        self.al.outputXMLtoFile(filename)
 
         ArchiLib.stopTimer(self.start_time)
 
@@ -221,11 +229,13 @@ if __name__ == u"__main__":
     fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/test.archimate"
 
     dm = DrawModels(fileArchimate)
-    elements = list()
 
     #
     # Elements
     #
+
+    elements = list()
+
     tag = u"element"
     folder = u"Business"
     attrib = dict()
@@ -251,10 +261,24 @@ if __name__ == u"__main__":
     attrib[ARCHI_TYPE] = u"archimate:AssociationRelationship"
     R_ID = dm.createArchimateRelations(tag, folder, attrib)
 
+    #
+    # Create Bounds
+    #
+
     nl = list()
     nl.append(AE_ID_1)
+    bounds = dict()
+    bounds[u"x"] = u"181"
+    bounds[u"y"] = u"129"
+    nl.append(bounds)
+
     nl.append(AE_ID_2)
+    bounds = dict()
+    bounds[u"x"] = u"62"
+    bounds[u"y"] = u"75"
+    nl.append(bounds)
     nl.append(R_ID)
+
     elements.append(nl)
 
     dm.drawModel(elements)
