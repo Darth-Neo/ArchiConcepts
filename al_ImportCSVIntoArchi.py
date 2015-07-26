@@ -40,25 +40,21 @@ def ImportCSVIntoArchi(fileArchimate, folder, subfolder, fileMetaEntity):
 
     al.outputXMLtoFile()
 
-    logger.info(u"Encountered %d errors" % len(al.listError))
+    relations = len(al.dictRel)
+    nodes = len(al.dictND)
 
-    fileArchimate = u"import_artifacts.archimate"
-    nal = ArchiLib(fileArchimate)
-    newListCounts = nal.logTypeCounts(ListOnly=True)
-
-    for a, b in zip(listCounts, newListCounts):
-        if a[1] == b[1]:
-            continue
-        logger.info(u"%3d-%3d-%3d Added %s" % (b[1], a[1], (b[1] - a[1]), b[0]))
+    logger.info(u"----------------------------------------------------------------------------------------")
+    logger.info(u"Encountered %d errors and added %d Nodes and %d relations" % (len(al.listErrors), nodes, relations))
 
     ArchiLib.stopTimer(start_time)
 
 if __name__ == u"__main__":
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/WDW Cast v1.1.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v2.18.archimate"
+    # fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/test.archimate"
 
-    fileMetaEntity = u"%s%sCast Experience Prioritized User Stories(1).csv" % (os.getcwd(), os.sep)
-    folder = u"Business"
-    subfolder = u"WDW Cast User Stories"
+    fileMetaEntity = u"%s%sAS400_LANSA_ALL_DVC_V3.csv" % (os.getcwd(), os.sep)
+    folder = u"Application"
+    subfolder = u"LANSA_AS400"
 
     logger.info(u"dir : %s" % os.getcwd())
     ImportCSVIntoArchi(fileArchimate, folder, subfolder, fileMetaEntity)

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archimate:model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:archimate="http://www.archimatetool.com/archimate" name="Test" id="eb5ff28e" version="3.1.1">
+  <folder name="Business" id="c63bdde5" type="business">
+    <element xsi:type="archimate:BusinessProcess" id="4074a3de" name="Business Process"/>
+    <element xsi:type="archimate:BusinessEvent" id="b35ceec9" name="Business Event"/>
+  </folder>
+  <folder name="Application" id="6e46a160" type="application">
+    <element xsi:type="archimate:ApplicationComponent" id="666ffc4b" name="Application Component"/>
+    <element xsi:type="archimate:ApplicationFunction" id="b960a81b" name="Application Function"/>
+    <element xsi:type="archimate:ApplicationService" id="d38faff6" name="Application Service"/>
+    <element xsi:type="archimate:DataObject" id="4b326945" name="Data Object"/>
+  </folder>
+  <folder name="Technology" id="4d607879" type="technology">
+    <element xsi:type="archimate:Artifact" id="3d6a8fbe" name="Artifact"/>
+  </folder>
+  <folder name="Motivation" id="04828ba1" type="motivation">
+    <element xsi:type="archimate:Principle" id="12ceee34" name="Principle"/>
+  </folder>
+  <folder name="Implementation &amp; Migration" id="9ad1b1c2" type="implementation_migration"/>
+  <folder name="Connectors" id="874b4e07" type="connectors"/>
+  <folder name="Relations" id="c6e3c207" type="relations">
+    <element xsi:type="archimate:TriggeringRelationship" id="5cc02895" source="b35ceec9" target="4074a3de"/>
+    <element xsi:type="archimate:UsedByRelationship" id="27d1a38d" source="666ffc4b" target="d38faff6"/>
+  </folder>
+  <folder name="Views" id="0d49a969" type="diagrams">
+    <element xsi:type="archimate:ArchimateDiagramModel" id="fbe7de08" name="Business">
+      <child xsi:type="archimate:DiagramObject" id="761755fc" lineColor="#000000" textAlignment="2" targetConnections="d6f87729" fillColor="#ffff00" archimateElement="4074a3de">
+        <bounds x="370" y="197" width="120" height="55"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="03ecab0a" lineColor="#000000" textAlignment="2" fillColor="#ffff00" archimateElement="b35ceec9">
+        <bounds x="95" y="197" width="120" height="55"/>
+        <sourceConnection xsi:type="archimate:Connection" id="d6f87729" lineColor="#b1b1b1" source="03ecab0a" target="761755fc" relationship="5cc02895"/>
+      </child>
+    </element>
+    <element xsi:type="archimate:ArchimateDiagramModel" id="3a3506a9" name="App">
+      <child xsi:type="archimate:DiagramObject" id="4b59249d" lineColor="#000000" textAlignment="2" fillColor="#00ffff" archimateElement="666ffc4b">
+        <bounds x="264" y="158" width="120" height="55"/>
+        <sourceConnection xsi:type="archimate:Connection" id="592e8439" lineColor="#b1b1b1" source="4b59249d" target="c3fd7d30" relationship="27d1a38d"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="4145449d" lineColor="#000000" textAlignment="2" fillColor="#00ffff" archimateElement="b960a81b">
+        <bounds x="549" y="166" width="120" height="55"/>
+      </child>
+      <child xsi:type="archimate:DiagramObject" id="c3fd7d30" lineColor="#000000" textAlignment="2" targetConnections="592e8439" fillColor="#00ffff" archimateElement="d38faff6">
+        <bounds x="264" y="250" width="120" height="55"/>
+      </child>
+    </element>
+    <element xsi:type="archimate:ArchimateDiagramModel" id="66de3166" name="Info">
+      <child xsi:type="archimate:DiagramObject" id="ffc36ce0" lineColor="#000000" textAlignment="2" fillColor="#00ffff" archimateElement="4b326945">
+        <bounds x="454" y="165" width="120" height="55"/>
+      </child>
+    </element>
+    <element xsi:type="archimate:ArchimateDiagramModel" id="b927a039" name="Motivation">
+      <child xsi:type="archimate:DiagramObject" id="beca17a1" lineColor="#000000" textAlignment="2" fillColor="#cc66cc" archimateElement="12ceee34">
+        <bounds x="162" y="175" width="120" height="55"/>
+      </child>
+    </element>
+    <element xsi:type="archimate:ArchimateDiagramModel" id="cfc0c035" name="Tech">
+      <child xsi:type="archimate:DiagramObject" id="23cebbf4" lineColor="#000000" textAlignment="2" fillColor="#00ff00" archimateElement="3d6a8fbe">
+        <bounds x="155" y="167" width="120" height="55"/>
+      </child>
+    </element>
+  </folder>
+</archimate:model>
