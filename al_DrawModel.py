@@ -14,19 +14,13 @@ from al_lib.ArchiLib import ArchiLib
 
 from lxml import etree
 
-#
-# Globals
-#
-n = 10
-
 class DrawModels(object):
 
     fileArchimate= None
     n = None
     al = None
-
-    width = u"120"
-    height = u"55"
+    width = None
+    height = None
 
     def __init__(self, fileArchimate):
         self.fileAchimate = fileArchimate
@@ -34,6 +28,9 @@ class DrawModels(object):
         self.al = ArchiLib(fileArchimate)
 
         self.start_time = ArchiLib.startTimer()
+
+        self.width = u"120"
+        self.height = u"55"
 
     def createArchimateElement(self, tag, folder, attrib):
 
@@ -191,26 +188,19 @@ class DrawModels(object):
             #
             # DiagramObjects
             #
-
-            # <bounds x="181" y="129" width="120" height="55"/>
             bounds = dict()
             bounds[u"x"] = b1[u"x"]
             bounds[u"y"] = b1[u"y"]
             bounds[u"width"] = self.width
             bounds[u"height"] = self.height
-
             DOE1 = self.createDiagramObject(DMO, AE_ID_1, bounds)
-            #self.createBounds(DOE1, bounds)
 
-            # <bounds x="62" y="75" width="120" height="55"/>
             bounds = dict()
             bounds[u"x"] = b2[u"x"]
             bounds[u"y"] = b2[u"y"]
             bounds[u"width"] = self.width
             bounds[u"height"] = self.height
-
             DOE2 = self.createDiagramObject(DMO, AE_ID_2, bounds)
-            # self.createBounds(DOE2, bounds)
 
             self.createConnection(DOE1, DOE2, R_ID)
 
