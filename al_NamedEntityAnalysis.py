@@ -26,6 +26,6 @@ def namedEntityAnalysis(fileArchimate=fileArchimateTest, fileConceptsRequirement
 
 if __name__ == u"__main__":
 
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v40.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v2.20.archimate"
 
     namedEntityAnalysis(fileArchimate=fileArchimate, fileConceptsRequirements=fileConceptsRequirements)

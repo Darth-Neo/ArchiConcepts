@@ -23,7 +23,7 @@ def createTagCloud(conceptFile, topic):
 
     concepts = Concepts.loadConcepts(conceptFile)
 
-    tc = TopicCloud(concepts, font_path=u"/Users/morrj140/Fonts/DroidSans.ttf", imageFile=u"Requirements.png")
+    tc = TopicCloud(concepts, font_path=u"/Users/morrj140/Fonts/DroidSans.ttf", imageFile=u"Topics.png")
 
     tc.createTagCloud(topic)
 
@@ -31,12 +31,15 @@ def createTagCloud(conceptFile, topic):
 
 if __name__ == u"__main__":
     logger.debug(u"CWD : %s" % os.getcwd())
+    path = os.getcwd() + os.sep + u"run" + os.sep
+
+    os.chdir(path)
 
     # conceptFile = "TopicChunks.p"
     # topic = "Chunk"
 
-    # conceptFile = u"topicsDict.p"
-    # topic = u"Topic"
+    conceptFile = u"topicsDict.p"
+    topic = u"Topic"
 
     # conceptFile = "archi.p"
     # topic="name"
@@ -44,11 +47,11 @@ if __name__ == u"__main__":
     # conceptFile = "ngramsubject.p"
     # topic="NGRAM"
 
-    conceptFile = u"reqs.p"
-    topic = u"Word"
+    # conceptFile = u"reqs.p"
+    # opic = u"Word"
 
-    conceptFile = u"chunks.p"
-    topic = u"Lemma"
+    # conceptFile = u"chunks.p"
+    # topic = u"Lemma"
     # topic = "SBJ"
     # topic = "OBJ"
     # topic = "VP"

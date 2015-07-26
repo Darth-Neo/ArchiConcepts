@@ -19,7 +19,9 @@ def dependancyAnalysisFromArchi(fileArchimate):
 
     da = DependancyAnalysis(fileArchimate)
 
-    concepts = da.dependancyAnalysis()
+    concepts, listTSort = da.collectDependancyAnalysisNodes()
+
+    da.dependancyAnalysis(listTSort)
 
     concepts.logConcepts()
 
@@ -27,6 +29,6 @@ def dependancyAnalysisFromArchi(fileArchimate):
 
 if __name__ == "__main__":
 
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v45.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v2.20.archimate"
 
     dependancyAnalysisFromArchi(fileArchimate)
