@@ -13,7 +13,7 @@ from subprocess import call
 
 from al_lib.Logger import *
 logger = setupLogging(__name__)
-logger.setLevel(INFO)
+logger.setLevel(DEBUG)
 
 from al_lib.ArchiLib import ArchiLib
 from al_lib.Neo4JLib import Neo4JLib
@@ -111,6 +111,7 @@ class ExportArchimateIntoNeo4J (object):
                     self.addRelation(srcElm, tgtElm, x.get(ARCHI_TYPE)[10:])
             except Exception, msg:
                 logger.warn(u"Something is not present : %s" % (msg))
+                return
 
         logger.info(u"Exported %d Elements" % n)
     #
@@ -273,10 +274,17 @@ class ExportArchimateIntoNeo4J (object):
 
         # self.progress()
 
-        if x.get(ARCHI_TYPE) in relations.values():
-            logger.debug(u"Adding Relationship - %s" % x.get(ARCHI_TYPE))
-        else:
-            logger.debug(u"Adding %s[%s]" % (x.get(u"name"), x.get(ARCHI_TYPE)))
+        prop = dict()
+
+        try:
+            if x.get(ARCHI_TYPE) in relations.values():
+                logger.debug(u"Adding Relationship - %s" % x.get(ARCHI_TYPE))
+            else:
+                logger.debug(u"Adding %s[%s]" % (x.get(u"name"), x.get(ARCHI_TYPE)))
+
+        except Exception, msg:
+            logger.warn(u"Opps... : %s" % (msg))
+            return None
 
         x.attrib[u"parentPath"] = self.getParentPath(x)
 
@@ -286,15 +294,13 @@ class ExportArchimateIntoNeo4J (object):
         else:
             typeName = x.tag
 
-        if x.attrib is None:
-            prop = dict()
-        else:
+        if x.attrib is not None:
             prop = x.attrib
 
-        if x.text is not None:
+        if x is not None and x.text is not None:
             prop[u"text"] = self._cleanString(x.text)
 
-        if x.tag is not None:
+        if x is not None and x.tag is not None:
             prop[u"tag"] = x.tag
 
         #
@@ -465,13 +471,18 @@ class ExportArchimateIntoNeo4J (object):
     def getParentPath(self, element):
         ps = u""
 
-        parent = element.getparent()
+        try:
+            parent = element.getparent()
 
-        while parent is not None:
-            ps = u"/%s" % parent.get(u"name") + ps
-            parent = parent.getparent()
+            while parent is not None:
+                ps = u"/%s" % parent.get(u"name") + ps
+                parent = parent.getparent()
 
-        return ps
+            return ps
+
+        except Exception, msg:
+            logger.warn(u"Warning: %s" % (msg))
+            return None
 
     def exportCSV(self):
 
@@ -486,7 +497,7 @@ class ExportArchimateIntoNeo4J (object):
     def _cleanString(self, s):
 
         if s is None:
-            return u""
+            return u"None"
 
         s = s.replace(os.linesep, u" ")
         s = s.replace(u".", u"_")
@@ -494,6 +505,8 @@ class ExportArchimateIntoNeo4J (object):
         s = s.replace(u"&", u"and")
         s = s.replace(u"/", u"_")
         s = s.replace(u"\"", u"'")
+
+        return s
 
     def doDirectoryOfModels(self):
 
@@ -549,8 +562,9 @@ if __name__ == u"__main__":
 
         LocalGBD  = u"http://localhost:7474/db/data/"
 
-        fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC V2.15.archimate"
-
+        fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v3.4.archimate"
+        assert (os.path.isfile(fileConceptsArch) is True)
+        
         # fileArchimate = os.getcwd() + os.sep + u"import_artifacts.archimate"
 
         logger.info(u"Exporting : %s" % (fileArchimate))

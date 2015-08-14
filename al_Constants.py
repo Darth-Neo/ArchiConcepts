@@ -103,9 +103,11 @@ relations = {u"TriggeringRelationship" : u"archimate:TriggeringRelationship",
 #
 # Archimate Nodes
 #
-entities = {u"BusinessEvent" : u"archimate:BusinessEvent",
+entities = {u"BusinessActor" : u"archimate:BusinessActor",
+            u"BusinessEvent" : u"archimate:BusinessEvent",
             u"BusinessObject" : u"archimate:BusinessObject",
             u"BusinessProcess" : u"archimate:BusinessProcess",
+            u"BusinessFunction" : u"archimate:BusinessFunction",
             u"ApplicationService" : u"archimate:ApplicationService",
             u"ApplicationComponent" : u"archimate:ApplicationComponent",
             u"ApplicationFunction" : u"archimate:ApplicationFunction",
@@ -131,3 +133,6 @@ DIAGRAM_MODEL = u"archimate:ArchimateDiagramModel"
 DIAGRAM_OBJECT = u"archimate:DiagramObject"
 ID = u"id"
 NAME = u"name"
+CHILD = u"child"
+PARENT = u"parent"
+ENTITY = u"Entity"

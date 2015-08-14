@@ -49,12 +49,12 @@ def ImportCSVIntoArchi(fileArchimate, folder, subfolder, fileMetaEntity):
     ArchiLib.stopTimer(start_time)
 
 if __name__ == u"__main__":
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v2.18.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v3.1.archimate"
     # fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/test.archimate"
 
-    fileMetaEntity = u"%s%sAS400_LANSA_ALL_DVC_V3.csv" % (os.getcwd(), os.sep)
+    fileMetaEntity = u"%s%sDVCJELogWorksheet.csv" % (os.getcwd(), os.sep)
     folder = u"Application"
-    subfolder = u"LANSA_AS400"
+    subfolder = u"DVCJELogWorksheet2"
 
     logger.info(u"dir : %s" % os.getcwd())
     ImportCSVIntoArchi(fileArchimate, folder, subfolder, fileMetaEntity)

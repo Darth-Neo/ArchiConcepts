@@ -68,10 +68,10 @@ if __name__ == u"__main__":
     # conceptFile = u"ngramsubject.p"
     # conceptFile = u"traversal.p"
     # conceptFile = u"batches.p"
-    # conceptFile = u"export.p"
+    conceptFile = u"export.p"
     # conceptFile = u"reqs.p"
     # conceptFile = u"Estimation.p"
-    conceptFile = u"archi.p"
+    #conceptFile = u"archi.p"
 
     fileConceptsExport = u"export.csv"
     directory = os.getcwd()
