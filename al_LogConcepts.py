@@ -58,7 +58,7 @@ def distribution(concepts, tc=None):
                     logger.info(u"  Topic : %s[%d]" % (w, topicCount[0]))
 
 if __name__ == u"__main__":
-    # conceptFile = u"documents.p"
+    conceptFile = u"documents.p"
     # conceptFile = u"topicsDict.p"
     # conceptFile = u"GapsSimilarity.p"
     # conceptFile = u"chunks.p"
@@ -68,27 +68,27 @@ if __name__ == u"__main__":
     # conceptFile = u"ngramsubject.p"
     # conceptFile = u"traversal.p"
     # conceptFile = u"batches.p"
-    conceptFile = u"export.p"
+    # conceptFile = u"export.p"
     # conceptFile = u"reqs.p"
     # conceptFile = u"Estimation.p"
     #conceptFile = u"archi.p"
 
-    fileConceptsExport = u"export.csv"
-    directory = os.getcwd()
+    # fileConceptsExport = u"export.csv"
+    directory = os.getcwd() + os.sep + u"run" + os.sep
 
-    filePath = directory + os.sep + conceptFile
+    filePath = directory + conceptFile
 
     logger.info(u"Loading :" + filePath)
     concepts = Concepts.loadConcepts(filePath)
 
-    concepts.logConcepts()
+    # concepts.logConcepts()
     # concepts.printConcepts(list)
     # Concepts.outputConceptsToCSV(concepts, fileConceptsExport)
 
-    # logger.info("Distribution Analysis")
-    # tc = Concepts.loadConcepts("topicsDict.p")
-    # distribution(concepts, tc)
-    # distribution(concepts)
+    logger.info("Distribution Analysis")
+    tc = Concepts.loadConcepts(filePath)
+    distribution(concepts, tc)
+    distribution(concepts)
 
 
 

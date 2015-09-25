@@ -4,15 +4,18 @@
 #
 __author__ = u'morrj140'
 __VERSION__ = u'0.3'
+import sys
+import csv
+from lxml import etree
 
 from al_lib.Logger import *
 logger = setupLogging(__name__)
-logger.setLevel(INFO)
+logger.setLevel(DEBUG)
 
-from al_lib.Constants import *
+from al_Constants import *
+
 from al_lib.ArchiLib import ArchiLib
 
-from lxml import etree
 
 class DrawModels(object):
 
@@ -53,7 +56,7 @@ class DrawModels(object):
 
     def createDiagramModel(self, tag=None, folder=None, attrib=None):
 
-        if tag == None and folder==None and attrib==None:
+        if tag is None and folder is None and attrib is None:
             tag = u"element"
             folder = u"Views"
             attrib = dict()
@@ -179,31 +182,16 @@ class DrawModels(object):
     #
     def drawModel(self, elements):
 
-        for AE_ID_1, b1, AE_ID_2, b2, R_ID in elements:
-            #
-            # Diagram Model
-            #
-            DMO = self.createDiagramModel()
+        #
+        # Diagram Model
+        #
+        DMO = self.createDiagramModel()
 
+        for AE_ID, bnds in elements:
             #
             # DiagramObjects
             #
-            bounds = dict()
-            bounds[u"x"] = b1[u"x"]
-            bounds[u"y"] = b1[u"y"]
-            bounds[u"width"] = self.width
-            bounds[u"height"] = self.height
-            DOE1 = self.createDiagramObject(DMO, AE_ID_1, bounds)
-
-            bounds = dict()
-            bounds[u"x"] = b2[u"x"]
-            bounds[u"y"] = b2[u"y"]
-            bounds[u"width"] = self.width
-            bounds[u"height"] = self.height
-            DOE2 = self.createDiagramObject(DMO, AE_ID_2, bounds)
-
-            self.createConnection(DOE1, DOE2, R_ID)
-
+            self.createDiagramObject(DMO, AE_ID, bnds)
 
     def outputXMLtoFile(self, filename=u"DiagramModeling.archimate"):
         self.al.outputXMLtoFile(filename)
@@ -215,62 +203,225 @@ class DrawModels(object):
 
         ArchiLib.stopTimer(self.start_time)
 
+def extractBusiness(x, scale):
+
+    at = u""
+    unknown = 0
+    folder = u"Business"
+
+    if x[1][:21] == u"Rectangle Fill:Custom":
+        logger.debug(u"1 %s" % x[1])
+        at = u"archimate:BusinessObject"
+        scale = 5
+
+    elif x[1][:9] == u"Rectangle":
+        logger.debug(u"2 %s" % x[1])
+        at = u"archimate:BusinessObject"
+        scale = 5
+
+    elif x[1][:8] == u"Swimlane":
+        logger.debug(u"3 %s" % x[1])
+        at = u"archimate:BusinessActor"
+        scale = 5
+
+    elif x[1][:5] == u"Sheet":
+        logger.debug(u"4 %s" % x[1])
+        at = u"archimate:BusinessCollaboration"
+        scale = 5
+
+    elif x[1][:14] == u"CFF Container":
+        logger.debug(u"5 %s" % x[1])
+        at = u"archimate:BusinessActor"
+        scale = 5
+
+    elif x[1][:7] == u"Process":
+        logger.debug(u"6 %s" % x[1])
+        at = u"archimate:BusinessProcess"
+
+    elif x[1][:10] == u"Phase List":
+        logger.debug(u"7 %s" % x[1])
+        at = u"archimate:BusinessActor"
+
+    elif x[1][:9] == u"Separator":
+        logger.debug(u"8 %s" % x[1])
+        at = u"archimate:BusinessActor"
+        scale = 5
+
+    elif x[1][:7] == u"Hexagon":
+        logger.debug(u"9 %s" % x[1])
+        at = u"archimate:BusinessFunction"
+        scale = 5
+
+    elif x[1][:9] == u"Start/End":
+        logger.debug(u"10 %s" % x[1])
+        at = u"archimate:BusinessActor"
+        scale = 5
+
+    elif x[1][:10] == u"Subprocess":
+        logger.debug(u"11 %s" % x[1])
+        at = u"archimate:BusinessProcess"
+
+    else:
+        # logger.debug(u"+++> %d Unknown %s" % (unknown, x[1]))
+        unknown += 1
+
+    return at, folder, unknown, scale
+
+def extractApplication(x, scale):
+
+    at = u""
+    unknown = 0
+    folder = u"Application"
+
+    if x[1][:4] == u"Data":
+        logger.debug(u"12 %s" % x[1])
+        at = u"archimate:DataObject"
+
+    elif x[1][:9] == u"DataPoint":
+        logger.debug(u"13 %s" % x[1])
+        at = u"archimate:DataObject"
+
+    elif x[1][:8] == u"Database":
+        logger.debug(u"14 %s" % x[1])
+        at = u"archimate:ApplicationComponent"
+
+    elif x[1][:8] == u"Document":
+        logger.debug(u"15 %s" % x[1])
+        at = u"archimate:DataObject"
+
+    elif x[1][:12] == u"Service desk":
+        logger.debug(u"16 %s" % x[1])
+        at = u"archimate:ApplicationFunction"
+
+    elif x[1][:6] == u"Output":
+        logger.debug(u"17 %s" % x[1])
+        at = u"archimate:DataObject"
+        scale = 5
+
+    elif x[1][:8] == u"Decision":
+        logger.debug(u"18 %s" % x[1])
+        at = u"archimate:ApplicationFunction"
+        scale = 5
+
+    else:
+        # logger.debug(u"+++> %d Unknown %s" % (unknown, x[1]))
+        unknown += 1
+
+    return at, folder, unknown, scale
+
 if __name__ == u"__main__":
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/test.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Example.archimate"
 
     dm = DrawModels(fileArchimate)
+    listNodes = list()
 
     #
     # Elements
     #
+    fileNodes = u"DVC Systems - Draft v.21.csv"
+
+    try:
+        with open(fileNodes, "rU") as f:
+            try:
+                reader = csv.reader(f)
+                listNodes = list(reader)
+            except Exception, msg:
+                logger.error(u"%s" % msg)
+                sys.exit()
+
+    except Exception, msg:
+        logger.error(u"%s" % msg)
+
+    # Columns to import
+    # 0    1    2    3          4          5     6      7      8             9
+    # Indx Name Text localCenty localCentx Width Height Number ArchimateType Folder
+
+    # Number of items that are not known
+    unknown = 0
+
+    n = 0
+
+    scale = 100
 
     elements = list()
 
-    tag = u"element"
-    folder = u"Business"
-    attrib = dict()
-    attrib[NAME] = u"DO%d" % dm.n
-    attrib[ARCHI_TYPE] = u"archimate:BusinessObject"
-    AE_ID_1 = dm.createArchimateElement(tag, folder, attrib)
+    for x in listNodes[1:]:
 
-    dm.n += 1
-    tag = u"element"
-    folder = u"Business"
-    attrib = dict()
-    attrib[NAME] = u"DO%d" % dm.n
-    attrib[ARCHI_TYPE] = u"archimate:BusinessObject"
-    AE_ID_2 = dm.createArchimateElement(tag, folder, attrib)
+        logger.info(u"%s" % "\t".join([y for y in x]).decode(u"utf8", errors=u"ignore").strip("\n"))
+        n += 1
 
-    dm.n += 1
-    tag = u"element"
-    folder = u"Relations"
-    attrib = dict()
-    attrib[ID] = dm.al.getID()
-    attrib[u"source"] = AE_ID_1
-    attrib[u"target"] = AE_ID_2
-    attrib[ARCHI_TYPE] = u"archimate:AssociationRelationship"
-    R_ID = dm.createArchimateRelations(tag, folder, attrib)
+        at = u"archimate:%s" % x[8].strip(u" ")
+        logger.info(u".%s.%s" % (at, NOTE))
+        if at == NOTE or at == SYSTEM_SOFTWARE:
+            logger.info(u"-->Skip - %s <---" % x[8])
+            continue
 
-    #
-    # Create Bounds
-    #
+        # k = 21
+        # logger.debug(u"==> x[1][%s] <==" % x[1][:k])
 
-    nl = list()
-    nl.append(AE_ID_1)
-    bounds = dict()
-    bounds[u"x"] = u"181"
-    bounds[u"y"] = u"129"
-    nl.append(bounds)
+        # Set key values
+        text = x[2]
 
-    nl.append(AE_ID_2)
-    bounds = dict()
-    bounds[u"x"] = u"62"
-    bounds[u"y"] = u"75"
-    nl.append(bounds)
-    nl.append(R_ID)
+        if len(text) == 0:
+            text = x[1]
 
-    elements.append(nl)
+        at = u"archimate:%s" % x[8]
+        folder = x[9]
+
+        #
+        # Business
+        #
+        if False:
+            at, folder, bu, scale = extractBusiness(x, scale)
+
+            if bu != 0:
+                #
+                # Applications
+                #
+                at, folder, au, scale = extractApplication(x, scale)
+                if au != 0:
+                    logger.warn(u"Unknown - %s" % x[1])
+                    unknown += 1
+                    continue
+
+
+        tag = u"element"
+        attrib = dict()
+        attrib[NAME] = text.decode(u"utf8", errors=u"ignore").strip(u"\n")
+        # attrib[u"Number"] = x[7]
+        attrib[ARCHI_TYPE] = at
+        AE_ID_1 = dm.createArchimateElement(tag, folder, attrib)
+
+        #
+        # Create Bounds
+        #
+
+        nl = list()
+
+        xx = (float(x[4]) - (float(x[5]) * 0.5)) * scale
+        yy = (float(x[3]) - (float(x[6]) * 0.5)) * scale
+
+        nl.append(AE_ID_1)
+        bounds = dict()
+        bounds[u"x"] = str(int(round(float(xx), 0)))
+        bounds[u"y"] = str(int(round(float(yy), 0)))
+        bounds[u"width"] = str(int(round(float(x[5]) * scale, 0)))
+        bounds[u"height"] = str(int(round(float(x[6]) * scale, 0)))
+        nl.append(bounds)
+
+        elements.append(nl)
+
+    logger.info(u"%d unknown" % unknown)
 
     dm.drawModel(elements)
+
+    dm.outputXMLtoFile(filename=u"dm.mxl")
+
+
+    try:
+        from lxml import etree
+        tree = etree.parse(u"dm.mxl")
+    except Exception, msg:
+        logger.error(u"%s" % msg)
 
     dm.outputXMLtoFile(filename=u"dm.archimate")

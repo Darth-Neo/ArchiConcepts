@@ -1,9 +1,9 @@
-#! /usr/bin/python
+#! /usr/bin/env python
 #
 # Query Neo4J Information in Cypher
 #
-__author__ = 'morrj140'
-__VERSION__ = '0.3'
+__author__ = u'morrj140'
+__VERSION__ = u'0.3'
 
 from al_lib.Logger import *
 logger = setupLogging(__name__)
@@ -13,6 +13,43 @@ from al_lib.Constants import *
 from al_lib.ArchiLib import ArchiLib
 from al_lib.Neo4JLib import Neo4JLib
 
+"""DVC Cypher Queries
+
+  match (n:ApplicationComponent)-[r1*1..2]->(m:ApplicationFunction)-[r2]->(o:DataObject)
+  where n.parentPath =~ "[0-9A-Za-z/ .]+AS400 Processes" return n.aname, m.aname, o.aname
+
+
+  MATCH (n:ApplicationService)-[r]->(m:ApplicationComponent) match (o:ApplicationComponent)-[r2]->(p:ApplicationFunction)
+  where m = o RETURN n.aname,type(r),m.aname, o.aname, type(r2), p.aname
+
+
+  MATCH (n:ApplicationService)-[r1]->(m:ApplicationComponent) match (o:ApplicationComponent)-[r2]->(p:ApplicationFunction)
+  match (s:ApplicationComponent)-[r3]->(t:DataObject)
+  where m = o and o = s RETURN n.aname,type(r1), o.aname, type(r2), p.aname, type(r3), t.aname
+
+
+  MATCH (n:ApplicationService)-[r1]->(m:ApplicationComponent)
+  match (o:ApplicationComponent)-[r2]->(p:ApplicationFunction) match (s:ApplicationComponent)-[r3]->(t:DataObject)
+  where m = o and o = s RETURN n.aname as ApplicationService, type(r1), o.aname as ApplicationComponent, type(r2),
+  p.aname as ApplicationFunction, type(r3), t.aname as DataObject
+
+
+  MATCH (n:BusinessEvent)-[r1]->(m:BusinessProcess)-[r2]->(o)
+  where n.aname =~ "[0-9]+.[0-9]+[A-Z a-z]*"
+  return n.aname as BusinessEvent, type(r1), m.aname as BusinessProcess,
+  m.parentPath as ParentPath, type(r2), o.aname, o.typeName, o.parentPath
+
+
+  MATCH (n:BusinessEvent)-[r1]->(m:BusinessProcess)-[r2]-(o:BusinessObject)
+  where n.aname =~ "[0-9]+.[0-9]+[A-Z a-z]*" return n.aname as BusinessEvent, type(r1),
+  m.aname as BusinessProcess, m.parentPath as ParentPath, type(r2), o.aname, o.typeName, o.parentPath
+
+
+ Gets all Scenarios
+ MATCH (n:BusinessEvent)-[r1]->(m:BusinessProcess)-[r2*0..1]-(o:BusinessObject)
+ where n.aname =~ "[0-9]+.[0-9]+[A-Z a-z]*" return n.aname as BusinessEvent, type(r1),
+ m.aname as BusinessProcess, m.parentPath as ParentPath, o.aname, o.typeName, o.parentPath
+"""
 
 def queryGraph(gdb):
 
@@ -34,6 +71,14 @@ def queryGraph(gdb):
     ql = list()
 
     if True:
+        qs1 = u"MATCH (n:ApplicationFunction)-[r1]-(m:ApplicationComponent)-[r2]-(o:DataObject) "
+        qs2 = u"where n.parentPath =~ \"/DVC V3.10/Application/AS400/[ A-Za-z0-9/]+\" "
+        qs3 = u"return distinct m.aname, m.typeName, m.parentPath, n.aname, n.typeName, n.parentPath, "
+        qs4 = u"o.aname, o.typeName, o.parentPath  order by m.typeName"
+        qs = qs1 + qs2 + qs3 + qs4
+
+
+    elif False:
         qs = u"MATCH (a:ApplicationComponent)-[r*1..2]-(b:ApplicationComponent)-[r1*1..2]-(c:BusinessObject)-[r2*1..2]-(d:Requirement) RETURN distinct a.aname as Application, b.aname, b.typeName, c.aname, c.typeName, d.aname"
         qs1 = u"MATCH (a:BusinessObject)-[r0]-(c:Requirement), (b:BusinessObject)-[r1]-(d:DataObject), (f:DataObject)-[]-(g:ApplicationComponent) where a = b and d=f RETURN a.aname as BusinessObject, c.aname as Requirement, d.aname as DataObject, g.aname as Application"
         qs2 = u"MATCH (n:BusinessObject)-[r]-(m) where m.typeName = \"BusinessObject\" or m.typeName = \"DataObject\" or m.typeName = \"Requirement\" RETURN n.aname, n.typeName, m.aname, m.typeName"

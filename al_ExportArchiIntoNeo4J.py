@@ -13,7 +13,7 @@ from subprocess import call
 
 from al_lib.Logger import *
 logger = setupLogging(__name__)
-logger.setLevel(DEBUG)
+logger.setLevel(ERROR)
 
 from al_lib.ArchiLib import ArchiLib
 from al_lib.Neo4JLib import Neo4JLib
@@ -562,7 +562,7 @@ if __name__ == u"__main__":
 
         LocalGBD  = u"http://localhost:7474/db/data/"
 
-        fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v3.4.archimate"
+        fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v3.10.archimate"
         assert (os.path.isfile(fileConceptsArch) is True)
         
         # fileArchimate = os.getcwd() + os.sep + u"import_artifacts.archimate"

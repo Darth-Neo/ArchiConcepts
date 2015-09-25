@@ -131,6 +131,9 @@ folders = {u"Business", u"Application", u"Technology", u"Motivation", u"Implemen
 
 DIAGRAM_MODEL = u"archimate:ArchimateDiagramModel"
 DIAGRAM_OBJECT = u"archimate:DiagramObject"
+NOTE = u"archimate:Note"
+SYSTEM_SOFTWARE = u"archimate:SystemSoftware"
+
 ID = u"id"
 NAME = u"name"
 CHILD = u"child"
