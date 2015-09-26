@@ -203,108 +203,112 @@ class DrawModels(object):
 
         ArchiLib.stopTimer(self.start_time)
 
-def extractBusiness(x, scale):
+def extractBusiness(x, c=2, scale=10):
 
     at = u""
     unknown = 0
     folder = u"Business"
 
-    if x[1][:21] == u"Rectangle Fill:Custom":
-        logger.debug(u"1 %s" % x[1])
+    a = x[c]
+
+    if a[:21] == u"Rectangle Fill:Custom":
+        logger.debug(u"1 %s" % a)
         at = u"archimate:BusinessObject"
         scale = 5
 
-    elif x[1][:9] == u"Rectangle":
-        logger.debug(u"2 %s" % x[1])
+    elif a[:9] == u"Rectangle":
+        logger.debug(u"2 %s" % a)
         at = u"archimate:BusinessObject"
         scale = 5
 
-    elif x[1][:8] == u"Swimlane":
-        logger.debug(u"3 %s" % x[1])
+    elif a[:8] == u"Swimlane":
+        logger.debug(u"3 %s" % a)
         at = u"archimate:BusinessActor"
         scale = 5
 
-    elif x[1][:5] == u"Sheet":
-        logger.debug(u"4 %s" % x[1])
+    elif a[:5] == u"Sheet":
+        logger.debug(u"4 %s" % a)
         at = u"archimate:BusinessCollaboration"
         scale = 5
 
-    elif x[1][:14] == u"CFF Container":
-        logger.debug(u"5 %s" % x[1])
+    elif a[:14] == u"CFF Container":
+        logger.debug(u"5 %s" % a)
         at = u"archimate:BusinessActor"
         scale = 5
 
-    elif x[1][:7] == u"Process":
-        logger.debug(u"6 %s" % x[1])
+    elif a[:7] == u"Process":
+        logger.debug(u"6 %s" % a)
         at = u"archimate:BusinessProcess"
 
-    elif x[1][:10] == u"Phase List":
-        logger.debug(u"7 %s" % x[1])
+    elif a[:10] == u"Phase List":
+        logger.debug(u"7 %s" % a)
         at = u"archimate:BusinessActor"
 
-    elif x[1][:9] == u"Separator":
-        logger.debug(u"8 %s" % x[1])
+    elif a[:9] == u"Separator":
+        logger.debug(u"8 %s" % a)
         at = u"archimate:BusinessActor"
         scale = 5
 
-    elif x[1][:7] == u"Hexagon":
-        logger.debug(u"9 %s" % x[1])
+    elif a[:7] == u"Hexagon":
+        logger.debug(u"9 %s" % a)
         at = u"archimate:BusinessFunction"
         scale = 5
 
-    elif x[1][:9] == u"Start/End":
-        logger.debug(u"10 %s" % x[1])
+    elif a[:9] == u"Start/End":
+        logger.debug(u"10 %s" % a)
         at = u"archimate:BusinessActor"
         scale = 5
 
-    elif x[1][:10] == u"Subprocess":
-        logger.debug(u"11 %s" % x[1])
+    elif a[:10] == u"Subprocess":
+        logger.debug(u"11 %s" % a)
         at = u"archimate:BusinessProcess"
 
     else:
-        # logger.debug(u"+++> %d Unknown %s" % (unknown, x[1]))
+        # logger.debug(u"+++> %d Unknown %s" % (unknown, a))
         unknown += 1
 
     return at, folder, unknown, scale
 
-def extractApplication(x, scale):
+def extractApplication(x, c=2, scale=10):
 
     at = u""
     unknown = 0
     folder = u"Application"
 
-    if x[1][:4] == u"Data":
-        logger.debug(u"12 %s" % x[1])
+    a = x[c]
+
+    if a[:4] == u"Data":
+        logger.debug(u"12 %s" % a)
         at = u"archimate:DataObject"
 
-    elif x[1][:9] == u"DataPoint":
-        logger.debug(u"13 %s" % x[1])
+    elif a[:9] == u"DataPoint":
+        logger.debug(u"13 %s" % a)
         at = u"archimate:DataObject"
 
-    elif x[1][:8] == u"Database":
-        logger.debug(u"14 %s" % x[1])
+    elif a[:8] == u"Database":
+        logger.debug(u"14 %s" % a)
         at = u"archimate:ApplicationComponent"
 
-    elif x[1][:8] == u"Document":
-        logger.debug(u"15 %s" % x[1])
+    elif a[:8] == u"Document":
+        logger.debug(u"15 %s" % a)
         at = u"archimate:DataObject"
 
-    elif x[1][:12] == u"Service desk":
-        logger.debug(u"16 %s" % x[1])
+    elif a[:12] == u"Service desk":
+        logger.debug(u"16 %s" % a)
         at = u"archimate:ApplicationFunction"
 
-    elif x[1][:6] == u"Output":
-        logger.debug(u"17 %s" % x[1])
+    elif a[:6] == u"Output":
+        logger.debug(u"17 %s" % a)
         at = u"archimate:DataObject"
         scale = 5
 
-    elif x[1][:8] == u"Decision":
-        logger.debug(u"18 %s" % x[1])
+    elif a[:8] == u"Decision":
+        logger.debug(u"18 %s" % a)
         at = u"archimate:ApplicationFunction"
         scale = 5
 
     else:
-        # logger.debug(u"+++> %d Unknown %s" % (unknown, x[1]))
+        # logger.debug(u"+++> %d Unknown %s" % (unknown, a))
         unknown += 1
 
     return at, folder, unknown, scale
@@ -318,7 +322,7 @@ if __name__ == u"__main__":
     #
     # Elements
     #
-    fileNodes = u"DVC Systems - Draft v.21.csv"
+    fileNodes = u"DVC_2.1.csv"
 
     try:
         with open(fileNodes, "rU") as f:
@@ -333,8 +337,8 @@ if __name__ == u"__main__":
         logger.error(u"%s" % msg)
 
     # Columns to import
-    # 0    1    2    3          4          5     6      7      8             9
-    # Indx Name Text localCenty localCentx Width Height Number ArchimateType Folder
+    # 0    1    2          3          4     5
+    # Name Text localCenty localCentx Width Height
 
     # Number of items that are not known
     unknown = 0
@@ -350,39 +354,34 @@ if __name__ == u"__main__":
         logger.info(u"%s" % "\t".join([y for y in x]).decode(u"utf8", errors=u"ignore").strip("\n"))
         n += 1
 
-        at = u"archimate:%s" % x[8].strip(u" ")
-        logger.info(u".%s.%s" % (at, NOTE))
-        if at == NOTE or at == SYSTEM_SOFTWARE:
-            logger.info(u"-->Skip - %s <---" % x[8])
-            continue
+        text = x[0]
 
-        # k = 21
-        # logger.debug(u"==> x[1][%s] <==" % x[1][:k])
-
-        # Set key values
-        text = x[2]
-
-        if len(text) == 0:
-            text = x[1]
-
-        at = u"archimate:%s" % x[8]
-        folder = x[9]
+        # at = u"archimate:%s" % x[8]
+        # folder = x[9]
 
         #
         # Business
         #
-        if False:
-            at, folder, bu, scale = extractBusiness(x, scale)
+        c = 1
+
+        if True:
+            at, folder, bu, scale = extractBusiness(x, c, scale)
 
             if bu != 0:
                 #
                 # Applications
                 #
-                at, folder, au, scale = extractApplication(x, scale)
+                at, folder, au, scale = extractApplication(x, c, scale)
                 if au != 0:
-                    logger.warn(u"Unknown - %s" % x[1])
+                    # logger.debug(u"Unknown - %s" % x[1])
                     unknown += 1
                     continue
+
+        # at = u"archimate:%s" % x[1].strip(u" ")
+        # logger.info(u".%s.%s" % (at, NOTE))
+        if at == NOTE or at == SYSTEM_SOFTWARE:
+            logger.info(u"-->Skip - %s <---" % x[8])
+            continue
 
 
         tag = u"element"
@@ -398,15 +397,15 @@ if __name__ == u"__main__":
 
         nl = list()
 
-        xx = (float(x[4]) - (float(x[5]) * 0.5)) * scale
-        yy = (float(x[3]) - (float(x[6]) * 0.5)) * scale
+        xx = (float(x[4]) - (float(x[2]) * 0.5)) * scale
+        yy = (float(x[3]) - (float(x[3]) * 0.5)) * scale
 
         nl.append(AE_ID_1)
         bounds = dict()
         bounds[u"x"] = str(int(round(float(xx), 0)))
         bounds[u"y"] = str(int(round(float(yy), 0)))
-        bounds[u"width"] = str(int(round(float(x[5]) * scale, 0)))
-        bounds[u"height"] = str(int(round(float(x[6]) * scale, 0)))
+        bounds[u"width"] = str(int(round(float(x[4]) * scale, 0)))
+        bounds[u"height"] = str(int(round(float(x[5]) * scale, 0)))
         nl.append(bounds)
 
         elements.append(nl)
@@ -416,7 +415,6 @@ if __name__ == u"__main__":
     dm.drawModel(elements)
 
     dm.outputXMLtoFile(filename=u"dm.mxl")
-
 
     try:
         from lxml import etree
