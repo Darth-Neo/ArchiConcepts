@@ -8,11 +8,10 @@ import json
 # http://localhost:8983/solr/gettingstarted/select?q=bond%0A&wt=json&indent=true
 
 
-def createPostQuery(s, search=u"bond"):
+def createPostQuery(s, search=u"bond", collection=u"rtp"):
 
     protocol = u"http://"
     server = u"localhost:8983"
-    collection = u"dkb"
 
     query = u"solr/%s/select?q=%s" % (collection, search)
     url = u'{0:s}{1:s}/{2:s}\%0A&wt=json&indent=true'.format(protocol, server, query)
@@ -42,8 +41,10 @@ if __name__ == u"__main__":
         sQuery = unicode(sys.argv[1])
 
     n = 0
+    Skip = True
+    Hit = False
 
-    collection = u"dkb"
+    collection = u"rtp"
 
     # create a connection to a solr server
     s = solr.SolrConnection(u'http://localhost:8983/solr/%s' % collection)
@@ -51,10 +52,11 @@ if __name__ == u"__main__":
     response = s.query(sQuery)
 
     for hit in response.results:
-        # print("hit: %s" % hit)
+        if Hit == True:
+            print(u"hit: %s" % hit)
 
         n += 1
-        print u""
+        print(u"\n")
 
         for k, v in hit.items():
             print(u"    %s=%s" % (k, v))
@@ -63,7 +65,7 @@ if __name__ == u"__main__":
                 s = u'n %s' % str(hit[k]).encode(u'utf-8', errors=u'replace')
                 print(u"%d:a %s" % (n, s))
 
-            elif k == u"creation_date":
+            elif k == u"creation_date" and Skip == False:
 
                 format = u'%m-%d-%Y %I:%M%p %Z'
 
@@ -73,12 +75,12 @@ if __name__ == u"__main__":
 
                 # print("%d:a %s" % (n ,s))
 
-            elif k == u"id":
+            elif k == u"id" and Skip == False:
                 # s = 'file://%s' % str(hit[k]).encode(encoding='utf-8',errors='ignore')
                 s = u'file://%s' % hit[k]
                 print(u"%d:a %s" % (n, s))
 
-            elif k == u"resourcename":
+            elif k == u"resourcename" and Skip == False:
                 s = u'file://%s' % hit[k]
                 print(u"%d:a %s" % (n, s))
 

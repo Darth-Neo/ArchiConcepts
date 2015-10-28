@@ -33,7 +33,7 @@ def dedupArchi(fileArchimate, fileOutput=u"deduped.archimate"):
 
 if __name__ == u"__main__":
 
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/RTP v2.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Accounting Engine v4.archimate"
     fileOutput = u"deduped.archimate"
 
     dedupArchi(fileArchimate, fileOutput=u"deduped.archimate")

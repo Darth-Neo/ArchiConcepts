@@ -25,6 +25,6 @@ def exportArchi(fileArchimate, fileConceptsExport):
     ArchiLib.stopTimer(start_time)
 
 if __name__ == u"__main__":
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v40.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v3.16.archimate"
 
-    exportArchi(fileArchimateTest, fileConceptsExport)
+    exportArchi(fileArchimate, fileConceptsExport)
