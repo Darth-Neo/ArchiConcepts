@@ -27,13 +27,11 @@ def dedupArchi(fileArchimate, fileOutput=u"deduped.archimate"):
 
     replaceDuplicateElements(al, tde)
 
-    replaceDuplicateProperties(al)
-
     al.outputXMLtoFile(fileOutput)
 
 if __name__ == u"__main__":
 
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Accounting Engine v4.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Accounting Engine v5.archimate"
     fileOutput = u"deduped.archimate"
 
     dedupArchi(fileArchimate, fileOutput=u"deduped.archimate")
