@@ -13,25 +13,26 @@ from al_lib.DedupArchimateXML import *
 from al_lib.ArchiLib import ArchiLib
 from al_lib.Constants import *
 
-def dedupArchi(fileArchimate, fileOutput=u"deduped.archimate"):
-
-    al = ArchiLib(fileArchimate)
-
-    ae = al.findElements()
-
-    logger.info(u"Length : %d" % len(ae))
-
-    dupElements = findDups(ae)
-
-    tde = logDupElements(dupElements)
-
-    replaceDuplicateElements(al, tde)
-
-    al.outputXMLtoFile(fileOutput)
 
 if __name__ == u"__main__":
 
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Accounting Engine v5.archimate"
-    fileOutput = u"deduped.archimate"
+    # fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v3.17.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Solution_Engineering_Template_V8.archimate"
+    fileArchimateOutput = os.getcwd() + os.sep + u"dedup.archimate"
 
-    dedupArchi(fileArchimate, fileOutput=u"deduped.archimate")
+    da = DedupArchimateXML(fileArchimate)
+    da.Dedup(fileArchimateOutput)
+
+    n = 0
+    while True:
+        try:
+            logger.info (u"%s - %s" % (da._typeCountStart[n], da._typeCountEnd[n]))
+            n += 1
+
+        except Exception, msg:
+            logger.warn(u"Goodbye.")
+            break
+
+
+
+
