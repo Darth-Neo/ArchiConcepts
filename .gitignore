@@ -1,4 +1,6 @@
 *.p
+export/*
+import/*
 al_Examples/*
 build/*
 test/*.p
@@ -22,11 +24,11 @@ import*.archimate
 *.lsi
 *.index
 *.net
-Runs/*
+runs/*
 *.gml
 *.csv
 *.pptx
 html/*
 *.xlsx
-log*
+logs/**
 *.dot
