@@ -5,7 +5,7 @@
 __author__ = u'morrj140'
 __VERSION__ = u'0.3'
 
-from al_lib.Logger import *
+from Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
@@ -33,10 +33,9 @@ def ImportCSVIntoArchi(fileArchimate, folder, subfolder, fileMetaEntity):
     logger.info(u"Using : %s" % fileArchimate)
     al = ArchiLib(fileArchimate)
 
-    listCounts = al.logTypeCounts(ListOnly=True)
+    _ = al.logTypeCounts(ListOnly=True)
 
-    # insertNColumns(self, folder, subfolder, fileMetaEntity):
-    al.insertNColumns(folder, subfolder, fileMetaEntity)
+    al.insertNColumns(folder, subfolder, fileMetaEntity, CaseFix=False)
 
     al.outputXMLtoFile()
 
@@ -49,12 +48,12 @@ def ImportCSVIntoArchi(fileArchimate, folder, subfolder, fileMetaEntity):
     ArchiLib.stopTimer(start_time)
 
 if __name__ == u"__main__":
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v3.1.archimate"
-    # fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/test.archimate"
 
-    fileMetaEntity = u"%s%sDVCJELogWorksheet.csv" % (os.getcwd(), os.sep)
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DALE_V8.archimate"
+    fileMetaEntity = u"%s%sTRANREC.csv" % (os.getcwd(), os.sep)
     folder = u"Application"
-    subfolder = u"DVCJELogWorksheet2"
+    # folder = u"Implementation & Migration"
+    subfolder = u"RTP_2016_04_20_1200"
 
     logger.info(u"dir : %s" % os.getcwd())
     ImportCSVIntoArchi(fileArchimate, folder, subfolder, fileMetaEntity)

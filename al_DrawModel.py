@@ -9,8 +9,8 @@ import csv
 from lxml import etree
 from al_Constants import *
 from al_lib.ArchiLib import ArchiLib
-from al_lib.Logger import *
 
+from Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
@@ -191,6 +191,9 @@ class DrawModels(object):
             #
             self.createDiagramObject(DMO, AE_ID, bnds)
 
+    #
+    # Output Model
+    #
     def outputXMLtoFile(self, filename=u"DiagramModeling.archimate"):
         self.al.outputXMLtoFile(filename)
 
@@ -201,26 +204,34 @@ class DrawModels(object):
 
         ArchiLib.stopTimer(self.start_time)
 
+    @staticmethod
+    def readElements(fileNodes):
+        try:
+            with open(fileNodes, "rU") as f:
+                try:
+                    reader = csv.reader(f)
+                    listNodes = list(reader)
+                except Exception, msg:
+                    logger.error(u"%s" % msg)
+                    sys.exit()
 
-def readElements(fileNodes):
-    try:
-        with open(fileNodes, "rU") as f:
-            try:
-                reader = csv.reader(f)
-                listNodes = list(reader)
-            except Exception, msg:
-                logger.error(u"%s" % msg)
-                sys.exit()
+        except Exception, msg:
+            logger.error(u"%s" % msg)
 
-    except Exception, msg:
-        logger.error(u"%s" % msg)
-
-    return listNodes
+        return listNodes
 
 
 if __name__ == u"__main__":
 
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Example.archimate"
+    pathModel = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models"
+
+    # fileArchimateXML = u"DVC v3.17.archimate"
+    # fileArchimateXML = u"Solution_Engineering_Template_V8.archimate"
+    fileArchimateXML = u"RTPv9.archimate"
+
+    fileArchimate = pathModel + os.sep + fileArchimateXML
+
+    fileArchimateOutput = os.getcwd() + os.sep + fileArchimateXML[:-10] + u"drawmodel.archimate"
 
     dm = DrawModels(fileArchimate)
 
@@ -230,7 +241,7 @@ if __name__ == u"__main__":
     # Elements
     #
     fileNodes = u"DVC_Dues_5.csv"
-    listNodes = readElements(fileNodes)
+    listNodes = DrawModels.readElements(fileNodes)
 
     # Columns to import
     # 0 1      2     3            4           5      6      7        8

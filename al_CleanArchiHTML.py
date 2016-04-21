@@ -3,7 +3,7 @@
 
 from bs4 import *
 
-from al_lib.Logger import *
+from Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 

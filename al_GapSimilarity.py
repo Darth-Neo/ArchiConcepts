@@ -14,8 +14,8 @@ from nltk.metrics import BigramAssocMeasures, TrigramAssocMeasures
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 from al_lib.Constants import *
 from al_lib.ArchiLib import ArchiLib
-from al_lib.Logger import *
 
+from Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 

@@ -5,7 +5,7 @@
 __author__ = u'morrj140'
 __VERSION__ = u'0.2'
 
-from al_lib.Logger import *
+from Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(logging.INFO)
 

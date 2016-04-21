@@ -5,7 +5,7 @@
 __author__ = u'morrj140'
 __VERSION__ = u'0.3'
 
-from al_lib.Logger import *
+from Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
@@ -13,7 +13,7 @@ from al_lib.Constants import *
 from al_lib.ArchiLib import ArchiLib
 from al_lib.Neo4JLib import Neo4JLib
 
-"""DVC Cypher Queries
+u"""DVC Cypher Queries
 
   match (n:ApplicationComponent)-[r1*1..2]->(m:ApplicationFunction)-[r2]->(o:DataObject)
   where n.parentPath =~ "[0-9A-Za-z/ .]+AS400 Processes" return n.aname, m.aname, o.aname

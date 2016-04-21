@@ -1,17 +1,15 @@
-#!/usr/bin/python
-
+#!/usr/bin/env python
 #
 # Export Archimate into Neo4J
 #
-__author__ = u'morrj140'
-__VERSION__ = u'0.3'
-
+# __author__ = u'morrj140'
+# __VERSION__ = u'0.3'
 import os
 import sys
 import time
 from subprocess import call
 
-from al_lib.Logger import *
+from Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(ERROR)
 
@@ -562,7 +560,7 @@ if __name__ == u"__main__":
 
         LocalGBD  = u"http://localhost:7474/db/data/"
 
-        fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v3.10.archimate"
+        fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DALE_v6.archimate"
         assert (os.path.isfile(fileConceptsArch) is True)
         
         # fileArchimate = os.getcwd() + os.sep + u"import_artifacts.archimate"

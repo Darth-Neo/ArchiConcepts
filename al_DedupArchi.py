@@ -5,7 +5,7 @@
 __author__ = u'morrj140'
 __VERSION__ = u'0.3'
 
-from al_lib.Logger import *
+from Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
@@ -16,9 +16,15 @@ from al_lib.Constants import *
 
 if __name__ == u"__main__":
 
-    # fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v3.17.archimate"
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Solution_Engineering_Template_V8.archimate"
-    fileArchimateOutput = os.getcwd() + os.sep + u"dedup.archimate"
+    pathModel = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models"
+
+    fileArchimateXML = u"DVC v3.19.archimate"
+    # fileArchimateXML = u"Solution_Engineering_Template_V8.archimate"
+    # fileArchimateXML = u"RTPv9.archimate"
+
+    fileArchimate = pathModel + os.sep + fileArchimateXML
+
+    fileArchimateOutput = os.getcwd() + os.sep + fileArchimateXML[:-10] + u"_dedup.archimate"
 
     da = DedupArchimateXML(fileArchimate)
     da.Dedup(fileArchimateOutput)
@@ -30,7 +36,7 @@ if __name__ == u"__main__":
             n += 1
 
         except Exception, msg:
-            logger.warn(u"Goodbye.")
+            logger.warn(u"Goodbye. - %s")
             break
 
 

@@ -5,7 +5,7 @@
 __author__  = u'morrj140'
 __VERSION__ = u'0.3'
 
-from al_lib.Logger import *
+from Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
@@ -26,6 +26,6 @@ def namedEntityAnalysis(fileArchimate=fileArchimateTest, fileConceptsRequirement
 
 if __name__ == u"__main__":
 
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v2.20.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v3.18.archimate"
 
     namedEntityAnalysis(fileArchimate=fileArchimate, fileConceptsRequirements=fileConceptsRequirements)

@@ -5,7 +5,7 @@
 __author__ = u'morrj140'
 __VERSION__ = u'0.3'
 
-from al_lib.Logger import *
+from Logger import *
 logger = setupLogging(__name__)
 logger.setLevel(INFO)
 
@@ -25,9 +25,9 @@ def exportArchiFolderModels(fileArchimate, fileConceptsExport, folder):
     ArchiLib.stopTimer(start_time)
 
 if __name__ == u"__main__":
-    folder = u"Revenue Recognition App"
+    folder = u"Export JMM"
 
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v3.4.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v4.1.archimate"
 
     exportArchiFolderModels(fileArchimate, fileConceptsExport, folder)
 
