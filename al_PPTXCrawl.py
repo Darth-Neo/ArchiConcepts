@@ -2,8 +2,7 @@
 #
 # PPTX Crawl
 #
-__author__ = u'morrj140'
-__VERSION__ = u'0.3'
+import os
 
 from Logger import *
 logger = setupLogging(__name__)
@@ -15,11 +14,11 @@ from al_lib.Constants import *
 from al_lib.PPTXCreateArchi import PPTXCreateArchil
 
 
-def PPTXCrawl():
+def PPTXCrawl(filePPTX):
 
-    logger.info(u"Using : %s" % filePPTXIn)
+    logger.info(u"Using : %s" % filePPTX)
 
-    cpptx = PPTXCreateArchil(filePPTXIn)
+    cpptx = PPTXCreateArchil(filePPTX)
 
     c = cpptx.crawlPPTX()
 
@@ -28,5 +27,10 @@ def PPTXCrawl():
     Concepts.saveConcepts(c, fileConceptsPPTX)
 
 if __name__ == u"__main__":
-    PPTXCrawl()
+
+    path = os.getcwd()
+
+    filePPTX = u"FY17DP.pptx"
+
+    PPTXCrawl(filePPTX)
 
