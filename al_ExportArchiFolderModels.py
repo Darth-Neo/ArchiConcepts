@@ -27,7 +27,7 @@ def exportArchiFolderModels(fileArchimate, fileConceptsExport, folder):
 if __name__ == u"__main__":
     folder = u"Export JMM"
 
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v4.1.archimate"
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Kronos_v15.archimate"
 
     exportArchiFolderModels(fileArchimate, fileConceptsExport, folder)
 

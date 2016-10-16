@@ -9,6 +9,10 @@ import site
 
 if __name__ == u"__main__":
 
-    print(u"User Site Packages : %s" % site.getusersitepackages())
-    for x in site.getsitepackages():
+    usp = site.getusersitepackages()
+
+    print(u"User Site Packages : %s" % usp)
+
+
+    for x in usp:
         print(u"Site Packages      : %s" % x)

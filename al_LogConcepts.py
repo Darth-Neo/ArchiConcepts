@@ -60,7 +60,7 @@ def distribution(concepts, tc=None):
 if __name__ == u"__main__":
     # conceptFile = u"documents.p"
     # conceptFile = u"topicsDict.p"
-    conceptFile = u"GapsSimilarity.p"
+    # conceptFile = u"GapsSimilarity.p"
     # conceptFile = u"chunks.p"
     # conceptFile = u"NVPChunks.p"
     # conceptFile = u"ngrams.p"
@@ -68,15 +68,16 @@ if __name__ == u"__main__":
     # conceptFile = u"ngramsubject.p"
     # conceptFile = u"traversal.p"
     # conceptFile = u"batches.p"
-    # conceptFile = u"export.p"
+    conceptFile = u"export.p"
     # conceptFile = u"reqs.p"
     # conceptFile = u"Estimation.p"
     #conceptFile = u"archi.p"
 
+    fileConceptsExport = u"export.csv"
+
     if True:
         filePath = conceptFile
     else:
-        # fileConceptsExport = u"export.csv"
         directory = os.getcwd() + os.sep + u"run" + os.sep
         filePath = directory + conceptFile
 

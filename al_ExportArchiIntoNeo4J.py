@@ -11,7 +11,7 @@ from subprocess import call
 
 from Logger import *
 logger = setupLogging(__name__)
-logger.setLevel(ERROR)
+logger.setLevel(INFO)
 
 from al_lib.ArchiLib import ArchiLib
 from al_lib.Neo4JLib import Neo4JLib
@@ -555,23 +555,25 @@ if __name__ == u"__main__":
     start_time = ArchiLib.startTimer()
 
     File_Only = True
+    Neo4j_Reset = False
 
     if File_Only:
 
         LocalGBD  = u"http://localhost:7474/db/data/"
 
-        fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DALE_v6.archimate"
+        fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Kronos_v14.archimate"
         assert (os.path.isfile(fileConceptsArch) is True)
         
         # fileArchimate = os.getcwd() + os.sep + u"import_artifacts.archimate"
 
         logger.info(u"Exporting : %s" % (fileArchimate))
 
-        eain = ExportArchimateIntoNeo4J(LocalGBD, fileArchimate=fileArchimate, Reset=True)
+        eain = ExportArchimateIntoNeo4J(LocalGBD, fileArchimate=fileArchimate, Reset=Neo4j_Reset)
 
         # Export just Archimate Elements
         eain.exportArchiElements()
 
+        # Export Archimate Diagram Models
         # Export Archimate Diagram Models
         eain.exportArchiDMS()
 
@@ -580,7 +582,8 @@ if __name__ == u"__main__":
     else:
         global gdb
 
-        gdb = u"http://10.92.82.60:7574/db/data/"
+        # gdb = u"http://localhost:7574/db/data/"
+        gdb  = u"http://localhost:7474/db/data/"
         subdirArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Library"
 
         eain = ExportArchimateIntoNeo4J(gdb, fileArchimate=None, subdirArchimate=subdirArchimate, Reset=False)

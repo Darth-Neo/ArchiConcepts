@@ -28,7 +28,7 @@ from al_lib.ArchiCreatePPTX import ArchiCreatePPTX
 from al_lib.CreateRelationsInArchi import CreateRelationsInArchi
 from al_lib.DependencyAnalysis import DependancyAnalysis
 from al_lib.ExportFolderModels import ExportArchiFolderModels
-from al_lib.ConceptsGraph import ConceptsGraph
+from nl_lib.ConceptGraph import ConceptGraph
 from al_lib.AnalyzeNamedEntities import AnalyzeNamedEntities
 from al_lib.PPTXCreateArchi import PPTXCreateArchil
 from al_RequirementAnalysis import Chunks

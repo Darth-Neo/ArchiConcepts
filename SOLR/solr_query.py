@@ -1,12 +1,15 @@
-#! python
-import sys, getopt
+#!/usr/bin/env python
+from __future__ import print_function
 import solr
-import time
-import datetime
 import json
+
+from Logger import *
+logger = setupLogging(__name__)
+logger.setLevel(DEBUG)
 
 # http://localhost:8983/solr/gettingstarted/select?q=bond%0A&wt=json&indent=true
 
+logInfo = print
 
 def createPostQuery(s, search=u"bond", collection=u"rtp"):
 
@@ -33,18 +36,17 @@ def jsonLoad(data):
 if __name__ == u"__main__":
 
     if len(sys.argv) != 2:
-        print(u"Usage: %s search_term" % (sys.argv[0]))
+        logInfo(u"Usage: %s search_term" % (sys.argv[0]))
         sQuery = raw_input(u'Query : ')
 
     else:
-        print(u"Using: %s" % str(sys.argv[1]))
+        logInfo(u"Using: %s" % str(sys.argv[1]))
         sQuery = unicode(sys.argv[1])
 
     n = 0
     Skip = True
     Hit = False
-
-    collection = u"rtp"
+    collection = u"james"
 
     # create a connection to a solr server
     s = solr.SolrConnection(u'http://localhost:8983/solr/%s' % collection)
@@ -52,35 +54,31 @@ if __name__ == u"__main__":
     response = s.query(sQuery)
 
     for hit in response.results:
-        if Hit == True:
-            print(u"hit: %s" % hit)
+        if Hit is True:
+            logInfo(u"hit: %s" % hit)
 
         n += 1
-        print(u"\n")
+        logInfo(u"\n")
 
         for k, v in hit.items():
-            print(u"    %s=%s" % (k, v))
+            # logInfo(u"    %s=%s" % (k, v))
 
             if k in (u"creator", u"dc_creator", u"Name", u"Type", u"author", u"meta_author"):
                 s = u'n %s' % str(hit[k]).encode(u'utf-8', errors=u'replace')
-                print(u"%d:a %s" % (n, s))
+                logInfo(u"%d:%s: %s" % (n, k, s))
 
             elif k == u"creation_date" and Skip == False:
-
                 format = u'%m-%d-%Y %I:%M%p %Z'
-
                 s = v[0].strftime(format)
-
                 # s= v[0].isoformat(" ")[:-9]
-
-                # print("%d:a %s" % (n ,s))
+                # logInfo("%d:a %s" % (n ,s))
 
             elif k == u"id" and Skip == False:
                 # s = 'file://%s' % str(hit[k]).encode(encoding='utf-8',errors='ignore')
                 s = u'file://%s' % hit[k]
-                print(u"%d:a %s" % (n, s))
+                logInfo(u"%d:id: %s" % (n, s))
 
-            elif k == u"resourcename" and Skip == False:
+            elif k == u"resourcename":  # and Skip == False:
                 s = u'file://%s' % hit[k]
-                print(u"%d:a %s" % (n, s))
+                logInfo(u"%d:resourcename: %s" % (n, s))
 
