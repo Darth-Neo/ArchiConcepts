@@ -167,9 +167,10 @@ class Chunks(object):
         Concepts.saveConcepts(self.chunkConcepts, self.chunkFile)
         logger.info(u"Saved : %s" % self.chunkFile)
 
-def requirementAnalysis():
+def requirementAnalysis(fileArchimate=None):
 
-    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v38.archimate"
+    if fileArchimate is None:
+        fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v38.archimate"
 
     al = ArchiLib(fileArchimate)
 
@@ -203,4 +204,6 @@ def requirementAnalysis():
     chunks.createChunks()
 
 if __name__ == u"__main__":
-    requirementAnalysis()
+    fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/DVC v38.archimate"
+
+    requirementAnalysis(fileArchimate)

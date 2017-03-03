@@ -19,14 +19,6 @@ class NullHandler(logging.Handler):
     def emit(self, record):
         pass
 
-def listClean(s):
-    output = u""
-    try:
-        output = u" ".join([x for x in s if x not in (u"\n", u"\r", u"\xa0", u"\"", u"\'", u"/")])
-    except Exception, msg:
-        logger.error(u"Error : %s")
-    return output
-
 
 def setupLogging(name):
     #
@@ -36,8 +28,9 @@ def setupLogging(name):
     if not os.path.isdir(directory):
         os.makedirs(directory)
 
-    logger = logging.getLogger(name)
     logFile = u'./logs/log.txt'
+
+    logger = logging.getLogger(name)
 
     # Note: Levels - DEBUG INFO WARN ERROR CRITICAL
     logger.setLevel(logging.INFO)
@@ -188,4 +181,27 @@ def loadList(listFile):
 
     return pl
 
+def logList(listFile=u"SEProjects.lp"):
+
+    lst = loadList(listFile)
+
+    m = 0
+    for x in lst:
+        n = 0
+        logger.debug(u"%d.%s" % (m, x))
+
+        if isinstance(x, list) or isinstance(x, tuple):
+            n = 0
+            for y in x:
+                if n != 0:
+                    logger.info(u"\t\t%d.%d.%s" % (m, n, y))
+                else:
+                    logger.info(u"\t%d.%d.%s" % (m, n, y))
+
+                n += 1
+
+        elif isinstance(x, str) or isinstance(x, unicode):
+            logger.info(u"\t%d.%s" % (m, x))
+
+        m += 1
 

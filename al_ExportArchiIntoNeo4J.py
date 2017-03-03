@@ -557,11 +557,13 @@ if __name__ == u"__main__":
     File_Only = True
     Neo4j_Reset = False
 
+    # To-Do : record the date and tine the archimate model was published
+
     if File_Only:
 
         LocalGBD  = u"http://localhost:7474/db/data/"
 
-        fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Kronos_v14.archimate"
+        fileArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Kronos_v16.archimate"
         assert (os.path.isfile(fileConceptsArch) is True)
         
         # fileArchimate = os.getcwd() + os.sep + u"import_artifacts.archimate"
@@ -579,12 +581,15 @@ if __name__ == u"__main__":
 
         # Create an export of all model relationships
         # eain.exportCSV()
+
     else:
         global gdb
 
         # gdb = u"http://localhost:7574/db/data/"
         gdb  = u"http://localhost:7474/db/data/"
-        subdirArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Library"
+
+        #subdirArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Library"
+        subdirArchimate = u"/Users/morrj140/Documents/SolutionEngineering/Archimate Models/Kronos_v16"
 
         eain = ExportArchimateIntoNeo4J(gdb, fileArchimate=None, subdirArchimate=subdirArchimate, Reset=False)
 
